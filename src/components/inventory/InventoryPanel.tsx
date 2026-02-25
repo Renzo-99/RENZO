@@ -7,17 +7,20 @@ import InventoryItem from "./InventoryItem";
 import InboundModal from "./InboundModal";
 import LocationManager from "./LocationManager";
 import InventoryLogModal from "./InventoryLogModal";
+import ProductAddModal from "./ProductAddModal";
 import { Button } from "@/components/ui/button";
-import { PackagePlus, Building2, ClipboardList } from "lucide-react";
+import { PackagePlus, Building2, ClipboardList, Plus } from "lucide-react";
 
 export default function InventoryPanel() {
   const { products, searchQuery, filter, weeklyChanges, isLoading } = useInventoryStore();
   const [showInbound, setShowInbound] = useState(false);
   const [showLocationManager, setShowLocationManager] = useState(false);
   const [showLogModal, setShowLogModal] = useState(false);
+  const [showProductAdd, setShowProductAdd] = useState(false);
   const closeInbound = useCallback(() => setShowInbound(false), []);
   const closeLocationManager = useCallback(() => setShowLocationManager(false), []);
   const closeLogModal = useCallback(() => setShowLogModal(false), []);
+  const closeProductAdd = useCallback(() => setShowProductAdd(false), []);
 
   const filtered = useMemo(() => products.filter((p) => {
     if (searchQuery) {
@@ -55,10 +58,16 @@ export default function InventoryPanel() {
       </div>
 
       <div className="p-4 border-t border-gray-200 space-y-2">
-        <Button className="w-full" onClick={() => setShowInbound(true)}>
-          <PackagePlus className="h-4 w-4 mr-2" />
-          입고 등록
-        </Button>
+        <div className="flex gap-2">
+          <Button className="flex-1" onClick={() => setShowInbound(true)}>
+            <PackagePlus className="h-4 w-4 mr-2" />
+            입고 등록
+          </Button>
+          <Button variant="outline" onClick={() => setShowProductAdd(true)}>
+            <Plus className="h-4 w-4 mr-1.5" />
+            품목 추가
+          </Button>
+        </div>
         <div className="flex gap-2">
           <Button variant="outline" className="flex-1" onClick={() => setShowLogModal(true)}>
             <ClipboardList className="h-4 w-4 mr-1.5" />
@@ -74,6 +83,7 @@ export default function InventoryPanel() {
       {showInbound && <InboundModal onClose={closeInbound} />}
       {showLocationManager && <LocationManager onClose={closeLocationManager} />}
       {showLogModal && <InventoryLogModal onClose={closeLogModal} />}
+      {showProductAdd && <ProductAddModal onClose={closeProductAdd} />}
     </div>
   );
 }

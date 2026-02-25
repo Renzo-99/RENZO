@@ -13,6 +13,31 @@ export async function GET() {
   }
 }
 
+export async function POST(req: NextRequest) {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "요청 형식이 올바르지 않습니다" }, { status: 400 });
+  }
+
+  const { name, dong, building_code, phone } = body;
+  if (!name || !name.trim()) {
+    return NextResponse.json({ error: "건물명(name) 필수" }, { status: 400 });
+  }
+
+  try {
+    const { rows: [data] } = await pool.query(
+      "INSERT INTO locations (name, dong, building_code, phone) VALUES ($1, $2, $3, $4) RETURNING *",
+      [name.trim(), dong || null, building_code || null, phone || null]
+    );
+    return NextResponse.json(data);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "서버 오류";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
 export async function PUT(req: NextRequest) {
   let body;
   try {

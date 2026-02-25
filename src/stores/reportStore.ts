@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { getISOWeeksInYear } from "date-fns";
 import type { DailyTask, WeeklyReport, AddMaterialRequest, DayData } from "@/types";
 import { getCurrentWeek, getDayInfo } from "@/utils/dateUtils";
+import { useInventoryStore } from "@/stores/inventoryStore";
 
 interface ReportState {
   currentReport: (WeeklyReport & { tasks: DailyTask[] }) | null;
@@ -88,6 +89,7 @@ export const useReportStore = create<ReportState>((set, get) => ({
 
     const { selectedWeek, fetchReport } = get();
     await fetchReport(selectedWeek.year, selectedWeek.week);
+    useInventoryStore.getState().fetchProducts();
   },
 
   addMaterial: async (taskId: number, req: AddMaterialRequest) => {
@@ -110,6 +112,7 @@ export const useReportStore = create<ReportState>((set, get) => ({
 
     const { selectedWeek, fetchReport } = get();
     await fetchReport(selectedWeek.year, selectedWeek.week);
+    useInventoryStore.getState().fetchProducts();
   },
 
   removeMaterial: async (taskMaterialId: number) => {
@@ -121,6 +124,7 @@ export const useReportStore = create<ReportState>((set, get) => ({
 
     const { selectedWeek, fetchReport } = get();
     await fetchReport(selectedWeek.year, selectedWeek.week);
+    useInventoryStore.getState().fetchProducts();
   },
 
   navigateWeek: (direction: "prev" | "next") => {

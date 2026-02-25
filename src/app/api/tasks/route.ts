@@ -59,7 +59,7 @@ export async function PUT(req: NextRequest) {
   }
 }
 
-// 작업 삭제
+// 작업 삭제 (자재 재고 복원 후 삭제)
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = Number(searchParams.get("id"));
@@ -68,11 +68,27 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "id 필수" }, { status: 400 });
   }
 
+  const client = await pool.connect();
   try {
-    await pool.query("DELETE FROM daily_tasks WHERE id = $1", [id]);
+    await client.query("BEGIN");
+
+    const { rows: materials } = await client.query(
+      "SELECT id FROM task_materials WHERE task_id = $1",
+      [id]
+    );
+
+    for (const mat of materials) {
+      await client.query("SELECT remove_material_from_task($1)", [mat.id]);
+    }
+
+    await client.query("DELETE FROM daily_tasks WHERE id = $1", [id]);
+    await client.query("COMMIT");
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
+    await client.query("ROLLBACK");
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
+  } finally {
+    client.release();
   }
 }

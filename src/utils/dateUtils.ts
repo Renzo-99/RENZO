@@ -1,7 +1,12 @@
-import { startOfISOWeek, endOfISOWeek, addDays, format, getISOWeek, getISOWeekYear } from "date-fns";
+import { startOfISOWeek, addDays, format, getISOWeek, getISOWeekYear } from "date-fns";
 import { ko } from "date-fns/locale";
 
 const DAY_NAMES = ["월요일", "화요일", "수요일", "목요일", "금요일"];
+
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
 
 export function getCurrentWeek() {
   const now = new Date();
@@ -24,7 +29,7 @@ export function getWeekDates(year: number, week: number) {
 }
 
 export function getDayInfo(startDate: string, dayOfWeek: number) {
-  const start = new Date(startDate);
+  const start = parseLocalDate(startDate);
   const date = addDays(start, dayOfWeek);
 
   return {
@@ -36,13 +41,13 @@ export function getDayInfo(startDate: string, dayOfWeek: number) {
 }
 
 export function formatWeekRange(startDate: string, endDate: string) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  const start = parseLocalDate(startDate);
+  const end = parseLocalDate(endDate);
   return `${format(start, "yyyy.MM.dd")} ~ ${format(end, "MM.dd")}`;
 }
 
 export function formatWeekRangeWithDay(startDate: string, endDate: string) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  const start = parseLocalDate(startDate);
+  const end = parseLocalDate(endDate);
   return `${format(start, "M.dd", { locale: ko })}(${format(start, "EEE", { locale: ko })}) ~ ${format(end, "M.dd", { locale: ko })}(${format(end, "EEE", { locale: ko })})`;
 }

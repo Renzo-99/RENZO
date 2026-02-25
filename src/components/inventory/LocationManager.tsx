@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { X, Pencil, Trash2, Check } from "lucide-react";
+import { X, Pencil, Trash2, Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Location } from "@/types";
@@ -15,6 +15,8 @@ export default function LocationManager({ onClose }: LocationManagerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState({ name: "", dong: "", building_code: "", phone: "" });
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addForm, setAddForm] = useState({ name: "", dong: "", building_code: "", phone: "" });
 
   const fetchLocations = useCallback(async () => {
     try {
@@ -66,6 +68,26 @@ export default function LocationManager({ onClose }: LocationManagerProps) {
     }
   };
 
+  const handleAdd = async () => {
+    if (!addForm.name.trim()) return;
+    try {
+      const res = await fetch("/api/locations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(addForm),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error);
+      }
+      setShowAddForm(false);
+      setAddForm({ name: "", dong: "", building_code: "", phone: "" });
+      await fetchLocations();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "추가 실패");
+    }
+  };
+
   const handleDelete = async (id: number, name: string) => {
     if (!confirm(`"${name}" 건물을 삭제하시겠습니까?`)) return;
     try {
@@ -86,12 +108,74 @@ export default function LocationManager({ onClose }: LocationManagerProps) {
       <div className="relative bg-white rounded-[12px] shadow-lg w-full max-w-lg mx-4 max-h-[80vh] flex flex-col">
         <div className="flex items-center justify-between p-5 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">건물 관리</h2>
-          <button onClick={onClose} className="cursor-pointer">
-            <X className="h-5 w-5 text-gray-400" />
-          </button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-toss-blue"
+              onClick={() => { setShowAddForm(!showAddForm); setEditingId(null); }}
+            >
+              <Plus className="h-4 w-4 mr-1" />추가
+            </Button>
+            <button onClick={onClose} className="cursor-pointer">
+              <X className="h-5 w-5 text-gray-400" />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-1">
+          {showAddForm && (
+            <div className="bg-toss-blue-light rounded-[8px] p-3 space-y-2 mb-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-gray-500 mb-0.5 block">건물명 *</label>
+                  <Input
+                    value={addForm.name}
+                    onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                    className="h-8 text-sm"
+                    placeholder="건물명"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] text-gray-500 mb-0.5 block">동</label>
+                  <Input
+                    value={addForm.dong}
+                    onChange={(e) => setAddForm({ ...addForm, dong: e.target.value })}
+                    className="h-8 text-sm"
+                    placeholder="동"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-gray-500 mb-0.5 block">건물코드</label>
+                  <Input
+                    value={addForm.building_code}
+                    onChange={(e) => setAddForm({ ...addForm, building_code: e.target.value })}
+                    className="h-8 text-sm"
+                    placeholder="건물코드"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] text-gray-500 mb-0.5 block">전화번호</label>
+                  <Input
+                    value={addForm.phone}
+                    onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
+                    className="h-8 text-sm"
+                    placeholder="전화번호"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="ghost" size="sm" onClick={() => setShowAddForm(false)}>취소</Button>
+                <Button size="sm" onClick={handleAdd} disabled={!addForm.name.trim()}>
+                  <Check className="h-3.5 w-3.5 mr-1" />추가
+                </Button>
+              </div>
+            </div>
+          )}
+
           {isLoading ? (
             <p className="text-sm text-gray-400 text-center py-8">불러오는 중...</p>
           ) : locations.length === 0 ? (
