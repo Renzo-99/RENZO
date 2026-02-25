@@ -3,13 +3,13 @@
 import { ChevronLeft, ChevronRight, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useReportStore } from "@/stores/reportStore";
-import { formatWeekRange } from "@/utils/dateUtils";
+import { formatWeekRangeWithDay } from "@/utils/dateUtils";
 
 export default function Header() {
   const { currentReport, selectedWeek, navigateWeek } = useReportStore();
 
-  const dateRange = currentReport
-    ? formatWeekRange(currentReport.start_date, currentReport.end_date)
+  const dateRangeWithDay = currentReport
+    ? formatWeekRangeWithDay(currentReport.start_date, currentReport.end_date)
     : "";
 
   const handleExport = async () => {
@@ -39,9 +39,14 @@ export default function Header() {
         <Button variant="ghost" size="icon" onClick={() => navigateWeek("prev")}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <span className="text-sm font-medium text-gray-700 min-w-[160px] text-center">
-          {dateRange || `${selectedWeek.year}년 ${selectedWeek.week}주차`}
-        </span>
+        <div className="text-center min-w-[200px]">
+          <p className="text-sm font-semibold text-gray-800">
+            {selectedWeek.year}년 {selectedWeek.week}주차
+          </p>
+          {dateRangeWithDay && (
+            <p className="text-[11px] text-gray-400 mt-0.5">{dateRangeWithDay}</p>
+          )}
+        </div>
         <Button variant="ghost" size="icon" onClick={() => navigateWeek("next")}>
           <ChevronRight className="h-4 w-4" />
         </Button>

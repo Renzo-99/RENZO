@@ -40,3 +40,9 @@ export function formatWeekRange(startDate: string, endDate: string) {
   const end = new Date(endDate);
   return `${format(start, "yyyy.MM.dd")} ~ ${format(end, "MM.dd")}`;
 }
+
+export function formatWeekRangeWithDay(startDate: string, endDate: string) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  return `${format(start, "M.dd", { locale: ko })}(${format(start, "EEE", { locale: ko })}) ~ ${format(end, "M.dd", { locale: ko })}(${format(end, "EEE", { locale: ko })})`;
+}
