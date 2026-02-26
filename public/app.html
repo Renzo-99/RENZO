@@ -221,6 +221,26 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 }
 @media(hover:none){.task-actions{opacity:1}}
 #fileInput{display:none}
+
+/* 작업 이력 */
+.th-nav{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--gray-200)}
+.th-nav .th-label{font-size:14px;font-weight:700;min-width:120px;text-align:center}
+.th-mode{display:flex;gap:4px;padding:8px 14px 0}
+.th-mode button{padding:4px 12px;border-radius:99px;border:none;font-size:11px;font-weight:500;cursor:pointer;background:var(--gray-100);color:var(--gray-600);transition:.15s}
+.th-mode button.active{background:var(--blue);color:#fff}
+.th-list{flex:1;overflow-y:auto;padding:10px 14px}
+.th-day-hdr{font-size:12px;font-weight:600;color:var(--gray-700);margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--gray-100)}.th-day-hdr:first-child{margin-top:0}
+.th-task{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:8px;font-size:12px;transition:.1s}
+.th-task:hover{background:var(--gray-50)}
+.th-task .th-bld{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:2px 6px;border-radius:99px;flex-shrink:0;margin-top:1px}
+.th-task>div{flex:1;min-width:0}
+.th-task .th-desc{color:var(--gray-700)}.th-task .th-mats{font-size:10px;color:var(--gray-500);margin-top:2px}
+.th-month-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:.15s}
+.th-month-card:hover{box-shadow:var(--shadow-md)}
+.th-month-card .th-mc-title{font-size:14px;font-weight:700;color:var(--gray-800)}
+.th-month-card .th-mc-stats{display:flex;gap:16px;margin-top:6px;font-size:12px;color:var(--gray-500)}
+.th-month-card .th-mc-stats b{color:var(--gray-800)}
+.th-empty{text-align:center;color:var(--gray-400);padding:40px 0;font-size:13px}
 </style></head><body>
 
 <!-- 인쇄용 헤더 -->
@@ -242,6 +262,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()" title="데이터 불러오기">📂 불러오기</button>
     <button class="btn btn-outline btn-sm" onclick="exportCSV()" title="재고 CSV">📊 CSV</button>
     <button class="btn btn-blue btn-sm" onclick="printReport()" title="보고서 인쇄">🖨️ 인쇄</button>
+    <button class="btn btn-outline btn-sm" onclick="refreshAll()" title="새로고침">🔄</button>
     <input type="file" id="fileInput" accept=".json" onchange="importData(event)">
   </div>
 </div>
@@ -255,6 +276,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <div class="inv-tabs">
       <button id="tabStock" class="active" onclick="switchTab('stock')">재고 현황</button>
       <button id="tabHistory" onclick="switchTab('history')">입출고 내역</button>
+      <button id="tabTasks" onclick="switchTab('tasks')">작업 이력</button>
     </div>
     <div id="stockView">
       <div class="inv-search">
@@ -272,6 +294,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
       </div>
     </div>
     <div id="historyView" style="display:none;flex:1;overflow-y:auto;padding:14px"></div>
+    <div id="tasksView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
   </div>
 </div>
 
@@ -326,6 +349,7 @@ const DOW_SHORT=['일','월','화','수','목','금','토'];
 // === 상태 ===
 let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock';
+let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동'];
 
 // === 초기화 ===
@@ -799,9 +823,12 @@ function switchTab(tab){
   currentTab=tab;
   document.getElementById('tabStock').className=tab==='stock'?'active':'';
   document.getElementById('tabHistory').className=tab==='history'?'active':'';
+  document.getElementById('tabTasks').className=tab==='tasks'?'active':'';
   document.getElementById('stockView').style.display=tab==='stock'?'flex':'none';
   document.getElementById('historyView').style.display=tab==='history'?'block':'none';
+  document.getElementById('tasksView').style.display=tab==='tasks'?'flex':'none';
   if(tab==='history')renderHistory();
+  if(tab==='tasks')renderTaskHistory();
 }
 
 function renderHistory(){
@@ -1022,6 +1049,96 @@ function toast(msg){
   el.textContent=msg;
   document.body.appendChild(el);
   setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);},2000);
+}
+
+// === 새로고침 ===
+function refreshAll(){
+  loadProducts();loadHistory();loadHolidays();loadBuildings();
+  loadWeek();renderFilterBar();renderInventory();renderAlerts();
+  if(currentTab==='history')renderHistory();
+  if(currentTab==='tasks')renderTaskHistory();
+  toast('새로고침 완료');
+}
+
+// === 작업 이력 ===
+function getMondayOf(y,w){
+  const j=new Date(y,0,4),dw=j.getDay()||7,m=new Date(j);
+  m.setDate(j.getDate()-dw+1+(w-1)*7);
+  return m;
+}
+
+function loadAllTasks(year,month){
+  const tasks=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k.startsWith('ws3_week_'))continue;
+    const pts=k.replace('ws3_week_','').split('_');
+    const wy=parseInt(pts[0]),ww=parseInt(pts[1]);
+    const mon=getMondayOf(wy,ww);
+    let wd;try{wd=JSON.parse(localStorage.getItem(k));}catch(e){continue;}
+    if(!Array.isArray(wd))continue;
+    wd.forEach((d,di)=>{
+      const dd=new Date(mon);dd.setDate(mon.getDate()+di);
+      if(dd.getFullYear()!==year)return;
+      if(month&&dd.getMonth()+1!==month)return;
+      d.tasks.forEach(t=>{
+        tasks.push({date:dd,dateStr:dd.getFullYear()+'.'+(''+(dd.getMonth()+1)).padStart(2,'0')+'.'+(''+(dd.getDate())).padStart(2,'0'),dow:DOW_SHORT[dd.getDay()],building:t.building||'',desc:t.desc||'',note:t.note||'',mats:t.mats||[]});
+      });
+    });
+  }
+  tasks.sort((a,b)=>a.date-b.date);
+  return tasks;
+}
+
+function renderTaskHistory(){
+  let h='<div class="th-nav">';
+  h+='<button class="btn btn-ghost btn-sm" onclick="navTH(-1)">◀</button>';
+  h+='<span class="th-label">'+(thMode==='month'?thYear+'년 '+thMonth+'월':thYear+'년')+'</span>';
+  h+='<button class="btn btn-ghost btn-sm" onclick="navTH(1)">▶</button>';
+  h+='</div>';
+  h+='<div class="th-mode">';
+  h+='<button class="'+(thMode==='month'?'active':'')+'" onclick="thMode=\'month\';renderTaskHistory()">월별</button>';
+  h+='<button class="'+(thMode==='year'?'active':'')+'" onclick="thMode=\'year\';renderTaskHistory()">연도별</button>';
+  h+='</div>';
+  h+='<div class="th-list">';
+  if(thMode==='month'){
+    const tasks=loadAllTasks(thYear,thMonth);
+    if(!tasks.length){h+='<p class="th-empty">이 기간의 작업 이력이 없습니다</p>';}
+    else{
+      let ld='';
+      tasks.forEach(t=>{
+        if(t.dateStr!==ld){ld=t.dateStr;h+='<div class="th-day-hdr">'+t.dateStr+' ('+t.dow+')</div>';}
+        h+='<div class="th-task">';
+        if(t.building)h+='<span class="th-bld">'+esc(t.building)+'</span>';
+        h+='<div><div class="th-desc">'+(esc(t.desc)||'<span style="color:var(--gray-400)">(내용 없음)</span>')+'</div>';
+        if(t.mats.length){const mn=t.mats.map(m=>{const p=products.find(x=>x.id===m.pid);return(p?p.name:'?')+'\u00d7'+m.qty;});h+='<div class="th-mats">\ud83d\udce6 '+esc(mn.join(', '))+'</div>';}
+        if(t.note)h+='<div class="th-mats">\ud83d\udcdd '+esc(t.note)+'</div>';
+        h+='</div></div>';
+      });
+    }
+  }else{
+    const all=loadAllTasks(thYear);
+    if(!all.length){h+='<p class="th-empty">'+thYear+'년 작업 이력이 없습니다</p>';}
+    else{
+      const byM={};
+      all.forEach(t=>{const m=t.date.getMonth()+1;if(!byM[m])byM[m]=[];byM[m].push(t);});
+      for(let m=1;m<=12;m++){
+        if(!byM[m])continue;
+        let mc=0;byM[m].forEach(t=>{mc+=t.mats.length;});
+        h+='<div class="th-month-card" onclick="thMode=\'month\';thMonth='+m+';renderTaskHistory()">';
+        h+='<div class="th-mc-title">'+m+'월</div>';
+        h+='<div class="th-mc-stats"><span>작업 <b>'+byM[m].length+'</b>건</span><span>자재사용 <b>'+mc+'</b>건</span></div></div>';
+      }
+    }
+  }
+  h+='</div>';
+  document.getElementById('tasksView').innerHTML=h;
+}
+
+function navTH(dir){
+  if(thMode==='month'){thMonth+=dir;if(thMonth<1){thMonth=12;thYear--;}if(thMonth>12){thMonth=1;thYear++;}}
+  else{thYear+=dir;}
+  renderTaskHistory();
 }
 
 // 시작
