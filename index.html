@@ -1280,13 +1280,32 @@ function applyCloudData(d){
   });
   return true;
 }
+function tryJsonp(url,ms){
+  return new Promise(resolve=>{
+    const cb='_jp'+Date.now();
+    const tm=setTimeout(()=>{cleanup();resolve(null);},ms||8000);
+    function cleanup(){clearTimeout(tm);delete window[cb];try{s.remove();}catch(e){}}
+    window[cb]=function(data){cleanup();resolve(data);};
+    const s=document.createElement('script');
+    s.src=url+(url.includes('?')?'&':'?')+'callback='+cb;
+    s.onerror=()=>{cleanup();resolve(null);};
+    document.head.appendChild(s);
+  });
+}
 async function loadFromCloud(){
   if(!SCRIPT_URL)return false;
+  const url=SCRIPT_URL+'?action=loadAll';
   // 방법1: 직접 fetch
-  let json=await tryFetch(SCRIPT_URL+'?action=loadAll',8000);
+  let json=await tryFetch(url,6000);
   if(json&&json.success)return applyCloudData(json.data);
-  // 방법2: CORS 프록시
-  json=await tryFetch('https://corsproxy.io/?'+encodeURIComponent(SCRIPT_URL+'?action=loadAll'),8000);
+  // 방법2: JSONP
+  json=await tryJsonp(url,6000);
+  if(json&&json.success)return applyCloudData(json.data);
+  // 방법3: CORS 프록시 (allorigins)
+  json=await tryFetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url),6000);
+  if(json&&json.success)return applyCloudData(json.data);
+  // 방법4: CORS 프록시 (corsproxy)
+  json=await tryFetch('https://corsproxy.io/?'+encodeURIComponent(url),6000);
   if(json&&json.success)return applyCloudData(json.data);
   return false;
 }
@@ -1337,20 +1356,29 @@ function saveCloudUrl(){
 async function testCloudConnection(){
   const url=document.getElementById('cfgUrl').value.trim();
   if(!url){toast('URL을 입력해주세요');return;}
-  toast('🔍 연결 테스트 중...');
+  const fullUrl=url+'?action=loadAll';
   // 방법1: 직접 fetch
-  let json=await tryFetch(url+'?action=loadAll',5000);
-  if(json&&json.success){toast('✅ 연결 성공 (직접)! 데이터 '+Object.keys(json.data||{}).length+'개 항목');return;}
-  // 방법2: CORS 프록시
-  toast('🔍 프록시로 재시도 중...');
-  json=await tryFetch('https://corsproxy.io/?'+encodeURIComponent(url+'?action=loadAll'),5000);
-  if(json&&json.success){toast('✅ 연결 성공 (프록시)! 데이터 '+Object.keys(json.data||{}).length+'개 항목');return;}
-  // 방법3: 저장만 테스트
-  toast('⚠️ 읽기 연결 실패. 저장 테스트를 진행합니다...');
+  toast('🔍 1/4 직접 연결 시도...');
+  let json=await tryFetch(fullUrl,5000);
+  if(json&&json.success){toast('✅ 연결 성공 (직접)! 데이터 '+Object.keys(json.data||{}).length+'개');return;}
+  // 방법2: JSONP
+  toast('🔍 2/4 JSONP 시도...');
+  json=await tryJsonp(fullUrl,5000);
+  if(json&&json.success){toast('✅ 연결 성공 (JSONP)! 데이터 '+Object.keys(json.data||{}).length+'개');return;}
+  // 방법3: allorigins 프록시
+  toast('🔍 3/4 프록시A 시도...');
+  json=await tryFetch('https://api.allorigins.win/raw?url='+encodeURIComponent(fullUrl),5000);
+  if(json&&json.success){toast('✅ 연결 성공 (프록시A)! 데이터 '+Object.keys(json.data||{}).length+'개');return;}
+  // 방법4: corsproxy
+  toast('🔍 4/4 프록시B 시도...');
+  json=await tryFetch('https://corsproxy.io/?'+encodeURIComponent(fullUrl),5000);
+  if(json&&json.success){toast('✅ 연결 성공 (프록시B)! 데이터 '+Object.keys(json.data||{}).length+'개');return;}
+  // 모두 실패 → 저장 테스트
+  toast('⚠️ 읽기 4가지 방법 모두 실패. 저장 테스트 진행...');
   const origUrl=SCRIPT_URL;SCRIPT_URL=url;
   formPost({action:'save',key:'_test',value:'test_'+new Date().toISOString()});
   SCRIPT_URL=origUrl;
-  setTimeout(()=>toast('📤 저장 요청 전송됨. 스프레드시트에서 "_test" 항목을 확인해주세요.'),3000);
+  setTimeout(()=>toast('📤 저장 요청 전송됨. 스프레드시트 "data" 시트에서 "_test" 확인해주세요.'),3000);
 }
 
 // 시작
