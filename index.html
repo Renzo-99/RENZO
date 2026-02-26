@@ -657,24 +657,18 @@ function onDrop(e){
   document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
   const target=getDropTarget(e);
   if(!target||_dragDi===null)return;
-  const fromDi=_dragDi,fromTi=_dragTi,toDi=target.di;
-  let toTi=target.ti;
-  // 같은 요일 내에서만 이동
-  if(fromDi!==toDi)return;
-  if(fromTi===toTi)return;
+  if(_dragDi!==target.di||_dragTi===target.ti)return;
   const rect=target.el.getBoundingClientRect();
-  const mid=rect.top+rect.height/2;
-  if(e.clientY>mid&&toTi>fromTi){}
-  else if(e.clientY<=mid&&toTi<fromTi){}
-  else if(e.clientY>mid)toTi++;
-  else if(e.clientY<=mid)toTi--;
-  // 배열 이동
-  const arr=days[fromDi].tasks;
-  const [item]=arr.splice(fromTi,1);
-  const insertAt=toTi>fromTi?toTi:toTi;
+  const above=e.clientY<rect.top+rect.height/2;
+  const arr=days[_dragDi].tasks;
+  const [item]=arr.splice(_dragTi,1);
+  let insertAt=target.ti;
+  if(_dragTi<target.ti)insertAt--;
+  if(!above)insertAt++;
+  insertAt=Math.max(0,Math.min(insertAt,arr.length));
   arr.splice(insertAt,0,item);
   saveWeek();renderReport();
-  toast((fromTi+1)+'번 → '+(insertAt+1)+'번 이동');
+  toast((_dragTi+1)+'번 → '+(insertAt+1)+'번 이동');
 }
 
 // 터치 드래그 지원 (모바일)
@@ -728,13 +722,13 @@ function initTouchDrag(){
       const targetEl=overTop||overBottom;
       const toTi=parseInt(targetEl.dataset.task);
       if(toTi!==touchTi){
+        const above=!!overTop;
         const arr=days[touchDi].tasks;
         const [item]=arr.splice(touchTi,1);
         let insertAt=toTi;
-        if(overBottom&&toTi>touchTi)insertAt=toTi;
-        else if(overTop&&toTi<touchTi)insertAt=toTi;
-        else if(overBottom)insertAt=toTi+1>arr.length?arr.length:toTi;
-        else insertAt=toTi>0?toTi:0;
+        if(touchTi<toTi)insertAt--;
+        if(!above)insertAt++;
+        insertAt=Math.max(0,Math.min(insertAt,arr.length));
         arr.splice(insertAt,0,item);
         saveWeek();renderReport();
         toast((touchTi+1)+'번 → '+(insertAt+1)+'번 이동');
