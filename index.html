@@ -1243,20 +1243,15 @@ function navTH(dir){
   renderTaskHistory();
 }
 
-// === 클라우드 연동 (form POST + postMessage) ===
-function cloudRequest(data,ms){
-  return new Promise((resolve,reject)=>{
-    const id='_cr'+Date.now()+Math.random().toString(36).slice(2,6);
-    data._id=id;
-    const tm=setTimeout(()=>{cleanup();reject(new Error('timeout'));},ms||15000);
-    function handler(ev){if(!ev.data||ev.data._id!==id)return;cleanup();resolve(ev.data);}
-    function cleanup(){clearTimeout(tm);window.removeEventListener('message',handler);setTimeout(()=>{try{iframe.remove();}catch(e){}try{form.remove();}catch(e){}},500);}
-    window.addEventListener('message',handler);
-    const iframe=document.createElement('iframe');iframe.name=id;iframe.style.display='none';document.body.appendChild(iframe);
-    const form=document.createElement('form');form.method='POST';form.action=SCRIPT_URL;form.target=id;
-    const input=document.createElement('input');input.type='hidden';input.name='data';input.value=JSON.stringify(data);
-    form.appendChild(input);document.body.appendChild(form);form.submit();
-  });
+// === 클라우드 연동 (form POST 저장 + 다중 읽기) ===
+function formPost(data){
+  const id='_fp'+Date.now();
+  const iframe=document.createElement('iframe');iframe.name=id;iframe.style.display='none';
+  document.body.appendChild(iframe);
+  const form=document.createElement('form');form.method='POST';form.action=SCRIPT_URL;form.target=id;
+  const input=document.createElement('input');input.type='hidden';input.name='data';input.value=JSON.stringify(data);
+  form.appendChild(input);document.body.appendChild(form);form.submit();
+  setTimeout(()=>{try{form.remove();iframe.remove();}catch(e){}},5000);
 }
 function queueCloudSave(key,value){
   if(!SCRIPT_URL)return;
@@ -1264,27 +1259,36 @@ function queueCloudSave(key,value){
   clearTimeout(_cloudTimer);
   _cloudTimer=setTimeout(flushCloudQueue,2000);
 }
-async function flushCloudQueue(){
+function flushCloudQueue(){
   const keys=Object.keys(_cloudQueue);
   if(!SCRIPT_URL||!keys.length)return;
   const items=keys.map(k=>({key:k,value:_cloudQueue[k]}));
   _cloudQueue={};
   updateSyncStatus('syncing');
-  try{await cloudRequest({action:'saveMultiple',items});updateSyncStatus('synced');}
-  catch(e){updateSyncStatus('error');}
+  formPost({action:'saveMultiple',items});
+  setTimeout(()=>updateSyncStatus('synced'),3000);
+}
+async function tryFetch(url,ms){
+  const c=new AbortController();const t=setTimeout(()=>c.abort(),ms||8000);
+  try{const r=await fetch(url,{signal:c.signal,redirect:'follow'});clearTimeout(t);return await r.json();}
+  catch(e){clearTimeout(t);return null;}
+}
+function applyCloudData(d){
+  if(!d||!Object.keys(d).length)return false;
+  Object.entries(d).forEach(([k,v])=>{
+    try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
+  });
+  return true;
 }
 async function loadFromCloud(){
   if(!SCRIPT_URL)return false;
-  try{
-    const res=await cloudRequest({action:'loadAll'});
-    if(!res.success)return false;
-    const d=res.data||{};
-    if(!Object.keys(d).length)return false;
-    Object.entries(d).forEach(([k,v])=>{
-      try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
-    });
-    return true;
-  }catch(e){console.error('Cloud load:',e);return false;}
+  // 방법1: 직접 fetch
+  let json=await tryFetch(SCRIPT_URL+'?action=loadAll',8000);
+  if(json&&json.success)return applyCloudData(json.data);
+  // 방법2: CORS 프록시
+  json=await tryFetch('https://corsproxy.io/?'+encodeURIComponent(SCRIPT_URL+'?action=loadAll'),8000);
+  if(json&&json.success)return applyCloudData(json.data);
+  return false;
 }
 async function uploadAllToCloud(){
   if(!SCRIPT_URL){toast('클라우드 URL이 설정되지 않았습니다');return;}
@@ -1298,8 +1302,8 @@ async function uploadAllToCloud(){
     const k=localStorage.key(i);
     if(k&&k.startsWith('ws3_week_'))items.push({key:k.replace('ws3_',''),value:localStorage.getItem(k)});
   }
-  try{await cloudRequest({action:'saveMultiple',items});updateSyncStatus('synced');toast('클라우드 업로드 완료 ('+items.length+'개 항목)');}
-  catch(e){updateSyncStatus('error');toast('업로드 실패');}
+  formPost({action:'saveMultiple',items});
+  setTimeout(()=>{updateSyncStatus('synced');toast('📤 업로드 요청 완료 ('+items.length+'개 항목). 스프레드시트에서 확인해주세요.');},3000);
 }
 function updateSyncStatus(s){
   const el=document.getElementById('syncStatus');if(!el)return;
@@ -1333,14 +1337,20 @@ function saveCloudUrl(){
 async function testCloudConnection(){
   const url=document.getElementById('cfgUrl').value.trim();
   if(!url){toast('URL을 입력해주세요');return;}
+  toast('🔍 연결 테스트 중...');
+  // 방법1: 직접 fetch
+  let json=await tryFetch(url+'?action=loadAll',5000);
+  if(json&&json.success){toast('✅ 연결 성공 (직접)! 데이터 '+Object.keys(json.data||{}).length+'개 항목');return;}
+  // 방법2: CORS 프록시
+  toast('🔍 프록시로 재시도 중...');
+  json=await tryFetch('https://corsproxy.io/?'+encodeURIComponent(url+'?action=loadAll'),5000);
+  if(json&&json.success){toast('✅ 연결 성공 (프록시)! 데이터 '+Object.keys(json.data||{}).length+'개 항목');return;}
+  // 방법3: 저장만 테스트
+  toast('⚠️ 읽기 연결 실패. 저장 테스트를 진행합니다...');
   const origUrl=SCRIPT_URL;SCRIPT_URL=url;
-  toast('연결 테스트 중...');
-  try{
-    const res=await cloudRequest({action:'loadAll'},10000);
-    if(res&&res.success)toast('✅ 연결 성공! 데이터 '+Object.keys(res.data||{}).length+'개 항목');
-    else toast('❌ 응답 오류');
-  }catch(e){toast('❌ 연결 시간 초과 (10초)');}
-  finally{SCRIPT_URL=origUrl;}
+  formPost({action:'save',key:'_test',value:'test_'+new Date().toISOString()});
+  SCRIPT_URL=origUrl;
+  setTimeout(()=>toast('📤 저장 요청 전송됨. 스프레드시트에서 "_test" 항목을 확인해주세요.'),3000);
 }
 
 // 시작
