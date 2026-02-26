@@ -258,10 +258,12 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <button class="btn btn-outline btn-sm" onclick="goToday()">오늘</button>
   </div>
   <div class="hdr-right">
+    <span id="syncStatus" style="font-size:14px;cursor:pointer;margin-right:4px" onclick="openCloudSettings()" title="클라우드 상태"></span>
     <button class="btn btn-outline btn-sm" onclick="exportData()" title="데이터 내보내기">💾 저장</button>
     <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()" title="데이터 불러오기">📂 불러오기</button>
     <button class="btn btn-outline btn-sm" onclick="exportCSV()" title="재고 CSV">📊 CSV</button>
     <button class="btn btn-blue btn-sm" onclick="printReport()" title="보고서 인쇄">🖨️ 인쇄</button>
+    <button class="btn btn-outline btn-sm" onclick="openCloudSettings()" title="클라우드 설정">☁️</button>
     <button class="btn btn-outline btn-sm" onclick="refreshAll()" title="새로고침">🔄</button>
     <input type="file" id="fileInput" accept=".json" onchange="importData(event)">
   </div>
@@ -353,18 +355,22 @@ let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='mo
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동'];
 let productMap=new Map();
 let _debounceTimer;
+// 클라우드 연동
+const CLOUD_URL_DEFAULT='https://script.google.com/a/macros/hongik.ac.kr/s/AKfycbwfrvDEaHLxyixA3qH4xTnZDfpOq46He-eN61GJH7MEZdiMxT3XmGCqHZVW9gM5e-g-/exec';
+let SCRIPT_URL=localStorage.getItem('ws3_script_url')||CLOUD_URL_DEFAULT;
+let _cloudQueue={},_cloudTimer=null;
 function debouncedRenderInventory(){clearTimeout(_debounceTimer);_debounceTimer=setTimeout(renderInventory,150);}
 
 // === 초기화 ===
-function init(){
-  loadProducts();
-  loadHistory();
-  loadHolidays();
-  loadBuildings();
-  goToday();
-  renderFilterBar();
-  renderInventory();
-  renderAlerts();
+async function init(){
+  loadProducts();loadHistory();loadHolidays();loadBuildings();
+  goToday();renderFilterBar();renderInventory();renderAlerts();
+  if(SCRIPT_URL){
+    updateSyncStatus('syncing');
+    const ok=await loadFromCloud();
+    if(ok){loadProducts();loadHistory();loadHolidays();loadBuildings();loadWeek();renderFilterBar();renderInventory();renderAlerts();updateSyncStatus('synced');}
+    else{updateSyncStatus('idle');}
+  }
 }
 
 function loadProducts(){
@@ -394,8 +400,8 @@ function loadHolidays(){const s=localStorage.getItem('ws3_holidays');holidays=s?
 function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings=s?JSON.parse(s):BUILDINGS_DEFAULT.slice();}
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
 function safeSave(key,data){
-  try{localStorage.setItem(key,JSON.stringify(data));}
-  catch(e){if(e.name==='QuotaExceededError'||e.code===22){if(history.length>500){history=history.slice(-200);try{localStorage.setItem('ws3_history',JSON.stringify(history));localStorage.setItem(key,JSON.stringify(data));toast('저장 공간 부족 → 오래된 내역 정리됨');return;}catch(e2){}}toast('저장 공간이 부족합니다. 데이터를 백업해주세요.');}else{console.error('저장 실패:',e);}}
+  try{localStorage.setItem(key,JSON.stringify(data));queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));}
+  catch(e){if(e.name==='QuotaExceededError'||e.code===22){if(history.length>500){history=history.slice(-200);try{localStorage.setItem('ws3_history',JSON.stringify(history));localStorage.setItem(key,JSON.stringify(data));toast('저장 공간 부족 → 오래된 내역 정리됨');return;}catch(e2){}}toast('저장 공간이 부족합니다. 데이터를 백업해주세요.');}else{console.error('저장 실패:',e);}queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));}
 }
 function saveProducts(){rebuildProductMap();safeSave('ws3_products',products);}
 function saveWeek(){safeSave('ws3_week_'+yr+'_'+wk,days);}
@@ -1142,12 +1148,18 @@ function toast(msg){
 }
 
 // === 새로고침 ===
-function refreshAll(){
+async function refreshAll(){
+  if(SCRIPT_URL){
+    updateSyncStatus('syncing');
+    const ok=await loadFromCloud();
+    if(ok)updateSyncStatus('synced');
+    else updateSyncStatus('error');
+  }
   loadProducts();loadHistory();loadHolidays();loadBuildings();
   loadWeek();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
-  toast('새로고침 완료');
+  toast(SCRIPT_URL?'클라우드 동기화 완료':'새로고침 완료');
 }
 
 // === 작업 이력 ===
@@ -1229,6 +1241,96 @@ function navTH(dir){
   if(thMode==='month'){thMonth+=dir;if(thMonth<1){thMonth=12;thYear--;}if(thMonth>12){thMonth=1;thYear++;}}
   else{thYear+=dir;}
   renderTaskHistory();
+}
+
+// === 클라우드 연동 ===
+function queueCloudSave(key,value){
+  if(!SCRIPT_URL)return;
+  _cloudQueue[key]=value;
+  clearTimeout(_cloudTimer);
+  _cloudTimer=setTimeout(flushCloudQueue,1500);
+}
+async function flushCloudQueue(){
+  const keys=Object.keys(_cloudQueue);
+  if(!SCRIPT_URL||!keys.length)return;
+  const items=keys.map(k=>({key:k,value:_cloudQueue[k]}));
+  _cloudQueue={};
+  updateSyncStatus('syncing');
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'saveMultiple',items}),redirect:'follow'});
+    updateSyncStatus('synced');
+  }catch(e){console.error('Cloud save error:',e);updateSyncStatus('error');}
+}
+async function loadFromCloud(){
+  if(!SCRIPT_URL)return false;
+  try{
+    const res=await fetch(SCRIPT_URL+'?action=loadAll',{redirect:'follow'});
+    const json=await res.json();
+    if(!json.success)return false;
+    const d=json.data||{};
+    if(!Object.keys(d).length)return false;
+    Object.entries(d).forEach(([k,v])=>{
+      try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
+    });
+    return true;
+  }catch(e){console.error('Cloud load error:',e);return false;}
+}
+async function uploadAllToCloud(){
+  if(!SCRIPT_URL){toast('클라우드 URL이 설정되지 않았습니다');return;}
+  updateSyncStatus('syncing');
+  const items=[];
+  items.push({key:'products',value:JSON.stringify(products)});
+  items.push({key:'history',value:JSON.stringify(history)});
+  items.push({key:'holidays',value:JSON.stringify(holidays)});
+  items.push({key:'buildings',value:JSON.stringify(buildings)});
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('ws3_week_'))items.push({key:k.replace('ws3_',''),value:localStorage.getItem(k)});
+  }
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'saveMultiple',items}),redirect:'follow'});
+    updateSyncStatus('synced');toast('클라우드 업로드 완료 ('+items.length+'개 항목)');
+  }catch(e){updateSyncStatus('error');toast('업로드 실패');}
+}
+function updateSyncStatus(s){
+  const el=document.getElementById('syncStatus');if(!el)return;
+  if(s==='syncing'){el.textContent='🔄';el.title='동기화 중...';}
+  else if(s==='synced'){el.textContent='✅';el.title='클라우드 연결됨';}
+  else if(s==='error'){el.textContent='⚠️';el.title='동기화 오류';}
+  else{el.textContent='☁️';el.title='클라우드 대기';}
+}
+function openCloudSettings(){
+  let h='<div class="modal" style="max-width:480px"><h2>☁️ 클라우드 설정</h2>';
+  h+='<p style="font-size:13px;color:var(--gray-600);margin-bottom:16px">Google Sheets를 통해 여러 기기에서 데이터를 동기화합니다.</p>';
+  h+='<label style="font-size:13px;font-weight:600">Apps Script URL</label>';
+  h+='<input id="cfgUrl" style="width:100%;margin:8px 0 16px;padding:8px;border:1px solid var(--gray-300);border-radius:8px;font-size:12px" value="'+esc(SCRIPT_URL)+'" placeholder="https://script.google.com/macros/s/.../exec">';
+  h+='<div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">';
+  h+='<button class="btn btn-outline btn-sm" onclick="closeModal()">닫기</button>';
+  h+='<button class="btn btn-outline btn-sm" onclick="testCloudConnection()">🔍 연결 테스트</button>';
+  h+='<button class="btn btn-outline btn-sm" onclick="uploadAllToCloud();closeModal()">📤 전체 업로드</button>';
+  h+='<button class="btn btn-blue btn-sm" onclick="saveCloudUrl()">저장</button>';
+  h+='</div></div>';
+  showModal(h);
+}
+function saveCloudUrl(){
+  const url=document.getElementById('cfgUrl').value.trim();
+  SCRIPT_URL=url;
+  if(url)localStorage.setItem('ws3_script_url',url);
+  else localStorage.removeItem('ws3_script_url');
+  closeModal();
+  if(url){updateSyncStatus('idle');toast('클라우드 URL 저장됨');}
+  else{updateSyncStatus('');toast('클라우드 연동 해제됨');}
+}
+async function testCloudConnection(){
+  const url=document.getElementById('cfgUrl').value.trim();
+  if(!url){toast('URL을 입력해주세요');return;}
+  toast('연결 테스트 중...');
+  try{
+    const res=await fetch(url+'?action=loadAll',{redirect:'follow'});
+    const json=await res.json();
+    if(json.success)toast('✅ 연결 성공! 데이터 '+Object.keys(json.data||{}).length+'개 항목');
+    else toast('❌ 응답 오류: '+(json.error||'Unknown'));
+  }catch(e){toast('❌ 연결 실패: '+e.message);}
 }
 
 // 시작
