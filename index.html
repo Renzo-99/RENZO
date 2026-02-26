@@ -849,9 +849,14 @@ function openBuildingManager(returnDi,returnTi){
 function focusEditInput(){setTimeout(()=>{const inp=document.querySelector('.task-edit-area input');if(inp){inp.focus();inp.selectionStart=inp.value.length;}},0);}
 function deleteTask(di,ti){
   const t=days[di].tasks[ti];
-  t.mats.forEach(m=>{const p=productMap.get(m.pid);if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}});
+  const desc=t.desc||'(미입력)';
+  t.mats.forEach(m=>{
+    const p=productMap.get(m.pid);
+    if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}
+    removeHistoryByTask(m.pid,m.qty,'작업: '+desc);
+  });
   days[di].tasks.splice(ti,1);
-  saveWeek();saveProducts();renderReport();renderInventory();renderAlerts();
+  saveWeek();saveProducts();saveHistory();renderReport();renderInventory();renderHistory();renderAlerts();
   toast('작업이 삭제되었습니다');
 }
 
@@ -886,9 +891,14 @@ function removeHoliday(dateKey){
 // === 자재 관리 (작업 내 출고) ===
 function removeMaterial(di,ti,mid){
   const t=days[di].tasks[ti],m=t.mats.find(x=>x.id===mid);
-  if(m){const p=productMap.get(m.pid);if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}}
+  if(m){
+    const p=productMap.get(m.pid);
+    if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}
+    const desc=t.desc||'(미입력)';
+    removeHistoryByTask(m.pid,m.qty,'작업: '+desc);
+  }
   t.mats=t.mats.filter(x=>x.id!==mid);
-  saveWeek();saveProducts();renderReport();renderInventory();renderAlerts();
+  saveWeek();saveProducts();saveHistory();renderReport();renderInventory();renderHistory();renderAlerts();
 }
 
 function openMaterialPicker(di,ti){
@@ -1107,12 +1117,14 @@ function switchTab(tab){
 }
 
 function renderHistory(){
+  const hv=document.getElementById('historyView');
+  if(!hv)return;
   if(!history.length){
-    document.getElementById('historyView').innerHTML='<p style="text-align:center;color:var(--gray-400);padding:40px 0;font-size:13px">입출고 내역이 없습니다</p>';
+    hv.innerHTML='<p style="text-align:center;color:var(--gray-400);padding:40px 0;font-size:13px">입출고 내역이 없습니다</p>';
     return;
   }
   const sorted=[...history].reverse();
-  document.getElementById('historyView').innerHTML=sorted.map(h=>{
+  hv.innerHTML=sorted.map(h=>{
     const p=productMap.get(h.pid);
     let html='<div class="history-item">';
     const typeMap={in:['in','입고'],out:['out','출고'],adj:['adj','조정']};
@@ -1132,6 +1144,16 @@ function addHistory(type,pid,qty,memo){
   const dateStr=d.getFullYear()+'.'+(''+(d.getMonth()+1)).padStart(2,'0')+'.'+(''+(d.getDate())).padStart(2,'0');
   history.push({type,pid,qty,memo:memo||'',date:dateStr});
   saveHistory();
+}
+function removeHistoryByTask(pid,qty,memo){
+  // 가장 최근에 일치하는 출고 내역 1건 삭제
+  for(let i=history.length-1;i>=0;i--){
+    const h=history[i];
+    if(h.type==='out'&&h.pid===pid&&h.qty===qty&&h.memo===memo){
+      history.splice(i,1);
+      return;
+    }
+  }
 }
 
 // === 입고 모달 ===
