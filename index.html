@@ -1243,37 +1243,59 @@ function navTH(dir){
   renderTaskHistory();
 }
 
-// === 클라우드 연동 ===
+// === 클라우드 연동 (CORS 우회: JSONP + form) ===
 function queueCloudSave(key,value){
   if(!SCRIPT_URL)return;
   _cloudQueue[key]=value;
   clearTimeout(_cloudTimer);
   _cloudTimer=setTimeout(flushCloudQueue,1500);
 }
-async function flushCloudQueue(){
+function flushCloudQueue(){
   const keys=Object.keys(_cloudQueue);
   if(!SCRIPT_URL||!keys.length)return;
   const items=keys.map(k=>({key:k,value:_cloudQueue[k]}));
   _cloudQueue={};
   updateSyncStatus('syncing');
-  try{
-    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'saveMultiple',items}),redirect:'follow'});
-    updateSyncStatus('synced');
-  }catch(e){console.error('Cloud save error:',e);updateSyncStatus('error');}
+  postToCloud({action:'saveMultiple',items}).then(()=>updateSyncStatus('synced')).catch(()=>updateSyncStatus('error'));
 }
-async function loadFromCloud(){
-  if(!SCRIPT_URL)return false;
-  try{
-    const res=await fetch(SCRIPT_URL+'?action=loadAll',{redirect:'follow'});
-    const json=await res.json();
-    if(!json.success)return false;
-    const d=json.data||{};
-    if(!Object.keys(d).length)return false;
-    Object.entries(d).forEach(([k,v])=>{
-      try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
-    });
-    return true;
-  }catch(e){console.error('Cloud load error:',e);return false;}
+function postToCloud(data){
+  return new Promise((resolve,reject)=>{
+    try{
+      const id='_cf'+Date.now();
+      const iframe=document.createElement('iframe');
+      iframe.name=id;iframe.style.display='none';
+      document.body.appendChild(iframe);
+      const form=document.createElement('form');
+      form.method='POST';form.action=SCRIPT_URL;form.target=id;
+      const input=document.createElement('input');
+      input.type='hidden';input.name='data';input.value=JSON.stringify(data);
+      form.appendChild(input);document.body.appendChild(form);
+      form.submit();
+      setTimeout(()=>{try{form.remove();iframe.remove();}catch(e){}resolve();},3000);
+    }catch(e){reject(e);}
+  });
+}
+function loadFromCloud(){
+  if(!SCRIPT_URL)return Promise.resolve(false);
+  return new Promise(resolve=>{
+    const cb='_cb'+Date.now();
+    const timeout=setTimeout(()=>{cleanup();resolve(false);},10000);
+    function cleanup(){clearTimeout(timeout);delete window[cb];const el=document.getElementById(cb);if(el)el.remove();}
+    window[cb]=function(json){
+      cleanup();
+      if(!json||!json.success){resolve(false);return;}
+      const d=json.data||{};
+      if(!Object.keys(d).length){resolve(false);return;}
+      Object.entries(d).forEach(([k,v])=>{
+        try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
+      });
+      resolve(true);
+    };
+    const s=document.createElement('script');
+    s.id=cb;s.src=SCRIPT_URL+'?action=loadAll&callback='+cb;
+    s.onerror=()=>{cleanup();resolve(false);};
+    document.head.appendChild(s);
+  });
 }
 async function uploadAllToCloud(){
   if(!SCRIPT_URL){toast('클라우드 URL이 설정되지 않았습니다');return;}
@@ -1288,7 +1310,7 @@ async function uploadAllToCloud(){
     if(k&&k.startsWith('ws3_week_'))items.push({key:k.replace('ws3_',''),value:localStorage.getItem(k)});
   }
   try{
-    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'saveMultiple',items}),redirect:'follow'});
+    await postToCloud({action:'saveMultiple',items});
     updateSyncStatus('synced');toast('클라우드 업로드 완료 ('+items.length+'개 항목)');
   }catch(e){updateSyncStatus('error');toast('업로드 실패');}
 }
@@ -1321,16 +1343,21 @@ function saveCloudUrl(){
   if(url){updateSyncStatus('idle');toast('클라우드 URL 저장됨');}
   else{updateSyncStatus('');toast('클라우드 연동 해제됨');}
 }
-async function testCloudConnection(){
+function testCloudConnection(){
   const url=document.getElementById('cfgUrl').value.trim();
   if(!url){toast('URL을 입력해주세요');return;}
   toast('연결 테스트 중...');
-  try{
-    const res=await fetch(url+'?action=loadAll',{redirect:'follow'});
-    const json=await res.json();
-    if(json.success)toast('✅ 연결 성공! 데이터 '+Object.keys(json.data||{}).length+'개 항목');
-    else toast('❌ 응답 오류: '+(json.error||'Unknown'));
-  }catch(e){toast('❌ 연결 실패: '+e.message);}
+  const cb='_test'+Date.now();
+  const timeout=setTimeout(()=>{delete window[cb];toast('❌ 연결 시간 초과 (10초)');},10000);
+  window[cb]=function(json){
+    clearTimeout(timeout);delete window[cb];
+    if(json&&json.success)toast('✅ 연결 성공! 데이터 '+Object.keys(json.data||{}).length+'개 항목');
+    else toast('❌ 응답 오류');
+  };
+  const s=document.createElement('script');
+  s.src=url+'?action=loadAll&callback='+cb;
+  s.onerror=()=>{clearTimeout(timeout);delete window[cb];toast('❌ 연결 실패');};
+  document.head.appendChild(s);
 }
 
 // 시작
