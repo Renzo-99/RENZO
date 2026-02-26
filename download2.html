@@ -27,15 +27,15 @@ function dl(){
     var raw=atob(D);
     var bytes=new Uint8Array(raw.length);
     for(var i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
-    var blob=new Blob([bytes],{type:'text/html;charset=utf-8'});
-    var a=document.createElement('a');
+    var blob=new Blob([bytes],{type:"text/html;charset=utf-8"});
+    var a=document.createElement("a");
     a.href=URL.createObjectURL(blob);
-    a.download='app.html';
+    a.download="app.html";
     a.click();
     setTimeout(function(){URL.revokeObjectURL(a.href);},5000);
-    document.getElementById('msg').innerHTML='<p class="ok">다운로드 완료!</p>';
+    document.getElementById("msg").innerHTML='<p class="ok">다운로드 완료!</p>';
   }catch(e){
-    document.getElementById('msg').innerHTML='<p style="color:red">오류: '+e.message+'</p>';
+    document.getElementById("msg").innerHTML='<p style="color:red">오류: '+e.message+'</p>';
   }
 }
 </script>
