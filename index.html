@@ -62,8 +62,14 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .holiday-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
 
 /* 작업 카드 */
-.task{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;box-shadow:var(--shadow);transition:box-shadow .15s}
+.task{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;box-shadow:var(--shadow);transition:box-shadow .15s,opacity .15s,transform .15s}
 .task:hover{box-shadow:var(--shadow-md)}
+.task .drag-handle{cursor:grab;color:var(--gray-400);font-size:14px;flex-shrink:0;padding:2px;margin-top:1px;user-select:none;touch-action:none;display:flex;align-items:center}
+.task .drag-handle:active{cursor:grabbing}
+.task.dragging{opacity:.4;box-shadow:var(--shadow-md)}
+.task.drag-over-top{border-top:2px solid var(--blue);margin-top:-2px}
+.task.drag-over-bottom{border-bottom:2px solid var(--blue);margin-bottom:6px}
+.day-tasks{min-height:8px}
 .task.has-mat{border-left:3px solid var(--blue)}
 .task-num{width:22px;height:22px;border-radius:50%;background:var(--gray-100);color:var(--gray-500);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .task-body{flex:1;min-width:0}
@@ -546,10 +552,12 @@ function renderReport(){
     if(!isHoliday)h+='<button class="holiday-btn" onclick="openHolidayInput('+di+',\''+dateKey+'\')">📅 공휴일</button>';
     h+='<button class="btn btn-ghost btn-sm" style="color:var(--blue)" onclick="addTask('+di+')">+ 작업 추가</button>';
     h+='</div></div>';
+    h+='<div class="day-tasks" data-day="'+di+'">';
     if(!d.tasks.length)h+='<p class="empty-msg">'+(isHoliday?'공휴일':'작업이 없습니다')+'</p>';
     d.tasks.forEach((t,ti)=>{
       const hasMat=t.mats.length>0;
-      h+='<div class="task'+(hasMat?' has-mat':'')+'">';
+      h+='<div class="task'+(hasMat?' has-mat':'')+'" draggable="'+(t.editing?'false':'true')+'" data-day="'+di+'" data-task="'+ti+'">';
+      h+='<div class="drag-handle" title="드래그하여 순서 변경">⠿</div>';
       h+='<div class="task-num">'+(ti+1)+'</div>';
       h+='<div class="task-body">';
       if(t.editing){
@@ -584,8 +592,156 @@ function renderReport(){
       h+='<button class="act-del" onclick="deleteTask('+di+','+ti+')" title="삭제">🗑</button>';
       h+='</div></div>';
     });
+    h+='</div>'; // day-tasks 닫기
   });
   document.getElementById('reportPanel').innerHTML=h;
+  initDragAndDrop();
+}
+
+// === 드래그 앤 드롭 (작업 순서 변경) ===
+let _dragDi=null,_dragTi=null;
+function initDragAndDrop(){
+  document.querySelectorAll('.day-tasks').forEach(container=>{
+    container.addEventListener('dragover',onDragOver);
+    container.addEventListener('drop',onDrop);
+    container.addEventListener('dragleave',onDragLeave);
+  });
+  document.querySelectorAll('.task[draggable="true"]').forEach(el=>{
+    el.addEventListener('dragstart',onDragStart);
+    el.addEventListener('dragend',onDragEnd);
+  });
+  // 터치 지원
+  initTouchDrag();
+}
+function onDragStart(e){
+  const el=e.currentTarget;
+  _dragDi=parseInt(el.dataset.day);_dragTi=parseInt(el.dataset.task);
+  el.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',_dragDi+','+_dragTi);
+}
+function onDragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+  _dragDi=null;_dragTi=null;
+}
+function onDragOver(e){
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  const target=getDropTarget(e);
+  if(!target)return;
+  document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+  const rect=target.el.getBoundingClientRect();
+  const mid=rect.top+rect.height/2;
+  if(e.clientY<mid)target.el.classList.add('drag-over-top');
+  else target.el.classList.add('drag-over-bottom');
+}
+function onDragLeave(e){
+  if(!e.currentTarget.contains(e.relatedTarget)){
+    e.currentTarget.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+  }
+}
+function getDropTarget(e){
+  const tasks=e.currentTarget.querySelectorAll('.task');
+  let closest=null,closestDist=Infinity;
+  tasks.forEach(t=>{
+    const rect=t.getBoundingClientRect();
+    const mid=rect.top+rect.height/2;
+    const dist=Math.abs(e.clientY-mid);
+    if(dist<closestDist){closestDist=dist;closest=t;}
+  });
+  if(!closest)return null;
+  return{el:closest,di:parseInt(closest.dataset.day),ti:parseInt(closest.dataset.task)};
+}
+function onDrop(e){
+  e.preventDefault();
+  document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+  const target=getDropTarget(e);
+  if(!target||_dragDi===null)return;
+  const fromDi=_dragDi,fromTi=_dragTi,toDi=target.di;
+  let toTi=target.ti;
+  // 같은 요일 내에서만 이동
+  if(fromDi!==toDi)return;
+  if(fromTi===toTi)return;
+  const rect=target.el.getBoundingClientRect();
+  const mid=rect.top+rect.height/2;
+  if(e.clientY>mid&&toTi>fromTi){}
+  else if(e.clientY<=mid&&toTi<fromTi){}
+  else if(e.clientY>mid)toTi++;
+  else if(e.clientY<=mid)toTi--;
+  // 배열 이동
+  const arr=days[fromDi].tasks;
+  const [item]=arr.splice(fromTi,1);
+  const insertAt=toTi>fromTi?toTi:toTi;
+  arr.splice(insertAt,0,item);
+  saveWeek();renderReport();
+  toast((fromTi+1)+'번 → '+(insertAt+1)+'번 이동');
+}
+
+// 터치 드래그 지원 (모바일)
+function initTouchDrag(){
+  let touchEl=null,touchClone=null,touchDi=null,touchTi=null,touchStartY=0;
+  document.querySelectorAll('.task .drag-handle').forEach(handle=>{
+    handle.addEventListener('touchstart',function(e){
+      const task=this.closest('.task');
+      if(!task||task.getAttribute('draggable')==='false')return;
+      touchDi=parseInt(task.dataset.day);touchTi=parseInt(task.dataset.task);
+      touchEl=task;touchStartY=e.touches[0].clientY;
+      touchClone=task.cloneNode(true);
+      touchClone.style.cssText='position:fixed;z-index:9999;pointer-events:none;opacity:.8;width:'+task.offsetWidth+'px;left:'+task.getBoundingClientRect().left+'px;top:'+task.getBoundingClientRect().top+'px;transition:none;';
+      document.body.appendChild(touchClone);
+      task.classList.add('dragging');
+      e.preventDefault();
+    },{passive:false});
+  });
+  document.addEventListener('touchmove',function(e){
+    if(!touchClone)return;
+    e.preventDefault();
+    const y=e.touches[0].clientY;
+    touchClone.style.top=(y-30)+'px';
+    document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+    const container=document.querySelector('.day-tasks[data-day="'+touchDi+'"]');
+    if(!container)return;
+    const tasks=container.querySelectorAll('.task');
+    let closest=null,closestDist=Infinity;
+    tasks.forEach(t=>{
+      if(t===touchEl)return;
+      const rect=t.getBoundingClientRect();
+      const mid=rect.top+rect.height/2;
+      const dist=Math.abs(y-mid);
+      if(dist<closestDist){closestDist=dist;closest=t;}
+    });
+    if(closest){
+      const rect=closest.getBoundingClientRect();
+      const mid=rect.top+rect.height/2;
+      if(y<mid)closest.classList.add('drag-over-top');
+      else closest.classList.add('drag-over-bottom');
+    }
+  },{passive:false});
+  document.addEventListener('touchend',function(e){
+    if(!touchClone)return;
+    if(touchClone.parentNode)touchClone.remove();
+    if(touchEl)touchEl.classList.remove('dragging');
+    const overTop=document.querySelector('.day-tasks[data-day="'+touchDi+'"] .drag-over-top');
+    const overBottom=document.querySelector('.day-tasks[data-day="'+touchDi+'"] .drag-over-bottom');
+    document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+    if(overTop||overBottom){
+      const targetEl=overTop||overBottom;
+      const toTi=parseInt(targetEl.dataset.task);
+      if(toTi!==touchTi){
+        const arr=days[touchDi].tasks;
+        const [item]=arr.splice(touchTi,1);
+        let insertAt=toTi;
+        if(overBottom&&toTi>touchTi)insertAt=toTi;
+        else if(overTop&&toTi<touchTi)insertAt=toTi;
+        else if(overBottom)insertAt=toTi+1>arr.length?arr.length:toTi;
+        else insertAt=toTi>0?toTi:0;
+        arr.splice(insertAt,0,item);
+        saveWeek();renderReport();
+        toast((touchTi+1)+'번 → '+(insertAt+1)+'번 이동');
+      }
+    }
+    touchEl=null;touchClone=null;touchDi=null;touchTi=null;
+  });
 }
 
 // === 작업 관리 ===
