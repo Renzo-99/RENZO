@@ -70,6 +70,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .task.drag-over-top{border-top:2px solid var(--blue);margin-top:-2px}
 .task.drag-over-bottom{border-bottom:2px solid var(--blue);margin-bottom:6px}
 .day-tasks{min-height:8px}
+.day-tasks.drag-day-hover{background:var(--blue-bg);border-radius:8px;outline:2px dashed var(--blue);outline-offset:-2px}
 .task.has-mat{border-left:3px solid var(--blue)}
 .task-num{width:22px;height:22px;border-radius:50%;background:var(--gray-100);color:var(--gray-500);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .task-body{flex:1;min-width:0}
@@ -598,7 +599,8 @@ function renderReport(){
   initDragAndDrop();
 }
 
-// === 드래그 앤 드롭 (작업 순서 변경) ===
+// === 드래그 앤 드롭 (작업 순서 변경, 요일 간 이동 지원) ===
+const DOW_NAMES=['월','화','수','목','금'];
 let _dragDi=null,_dragTi=null;
 function initDragAndDrop(){
   document.querySelectorAll('.day-tasks').forEach(container=>{
@@ -610,7 +612,6 @@ function initDragAndDrop(){
     el.addEventListener('dragstart',onDragStart);
     el.addEventListener('dragend',onDragEnd);
   });
-  // 터치 지원
   initTouchDrag();
 }
 function onDragStart(e){
@@ -622,64 +623,88 @@ function onDragStart(e){
 }
 function onDragEnd(e){
   e.currentTarget.classList.remove('dragging');
-  document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+  clearDragIndicators();
   _dragDi=null;_dragTi=null;
+}
+function clearDragIndicators(){
+  document.querySelectorAll('.drag-over-top,.drag-over-bottom,.drag-day-hover').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom','drag-day-hover'));
 }
 function onDragOver(e){
   e.preventDefault();e.dataTransfer.dropEffect='move';
-  const target=getDropTarget(e);
+  clearDragIndicators();
+  const container=e.currentTarget;
+  const toDi=parseInt(container.dataset.day);
+  // 다른 요일이면 컨테이너 하이라이트
+  if(toDi!==_dragDi)container.classList.add('drag-day-hover');
+  const target=getDropTarget(container,e.clientY);
   if(!target)return;
-  document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
   const rect=target.el.getBoundingClientRect();
-  const mid=rect.top+rect.height/2;
-  if(e.clientY<mid)target.el.classList.add('drag-over-top');
+  if(e.clientY<rect.top+rect.height/2)target.el.classList.add('drag-over-top');
   else target.el.classList.add('drag-over-bottom');
 }
 function onDragLeave(e){
   if(!e.currentTarget.contains(e.relatedTarget)){
     e.currentTarget.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+    e.currentTarget.classList.remove('drag-day-hover');
   }
 }
-function getDropTarget(e){
-  const tasks=e.currentTarget.querySelectorAll('.task');
+function getDropTarget(container,clientY){
+  const tasks=container.querySelectorAll('.task:not(.dragging)');
   let closest=null,closestDist=Infinity;
   tasks.forEach(t=>{
     const rect=t.getBoundingClientRect();
     const mid=rect.top+rect.height/2;
-    const dist=Math.abs(e.clientY-mid);
+    const dist=Math.abs(clientY-mid);
     if(dist<closestDist){closestDist=dist;closest=t;}
   });
   if(!closest)return null;
   return{el:closest,di:parseInt(closest.dataset.day),ti:parseInt(closest.dataset.task)};
 }
+function moveTask(fromDi,fromTi,toDi,toTi,above){
+  const srcArr=days[fromDi].tasks;
+  const [item]=srcArr.splice(fromTi,1);
+  const dstArr=days[toDi].tasks;
+  let insertAt=toTi;
+  if(fromDi===toDi&&fromTi<toTi)insertAt--;
+  if(!above)insertAt++;
+  insertAt=Math.max(0,Math.min(insertAt,dstArr.length));
+  dstArr.splice(insertAt,0,item);
+  saveWeek();renderReport();
+  if(fromDi===toDi)toast((fromTi+1)+'번 → '+(insertAt+1)+'번 이동');
+  else toast(DOW_NAMES[fromDi]+'→'+DOW_NAMES[toDi]+' '+(insertAt+1)+'번으로 이동');
+}
 function onDrop(e){
   e.preventDefault();
-  document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
-  const target=getDropTarget(e);
-  if(!target||_dragDi===null)return;
-  if(_dragDi!==target.di||_dragTi===target.ti)return;
-  const rect=target.el.getBoundingClientRect();
-  const above=e.clientY<rect.top+rect.height/2;
-  const arr=days[_dragDi].tasks;
-  const [item]=arr.splice(_dragTi,1);
-  let insertAt=target.ti;
-  if(_dragTi<target.ti)insertAt--;
-  if(!above)insertAt++;
-  insertAt=Math.max(0,Math.min(insertAt,arr.length));
-  arr.splice(insertAt,0,item);
-  saveWeek();renderReport();
-  toast((_dragTi+1)+'번 → '+(insertAt+1)+'번 이동');
+  clearDragIndicators();
+  if(_dragDi===null)return;
+  const container=e.currentTarget;
+  const toDi=parseInt(container.dataset.day);
+  const target=getDropTarget(container,e.clientY);
+  if(target){
+    if(_dragDi===toDi&&_dragTi===target.ti)return;
+    const rect=target.el.getBoundingClientRect();
+    const above=e.clientY<rect.top+rect.height/2;
+    moveTask(_dragDi,_dragTi,toDi,target.ti,above);
+  }else{
+    // 빈 요일에 드롭
+    if(_dragDi===toDi)return;
+    const srcArr=days[_dragDi].tasks;
+    const [item]=srcArr.splice(_dragTi,1);
+    days[toDi].tasks.push(item);
+    saveWeek();renderReport();
+    toast(DOW_NAMES[_dragDi]+'→'+DOW_NAMES[toDi]+' 이동');
+  }
 }
 
-// 터치 드래그 지원 (모바일)
+// 터치 드래그 지원 (모바일, 요일 간 이동 포함)
 function initTouchDrag(){
-  let touchEl=null,touchClone=null,touchDi=null,touchTi=null,touchStartY=0;
+  let touchEl=null,touchClone=null,touchDi=null,touchTi=null;
   document.querySelectorAll('.task .drag-handle').forEach(handle=>{
     handle.addEventListener('touchstart',function(e){
       const task=this.closest('.task');
       if(!task||task.getAttribute('draggable')==='false')return;
       touchDi=parseInt(task.dataset.day);touchTi=parseInt(task.dataset.task);
-      touchEl=task;touchStartY=e.touches[0].clientY;
+      touchEl=task;
       touchClone=task.cloneNode(true);
       touchClone.style.cssText='position:fixed;z-index:9999;pointer-events:none;opacity:.8;width:'+task.offsetWidth+'px;left:'+task.getBoundingClientRect().left+'px;top:'+task.getBoundingClientRect().top+'px;transition:none;';
       document.body.appendChild(touchClone);
@@ -692,46 +717,50 @@ function initTouchDrag(){
     e.preventDefault();
     const y=e.touches[0].clientY;
     touchClone.style.top=(y-30)+'px';
-    document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
-    const container=document.querySelector('.day-tasks[data-day="'+touchDi+'"]');
-    if(!container)return;
-    const tasks=container.querySelectorAll('.task');
-    let closest=null,closestDist=Infinity;
-    tasks.forEach(t=>{
-      if(t===touchEl)return;
-      const rect=t.getBoundingClientRect();
-      const mid=rect.top+rect.height/2;
-      const dist=Math.abs(y-mid);
-      if(dist<closestDist){closestDist=dist;closest=t;}
+    clearDragIndicators();
+    // 모든 day-tasks에서 가장 가까운 타겟 찾기
+    let best=null,bestDist=Infinity,bestContainer=null;
+    document.querySelectorAll('.day-tasks').forEach(c=>{
+      const rect=c.getBoundingClientRect();
+      if(y>=rect.top-50&&y<=rect.bottom+50){
+        const di=parseInt(c.dataset.day);
+        if(di!==touchDi)c.classList.add('drag-day-hover');
+        c.querySelectorAll('.task:not(.dragging)').forEach(t=>{
+          const tr=t.getBoundingClientRect();
+          const dist=Math.abs(y-(tr.top+tr.height/2));
+          if(dist<bestDist){bestDist=dist;best=t;bestContainer=c;}
+        });
+      }
     });
-    if(closest){
-      const rect=closest.getBoundingClientRect();
-      const mid=rect.top+rect.height/2;
-      if(y<mid)closest.classList.add('drag-over-top');
-      else closest.classList.add('drag-over-bottom');
+    if(best){
+      const rect=best.getBoundingClientRect();
+      if(y<rect.top+rect.height/2)best.classList.add('drag-over-top');
+      else best.classList.add('drag-over-bottom');
     }
   },{passive:false});
   document.addEventListener('touchend',function(e){
     if(!touchClone)return;
     if(touchClone.parentNode)touchClone.remove();
     if(touchEl)touchEl.classList.remove('dragging');
-    const overTop=document.querySelector('.day-tasks[data-day="'+touchDi+'"] .drag-over-top');
-    const overBottom=document.querySelector('.day-tasks[data-day="'+touchDi+'"] .drag-over-bottom');
-    document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el=>el.classList.remove('drag-over-top','drag-over-bottom'));
+    const overTop=document.querySelector('.drag-over-top');
+    const overBottom=document.querySelector('.drag-over-bottom');
+    const hoverDay=document.querySelector('.drag-day-hover');
+    clearDragIndicators();
     if(overTop||overBottom){
       const targetEl=overTop||overBottom;
+      const toDi=parseInt(targetEl.dataset.day);
       const toTi=parseInt(targetEl.dataset.task);
-      if(toTi!==touchTi){
-        const above=!!overTop;
-        const arr=days[touchDi].tasks;
-        const [item]=arr.splice(touchTi,1);
-        let insertAt=toTi;
-        if(touchTi<toTi)insertAt--;
-        if(!above)insertAt++;
-        insertAt=Math.max(0,Math.min(insertAt,arr.length));
-        arr.splice(insertAt,0,item);
+      if(toDi!==touchDi||toTi!==touchTi){
+        moveTask(touchDi,touchTi,toDi,toTi,!!overTop);
+      }
+    }else if(hoverDay){
+      const toDi=parseInt(hoverDay.dataset.day);
+      if(toDi!==touchDi){
+        const srcArr=days[touchDi].tasks;
+        const [item]=srcArr.splice(touchTi,1);
+        days[toDi].tasks.push(item);
         saveWeek();renderReport();
-        toast((touchTi+1)+'번 → '+(insertAt+1)+'번 이동');
+        toast(DOW_NAMES[touchDi]+'→'+DOW_NAMES[toDi]+' 이동');
       }
     }
     touchEl=null;touchClone=null;touchDi=null;touchTi=null;
