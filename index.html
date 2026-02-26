@@ -282,7 +282,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
       <div class="inv-search">
         <div class="search-wrap">
           <span class="icon">🔍</span>
-          <input id="searchInput" placeholder="품목코드 또는 이름 검색..." oninput="renderInventory()">
+          <input id="searchInput" placeholder="품목코드 또는 이름 검색..." oninput="debouncedRenderInventory()">
         </div>
         <div class="filter-row" id="filterBar"></div>
       </div>
@@ -351,6 +351,9 @@ let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동'];
+let productMap=new Map();
+let _debounceTimer;
+function debouncedRenderInventory(){clearTimeout(_debounceTimer);_debounceTimer=setTimeout(renderInventory,150);}
 
 // === 초기화 ===
 function init(){
@@ -368,8 +371,10 @@ function loadProducts(){
   const s=localStorage.getItem('ws3_products');
   if(s){products=JSON.parse(s);}
   else{products=PRODUCTS_SEED.map((p,i)=>({id:i+1,code:p[0],name:p[1],cat:p[2],unit:p[3],stock:p[4],tin:p[5],tout:p[6]}));}
+  rebuildProductMap();
   recalcNextId();
 }
+function rebuildProductMap(){productMap=new Map(products.map(p=>[p.id,p]));}
 function recalcNextId(){
   let mx=0;
   products.forEach(p=>{if(p.id>mx)mx=p.id;});
@@ -392,7 +397,7 @@ function safeSave(key,data){
   try{localStorage.setItem(key,JSON.stringify(data));}
   catch(e){if(e.name==='QuotaExceededError'||e.code===22){if(history.length>500){history=history.slice(-200);try{localStorage.setItem('ws3_history',JSON.stringify(history));localStorage.setItem(key,JSON.stringify(data));toast('저장 공간 부족 → 오래된 내역 정리됨');return;}catch(e2){}}toast('저장 공간이 부족합니다. 데이터를 백업해주세요.');}else{console.error('저장 실패:',e);}}
 }
-function saveProducts(){safeSave('ws3_products',products);}
+function saveProducts(){rebuildProductMap();safeSave('ws3_products',products);}
 function saveWeek(){safeSave('ws3_week_'+yr+'_'+wk,days);}
 function saveHistory(){safeSave('ws3_history',history);}
 function saveHolidays(){safeSave('ws3_holidays',holidays);}
@@ -490,7 +495,7 @@ function renderReport(){
   days.forEach(d=>{totalTasks+=d.tasks.length;d.tasks.forEach(t=>{totalMats+=t.mats.length;t.mats.forEach(x=>{usedProducts.add(x.pid);matUsage[x.pid]=(matUsage[x.pid]||0)+x.qty;});});});
 
   const topEntry=Object.entries(matUsage).sort((a,b)=>b[1]-a[1])[0];
-  const topProduct=topEntry?products.find(p=>p.id===parseInt(topEntry[0])):null;
+  const topProduct=topEntry?productMap.get(parseInt(topEntry[0])):null;
 
   let h='<div class="card"><div class="summary">';
   h+='<div class="summary-item"><div class="val">'+totalTasks+'</div><div class="lbl">총 작업</div></div>';
@@ -539,7 +544,7 @@ function renderReport(){
       if(hasMat){
         h+='<div class="mats">';
         t.mats.forEach(x=>{
-          const p=products.find(pp=>pp.id===x.pid);
+          const p=productMap.get(x.pid);
           h+='<span class="mat-badge">'+esc(p?p.name:'알수없음')+' <span class="qty">×'+x.qty+'</span>';
           h+='<span class="remove" onclick="removeMaterial('+di+','+ti+','+x.id+')">✕</span></span>';
         });
@@ -574,7 +579,7 @@ function changeBuilding(di,ti,val){
 function focusEditInput(){setTimeout(()=>{const inp=document.querySelector('.task-edit-area input');if(inp){inp.focus();inp.selectionStart=inp.value.length;}},0);}
 function deleteTask(di,ti){
   const t=days[di].tasks[ti];
-  t.mats.forEach(m=>{const p=products.find(x=>x.id===m.pid);if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}});
+  t.mats.forEach(m=>{const p=productMap.get(m.pid);if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}});
   days[di].tasks.splice(ti,1);
   saveWeek();saveProducts();renderReport();renderInventory();renderAlerts();
   toast('작업이 삭제되었습니다');
@@ -611,7 +616,7 @@ function removeHoliday(dateKey){
 // === 자재 관리 (작업 내 출고) ===
 function removeMaterial(di,ti,mid){
   const t=days[di].tasks[ti],m=t.mats.find(x=>x.id===mid);
-  if(m){const p=products.find(x=>x.id===m.pid);if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}}
+  if(m){const p=productMap.get(m.pid);if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}}
   t.mats=t.mats.filter(x=>x.id!==mid);
   saveWeek();saveProducts();renderReport();renderInventory();renderAlerts();
 }
@@ -645,9 +650,9 @@ function openMaterialPicker(di,ti){
     showModal(h);
   }
   window._matSearch=v=>{sq=v;render();};
-  window._matSelect=id=>{sel=products.find(p=>p.id===id);qty=1;render();setTimeout(()=>document.getElementById('matQty')?.focus(),50);};
+  window._matSelect=id=>{sel=productMap.get(id);qty=1;render();setTimeout(()=>document.getElementById('matQty')?.focus(),50);};
   window.confirmMaterial=(_di,_ti,pid)=>{
-    const p=products.find(x=>x.id===pid);
+    const p=productMap.get(pid);
     if(!p||p.stock<=0){toast('재고가 부족합니다');return;}
     const q=clamp(parseInt(document.getElementById('matQty').value)||1,1,p.stock);
     days[_di].tasks[_ti].mats.push({id:nextId++,pid:pid,qty:q});
@@ -693,7 +698,7 @@ function openProductManager(){
 }
 
 function openProductForm(pid,fromList){
-  const p=pid?products.find(x=>x.id===pid):null;
+  const p=pid?productMap.get(pid):null;
   const isEdit=!!p;
   window._formFromList=!!fromList;
   let h='<div class="modal"><h2>'+(isEdit?'✏️ 품목 수정':'➕ 새 품목 추가')+'</h2>';
@@ -726,7 +731,7 @@ function saveProduct(pid){
   if(dup){toast('이미 존재하는 품목코드입니다: '+code);return;}
 
   if(pid){
-    const p=products.find(x=>x.id===pid);
+    const p=productMap.get(pid);
     if(p){
       const oldStock=p.stock;
       p.code=code;p.name=name;p.cat=cat;p.unit=unit;p.stock=stock;
@@ -746,7 +751,7 @@ function saveProduct(pid){
 }
 
 function deleteProduct(pid){
-  const p=products.find(x=>x.id===pid);
+  const p=productMap.get(pid);
   if(!p)return;
   let inUse=false;
   days.forEach(d=>d.tasks.forEach(t=>t.mats.forEach(m=>{if(m.pid===pid)inUse=true;})));
@@ -838,7 +843,7 @@ function renderHistory(){
   }
   const sorted=[...history].reverse();
   document.getElementById('historyView').innerHTML=sorted.map(h=>{
-    const p=products.find(x=>x.id===h.pid);
+    const p=productMap.get(h.pid);
     let html='<div class="history-item">';
     const typeMap={in:['in','입고'],out:['out','출고'],adj:['adj','조정']};
     const [tcls,tlbl]=typeMap[h.type]||['out','출고'];
@@ -887,11 +892,11 @@ function openInbound(){
     showModal(h);
   }
   window._inSearch=v=>{sq=v;render();};
-  window._inSelect=id=>{sel=products.find(p=>p.id===id);qty=1;render();setTimeout(()=>document.getElementById('inQty')?.focus(),50);};
+  window._inSelect=id=>{sel=productMap.get(id);qty=1;render();setTimeout(()=>document.getElementById('inQty')?.focus(),50);};
   window.confirmInbound=pid=>{
     const q=Math.max(1,parseInt(document.getElementById('inQty').value)||1);
     const m=document.getElementById('inMemo').value.trim();
-    const p=products.find(x=>x.id===pid);
+    const p=productMap.get(pid);
     if(p){p.stock+=q;p.tin+=q;}
     addHistory('in',pid,q,m);
     closeModal();saveProducts();saveHistory();renderInventory();renderAlerts();
@@ -930,9 +935,9 @@ function openOutbound(){
     showModal(h);
   }
   window._outSearch=v=>{sq=v;render();};
-  window._outSelect=id=>{sel=products.find(p=>p.id===id);qty=1;render();setTimeout(()=>document.getElementById('outQty')?.focus(),50);};
+  window._outSelect=id=>{sel=productMap.get(id);qty=1;render();setTimeout(()=>document.getElementById('outQty')?.focus(),50);};
   window.confirmOutbound=pid=>{
-    const p=products.find(x=>x.id===pid);
+    const p=productMap.get(pid);
     if(!p||p.stock<=0){toast('재고가 부족합니다');return;}
     const q=clamp(parseInt(document.getElementById('outQty').value)||1,1,p.stock);
     const m=document.getElementById('outMemo').value.trim();
@@ -971,7 +976,7 @@ function exportData(){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='woodshop_backup_'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),100);
   toast('데이터가 저장되었습니다');
 }
 
@@ -1007,7 +1012,7 @@ function exportCSV(){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='inventory_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),100);
   toast('CSV 파일이 저장되었습니다');
 }
 
@@ -1022,7 +1027,7 @@ function printReport(){
   if(matEntries.length){
     let sh='<h2>자재 사용 요약</h2><table><tr><th>품목코드</th><th>품목명</th><th>사용량</th><th>단위</th></tr>';
     matEntries.forEach(([pid,qty])=>{
-      const p=products.find(x=>x.id===parseInt(pid));
+      const p=productMap.get(parseInt(pid));
       if(p)sh+='<tr><td>'+p.code+'</td><td>'+esc(p.name)+'</td><td class="num">'+qty+'</td><td>'+p.unit+'</td></tr>';
     });
     sh+='</table>';
@@ -1111,7 +1116,7 @@ function renderTaskHistory(){
         h+='<div class="th-task">';
         if(t.building)h+='<span class="th-bld">'+esc(t.building)+'</span>';
         h+='<div><div class="th-desc">'+(esc(t.desc)||'<span style="color:var(--gray-400)">(내용 없음)</span>')+'</div>';
-        if(t.mats.length){const mn=t.mats.map(m=>{const p=products.find(x=>x.id===m.pid);return(p?p.name:'?')+'\u00d7'+m.qty;});h+='<div class="th-mats">\ud83d\udce6 '+esc(mn.join(', '))+'</div>';}
+        if(t.mats.length){const mn=t.mats.map(m=>{const p=productMap.get(m.pid);return(p?p.name:'?')+'\u00d7'+m.qty;});h+='<div class="th-mats">\ud83d\udce6 '+esc(mn.join(', '))+'</div>';}
         if(t.note)h+='<div class="th-mats">\ud83d\udcdd '+esc(t.note)+'</div>';
         h+='</div></div>';
       });
