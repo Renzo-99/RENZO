@@ -436,12 +436,21 @@ function goToday(){
   loadWeek();renderInventory();renderAlerts();
 }
 
+function getWeekDateRange(y,w){
+  const j=new Date(y,0,4),dw=j.getDay()||7,m=new Date(j);
+  m.setDate(j.getDate()-dw+1+(w-1)*7);
+  const f=new Date(m);f.setDate(m.getDate()+4);
+  return{mon:m,fri:f,text:(m.getMonth()+1)+'월 '+m.getDate()+'일('+DOW_SHORT[m.getDay()]+') ~ '+(f.getMonth()+1)+'월 '+f.getDate()+'일('+DOW_SHORT[f.getDay()]+')'};
+}
+
 function openWeekPicker(){
+  const range=getWeekDateRange(yr,wk);
   let h='<div class="modal"><h2>📆 연도/주차 이동</h2>';
   h+='<div class="form-row">';
-  h+='<div><label>연도</label><input type="number" id="pickYear" value="'+yr+'" min="2020" max="2040"></div>';
-  h+='<div><label>주차 (1~'+getISOWeeksInYear(yr)+')</label><input type="number" id="pickWeek" value="'+wk+'" min="1" max="53"></div>';
+  h+='<div><label>연도</label><input type="number" id="pickYear" value="'+yr+'" min="2020" max="2040" oninput="updateWeekPreview()"></div>';
+  h+='<div><label>주차 (1~'+getISOWeeksInYear(yr)+')</label><input type="number" id="pickWeek" value="'+wk+'" min="1" max="53" oninput="updateWeekPreview()"></div>';
   h+='</div>';
+  h+='<div id="weekPreview" style="background:var(--blue-bg);color:var(--blue);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;font-weight:600;text-align:center">📅 '+range.text+'</div>';
   h+='<div class="modal-btns">';
   h+='<button class="btn btn-outline" onclick="closeModal()">취소</button>';
   h+='<button class="btn btn-outline" onclick="goToday();closeModal()">오늘로</button>';
@@ -449,6 +458,17 @@ function openWeekPicker(){
   h+='</div></div>';
   showModal(h);
   setTimeout(()=>document.getElementById('pickYear')?.focus(),50);
+}
+
+function updateWeekPreview(){
+  const y=parseInt(document.getElementById('pickYear').value);
+  const w=parseInt(document.getElementById('pickWeek').value);
+  const el=document.getElementById('weekPreview');
+  if(!el||!y||!w||y<2020||y>2040)return;
+  const maxW=getISOWeeksInYear(y);
+  if(w<1||w>maxW){el.textContent='⚠️ 유효하지 않은 주차 (1~'+maxW+')';el.style.background='var(--orange-bg)';el.style.color='var(--orange)';return;}
+  const range=getWeekDateRange(y,w);
+  el.textContent='📅 '+range.text;el.style.background='var(--blue-bg)';el.style.color='var(--blue)';
 }
 
 function goToWeek(){
@@ -487,8 +507,8 @@ function getDayDate(di){
 // === 보고서 렌더링 ===
 function renderReport(){
   const m=getMonday(),f=new Date(m);f.setDate(m.getDate()+4);
-  document.getElementById('ywText').textContent=fmt(m)+'('+DOW_SHORT[m.getDay()]+') ~ '+fmt(f)+'('+DOW_SHORT[f.getDay()]+')';
-  document.getElementById('drText').textContent=yr+'년';
+  document.getElementById('ywText').textContent=yr+'년 '+wk+'주차';
+  document.getElementById('drText').textContent=(m.getMonth()+1)+'/'+m.getDate()+'('+DOW_SHORT[m.getDay()]+') ~ '+(f.getMonth()+1)+'/'+f.getDate()+'('+DOW_SHORT[f.getDay()]+')';
   document.getElementById('printDate').textContent=fmtFull(m)+' ~ '+fmtFull(f);
 
   let totalTasks=0,totalMats=0,usedProducts=new Set(),matUsage={};
@@ -532,6 +552,7 @@ function renderReport(){
         h+='<option value="">건물 선택...</option>';
         buildings.forEach(b=>{h+='<option value="'+esc(b)+'"'+(t.building===b?' selected':'')+'>'+esc(b)+'</option>';});
         h+='<option value="__add__">+ 건물 추가...</option>';
+        h+='<option value="__manage__">⚙️ 건물 관리...</option>';
         h+='</select>';
         h+='<input value="'+esc(t.desc)+'" onblur="finishEdit('+di+','+ti+',this)" onkeydown="if(event.key===\'Enter\')this.blur()" placeholder="작업 내용 입력...">';
         h+='<input value="'+esc(t.note||'')+'" onblur="finishNote('+di+','+ti+',this)" onkeydown="if(event.key===\'Enter\')this.blur()" placeholder="비고 (선택사항)">';
@@ -574,7 +595,71 @@ function finishNote(di,ti,el){
 }
 function changeBuilding(di,ti,val){
   if(val==='__add__'){const name=prompt('새 건물 이름을 입력하세요:');if(name&&name.trim()){const bn=name.trim();if(!buildings.includes(bn)){buildings.push(bn);saveBuildings();}days[di].tasks[ti].building=bn;}saveWeek();renderReport();focusEditInput();}
+  else if(val==='__manage__'){openBuildingManager(di,ti);}
   else{days[di].tasks[ti].building=val;saveWeek();}
+}
+
+function openBuildingManager(returnDi,returnTi){
+  function render(){
+    let h='<div class="modal"><h2>🏢 건물 관리</h2>';
+    h+='<div style="display:flex;gap:8px;margin-bottom:12px">';
+    h+='<input id="newBldgName" placeholder="새 건물 이름..." style="flex:1" onkeydown="if(event.key===\'Enter\')addBuildingFromManager()">';
+    h+='<button class="btn btn-blue" onclick="addBuildingFromManager()">추가</button>';
+    h+='</div>';
+    h+='<div class="modal-list" style="max-height:300px">';
+    buildings.forEach((b,i)=>{
+      h+='<div class="pm-row">';
+      h+='<span class="pm-name" style="font-size:13px">'+esc(b)+'</span>';
+      h+='<div class="pm-actions">';
+      h+='<button onclick="editBuildingName('+i+')" title="이름 변경">✏️</button>';
+      h+='<button class="del" onclick="deleteBuildingItem('+i+')" title="삭제">🗑</button>';
+      h+='</div></div>';
+    });
+    if(!buildings.length)h+='<p style="text-align:center;color:var(--gray-400);padding:20px">등록된 건물이 없습니다</p>';
+    h+='</div>';
+    h+='<div style="margin-top:12px;text-align:right"><button class="btn btn-outline" onclick="closeModal();'+(returnDi!==undefined?'renderReport();focusEditInput()':'')+'" >닫기</button></div>';
+    h+='</div>';
+    showModal(h);
+  }
+  window.addBuildingFromManager=()=>{
+    const inp=document.getElementById('newBldgName');
+    const name=inp.value.trim();
+    if(!name){toast('건물 이름을 입력하세요');return;}
+    if(buildings.includes(name)){toast('이미 존재하는 건물입니다');return;}
+    buildings.push(name);saveBuildings();render();
+    toast(name+' 추가됨');
+  };
+  window.editBuildingName=(idx)=>{
+    const oldName=buildings[idx];
+    const newName=prompt('건물 이름 변경:',oldName);
+    if(!newName||!newName.trim()||newName.trim()===oldName)return;
+    const bn=newName.trim();
+    if(buildings.includes(bn)){toast('이미 존재하는 건물입니다');return;}
+    // 기존 작업의 건물명도 일괄 변경
+    let updated=0;
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(!k.startsWith('ws3_week_'))continue;
+      try{
+        const wd=JSON.parse(localStorage.getItem(k));
+        let changed=false;
+        wd.forEach(d=>d.tasks.forEach(t=>{if(t.building===oldName){t.building=bn;changed=true;updated++;}}));
+        if(changed)localStorage.setItem(k,JSON.stringify(wd));
+      }catch(e){}
+    }
+    buildings[idx]=bn;saveBuildings();
+    // 현재 주간 데이터도 갱신
+    days.forEach(d=>d.tasks.forEach(t=>{if(t.building===oldName)t.building=bn;}));
+    saveWeek();render();
+    toast(oldName+' → '+bn+' 변경'+(updated?' (작업 '+updated+'건 업데이트)':''));
+  };
+  window.deleteBuildingItem=(idx)=>{
+    const name=buildings[idx];
+    if(!confirm('"'+name+'" 건물을 삭제하시겠습니까?\n(기존 작업의 건물 정보는 유지됩니다)'))return;
+    buildings.splice(idx,1);saveBuildings();render();
+    toast(name+' 삭제됨');
+  };
+  render();
 }
 function focusEditInput(){setTimeout(()=>{const inp=document.querySelector('.task-edit-area input');if(inp){inp.focus();inp.selectionStart=inp.value.length;}},0);}
 function deleteTask(di,ti){
