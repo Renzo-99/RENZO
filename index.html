@@ -407,21 +407,16 @@ function checkLocalStorage(){
 // === 초기화 ===
 async function init(){
   if(!checkLocalStorage()){
-    // localStorage 사용 불가 시에도 기본 데이터로 화면은 표시
     loadProducts();loadHistory();loadHolidays();loadBuildings();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     return;
   }
   loadProducts();loadHistory();loadHolidays();loadBuildings();
   goToday();renderFilterBar();renderInventory();renderAlerts();
-  if(SCRIPT_URL){
-    updateSyncStatus('syncing');
-    const ok=await loadFromCloud();
-    if(ok){loadProducts();loadHistory();loadHolidays();loadBuildings();loadWeek();renderFilterBar();renderInventory();renderAlerts();updateSyncStatus('synced');}
-    else{updateSyncStatus('idle');}
-  }
+  // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
+  // 클라우드 동기화는 사용자가 수동으로 ☁️ 버튼을 눌렀을 때만 실행
+  if(SCRIPT_URL){updateSyncStatus('idle');}
   startAutoBackup();
-  // 저장된 데이터 수 로그
   let cnt=0;for(let i=0;i<localStorage.length;i++){if(localStorage.key(i).startsWith('ws3_'))cnt++;}
   console.log('[init] localStorage ws3_ 키 수:',cnt,', 품목 수:',products.length);
 }
@@ -1485,19 +1480,30 @@ function toast(msg){
   setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);},2000);
 }
 
-// === 새로고침 ===
+// === 새로고침 (로컬 데이터만 다시 로드) ===
 async function refreshAll(){
-  if(SCRIPT_URL){
-    updateSyncStatus('syncing');
-    const ok=await loadFromCloud();
-    if(ok)updateSyncStatus('synced');
-    else updateSyncStatus('error');
-  }
   loadProducts();loadHistory();loadHolidays();loadBuildings();
   loadWeek();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
-  toast(SCRIPT_URL?'클라우드 동기화 완료':'새로고침 완료');
+  toast('새로고침 완료');
+}
+// === 클라우드에서 수동으로 불러오기 ===
+async function pullFromCloud(){
+  if(!SCRIPT_URL){toast('클라우드 URL이 설정되지 않았습니다');return;}
+  updateSyncStatus('syncing');
+  const ok=await loadFromCloud();
+  if(ok){
+    loadProducts();loadHistory();loadHolidays();loadBuildings();
+    loadWeek();renderFilterBar();renderInventory();renderAlerts();
+    if(currentTab==='history')renderHistory();
+    if(currentTab==='tasks')renderTaskHistory();
+    updateSyncStatus('synced');
+    toast('☁️ 클라우드 데이터를 불러왔습니다');
+  }else{
+    updateSyncStatus('error');
+    toast('⚠️ 클라우드 불러오기 실패');
+  }
 }
 
 // === 작업 이력 ===
@@ -1597,14 +1603,22 @@ function queueCloudSave(key,value){
   clearTimeout(_cloudTimer);
   _cloudTimer=setTimeout(flushCloudQueue,2000);
 }
-function flushCloudQueue(){
+async function flushCloudQueue(){
   const keys=Object.keys(_cloudQueue);
   if(!SCRIPT_URL||!keys.length)return;
   const items=keys.map(k=>({key:k,value:_cloudQueue[k]}));
   _cloudQueue={};
   updateSyncStatus('syncing');
-  formPost({action:'saveMultiple',items});
-  setTimeout(()=>updateSyncStatus('synced'),3000);
+  try{
+    const r=await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(JSON.stringify({action:'saveMultiple',items}))});
+    updateSyncStatus('synced');
+    console.log('[클라우드 저장] 전송 완료 ('+items.length+'개 항목)');
+  }catch(e){
+    console.warn('[클라우드 저장 실패]',e);
+    updateSyncStatus('error');
+    // formPost 폴백
+    formPost({action:'saveMultiple',items});
+  }
 }
 async function tryFetch(url,ms){
   const c=new AbortController();const t=setTimeout(()=>c.abort(),ms||8000);
@@ -1687,6 +1701,7 @@ function openCloudSettings(){
   h+='<div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">';
   h+='<button class="btn btn-outline btn-sm" onclick="closeModal()">닫기</button>';
   h+='<button class="btn btn-outline btn-sm" onclick="testCloudConnection()">🔍 연결 테스트</button>';
+  h+='<button class="btn btn-outline btn-sm" onclick="pullFromCloud();closeModal()">📥 클라우드에서 불러오기</button>';
   h+='<button class="btn btn-outline btn-sm" onclick="uploadAllToCloud();closeModal()">📤 전체 업로드</button>';
   h+='<button class="btn btn-blue btn-sm" onclick="saveCloudUrl()">저장</button>';
   h+='</div></div>';
