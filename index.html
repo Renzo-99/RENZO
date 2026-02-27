@@ -388,8 +388,30 @@ function startAutoBackup(){
   },5*60*1000);
 }
 
+// === localStorage 동작 확인 ===
+function checkLocalStorage(){
+  try{
+    const testKey='ws3_test_'+Date.now();
+    localStorage.setItem(testKey,'1');
+    const v=localStorage.getItem(testKey);
+    localStorage.removeItem(testKey);
+    if(v!=='1')throw new Error('값 불일치');
+    return true;
+  }catch(e){
+    console.error('localStorage 사용 불가:',e);
+    toast('⚠️ 브라우저 저장소가 차단되었습니다. 시크릿 모드이거나 저장소가 비활성화된 상태입니다.',5000);
+    return false;
+  }
+}
+
 // === 초기화 ===
 async function init(){
+  if(!checkLocalStorage()){
+    // localStorage 사용 불가 시에도 기본 데이터로 화면은 표시
+    loadProducts();loadHistory();loadHolidays();loadBuildings();
+    goToday();renderFilterBar();renderInventory();renderAlerts();
+    return;
+  }
   loadProducts();loadHistory();loadHolidays();loadBuildings();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   if(SCRIPT_URL){
@@ -399,6 +421,9 @@ async function init(){
     else{updateSyncStatus('idle');}
   }
   startAutoBackup();
+  // 저장된 데이터 수 로그
+  let cnt=0;for(let i=0;i<localStorage.length;i++){if(localStorage.key(i).startsWith('ws3_'))cnt++;}
+  console.log('[init] localStorage ws3_ 키 수:',cnt,', 품목 수:',products.length);
 }
 
 function loadProducts(){
@@ -1588,6 +1613,15 @@ async function tryFetch(url,ms){
 }
 function applyCloudData(d){
   if(!d||!Object.keys(d).length)return false;
+  // 클라우드 products가 비어있으면 로컬 데이터를 보호
+  const cloudProducts=d.products?JSON.parse(typeof d.products==='string'?d.products:JSON.stringify(d.products)):[];
+  const localProducts=localStorage.getItem('ws3_products');
+  const localArr=localProducts?JSON.parse(localProducts):[];
+  // 로컬에 데이터가 있는데 클라우드가 비어있으면 덮어쓰지 않음
+  if(localArr.length>0&&cloudProducts.length===0){
+    console.log('[동기화 스킵] 클라우드 데이터가 비어있어 로컬 보호');
+    return false;
+  }
   createSnapshot('클라우드 동기화 전 자동 백업');
   Object.entries(d).forEach(([k,v])=>{
     try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
