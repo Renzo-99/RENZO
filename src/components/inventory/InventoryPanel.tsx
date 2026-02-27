@@ -9,7 +9,7 @@ import LocationManager from "./LocationManager";
 import InventoryLogModal from "./InventoryLogModal";
 import ProductAddModal from "./ProductAddModal";
 import { Button } from "@/components/ui/button";
-import { PackagePlus, Building2, ClipboardList, Plus } from "lucide-react";
+import { PackagePlus, Building2, ClipboardList, Plus, Download } from "lucide-react";
 
 export default function InventoryPanel() {
   const { products, searchQuery, filter, weeklyChanges, isLoading } = useInventoryStore();
@@ -21,6 +21,18 @@ export default function InventoryPanel() {
   const closeLocationManager = useCallback(() => setShowLocationManager(false), []);
   const closeLogModal = useCallback(() => setShowLogModal(false), []);
   const closeProductAdd = useCallback(() => setShowProductAdd(false), []);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = useCallback(async () => {
+    setIsExporting(true);
+    try {
+      await useInventoryStore.getState().exportInventory();
+    } catch {
+      alert("내보내기에 실패했습니다.");
+    } finally {
+      setIsExporting(false);
+    }
+  }, []);
 
   const filtered = useMemo(() => products.filter((p) => {
     if (searchQuery) {
@@ -78,6 +90,15 @@ export default function InventoryPanel() {
             건물 관리
           </Button>
         </div>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleExport}
+          disabled={isExporting}
+        >
+          <Download className="h-4 w-4 mr-1.5" />
+          {isExporting ? "내보내는 중..." : "재고 내보내기 (CSV)"}
+        </Button>
       </div>
 
       {showInbound && <InboundModal onClose={closeInbound} />}

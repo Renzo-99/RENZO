@@ -15,6 +15,7 @@ interface InventoryState {
   setFilter: (filter: FilterType) => void;
   processInbound: (req: InboundRequest) => Promise<void>;
   refreshWeeklyChanges: (from: string, to: string) => Promise<void>;
+  exportInventory: () => Promise<void>;
 }
 
 export const useInventoryStore = create<InventoryState>((set, get) => ({
@@ -53,6 +54,19 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     }
 
     await get().fetchProducts();
+  },
+
+  exportInventory: async () => {
+    const res = await fetch("/api/inventory/export");
+    if (!res.ok) throw new Error("내보내기 실패");
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const today = new Date().toISOString().split("T")[0];
+    a.download = `재고현황_${today}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   },
 
   refreshWeeklyChanges: async (from: string, to: string) => {
