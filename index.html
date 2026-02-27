@@ -369,6 +369,25 @@ let SCRIPT_URL=localStorage.getItem('ws3_script_url')||CLOUD_URL_DEFAULT;
 let _cloudQueue={},_cloudTimer=null;
 function debouncedRenderInventory(){clearTimeout(_debounceTimer);_debounceTimer=setTimeout(renderInventory,150);}
 
+// === 자동 백업 타이머 (5분) ===
+let _autoBackupTimer=null,_lastDataHash='';
+function getDataHash(){
+  let s=JSON.stringify(products)+JSON.stringify(history)+JSON.stringify(holidays)+JSON.stringify(buildings);
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('ws3_week_'))s+=localStorage.getItem(k);}
+  let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}
+  return h.toString();
+}
+function startAutoBackup(){
+  _lastDataHash=getDataHash();
+  _autoBackupTimer=setInterval(()=>{
+    const cur=getDataHash();
+    if(cur!==_lastDataHash){
+      createSnapshot('자동 백업 (5분)');
+      _lastDataHash=cur;
+    }
+  },5*60*1000);
+}
+
 // === 초기화 ===
 async function init(){
   loadProducts();loadHistory();loadHolidays();loadBuildings();
@@ -379,6 +398,7 @@ async function init(){
     if(ok){loadProducts();loadHistory();loadHolidays();loadBuildings();loadWeek();renderFilterBar();renderInventory();renderAlerts();updateSyncStatus('synced');}
     else{updateSyncStatus('idle');}
   }
+  startAutoBackup();
 }
 
 function loadProducts(){
