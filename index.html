@@ -79,8 +79,8 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .task-body p{font-size:13px;color:var(--gray-700);cursor:text;min-height:20px}
 .task-body p.empty{color:var(--gray-400)}
 .mats{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.mat-badge{display:inline-flex;align-items:center;gap:4px;background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:500;padding:3px 8px;border-radius:99px}
-.mat-badge .qty{background:var(--blue);color:#fff;font-size:10px;padding:1px 5px;border-radius:99px}
+.mat-badge{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:#16a34a;font-size:11px;font-weight:500;padding:3px 8px;border-radius:99px}
+.mat-badge .qty{background:#16a34a;color:#fff;font-size:10px;padding:1px 5px;border-radius:99px}
 .mat-badge .remove{cursor:pointer;opacity:.5;margin-left:2px;font-size:10px}.mat-badge .remove:hover{opacity:1}
 .task-actions{display:flex;gap:3px;opacity:0;transition:opacity .15s}
 .task:hover .task-actions{opacity:1}
@@ -91,6 +91,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .empty-msg{font-size:12px;color:var(--gray-400);padding-left:16px;margin-bottom:8px}
 .task-building{display:inline-block;font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:2px 8px;border-radius:99px;margin-bottom:4px}
 .task-note{font-size:11px;color:var(--gray-500);margin-top:4px;cursor:text}
+.task-note.has-note{background:#fef2f2;color:#dc2626;padding:2px 6px;border-radius:4px;font-weight:500}
 .task-edit-area{display:flex;flex-direction:column;gap:6px}
 .task-edit-area select{padding:5px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:11px;outline:none;color:var(--gray-700);background:#fff;max-width:160px}
 .task-edit-area select:focus{border-color:var(--blue)}
@@ -178,7 +179,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 /* 인쇄 스타일 */
 @page{margin:10mm;margin-top:8mm;margin-bottom:8mm}
 @media print{
-  *{color:#000!important;background:#fff!important;box-shadow:none!important;border-color:#ddd!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;box-shadow:none!important}
   body{height:auto;overflow:visible;font-size:11px}
   .hdr,.right,.task-actions,.btn,.no-print,.alert-bar,.holiday-btn{display:none!important}
   .main{display:block;overflow:visible}
@@ -188,11 +189,13 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
   .print-header p{font-size:13px;color:#555}
   .card{border:1px solid #ddd;page-break-inside:avoid}
   .task{border:1px solid #ddd;page-break-inside:avoid}
-  .task-building{border:1px solid #999;background:#f0f0f0!important;color:#333!important}
+  .task-building{border:1px solid #16a34a;background:#f0fdf4!important;color:#15803d!important}
   .task-note{font-style:italic}
-  .mat-badge{border:1px solid var(--blue);background:#f0f7ff!important}
+  .task-note.has-note{background:#fef2f2!important;color:#dc2626!important;padding:2px 6px;border-radius:4px}
+  .mat-badge{border:1px solid #16a34a;background:#f0fdf4!important;color:#15803d!important}
+  .mat-badge .qty{background:#16a34a!important;color:#fff!important}
   .day-header{margin-top:16px}
-  .holiday-badge{border:1px solid var(--red)}
+  .holiday-badge{border:1px solid var(--red);color:#dc2626!important;background:#fef2f2!important}
   .print-inventory{display:block!important;page-break-before:always;padding-top:20px}
   .print-inventory h2{font-size:16px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #000}
   .print-inventory table{width:100%;border-collapse:collapse;font-size:11px}
@@ -448,7 +451,10 @@ function loadHolidays(){const s=localStorage.getItem('ws3_holidays');holidays=s?
 function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings=s?JSON.parse(s):BUILDINGS_DEFAULT.slice();}
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
 function safeSave(key,data){
-  try{localStorage.setItem(key,JSON.stringify(data));queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));}
+  try{localStorage.setItem(key,JSON.stringify(data));
+    // 변경 시각 기록 (클라우드 동기화 충돌 해결용)
+    localStorage.setItem('ws3_lastModified',String(Date.now()));
+    queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));}
   catch(e){if(e.name==='QuotaExceededError'||e.code===22){if(history.length>500){history=history.slice(-200);try{localStorage.setItem('ws3_history',JSON.stringify(history));localStorage.setItem(key,JSON.stringify(data));toast('저장 공간 부족 → 오래된 내역 정리됨');return;}catch(e2){}}toast('저장 공간이 부족합니다. 데이터를 백업해주세요.');}else{console.error('저장 실패:',e);}queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));}
 }
 function saveProducts(){rebuildProductMap();safeSave('ws3_products',products);}
@@ -568,19 +574,12 @@ function renderReport(){
   let totalTasks=0,totalMats=0,usedProducts=new Set(),matUsage={};
   days.forEach(d=>{totalTasks+=d.tasks.length;d.tasks.forEach(t=>{totalMats+=t.mats.length;t.mats.forEach(x=>{usedProducts.add(x.pid);matUsage[x.pid]=(matUsage[x.pid]||0)+x.qty;});});});
 
-  const topEntry=Object.entries(matUsage).sort((a,b)=>b[1]-a[1])[0];
-  const topProduct=topEntry?productMap.get(parseInt(topEntry[0])):null;
-
   let h='<div class="card"><div class="summary">';
   h+='<div class="summary-item"><div class="val">'+totalTasks+'</div><div class="lbl">총 작업</div></div>';
   h+='<div class="sep"></div>';
   h+='<div class="summary-item"><div class="val blue">'+totalMats+'</div><div class="lbl">자재 사용</div></div>';
   h+='<div class="sep"></div>';
   h+='<div class="summary-item"><div class="val">'+usedProducts.size+'</div><div class="lbl">사용 품목</div></div>';
-  if(topProduct){
-    h+='<div class="sep"></div>';
-    h+='<div class="summary-item"><div class="val small">'+topProduct.name+'</div><div class="lbl">최다 사용 (×'+topEntry[1]+')</div></div>';
-  }
   h+='</div></div>';
 
   days.forEach((d,di)=>{
@@ -616,7 +615,7 @@ function renderReport(){
       }else{
         if(t.building)h+='<span class="task-building">'+esc(t.building)+'</span> ';
         h+='<p class="'+(t.desc?'':'empty')+'" onclick="startEdit('+di+','+ti+')">'+(esc(t.desc)||'클릭하여 작업 내용 입력...')+'</p>';
-        if(t.note)h+='<div class="task-note" onclick="startEdit('+di+','+ti+')">📝 '+esc(t.note)+'</div>';
+        if(t.note)h+='<div class="task-note has-note" onclick="startEdit('+di+','+ti+')">📝 '+esc(t.note)+'</div>';
       }
       if(hasMat){
         h+='<div class="mats">';
@@ -1625,16 +1624,31 @@ async function tryFetch(url,ms){
   try{const r=await fetch(url,{signal:c.signal,redirect:'follow'});clearTimeout(t);return await r.json();}
   catch(e){clearTimeout(t);return null;}
 }
-function applyCloudData(d){
+function applyCloudData(d,force){
   if(!d||!Object.keys(d).length)return false;
   // 클라우드 products가 비어있으면 로컬 데이터를 보호
   const cloudProducts=d.products?JSON.parse(typeof d.products==='string'?d.products:JSON.stringify(d.products)):[];
   const localProducts=localStorage.getItem('ws3_products');
   const localArr=localProducts?JSON.parse(localProducts):[];
-  // 로컬에 데이터가 있는데 클라우드가 비어있으면 덮어쓰지 않음
   if(localArr.length>0&&cloudProducts.length===0){
     console.log('[동기화 스킵] 클라우드 데이터가 비어있어 로컬 보호');
     return false;
+  }
+  // 타임스탬프 비교: 클라우드가 더 최신인 경우에만 적용
+  if(!force){
+    const cloudTs=parseInt(d.lastModified||'0',10);
+    const localTs=parseInt(localStorage.getItem('ws3_lastModified')||'0',10);
+    if(localTs>0&&cloudTs>0&&localTs>cloudTs){
+      console.log('[동기화 스킵] 로컬이 더 최신 (로컬:'+new Date(localTs).toLocaleString()+', 클라우드:'+new Date(cloudTs).toLocaleString()+')');
+      // 로컬이 더 최신이면 오히려 클라우드로 업로드
+      uploadAllToCloud();
+      return false;
+    }
+    if(localTs>0&&cloudTs===0){
+      console.log('[동기화 스킵] 클라우드에 타임스탬프 없음 → 로컬 보호, 업로드 실행');
+      uploadAllToCloud();
+      return false;
+    }
   }
   createSnapshot('클라우드 동기화 전 자동 백업');
   Object.entries(d).forEach(([k,v])=>{
