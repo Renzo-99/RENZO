@@ -266,8 +266,9 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
   </div>
   <div class="hdr-right">
     <span id="syncStatus" style="font-size:14px;cursor:pointer;margin-right:4px" onclick="openCloudSettings()" title="클라우드 상태"></span>
-    <button class="btn btn-outline btn-sm" onclick="exportData()" title="데이터 내보내기">💾 저장</button>
-    <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()" title="데이터 불러오기">📂 불러오기</button>
+    <button class="btn btn-outline btn-sm" onclick="openBackupManager()" title="백업 관리">📋 백업</button>
+    <button class="btn btn-outline btn-sm" onclick="exportData()" title="파일로 내보내기">💾 내보내기</button>
+    <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()" title="파일 불러오기">📂 불러오기</button>
     <button class="btn btn-outline btn-sm" onclick="exportCSV()" title="재고 CSV">📊 CSV</button>
     <button class="btn btn-blue btn-sm" onclick="printReport()" title="보고서 인쇄">🖨️ 인쇄</button>
     <button class="btn btn-outline btn-sm" onclick="openCloudSettings()" title="클라우드 설정">☁️</button>
@@ -1257,6 +1258,91 @@ function closeModal(){
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modalRoot').innerHTML)closeModal();});
 
 // === 데이터 내보내기/가져오기 ===
+// === 자동 백업 시스템 ===
+const MAX_BACKUPS=10;
+function createSnapshot(reason){
+  const allWeeks={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k.startsWith('ws3_week_'))allWeeks[k]=JSON.parse(localStorage.getItem(k));
+  }
+  const snapshot={
+    id:Date.now(),
+    reason:reason||'수동 백업',
+    date:new Date().toISOString(),
+    data:{products,history,holidays,buildings,weeks:allWeeks}
+  };
+  const backups=getBackups();
+  backups.unshift(snapshot);
+  while(backups.length>MAX_BACKUPS)backups.pop();
+  try{localStorage.setItem('ws3_backups',JSON.stringify(backups));}
+  catch(e){backups.splice(5);localStorage.setItem('ws3_backups',JSON.stringify(backups));}
+  return snapshot.id;
+}
+function getBackups(){
+  try{return JSON.parse(localStorage.getItem('ws3_backups'))||[];}catch(e){return[];}
+}
+function restoreBackup(id){
+  const backups=getBackups();
+  const b=backups.find(x=>x.id===id);
+  if(!b){toast('백업을 찾을 수 없습니다');return;}
+  createSnapshot('복원 전 자동 백업');
+  const d=b.data;
+  products=d.products||[];saveProducts();
+  history=d.history||[];saveHistory();
+  holidays=d.holidays||{};saveHolidays();
+  buildings=d.buildings||BUILDINGS_DEFAULT.slice();saveBuildings();
+  if(d.weeks){Object.entries(d.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
+  recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
+  toast('✅ 백업이 복원되었습니다');
+}
+function deleteBackup(id){
+  let backups=getBackups();
+  backups=backups.filter(x=>x.id!==id);
+  localStorage.setItem('ws3_backups',JSON.stringify(backups));
+}
+function formatBackupDate(iso){
+  const d=new Date(iso);
+  return d.getFullYear()+'.'+(d.getMonth()+1+'').padStart(2,'0')+'.'+(d.getDate()+'').padStart(2,'0')+' '+(d.getHours()+'').padStart(2,'0')+':'+(d.getMinutes()+'').padStart(2,'0');
+}
+function getBackupSummary(d){
+  const pCount=(d.products||[]).length;
+  const hCount=(d.history||[]).length;
+  const wCount=Object.keys(d.weeks||{}).length;
+  return '품목 '+pCount+'개 · 내역 '+hCount+'건 · 주차 '+wCount+'개';
+}
+function openBackupManager(){
+  const backups=getBackups();
+  let h='<div class="modal wide"><h2>📋 백업 관리</h2>';
+  h+='<p style="font-size:12px;color:var(--gray-500);margin-bottom:12px">덮어쓰기 전 자동 저장됩니다. 최대 '+MAX_BACKUPS+'개 보관.</p>';
+  h+='<div style="display:flex;gap:8px;margin-bottom:16px">';
+  h+='<button class="btn btn-blue btn-sm" onclick="createSnapshot(\'수동 백업\');closeModal();openBackupManager();toast(\'✅ 백업 생성 완료\')">📸 지금 백업</button>';
+  h+='<button class="btn btn-outline btn-sm" onclick="exportData()">💾 파일로 내보내기</button>';
+  h+='</div>';
+  if(!backups.length){
+    h+='<div style="text-align:center;padding:40px 0;color:var(--gray-400)">저장된 백업이 없습니다</div>';
+  }else{
+    h+='<div style="max-height:360px;overflow-y:auto">';
+    backups.forEach((b,i)=>{
+      const isAuto=b.reason!=='수동 백업';
+      h+='<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--gray-100)">';
+      h+='<div style="flex:1;min-width:0">';
+      h+='<div style="font-size:13px;font-weight:600;color:var(--gray-800)">'+formatBackupDate(b.date)+'</div>';
+      h+='<div style="font-size:11px;color:var(--gray-500);margin-top:2px">';
+      h+='<span style="background:'+(isAuto?'var(--orange-bg)':'var(--blue-bg)')+';color:'+(isAuto?'var(--orange)':'var(--blue)')+';padding:1px 6px;border-radius:99px;font-size:10px;font-weight:600">'+esc(b.reason)+'</span> ';
+      h+=getBackupSummary(b.data)+'</div>';
+      h+='</div>';
+      h+='<button class="btn btn-outline btn-sm" onclick="if(confirm(\'이 백업으로 복원하시겠습니까?\\n현재 데이터는 자동 백업됩니다.\')){restoreBackup('+b.id+');closeModal();}">복원</button>';
+      h+='<button class="btn btn-danger btn-sm" onclick="deleteBackup('+b.id+');closeModal();openBackupManager();" title="삭제">🗑</button>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+  h+='<div class="modal-btns" style="margin-top:16px"><button class="btn btn-outline" onclick="closeModal()">닫기</button></div>';
+  h+='</div>';
+  showModal(h);
+}
+
 function exportData(){
   const allWeeks={};
   for(let i=0;i<localStorage.length;i++){
@@ -1267,7 +1353,9 @@ function exportData(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='woodshop_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  const now=new Date();
+  const ts=now.getFullYear()+''+(now.getMonth()+1+'').padStart(2,'0')+(now.getDate()+'').padStart(2,'0')+'_'+(now.getHours()+'').padStart(2,'0')+(now.getMinutes()+'').padStart(2,'0');
+  a.download='woodshop_backup_'+ts+'.json';
   a.click();setTimeout(()=>URL.revokeObjectURL(a.href),100);
   toast('데이터가 저장되었습니다');
 }
@@ -1280,7 +1368,11 @@ function importData(event){
     try{
       const data=JSON.parse(e.target.result);
       if(!data.products)throw new Error('잘못된 형식');
-      if(!confirm('기존 데이터를 덮어쓰시겠습니까?\n이 작업은 되돌릴 수 없습니다.'))return;
+      const pCount=data.products.length;
+      const hCount=(data.history||[]).length;
+      const wCount=Object.keys(data.weeks||{}).length;
+      if(!confirm('불러올 데이터: 품목 '+pCount+'개, 내역 '+hCount+'건, 주차 '+wCount+'개\n\n⚠️ 현재 데이터를 덮어씁니다.\n(현재 데이터는 자동 백업됩니다)\n\n진행하시겠습니까?'))return;
+      createSnapshot('불러오기 전 자동 백업');
       products=data.products;saveProducts();
       if(data.history){history=data.history;saveHistory();}
       if(data.holidays){holidays=data.holidays;saveHolidays();}
@@ -1476,6 +1568,7 @@ async function tryFetch(url,ms){
 }
 function applyCloudData(d){
   if(!d||!Object.keys(d).length)return false;
+  createSnapshot('클라우드 동기화 전 자동 백업');
   Object.entries(d).forEach(([k,v])=>{
     try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
   });
