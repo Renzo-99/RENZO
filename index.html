@@ -529,7 +529,34 @@ function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
 function loadPlans(){const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];}
 function savePlans(){safeSave('ws3_plans',plans);}
+// === Undo 스택 ===
+const undoStack=[];
+const UNDO_MAX=30;
+function pushUndo(key){
+  const prev=localStorage.getItem(key);
+  undoStack.push({key,data:prev});
+  if(undoStack.length>UNDO_MAX)undoStack.shift();
+}
+function performUndo(){
+  if(!undoStack.length){toast('되돌릴 작업이 없습니다');return;}
+  const{key,data}=undoStack.pop();
+  if(data===null)localStorage.removeItem(key);
+  else localStorage.setItem(key,data);
+  // 메모리 변수 재로드
+  if(key==='ws3_plans'){loadPlans();renderPlanList();}
+  else if(key==='ws3_products'){loadProducts();renderInventory();renderAlerts();}
+  else if(key==='ws3_history'){loadHistory();renderInventory();}
+  else if(key==='ws3_holidays'){loadHolidays();renderReport();}
+  else if(key==='ws3_buildings'){loadBuildings();renderReport();}
+  else if(key.startsWith('ws3_week_')){
+    const parts=key.replace('ws3_week_','').split('_');
+    const wy=parseInt(parts[0]),ww=parseInt(parts[1]);
+    if(wy===yr&&ww===wk){loadWeek();renderReport();}
+  }
+  toast('↩ 실행 취소');
+}
 function safeSave(key,data){
+  pushUndo(key);
   try{localStorage.setItem(key,JSON.stringify(data));
     // 변경 시각 기록 (클라우드 동기화 충돌 해결용)
     localStorage.setItem('ws3_lastModified',String(Date.now()));
@@ -1376,7 +1403,7 @@ function closeModal(){
   delete window._outSearch;delete window._outSelect;delete window.confirmOutbound;
   delete window._pmSearch;
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.getElementById('modalRoot').innerHTML){closeModal();}else{const cr=document.getElementById('calendarRoot');if(cr&&cr.innerHTML)closeCalendar();}}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.getElementById('modalRoot').innerHTML){closeModal();}else{const cr=document.getElementById('calendarRoot');if(cr&&cr.innerHTML)closeCalendar();}}if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;e.preventDefault();performUndo();}});
 
 // === 데이터 내보내기/가져오기 ===
 // === 자동 백업 시스템 ===
