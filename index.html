@@ -1789,7 +1789,7 @@ function togglePlanRange(){
   const cb=document.getElementById('planRangeToggle');
   const el=document.getElementById('planRangeEndWrap');
   if(cb.checked){
-    el.style.display='';
+    el.style.display='flex';
     const start=document.getElementById('planDate').value;
     const endEl=document.getElementById('planDateEnd');
     if(start&&!endEl.value)endEl.value=start;
@@ -1802,13 +1802,14 @@ function openPlanForm(pid){
   const hasRange=p&&p.dateEnd;
   const defDateEnd=p&&p.dateEnd?p.dateEnd:'';
   let h='<div class="modal"><h2>'+(isEdit?'✏️ 예정 작업 수정':'📋 예정 작업 추가')+'</h2>';
-  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><label style="margin:0">시작일</label>';
-  h+='<label style="margin:0;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--gray-500);cursor:pointer"><input type="checkbox" id="planRangeToggle" onchange="togglePlanRange()"'+(hasRange?' checked':'')+'>기간 설정</label></div>';
-  h+='<input type="date" id="planDate" value="'+defDate+'">';
-  h+='<div id="planRangeEndWrap" style="'+(hasRange?'':'display:none')+'">';
-  h+='<label>종료일</label>';
-  h+='<input type="date" id="planDateEnd" value="'+defDateEnd+'">';
-  h+='</div>';
+  h+='<div style="display:flex;align-items:center;justify-content:space-between"><label style="margin:0">예정일</label>';
+  h+='<label style="margin:0;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--gray-500);cursor:pointer"><input type="checkbox" id="planRangeToggle" onchange="togglePlanRange()"'+(hasRange?' checked':'')+'>기간</label></div>';
+  h+='<div style="display:flex;align-items:center;gap:6px">';
+  h+='<input type="date" id="planDate" value="'+defDate+'" style="flex:1">';
+  h+='<div id="planRangeEndWrap" style="display:'+(hasRange?'flex':'none')+';align-items:center;gap:6px;flex:1">';
+  h+='<span style="color:var(--gray-400);font-size:14px">~</span>';
+  h+='<input type="date" id="planDateEnd" value="'+defDateEnd+'" style="flex:1">';
+  h+='</div></div>';
   h+='<label>건물</label>';
   h+='<select id="planBuilding">';
   h+='<option value="">건물 선택...</option>';
