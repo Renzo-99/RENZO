@@ -1786,9 +1786,9 @@ function openPlanForm(pid){
   buildings.forEach(b=>{h+='<option value="'+esc(b)+'"'+(p&&p.building===b?' selected':'')+'>'+esc(b)+'</option>';});
   h+='</select>';
   h+='<label>작업 내용</label>';
-  h+='<input id="planDesc" value="'+esc(p?p.desc:'')+'" placeholder="작업 내용 입력...">';
+  h+='<input id="planDesc" value="'+esc(p?p.desc:'')+'" placeholder="작업 내용 입력..." onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
   h+='<label>비고</label>';
-  h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)">';
+  h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)" onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
   h+='<div class="modal-btns">';
   h+='<button class="btn btn-outline" onclick="closeModal()">취소</button>';
   h+='<button class="btn btn-blue" onclick="savePlan('+(pid||'null')+')">'+(isEdit?'저장':'추가')+'</button>';
