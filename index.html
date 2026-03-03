@@ -251,9 +251,8 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .cal-cell.today{background:var(--blue-bg)}
 .cal-cell.has-task{cursor:pointer}
 .cal-date{font-size:12px;font-weight:600;color:var(--gray-700);padding:2px 4px;display:inline-block}
-.cal-cell:first-child .cal-date{color:var(--red)}
-.cal-cell:nth-child(7n+1) .cal-date{color:var(--red)}
-.cal-cell:nth-child(7n) .cal-date{color:var(--blue)}
+.cal-cell.sun .cal-date{color:var(--red)}
+.cal-cell.sat .cal-date{color:var(--blue)}
 .cal-cell.today .cal-date{background:var(--blue);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .cal-holiday{font-size:9px;color:var(--red);font-weight:600;padding:0 4px;margin-top:1px}
 .cal-tasks{margin-top:2px}
@@ -1341,7 +1340,7 @@ function closeModal(){
   delete window._outSearch;delete window._outSelect;delete window.confirmOutbound;
   delete window._pmSearch;
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modalRoot').innerHTML)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.getElementById('modalRoot').innerHTML){closeModal();}else{const cr=document.getElementById('calendarRoot');if(cr&&cr.innerHTML)closeCalendar();}}});
 
 // === 데이터 내보내기/가져오기 ===
 // === 자동 백업 시스템 ===
@@ -1809,9 +1808,10 @@ async function testCloudConnection(){
 let calYear, calMonth;
 
 function openCalendar(){
-  const now=new Date();
-  calYear=now.getFullYear();
-  calMonth=now.getMonth()+1;
+  // 현재 보고 있는 주차의 월을 기본으로 표시
+  const mon=getMonday();
+  calYear=mon.getFullYear();
+  calMonth=mon.getMonth()+1;
   renderCalendar();
 }
 
@@ -1888,7 +1888,8 @@ function renderCalendar(){
   // 이전 월 빈칸
   for(let i=startDow-1;i>=0;i--){
     const d=prevDays-i;
-    h+='<div class="cal-cell other"><span class="cal-date">'+d+'</span></div>';
+    const col=(startDow-1-i)%7;
+    h+='<div class="cal-cell other'+(col===0?' sun':'')+(col===6?' sat':'')+'"><span class="cal-date">'+d+'</span></div>';
   }
 
   // 현재 월
@@ -1898,8 +1899,9 @@ function renderCalendar(){
     const tasks=taskMap[dateStr]||[];
     const hasTask=tasks.length>0;
     const isHol=!!holidays[dateStr];
+    const cellDow=(startDow+d-1)%7; // 0=일
 
-    h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+'" onclick="openCalDay(\''+dateStr+'\')">';
+    h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+(cellDow===0?' sun':'')+(cellDow===6?' sat':'')+'" onclick="openCalDay(\''+dateStr+'\')">';
     h+='<span class="cal-date">'+d+'</span>';
     if(isHol)h+='<div class="cal-holiday">'+esc(holidays[dateStr])+'</div>';
 
@@ -1911,7 +1913,7 @@ function renderCalendar(){
       h+='<div class="cal-task-item" title="'+esc(t.desc)+'">'+esc(label+(t.desc||'(미입력)'))+'</div>';
     });
     if(tasks.length>maxShow){
-      h+='<div class="cal-task-more">+'+( tasks.length-maxShow)+'건 더보기</div>';
+      h+='<div class="cal-task-more">+'+(tasks.length-maxShow)+'건 더보기</div>';
     }
     h+='</div>';
     h+='</div>';
@@ -1921,7 +1923,8 @@ function renderCalendar(){
   const totalCells=startDow+totalDays;
   const remain=totalCells%7===0?0:7-totalCells%7;
   for(let d=1;d<=remain;d++){
-    h+='<div class="cal-cell other"><span class="cal-date">'+d+'</span></div>';
+    const col=(totalCells+d-1)%7;
+    h+='<div class="cal-cell other'+(col===0?' sun':'')+(col===6?' sat':'')+'"><span class="cal-date">'+d+'</span></div>';
   }
 
   h+='</div></div></div></div>';
@@ -1943,17 +1946,23 @@ function openCalDay(dateStr){
   if(!weekInfo)return;
 
   const {weekYear,weekNum,dayIndex}=weekInfo;
-  const weekKey='ws3_week_'+weekYear+'_'+weekNum;
-  let weekData;
-  try{weekData=JSON.parse(localStorage.getItem(weekKey));}catch(e){weekData=null;}
 
-  // 평일(월~금) 아닌 경우 또는 데이터가 없는 경우
-  if(!weekData||dayIndex<0||dayIndex>4){
+  // 주말(토/일)인 경우
+  if(dayIndex<0||dayIndex>4){
     let h='<div class="modal"><h2>'+month+'월 '+day+'일 ('+dowStr+')</h2>';
-    h+='<p class="cal-no-task">주말이거나 데이터가 없는 날짜입니다.</p>';
+    h+='<p class="cal-no-task">주말은 작업을 등록할 수 없습니다.</p>';
     h+='<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal()">닫기</button></div></div>';
     showModal(h);
     return;
+  }
+
+  // 평일: 주차 데이터 로드 (없으면 빈 구조 생성)
+  const weekKey='ws3_week_'+weekYear+'_'+weekNum;
+  let weekData;
+  try{weekData=JSON.parse(localStorage.getItem(weekKey));}catch(e){weekData=null;}
+  if(!weekData){
+    const mon=getMondayOf(weekYear,weekNum);
+    weekData=DAY_NAMES.map((n,i)=>{const dd=new Date(mon);dd.setDate(mon.getDate()+i);return{dn:n,dt:fmt(dd),tasks:[]};});
   }
 
   const dayData=weekData[dayIndex];
@@ -2040,7 +2049,7 @@ function calEditTask(wy,ww,di,ti){
       h+='</div></div>';
     }
     h+='<div class="modal-btns">';
-    h+='<button class="btn btn-outline" onclick="closeModal();openCalDay(\''+wy+'-'+String(calMonth).padStart(2,'0')+'-'+String(getCalDayFromWeek(wy,ww,di)).padStart(2,'0')+'\')">취소</button>';
+    h+='<button class="btn btn-outline" onclick="closeModal();openCalDay(\''+getCalDateStrFromWeek(wy,ww,di)+'\')">취소</button>';
     h+='<button class="btn btn-danger btn-sm" onclick="calDeleteTask('+wy+','+ww+','+di+','+ti+')" style="background:none;border:1px solid var(--gray-200)">🗑 삭제</button>';
     h+='<button class="btn btn-blue" onclick="calSaveTask('+wy+','+ww+','+di+','+ti+')">저장</button>';
     h+='</div></div>';
