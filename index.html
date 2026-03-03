@@ -258,6 +258,8 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .cal-tasks{margin-top:2px;overflow:hidden}
 .cal-task-item{font-size:10px;padding:2px 4px;margin-bottom:1px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--blue-bg);color:var(--blue);font-weight:500;cursor:pointer;transition:background .1s}
 .cal-task-item:hover{background:#d0e3ff}
+.cal-task-item.plan{background:#fff3e0;color:#e65100}
+.cal-task-item.plan:hover{background:#ffe0b2}
 .cal-task-more{font-size:9px;color:var(--gray-500);padding:1px 4px;cursor:pointer}
 .cal-task-more:hover{color:var(--blue)}
 /* 캘린더 날짜 상세 모달 */
@@ -2143,6 +2145,25 @@ function getCalTasks(year,month){
       });
     });
   }
+  // 작업예정(plans)도 캘린더에 표시
+  plans.forEach(p=>{
+    if(p.done)return;
+    const startStr=p.date;
+    const endStr=p.dateEnd||p.date;
+    const spts=startStr.split('-');
+    const epts=endStr.split('-');
+    const sd=new Date(parseInt(spts[0]),parseInt(spts[1])-1,parseInt(spts[2]));
+    const ed=new Date(parseInt(epts[0]),parseInt(epts[1])-1,parseInt(epts[2]));
+    const cur=new Date(sd);
+    while(cur<=ed){
+      if(cur.getFullYear()===year&&cur.getMonth()+1===month){
+        const key=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0')+'-'+String(cur.getDate()).padStart(2,'0');
+        if(!map[key])map[key]=[];
+        map[key].push({desc:p.desc||'',building:p.building||'',note:p.note||'',mats:[],isPlan:true,planId:p.id,dateEnd:p.dateEnd||null});
+      }
+      cur.setDate(cur.getDate()+1);
+    }
+  });
   return map;
 }
 
@@ -2204,7 +2225,9 @@ function renderCalendar(){
     const maxShow=3;
     tasks.slice(0,maxShow).forEach(t=>{
       const label=t.building?(t.building+' '):'';
-      h+='<div class="cal-task-item" title="'+esc(t.desc)+'">'+esc(label+(t.desc||'(미입력)'))+'</div>';
+      const planCls=t.isPlan?' plan':'';
+      const prefix=t.isPlan?'[예정] ':'';
+      h+='<div class="cal-task-item'+planCls+'" title="'+esc(prefix+t.desc)+'">'+esc(label+(t.desc||'(미입력)'))+'</div>';
     });
     if(tasks.length>maxShow){
       h+='<div class="cal-task-more">+'+(tasks.length-maxShow)+'건 더보기</div>';
@@ -2241,10 +2264,29 @@ function openCalDay(dateStr){
 
   const {weekYear,weekNum,dayIndex}=weekInfo;
 
+  // 해당 날짜의 작업예정 조회
+  const dayPlans=plans.filter(p=>{
+    if(p.done)return false;
+    const endStr=p.dateEnd||p.date;
+    return dateStr>=p.date&&dateStr<=endStr;
+  });
+
   // 주말(토/일)인 경우
   if(dayIndex<0||dayIndex>4){
     let h='<div class="modal"><h2>'+month+'월 '+day+'일 ('+dowStr+')</h2>';
     h+='<p class="cal-no-task">주말은 작업을 등록할 수 없습니다.</p>';
+    if(dayPlans.length){
+      h+='<div style="margin-top:8px"><div style="font-size:13px;font-weight:600;color:#e65100;margin-bottom:6px">📋 예정 작업</div>';
+      dayPlans.forEach(p=>{
+        h+='<div class="cal-day-task" style="border-left-color:#ff9800">';
+        h+='<div class="cdt-body">';
+        if(p.building)h+='<span class="cdt-bld" style="background:#fff3e0;color:#e65100">'+esc(p.building)+'</span>';
+        h+='<div class="cdt-desc">'+esc(p.desc||'(미입력)')+'</div>';
+        if(p.dateEnd)h+='<div style="font-size:11px;color:var(--gray-500)">'+p.date+' ~ '+p.dateEnd+'</div>';
+        h+='</div></div>';
+      });
+      h+='</div>';
+    }
     h+='<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal()">닫기</button></div></div>';
     showModal(h);
     return;
@@ -2285,6 +2327,22 @@ function openCalDay(dateStr){
       }
       h+='</div></div>';
     });
+  }
+
+  // 작업예정 표시
+  if(dayPlans.length){
+    h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--gray-200)">';
+    h+='<div style="font-size:13px;font-weight:600;color:#e65100;margin-bottom:6px">📋 예정 작업 ('+dayPlans.length+')</div>';
+    dayPlans.forEach(p=>{
+      h+='<div class="cal-day-task" style="border-left-color:#ff9800">';
+      h+='<div class="cdt-body">';
+      if(p.building)h+='<span class="cdt-bld" style="background:#fff3e0;color:#e65100">'+esc(p.building)+'</span>';
+      h+='<div class="cdt-desc">'+esc(p.desc||'(미입력)')+'</div>';
+      if(p.note)h+='<div class="cdt-note">📝 '+esc(p.note)+'</div>';
+      if(p.dateEnd)h+='<div style="font-size:11px;color:var(--gray-500)">'+p.date+' ~ '+p.dateEnd+'</div>';
+      h+='</div></div>';
+    });
+    h+='</div>';
   }
 
   h+='<div class="modal-btns" style="margin-top:12px">';
