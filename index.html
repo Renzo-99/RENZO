@@ -296,6 +296,35 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .th-month-card .th-mc-stats{display:flex;gap:16px;margin-top:6px;font-size:12px;color:var(--gray-500)}
 .th-month-card .th-mc-stats b{color:var(--gray-800)}
 .th-empty{text-align:center;color:var(--gray-400);padding:40px 0;font-size:13px}
+
+/* 작업 예정 */
+.plan-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--gray-200)}
+.plan-header .plan-count{font-size:12px;color:var(--gray-500)}
+.plan-list{flex:1;overflow-y:auto;padding:8px 14px 14px}
+.plan-group-hdr{font-size:12px;font-weight:600;color:var(--gray-700);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:6px}
+.plan-group-hdr:first-child{margin-top:4px}
+.plan-group-hdr .plan-dday{font-size:10px;font-weight:600;padding:1px 6px;border-radius:99px}
+.plan-dday.today{background:var(--blue-bg);color:var(--blue)}
+.plan-dday.past{background:var(--red-bg);color:var(--red)}
+.plan-dday.soon{background:var(--orange-bg);color:var(--orange)}
+.plan-dday.future{background:var(--gray-100);color:var(--gray-500)}
+.plan-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;transition:.1s;border:1px solid var(--gray-200);margin-bottom:5px}
+.plan-item:hover{background:var(--gray-50);box-shadow:var(--shadow)}
+.plan-item.done{opacity:.5}
+.plan-item.done .plan-desc{text-decoration:line-through}
+.plan-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--gray-300);cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:.15s;font-size:10px}
+.plan-check:hover{border-color:var(--blue);background:var(--blue-bg)}
+.plan-item.done .plan-check{border-color:var(--green);background:var(--green);color:#fff}
+.plan-info{flex:1;min-width:0}
+.plan-bld{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:99px;display:inline-block;margin-bottom:2px}
+.plan-desc{font-size:12px;font-weight:500;color:var(--gray-800)}
+.plan-note{font-size:10px;color:var(--gray-500);margin-top:2px}
+.plan-actions{display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.plan-item:hover .plan-actions{opacity:1}
+.plan-actions button{width:24px;height:24px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:11px;color:var(--gray-400);transition:.15s}
+.plan-actions button:hover{background:var(--gray-100);color:var(--gray-700)}
+.plan-actions button.del:hover{color:var(--red);background:var(--red-bg)}
+.plan-actions button.move:hover{color:var(--green);background:var(--green-bg)}
 </style></head><body>
 
 <!-- 인쇄용 헤더 -->
@@ -336,6 +365,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
       <button id="tabStock" class="active" onclick="switchTab('stock')">재고 현황</button>
       <button id="tabHistory" onclick="switchTab('history')">입출고 내역</button>
       <button id="tabTasks" onclick="switchTab('tasks')">작업 이력</button>
+      <button id="tabPlan" onclick="switchTab('plan')">작업 예정</button>
     </div>
     <div id="stockView">
       <div class="inv-search">
@@ -354,6 +384,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     </div>
     <div id="historyView" style="display:none;flex:1;overflow-y:auto;padding:14px"></div>
     <div id="tasksView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
+    <div id="planView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
   </div>
 </div>
 
@@ -406,7 +437,7 @@ const DAY_NAMES=['월요일','화요일','수요일','목요일','금요일'];
 const DOW_SHORT=['일','월','화','수','목','금','토'];
 
 // === 상태 ===
-let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[],
+let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동'];
@@ -421,7 +452,7 @@ function debouncedRenderInventory(){clearTimeout(_debounceTimer);_debounceTimer=
 // === 자동 백업 타이머 (5분) ===
 let _autoBackupTimer=null,_lastDataHash='';
 function getDataHash(){
-  let s=JSON.stringify(products)+JSON.stringify(history)+JSON.stringify(holidays)+JSON.stringify(buildings);
+  let s=JSON.stringify(products)+JSON.stringify(history)+JSON.stringify(holidays)+JSON.stringify(buildings)+JSON.stringify(plans);
   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('ws3_week_'))s+=localStorage.getItem(k);}
   let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}
   return h.toString();
@@ -456,11 +487,11 @@ function checkLocalStorage(){
 // === 초기화 ===
 async function init(){
   if(!checkLocalStorage()){
-    loadProducts();loadHistory();loadHolidays();loadBuildings();
+    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     return;
   }
-  loadProducts();loadHistory();loadHolidays();loadBuildings();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
   // 클라우드 동기화는 사용자가 수동으로 ☁️ 버튼을 눌렀을 때만 실행
@@ -496,6 +527,8 @@ function loadHistory(){const s=localStorage.getItem('ws3_history');history=s?JSO
 function loadHolidays(){const s=localStorage.getItem('ws3_holidays');holidays=s?JSON.parse(s):{};}
 function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings=s?JSON.parse(s):BUILDINGS_DEFAULT.slice();}
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
+function loadPlans(){const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];}
+function savePlans(){safeSave('ws3_plans',plans);}
 function safeSave(key,data){
   try{localStorage.setItem(key,JSON.stringify(data));
     // 변경 시각 기록 (클라우드 동기화 충돌 해결용)
@@ -1195,11 +1228,14 @@ function switchTab(tab){
   document.getElementById('tabStock').className=tab==='stock'?'active':'';
   document.getElementById('tabHistory').className=tab==='history'?'active':'';
   document.getElementById('tabTasks').className=tab==='tasks'?'active':'';
+  document.getElementById('tabPlan').className=tab==='plan'?'active':'';
   document.getElementById('stockView').style.display=tab==='stock'?'flex':'none';
   document.getElementById('historyView').style.display=tab==='history'?'block':'none';
   document.getElementById('tasksView').style.display=tab==='tasks'?'flex':'none';
+  document.getElementById('planView').style.display=tab==='plan'?'flex':'none';
   if(tab==='history')renderHistory();
   if(tab==='tasks')renderTaskHistory();
+  if(tab==='plan')renderPlanList();
 }
 
 function renderHistory(){
@@ -1355,7 +1391,7 @@ function createSnapshot(reason){
     id:Date.now(),
     reason:reason||'수동 백업',
     date:new Date().toISOString(),
-    data:{products,history,holidays,buildings,weeks:allWeeks}
+    data:{products,history,holidays,buildings,plans,weeks:allWeeks}
   };
   const backups=getBackups();
   backups.unshift(snapshot);
@@ -1377,6 +1413,7 @@ function restoreBackup(id){
   history=d.history||[];saveHistory();
   holidays=d.holidays||{};saveHolidays();
   buildings=d.buildings||BUILDINGS_DEFAULT.slice();saveBuildings();
+  plans=d.plans||[];savePlans();
   if(d.weeks){Object.entries(d.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
   recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
   toast('✅ 백업이 복원되었습니다');
@@ -1394,7 +1431,8 @@ function getBackupSummary(d){
   const pCount=(d.products||[]).length;
   const hCount=(d.history||[]).length;
   const wCount=Object.keys(d.weeks||{}).length;
-  return '품목 '+pCount+'개 · 내역 '+hCount+'건 · 주차 '+wCount+'개';
+  const plCount=(d.plans||[]).length;
+  return '품목 '+pCount+'개 · 내역 '+hCount+'건 · 주차 '+wCount+'개 · 예정 '+plCount+'개';
 }
 function openBackupManager(){
   const backups=getBackups();
@@ -1434,7 +1472,7 @@ function exportData(){
     const k=localStorage.key(i);
     if(k.startsWith('ws3_week_'))allWeeks[k]=JSON.parse(localStorage.getItem(k));
   }
-  const data={version:5,exportDate:new Date().toISOString(),products,history,holidays,buildings,weeks:allWeeks};
+  const data={version:6,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans,weeks:allWeeks};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -1462,6 +1500,7 @@ function importData(event){
       if(data.history){history=data.history;saveHistory();}
       if(data.holidays){holidays=data.holidays;saveHolidays();}
       if(data.buildings){buildings=data.buildings;saveBuildings();}
+      if(data.plans){plans=data.plans;savePlans();}
       if(data.weeks){Object.entries(data.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
       recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
       toast('데이터를 불러왔습니다');
@@ -1527,10 +1566,11 @@ function toast(msg){
 
 // === 새로고침 (로컬 데이터만 다시 로드) ===
 async function refreshAll(){
-  loadProducts();loadHistory();loadHolidays();loadBuildings();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();
   loadWeek();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
+  if(currentTab==='plan')renderPlanList();
   toast('새로고침 완료');
 }
 // === 클라우드에서 수동으로 불러오기 ===
@@ -1539,10 +1579,11 @@ async function pullFromCloud(){
   updateSyncStatus('syncing');
   const ok=await loadFromCloud();
   if(ok){
-    loadProducts();loadHistory();loadHolidays();loadBuildings();
+    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();
     loadWeek();renderFilterBar();renderInventory();renderAlerts();
     if(currentTab==='history')renderHistory();
     if(currentTab==='tasks')renderTaskHistory();
+    if(currentTab==='plan')renderPlanList();
     updateSyncStatus('synced');
     toast('☁️ 클라우드 데이터를 불러왔습니다');
   }else{
@@ -1630,6 +1671,176 @@ function navTH(dir){
   if(thMode==='month'){thMonth+=dir;if(thMonth<1){thMonth=12;thYear--;}if(thMonth>12){thMonth=1;thYear++;}}
   else{thYear+=dir;}
   renderTaskHistory();
+}
+
+// === 작업 예정 ===
+let planFilter='all'; // all, pending, done
+
+function renderPlanList(){
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+
+  // 필터링
+  let filtered=plans.slice();
+  if(planFilter==='pending')filtered=filtered.filter(p=>!p.done);
+  if(planFilter==='done')filtered=filtered.filter(p=>p.done);
+
+  // 날짜순 정렬 (가까운 날짜 먼저, 완료는 뒤로)
+  filtered.sort((a,b)=>{
+    if(a.done!==b.done)return a.done?1:-1;
+    return a.date.localeCompare(b.date);
+  });
+
+  const pending=plans.filter(p=>!p.done).length;
+  const done=plans.filter(p=>p.done).length;
+
+  let h='<div class="plan-header">';
+  h+='<div style="display:flex;gap:4px">';
+  h+='<button class="btn btn-sm '+(planFilter==='all'?'btn-blue':'btn-outline')+'" onclick="planFilter=\'all\';renderPlanList()">전체 '+plans.length+'</button>';
+  h+='<button class="btn btn-sm '+(planFilter==='pending'?'btn-blue':'btn-outline')+'" onclick="planFilter=\'pending\';renderPlanList()">미완료 '+pending+'</button>';
+  h+='<button class="btn btn-sm '+(planFilter==='done'?'btn-blue':'btn-outline')+'" onclick="planFilter=\'done\';renderPlanList()">완료 '+done+'</button>';
+  h+='</div>';
+  h+='<button class="btn btn-blue btn-sm" onclick="openPlanForm()">+ 추가</button>';
+  h+='</div>';
+
+  h+='<div class="plan-list">';
+  if(!filtered.length){
+    h+='<p class="th-empty">'+(planFilter==='done'?'완료된 작업이 없습니다':(planFilter==='pending'?'미완료 작업이 없습니다':'작업 예정이 없습니다.<br>상단 + 추가 버튼으로 등록하세요.'))+'</p>';
+  }else{
+    let lastDate='';
+    filtered.forEach(p=>{
+      if(p.date!==lastDate){
+        lastDate=p.date;
+        const pts=p.date.split('-');
+        const d=new Date(parseInt(pts[0]),parseInt(pts[1])-1,parseInt(pts[2]));
+        d.setHours(0,0,0,0);
+        const diff=Math.round((d-today)/864e5);
+        const dowStr=DOW_SHORT[d.getDay()];
+        let ddayClass='future',ddayText='';
+        if(diff<0){ddayClass='past';ddayText='D+'+Math.abs(diff);}
+        else if(diff===0){ddayClass='today';ddayText='오늘';}
+        else if(diff<=3){ddayClass='soon';ddayText='D-'+diff;}
+        else{ddayClass='future';ddayText='D-'+diff;}
+        h+='<div class="plan-group-hdr">'+p.date+' ('+dowStr+') <span class="plan-dday '+ddayClass+'">'+ddayText+'</span></div>';
+      }
+      h+='<div class="plan-item'+(p.done?' done':'')+'">';
+      h+='<div class="plan-check" onclick="togglePlan('+p.id+')">'+(p.done?'✓':'')+'</div>';
+      h+='<div class="plan-info">';
+      if(p.building)h+='<span class="plan-bld">'+esc(p.building)+'</span>';
+      h+='<div class="plan-desc">'+esc(p.desc||'(내용 없음)')+'</div>';
+      if(p.note)h+='<div class="plan-note">📝 '+esc(p.note)+'</div>';
+      h+='</div>';
+      h+='<div class="plan-actions">';
+      if(!p.done)h+='<button class="move" onclick="movePlanToWeek('+p.id+')" title="이번 주 작업으로 전환">→</button>';
+      h+='<button onclick="openPlanForm('+p.id+')" title="수정">✏️</button>';
+      h+='<button class="del" onclick="deletePlan('+p.id+')" title="삭제">🗑</button>';
+      h+='</div></div>';
+    });
+  }
+  h+='</div>';
+  document.getElementById('planView').innerHTML=h;
+}
+
+function openPlanForm(pid){
+  const p=pid?plans.find(x=>x.id===pid):null;
+  const isEdit=!!p;
+  // 기본 날짜: 오늘 또는 기존 값
+  const defDate=p?p.date:new Date().toISOString().slice(0,10);
+  let h='<div class="modal"><h2>'+(isEdit?'✏️ 예정 작업 수정':'📋 예정 작업 추가')+'</h2>';
+  h+='<label>예정일</label>';
+  h+='<input type="date" id="planDate" value="'+defDate+'">';
+  h+='<label>건물</label>';
+  h+='<select id="planBuilding">';
+  h+='<option value="">건물 선택...</option>';
+  buildings.forEach(b=>{h+='<option value="'+esc(b)+'"'+(p&&p.building===b?' selected':'')+'>'+esc(b)+'</option>';});
+  h+='</select>';
+  h+='<label>작업 내용</label>';
+  h+='<input id="planDesc" value="'+esc(p?p.desc:'')+'" placeholder="작업 내용 입력...">';
+  h+='<label>비고</label>';
+  h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)">';
+  h+='<div class="modal-btns">';
+  h+='<button class="btn btn-outline" onclick="closeModal()">취소</button>';
+  h+='<button class="btn btn-blue" onclick="savePlan('+(pid||'null')+')">'+(isEdit?'저장':'추가')+'</button>';
+  h+='</div></div>';
+  showModal(h);
+  setTimeout(()=>document.getElementById('planDesc')?.focus(),50);
+}
+
+function savePlan(pid){
+  const date=document.getElementById('planDate').value;
+  const building=document.getElementById('planBuilding').value;
+  const desc=document.getElementById('planDesc').value.trim();
+  const note=document.getElementById('planNote').value.trim();
+  if(!date){toast('예정일을 선택하세요');return;}
+  if(!desc){toast('작업 내용을 입력하세요');return;}
+
+  if(pid){
+    const p=plans.find(x=>x.id===pid);
+    if(p){p.date=date;p.building=building;p.desc=desc;p.note=note;}
+    toast('예정 작업이 수정되었습니다');
+  }else{
+    plans.push({id:nextId++,date,building,desc,note,done:false});
+    toast('예정 작업이 추가되었습니다');
+  }
+  savePlans();closeModal();renderPlanList();
+}
+
+function togglePlan(pid){
+  const p=plans.find(x=>x.id===pid);
+  if(p){p.done=!p.done;savePlans();renderPlanList();}
+}
+
+function deletePlan(pid){
+  const p=plans.find(x=>x.id===pid);
+  if(!p)return;
+  if(!confirm('"'+( p.desc||'(미입력)')+'" 예정 작업을 삭제하시겠습니까?'))return;
+  plans=plans.filter(x=>x.id!==pid);
+  savePlans();renderPlanList();
+  toast('예정 작업이 삭제되었습니다');
+}
+
+// 예정 작업을 현재 주간 보고서의 해당 요일로 전환
+function movePlanToWeek(pid){
+  const p=plans.find(x=>x.id===pid);
+  if(!p)return;
+
+  // 예정일이 속한 주차 찾기
+  const pts=p.date.split('-');
+  const date=new Date(parseInt(pts[0]),parseInt(pts[1])-1,parseInt(pts[2]));
+  const dow=date.getDay(); // 0=일
+  if(dow===0||dow===6){toast('주말 날짜는 주간 보고서에 추가할 수 없습니다');return;}
+  const dayIndex=dow-1; // 월=0 ~ 금=4
+
+  // ISO 주차 계산
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));
+  const weekYear=d.getUTCFullYear();
+  const y1=new Date(Date.UTC(weekYear,0,1));
+  const weekNum=Math.ceil((((d-y1)/864e5)+1)/7);
+
+  // 해당 주차 데이터 로드 또는 생성
+  const weekKey='ws3_week_'+weekYear+'_'+weekNum;
+  let weekData;
+  try{weekData=JSON.parse(localStorage.getItem(weekKey));}catch(e){weekData=null;}
+  if(!weekData){
+    const mon=getMondayOf(weekYear,weekNum);
+    weekData=DAY_NAMES.map((n,i)=>{const dd=new Date(mon);dd.setDate(mon.getDate()+i);return{dn:n,dt:fmt(dd),tasks:[]};});
+  }
+
+  // 작업 추가
+  weekData[dayIndex].tasks.push({id:nextId++,desc:p.desc,building:p.building,note:p.note||'',mats:[]});
+  safeSave(weekKey,weekData);
+
+  // 현재 주차면 메모리 갱신
+  if(weekYear===yr&&weekNum===wk){days=weekData;renderReport();}
+
+  // 예정에서 완료 처리
+  p.done=true;
+  savePlans();renderPlanList();
+
+  const dowNames=['일','월','화','수','목','금','토'];
+  toast(weekYear+'년 '+weekNum+'주차 '+dowNames[dow]+'요일에 작업이 추가되었습니다');
 }
 
 // === 클라우드 연동 (form POST 저장 + 다중 읽기) ===
@@ -1739,6 +1950,7 @@ async function uploadAllToCloud(){
   items.push({key:'history',value:JSON.stringify(history)});
   items.push({key:'holidays',value:JSON.stringify(holidays)});
   items.push({key:'buildings',value:JSON.stringify(buildings)});
+  items.push({key:'plans',value:JSON.stringify(plans)});
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
     if(k&&k.startsWith('ws3_week_'))items.push({key:k.replace('ws3_',''),value:localStorage.getItem(k)});
