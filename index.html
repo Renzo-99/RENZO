@@ -2276,12 +2276,15 @@ function openCalDay(dateStr){
     let h='<div class="modal"><h2>'+month+'월 '+day+'일 ('+dowStr+')</h2>';
     h+='<p class="cal-no-task">주말은 작업을 등록할 수 없습니다.</p>';
     if(dayPlans.length){
-      h+='<div style="margin-top:8px"><div style="font-size:13px;font-weight:600;color:#e65100;margin-bottom:6px">📋 예정 작업</div>';
-      dayPlans.forEach(p=>{
+      h+='<div style="margin-top:8px">';
+      dayPlans.forEach((p,idx)=>{
         h+='<div class="cal-day-task" style="border-left-color:#ff9800">';
+        h+='<div class="cdt-num">'+(idx+1)+'</div>';
         h+='<div class="cdt-body">';
+        h+='<span style="font-size:10px;font-weight:600;color:#e65100;background:#fff3e0;padding:1px 6px;border-radius:99px;margin-right:4px">예정</span>';
         if(p.building)h+='<span class="cdt-bld" style="background:#fff3e0;color:#e65100">'+esc(p.building)+'</span>';
         h+='<div class="cdt-desc">'+esc(p.desc||'(미입력)')+'</div>';
+        if(p.note)h+='<div class="cdt-note">📝 '+esc(p.note)+'</div>';
         if(p.dateEnd)h+='<div style="font-size:11px;color:var(--gray-500)">'+p.date+' ~ '+p.dateEnd+'</div>';
         h+='</div></div>';
       });
@@ -2311,38 +2314,35 @@ function openCalDay(dateStr){
   h+='<span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:auto">'+weekYear+'년 '+weekNum+'주차</span>';
   h+='</div>';
 
-  if(!tasks.length){
+  // 주간 작업 + 예정 작업 통합 목록
+  const allItems=[];
+  tasks.forEach((t,ti)=>{allItems.push({type:'task',data:t,ti});});
+  dayPlans.forEach(p=>{allItems.push({type:'plan',data:p});});
+
+  if(!allItems.length){
     h+='<p class="cal-no-task">등록된 작업이 없습니다</p>';
   }else{
-    tasks.forEach((t,ti)=>{
-      h+='<div class="cal-day-task" onclick="calEditTask('+weekYear+','+weekNum+','+dayIndex+','+ti+')">';
-      h+='<div class="cdt-num">'+(ti+1)+'</div>';
+    allItems.forEach((item,idx)=>{
+      const t=item.data;
+      const isPlan=item.type==='plan';
+      if(isPlan){
+        h+='<div class="cal-day-task" style="border-left-color:#ff9800">';
+      }else{
+        h+='<div class="cal-day-task" onclick="calEditTask('+weekYear+','+weekNum+','+dayIndex+','+item.ti+')">';
+      }
+      h+='<div class="cdt-num">'+(idx+1)+'</div>';
       h+='<div class="cdt-body">';
-      if(t.building)h+='<span class="cdt-bld">'+esc(t.building)+'</span>';
+      if(isPlan)h+='<span style="font-size:10px;font-weight:600;color:#e65100;background:#fff3e0;padding:1px 6px;border-radius:99px;margin-right:4px">예정</span>';
+      if(t.building)h+='<span class="cdt-bld"'+(isPlan?' style="background:#fff3e0;color:#e65100"':'')+'>'+esc(t.building)+'</span>';
       h+='<div class="cdt-desc">'+(esc(t.desc)||'<span style="color:var(--gray-400)">(내용 없음)</span>')+'</div>';
       if(t.note)h+='<div class="cdt-note">📝 '+esc(t.note)+'</div>';
-      if(t.mats&&t.mats.length){
+      if(!isPlan&&t.mats&&t.mats.length){
         const mn=t.mats.map(m=>{const p=productMap.get(m.pid);return(p?p.name:'?')+'×'+m.qty;});
         h+='<div class="cdt-mats">📦 '+esc(mn.join(', '))+'</div>';
       }
+      if(isPlan&&t.dateEnd)h+='<div style="font-size:11px;color:var(--gray-500)">'+t.date+' ~ '+t.dateEnd+'</div>';
       h+='</div></div>';
     });
-  }
-
-  // 작업예정 표시
-  if(dayPlans.length){
-    h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--gray-200)">';
-    h+='<div style="font-size:13px;font-weight:600;color:#e65100;margin-bottom:6px">📋 예정 작업 ('+dayPlans.length+')</div>';
-    dayPlans.forEach(p=>{
-      h+='<div class="cal-day-task" style="border-left-color:#ff9800">';
-      h+='<div class="cdt-body">';
-      if(p.building)h+='<span class="cdt-bld" style="background:#fff3e0;color:#e65100">'+esc(p.building)+'</span>';
-      h+='<div class="cdt-desc">'+esc(p.desc||'(미입력)')+'</div>';
-      if(p.note)h+='<div class="cdt-note">📝 '+esc(p.note)+'</div>';
-      if(p.dateEnd)h+='<div style="font-size:11px;color:var(--gray-500)">'+p.date+' ~ '+p.dateEnd+'</div>';
-      h+='</div></div>';
-    });
-    h+='</div>';
   }
 
   h+='<div class="modal-btns" style="margin-top:12px">';
