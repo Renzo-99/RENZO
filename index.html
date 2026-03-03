@@ -1686,10 +1686,12 @@ function renderPlanList(){
   if(planFilter==='pending')filtered=filtered.filter(p=>!p.done);
   if(planFilter==='done')filtered=filtered.filter(p=>p.done);
 
-  // 날짜순 정렬 (가까운 날짜 먼저, 완료는 뒤로)
+  // 날짜순 정렬 (시작일 기준, 완료는 뒤로)
   filtered.sort((a,b)=>{
     if(a.done!==b.done)return a.done?1:-1;
-    return a.date.localeCompare(b.date);
+    const cmp=a.date.localeCompare(b.date);
+    if(cmp!==0)return cmp;
+    return (a.dateEnd||a.date).localeCompare(b.dateEnd||b.date);
   });
 
   const pending=plans.filter(p=>!p.done).length;
@@ -1708,21 +1710,33 @@ function renderPlanList(){
   if(!filtered.length){
     h+='<p class="th-empty">'+(planFilter==='done'?'완료된 작업이 없습니다':(planFilter==='pending'?'미완료 작업이 없습니다':'작업 예정이 없습니다.<br>상단 + 추가 버튼으로 등록하세요.'))+'</p>';
   }else{
-    let lastDate='';
+    let lastGroupKey='';
     filtered.forEach(p=>{
-      if(p.date!==lastDate){
-        lastDate=p.date;
+      const groupKey=p.date+(p.dateEnd||'');
+      if(groupKey!==lastGroupKey){
+        lastGroupKey=groupKey;
         const pts=p.date.split('-');
-        const d=new Date(parseInt(pts[0]),parseInt(pts[1])-1,parseInt(pts[2]));
-        d.setHours(0,0,0,0);
-        const diff=Math.round((d-today)/864e5);
-        const dowStr=DOW_SHORT[d.getDay()];
+        const startD=new Date(parseInt(pts[0]),parseInt(pts[1])-1,parseInt(pts[2]));
+        startD.setHours(0,0,0,0);
+        const startDow=DOW_SHORT[startD.getDay()];
+        // D-day는 종료일 기준 (기간이면 종료일, 단일이면 해당 날짜)
+        const endDateStr=p.dateEnd||p.date;
+        const epts=endDateStr.split('-');
+        const endD=new Date(parseInt(epts[0]),parseInt(epts[1])-1,parseInt(epts[2]));
+        endD.setHours(0,0,0,0);
+        const diff=Math.round((endD-today)/864e5);
         let ddayClass='future',ddayText='';
         if(diff<0){ddayClass='past';ddayText='D+'+Math.abs(diff);}
         else if(diff===0){ddayClass='today';ddayText='오늘';}
         else if(diff<=3){ddayClass='soon';ddayText='D-'+diff;}
         else{ddayClass='future';ddayText='D-'+diff;}
-        h+='<div class="plan-group-hdr">'+p.date+' ('+dowStr+') <span class="plan-dday '+ddayClass+'">'+ddayText+'</span></div>';
+        if(p.dateEnd){
+          const endDow=DOW_SHORT[endD.getDay()];
+          const rangeDays=Math.round((endD-startD)/864e5)+1;
+          h+='<div class="plan-group-hdr">'+p.date+' ('+startDow+') ~ '+p.dateEnd+' ('+endDow+') <span style="font-size:11px;color:var(--gray-500)">'+rangeDays+'일간</span> <span class="plan-dday '+ddayClass+'">'+ddayText+'</span></div>';
+        }else{
+          h+='<div class="plan-group-hdr">'+p.date+' ('+startDow+') <span class="plan-dday '+ddayClass+'">'+ddayText+'</span></div>';
+        }
       }
       h+='<div class="plan-item'+(p.done?' done':'')+'">';
       h+='<div class="plan-check" onclick="togglePlan('+p.id+')">'+(p.done?'✓':'')+'</div>';
@@ -1742,14 +1756,30 @@ function renderPlanList(){
   document.getElementById('planView').innerHTML=h;
 }
 
+function togglePlanRange(){
+  const cb=document.getElementById('planRangeToggle');
+  const el=document.getElementById('planRangeEndWrap');
+  if(cb.checked){
+    el.style.display='';
+    const start=document.getElementById('planDate').value;
+    const endEl=document.getElementById('planDateEnd');
+    if(start&&!endEl.value)endEl.value=start;
+  }else{el.style.display='none';}
+}
 function openPlanForm(pid){
   const p=pid?plans.find(x=>x.id===pid):null;
   const isEdit=!!p;
-  // 기본 날짜: 오늘 또는 기존 값
   const defDate=p?p.date:new Date().toISOString().slice(0,10);
+  const hasRange=p&&p.dateEnd;
+  const defDateEnd=p&&p.dateEnd?p.dateEnd:'';
   let h='<div class="modal"><h2>'+(isEdit?'✏️ 예정 작업 수정':'📋 예정 작업 추가')+'</h2>';
-  h+='<label>예정일</label>';
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><label style="margin:0">시작일</label>';
+  h+='<label style="margin:0;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--gray-500);cursor:pointer"><input type="checkbox" id="planRangeToggle" onchange="togglePlanRange()"'+(hasRange?' checked':'')+'>기간 설정</label></div>';
   h+='<input type="date" id="planDate" value="'+defDate+'">';
+  h+='<div id="planRangeEndWrap" style="'+(hasRange?'':'display:none')+'">';
+  h+='<label>종료일</label>';
+  h+='<input type="date" id="planDateEnd" value="'+defDateEnd+'">';
+  h+='</div>';
   h+='<label>건물</label>';
   h+='<select id="planBuilding">';
   h+='<option value="">건물 선택...</option>';
@@ -1772,15 +1802,19 @@ function savePlan(pid){
   const building=document.getElementById('planBuilding').value;
   const desc=document.getElementById('planDesc').value.trim();
   const note=document.getElementById('planNote').value.trim();
-  if(!date){toast('예정일을 선택하세요');return;}
+  const rangeOn=document.getElementById('planRangeToggle').checked;
+  const dateEnd=rangeOn?document.getElementById('planDateEnd').value:'';
+  if(!date){toast('시작일을 선택하세요');return;}
   if(!desc){toast('작업 내용을 입력하세요');return;}
+  if(rangeOn&&!dateEnd){toast('종료일을 선택하세요');return;}
+  if(rangeOn&&dateEnd<date){toast('종료일이 시작일보다 앞설 수 없습니다');return;}
 
   if(pid){
     const p=plans.find(x=>x.id===pid);
-    if(p){p.date=date;p.building=building;p.desc=desc;p.note=note;}
+    if(p){p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;}
     toast('예정 작업이 수정되었습니다');
   }else{
-    plans.push({id:nextId++,date,building,desc,note,done:false});
+    plans.push({id:nextId++,date,dateEnd:dateEnd||null,building,desc,note,done:false});
     toast('예정 작업이 추가되었습니다');
   }
   savePlans();closeModal();renderPlanList();
@@ -1800,26 +1834,21 @@ function deletePlan(pid){
   toast('예정 작업이 삭제되었습니다');
 }
 
-// 예정 작업을 현재 주간 보고서의 해당 요일로 전환
-function movePlanToWeek(pid){
-  const p=plans.find(x=>x.id===pid);
-  if(!p)return;
-
-  // 예정일이 속한 주차 찾기
-  const pts=p.date.split('-');
-  const date=new Date(parseInt(pts[0]),parseInt(pts[1])-1,parseInt(pts[2]));
-  const dow=date.getDay(); // 0=일
-  if(dow===0||dow===6){toast('주말 날짜는 주간 보고서에 추가할 수 없습니다');return;}
-  const dayIndex=dow-1; // 월=0 ~ 금=4
-
-  // ISO 주차 계산
+// ISO 주차 계산 헬퍼
+function getISOWeekInfo(date){
   const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
   d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));
   const weekYear=d.getUTCFullYear();
   const y1=new Date(Date.UTC(weekYear,0,1));
   const weekNum=Math.ceil((((d-y1)/864e5)+1)/7);
-
-  // 해당 주차 데이터 로드 또는 생성
+  return{weekYear,weekNum};
+}
+// 단일 날짜를 주간 보고서에 추가하는 헬퍼
+function addDateToWeek(date,desc,building,note){
+  const dow=date.getDay();
+  if(dow===0||dow===6)return null; // 주말 건너뛰기
+  const dayIndex=dow-1;
+  const{weekYear,weekNum}=getISOWeekInfo(date);
   const weekKey='ws3_week_'+weekYear+'_'+weekNum;
   let weekData;
   try{weekData=JSON.parse(localStorage.getItem(weekKey));}catch(e){weekData=null;}
@@ -1827,20 +1856,46 @@ function movePlanToWeek(pid){
     const mon=getMondayOf(weekYear,weekNum);
     weekData=DAY_NAMES.map((n,i)=>{const dd=new Date(mon);dd.setDate(mon.getDate()+i);return{dn:n,dt:fmt(dd),tasks:[]};});
   }
-
-  // 작업 추가
-  weekData[dayIndex].tasks.push({id:nextId++,desc:p.desc,building:p.building,note:p.note||'',mats:[]});
+  weekData[dayIndex].tasks.push({id:nextId++,desc,building,note:note||'',mats:[]});
   safeSave(weekKey,weekData);
-
   // 현재 주차면 메모리 갱신
   if(weekYear===yr&&weekNum===wk){days=weekData;renderReport();}
+  return{weekYear,weekNum,dow};
+}
+// 예정 작업을 주간 보고서로 전환
+function movePlanToWeek(pid){
+  const p=plans.find(x=>x.id===pid);
+  if(!p)return;
 
-  // 예정에서 완료 처리
-  p.done=true;
-  savePlans();renderPlanList();
-
-  const dowNames=['일','월','화','수','목','금','토'];
-  toast(weekYear+'년 '+weekNum+'주차 '+dowNames[dow]+'요일에 작업이 추가되었습니다');
+  if(p.dateEnd){
+    // 기간 작업: 시작~종료 사이 모든 평일에 추가
+    const spts=p.date.split('-');
+    const startD=new Date(parseInt(spts[0]),parseInt(spts[1])-1,parseInt(spts[2]));
+    const epts=p.dateEnd.split('-');
+    const endD=new Date(parseInt(epts[0]),parseInt(epts[1])-1,parseInt(epts[2]));
+    let addedCount=0;
+    const cur=new Date(startD);
+    while(cur<=endD){
+      if(addDateToWeek(cur,p.desc,p.building,p.note))addedCount++;
+      cur.setDate(cur.getDate()+1);
+    }
+    if(!addedCount){toast('기간 내 평일이 없습니다');return;}
+    p.done=true;
+    savePlans();renderPlanList();
+    toast(p.date+' ~ '+p.dateEnd+' 기간의 평일 '+addedCount+'일에 작업이 추가되었습니다');
+  }else{
+    // 단일 날짜
+    const pts=p.date.split('-');
+    const date=new Date(parseInt(pts[0]),parseInt(pts[1])-1,parseInt(pts[2]));
+    const dow=date.getDay();
+    if(dow===0||dow===6){toast('주말 날짜는 주간 보고서에 추가할 수 없습니다');return;}
+    const result=addDateToWeek(date,p.desc,p.building,p.note);
+    if(!result)return;
+    p.done=true;
+    savePlans();renderPlanList();
+    const dowNames=['일','월','화','수','목','금','토'];
+    toast(result.weekYear+'년 '+result.weekNum+'주차 '+dowNames[result.dow]+'요일에 작업이 추가되었습니다');
+  }
 }
 
 // === 클라우드 연동 (form POST 저장 + 다중 읽기) ===
