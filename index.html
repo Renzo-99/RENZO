@@ -755,18 +755,14 @@ function renderReport(){
   h+='<div class="summary-item"><div class="val blue">'+totalMats+'</div><div class="lbl">자재 사용</div></div>';
   h+='<div class="sep"></div>';
   h+='<div class="summary-item"><div class="val">'+usedProducts.size+'</div><div class="lbl">사용 품목</div></div>';
-  h+='<div class="sep"></div>';
-  h+='<div class="summary-item" style="cursor:pointer" onclick="openLeaveManager()"><div class="val" style="color:#7c3aed">'+leaves.length+'</div><div class="lbl">🏖️ 연차</div></div>';
   h+='</div></div>';
 
   days.forEach((d,di)=>{
     const dateKey=getDayDate(di);
     const isHoliday=!!holidays[dateKey];
-    const leave=getLeaveForDate(dateKey);
     h+='<div class="day-header'+(isHoliday?' holiday':'')+'">';
     h+='<div class="left-part"><div class="day-dot"></div><h3>'+d.dn+'</h3><span class="date">'+d.dt+'</span>';
     if(isHoliday)h+='<span class="holiday-badge" onclick="removeHoliday(\''+dateKey+'\')">'+esc(holidays[dateKey])+' ✕</span>';
-    if(leave)h+='<span class="leave-badge" onclick="openLeaveManager()">🏖️ '+esc(leave.type)+'</span>';
     h+='</div>';
     h+='<div class="right-part">';
     if(!isHoliday)h+='<button class="holiday-btn" onclick="openHolidayInput('+di+',\''+dateKey+'\')">📅 공휴일</button>';
@@ -1108,7 +1104,7 @@ function removeHoliday(dateKey){
 }
 
 // === 연차/휴가 관리 ===
-const LEAVE_TYPES=['전일','오전반차','오후반차','반반차'];
+const LEAVE_TYPES=['전일','오전반차','오후반차','반반차','오전반반차','오후반반차'];
 function openLeaveManager(){
   let h='<div class="modal" style="max-width:420px"><h2>🏖️ 연차/휴가 관리</h2>';
   h+='<div class="leave-form">';
@@ -1119,7 +1115,7 @@ function openLeaveManager(){
   h+='<button class="btn btn-blue btn-sm" onclick="addLeave()">추가</button>';
   h+='</div>';
   h+='<div class="leave-list" id="leaveList"></div>';
-  h+='<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal()">닫기</button></div></div>';
+  h+='<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal();renderCalendar()">닫기</button></div></div>';
   showModal(h);
   // 오늘 날짜 기본값
   const today=new Date();
@@ -1153,16 +1149,22 @@ function addLeave(){
   // 중복 체크
   if(leaves.find(l=>l.date===dateVal)){toast('이미 등록된 날짜입니다');return;}
   leaves.push({date:dateVal,type:type});
-  saveLeaves();renderLeaveList();renderReport();
+  saveLeaves();renderLeaveList();
   toast(dateVal+' '+type+' 연차 등록');
 }
 function removeLeave(dateStr){
   leaves=leaves.filter(l=>l.date!==dateStr);
-  saveLeaves();renderLeaveList();renderReport();
+  saveLeaves();renderLeaveList();
   toast('연차 삭제 완료');
 }
 function getLeaveForDate(dateKey){
   return leaves.find(l=>l.date===dateKey)||null;
+}
+function addLeaveFromCal(dateStr,type){
+  if(leaves.find(l=>l.date===dateStr)){toast('이미 등록된 날짜입니다');return;}
+  leaves.push({date:dateStr,type:type});
+  saveLeaves();renderCalendar();closeModal();openCalDay(dateStr);
+  toast(type+' 연차 등록');
 }
 
 // === 자재 관리 (작업 내 출고) ===
@@ -2327,6 +2329,7 @@ function renderCalendar(){
   h+='<span class="cal-label">'+calYear+'년 '+calMonth+'월</span>';
   h+='<button class="btn btn-ghost btn-sm" onclick="navCal(1)">▶</button>';
   h+='<button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="calYear='+today.getFullYear()+';calMonth='+(today.getMonth()+1)+';renderCalendar()">오늘</button>';
+  h+='<button class="btn btn-outline btn-sm" style="margin-left:8px;color:#7c3aed;border-color:#7c3aed" onclick="openLeaveManager()">🏖️ 연차 관리</button>';
   h+='<button class="btn btn-ghost btn-sm" style="margin-left:12px;font-size:16px" onclick="closeCalendar()" title="닫기">✕</button>';
   h+='</div></div>';
   // 달력
@@ -2482,6 +2485,22 @@ function openCalDay(dateStr){
       if(isPlan&&t.dateEnd)h+='<div style="font-size:11px;color:var(--gray-500)">'+t.date+' ~ '+t.dateEnd+'</div>';
       h+='</div></div>';
     });
+  }
+
+  // 연차 추가/삭제
+  if(calDayLeave){
+    h+='<div style="margin-top:10px;padding:8px 10px;background:#f3e8ff;border-radius:8px;display:flex;align-items:center;justify-content:space-between">';
+    h+='<span style="font-size:13px;color:#7c3aed;font-weight:600">🏖️ '+esc(calDayLeave.type)+'</span>';
+    h+='<button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="removeLeave(\''+dateStr+'\');closeModal();renderCalendar()">연차 삭제</button>';
+    h+='</div>';
+  }else{
+    h+='<div style="margin-top:10px;padding:8px 10px;border:1px dashed var(--gray-300);border-radius:8px">';
+    h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">';
+    h+='<span style="font-size:12px;color:var(--gray-500);font-weight:600">🏖️ 연차:</span>';
+    LEAVE_TYPES.forEach(t=>{
+      h+='<button class="btn btn-outline btn-sm" style="font-size:11px;padding:2px 8px;color:#7c3aed;border-color:#c4b5fd" onclick="addLeaveFromCal(\''+dateStr+'\',\''+t+'\')">'+t+'</button>';
+    });
+    h+='</div></div>';
   }
 
   h+='<div class="modal-btns" style="margin-top:12px">';
