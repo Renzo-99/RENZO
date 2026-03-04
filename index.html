@@ -2944,6 +2944,23 @@ function importRoomExcel(e){
 
       if(!allNewRooms.length){toast('엑셀 파일에 유효한 데이터가 없습니다');return;}
 
+      // 건물명 정규화: 공백 차이로 같은 건물이 분리되는 문제 방지
+      // 예: "인문사회관 A동" vs "인문사회관A동" → 가장 많이 쓰인 이름으로 통일
+      const bldNormKey=s=>s.replace(/\s+/g,'');
+      const bldGroups={};
+      allNewRooms.forEach(r=>{
+        const key=bldNormKey(r.bld);
+        if(!bldGroups[key])bldGroups[key]={};
+        bldGroups[key][r.bld]=(bldGroups[key][r.bld]||0)+1;
+      });
+      const bldCanonical={};
+      for(const[key,variants] of Object.entries(bldGroups)){
+        // 가장 많이 쓰인 이름을 대표 이름으로 선정
+        const best=Object.entries(variants).sort((a,b)=>b[1]-a[1])[0][0];
+        bldCanonical[key]=best;
+      }
+      allNewRooms.forEach(r=>{r.bld=bldCanonical[bldNormKey(r.bld)]||r.bld;});
+
       const mode=rooms.length?confirm('기존 데이터에 추가하시겠습니까?\n[확인] = 추가 / [취소] = 전체 교체'):false;
       if(mode){rooms=rooms.concat(allNewRooms);}else{rooms=allNewRooms;}
       currentRoomBld=rooms[0]?.bld||'';
