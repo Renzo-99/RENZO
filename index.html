@@ -389,7 +389,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 </style></head><body>
 
 <!-- 인쇄용 헤더 -->
-<div class="print-header"><h1>목공실 주간 업무보고</h1><p id="printDate"></p><p id="printAuthor" style="font-size:14px;color:#333;margin-top:4px"></p></div>
+<div class="print-header"><h1>목공실 주간 업무보고</h1><p id="printDate"></p></div>
 
 <div class="hdr">
   <h1>목공실 관리</h1>
@@ -504,7 +504,6 @@ let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
 const AUTHORS=['백영인','전서원'];
-let selectedAuthor=localStorage.getItem('ws3_author')||'';
 
 const ROOMS_SEED=[];
 let productMap=new Map();
@@ -757,11 +756,6 @@ function renderReport(){
   h+='<div class="summary-item"><div class="val blue">'+totalMats+'</div><div class="lbl">자재 사용</div></div>';
   h+='<div class="sep"></div>';
   h+='<div class="summary-item"><div class="val">'+usedProducts.size+'</div><div class="lbl">사용 품목</div></div>';
-  h+='<div class="sep"></div>';
-  h+='<div class="summary-item"><select id="authorSelect" onchange="setAuthor(this.value)" style="border:1px solid var(--gray-300);border-radius:6px;padding:4px 8px;font-size:13px;font-weight:600;color:var(--gray-800);background:white;cursor:pointer">';
-  h+='<option value=""'+(selectedAuthor===''?' selected':'')+'>작성자 선택</option>';
-  AUTHORS.forEach(a=>{h+='<option value="'+a+'"'+(selectedAuthor===a?' selected':'')+'>'+a+'</option>';});
-  h+='</select><div class="lbl">✍️ 작성자</div></div>';
   h+='</div></div>';
 
   days.forEach((d,di)=>{
@@ -1115,7 +1109,12 @@ const LEAVE_TYPES=['전일','오전반차','오후반차','반반차','오전반
 function openLeaveManager(){
   let h='<div class="modal" style="max-width:420px"><h2>🏖️ 연차/휴가 관리</h2>';
   h+='<div class="leave-form">';
-  h+='<input type="date" id="leaveDate">';
+  h+='<div style="display:flex;gap:6px;align-items:center;width:100%">';
+  h+='<input type="date" id="leaveDate" style="flex:1">';
+  h+='<select id="leaveWho" style="border:1px solid var(--gray-300);border-radius:6px;padding:4px 8px;font-size:13px">';
+  AUTHORS.forEach((a,i)=>{h+='<option value="'+a+'"'+(i===0?' selected':'')+'>'+a+'</option>';});
+  h+='</select>';
+  h+='</div>';
   LEAVE_TYPES.forEach((t,i)=>{
     h+='<label><input type="radio" name="leaveType" value="'+t+'"'+(i===0?' checked':'')+'>'+t+'</label>';
   });
@@ -1142,8 +1141,8 @@ function renderLeaveList(){
     const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
     const dow=DOW_SHORT[d.getDay()];
     h+='<div class="leave-item">';
-    h+='<div><span class="li-date">'+dateLabel+' ('+dow+')</span><span class="li-type">'+esc(lv.type)+'</span></div>';
-    h+='<button class="li-del" onclick="removeLeave(\''+lv.date+'\')" title="삭제">✕</button>';
+    h+='<div><span class="li-date">'+dateLabel+' ('+dow+')</span><span class="li-type">'+esc(lv.type)+'</span>'+(lv.who?'<span style="font-size:11px;color:#7c3aed;font-weight:600;margin-left:4px">'+esc(lv.who)+'</span>':'')+'</div>';
+    h+='<button class="li-del" onclick="removeLeave(\''+lv.date+'\',\''+esc(lv.who||'')+'\')" title="삭제">✕</button>';
     h+='</div>';
   });
   el.innerHTML=h;
@@ -1153,23 +1152,29 @@ function addLeave(){
   if(!dateVal){toast('날짜를 선택해주세요');return;}
   const typeEl=document.querySelector('input[name="leaveType"]:checked');
   const type=typeEl?typeEl.value:'전일';
-  // 중복 체크
-  if(leaves.find(l=>l.date===dateVal)){toast('이미 등록된 날짜입니다');return;}
-  leaves.push({date:dateVal,type:type});
+  const whoEl=document.getElementById('leaveWho');
+  const who=whoEl?whoEl.value:'';
+  // 같은 날짜+같은 사람 중복 체크
+  if(leaves.find(l=>l.date===dateVal&&l.who===who)){toast(who+' - 이미 등록된 날짜입니다');return;}
+  leaves.push({date:dateVal,type:type,who:who});
   saveLeaves();renderLeaveList();
-  toast(dateVal+' '+type+' 연차 등록');
+  toast(who+' '+type+' 연차 등록');
 }
-function removeLeave(dateStr){
-  leaves=leaves.filter(l=>l.date!==dateStr);
+function removeLeave(dateStr,who){
+  if(who){leaves=leaves.filter(l=>!(l.date===dateStr&&l.who===who));}
+  else{leaves=leaves.filter(l=>l.date!==dateStr);}
   saveLeaves();renderLeaveList();
   toast('연차 삭제 완료');
 }
 function getLeaveForDate(dateKey){
   return leaves.find(l=>l.date===dateKey)||null;
 }
-function addLeaveFromCal(dateStr,type){
-  if(leaves.find(l=>l.date===dateStr)){toast('이미 등록된 날짜입니다');return;}
-  leaves.push({date:dateStr,type:type});
+function getLeavesForDate(dateKey){
+  return leaves.filter(l=>l.date===dateKey);
+}
+function addLeaveFromCal(dateStr,type,who){
+  if(leaves.find(l=>l.date===dateStr&&l.who===who)){toast(who+' - 이미 등록된 날짜입니다');return;}
+  leaves.push({date:dateStr,type:type,who:who||''});
   saveLeaves();renderCalendar();closeModal();openCalDay(dateStr);
   toast(type+' 연차 등록');
 }
@@ -1695,14 +1700,8 @@ function exportCSV(){
   toast('CSV 파일이 저장되었습니다');
 }
 
-function setAuthor(name){
-  selectedAuthor=name;
-  localStorage.setItem('ws3_author',name);
-}
-
 // === 인쇄 ===
 function printReport(){
-  document.getElementById('printAuthor').textContent=selectedAuthor?'작성자: '+selectedAuthor:'';
   const matMap={};
   days.forEach(d=>d.tasks.forEach(t=>t.mats.forEach(m=>{
     if(!matMap[m.pid])matMap[m.pid]=0;
@@ -2370,8 +2369,8 @@ function renderCalendar(){
     h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+(cellDow===0?' sun':'')+(cellDow===6?' sat':'')+'" onclick="openCalDay(\''+dateStr+'\')">';
     h+='<span class="cal-date">'+d+'</span>';
     if(isHol)h+='<div class="cal-holiday">'+esc(holidays[dateStr])+'</div>';
-    const calLeave=leaves.find(l=>l.date===dateStr);
-    if(calLeave)h+='<div class="cal-leave">🏖️ '+esc(calLeave.type)+'</div>';
+    const calLeaves=leaves.filter(l=>l.date===dateStr);
+    calLeaves.forEach(lv=>{h+='<div class="cal-leave">🏖️ '+(lv.who?esc(lv.who)+' ':'')+esc(lv.type)+'</div>';});
 
     // 작업 표시 (최대 3개)
     h+='<div class="cal-tasks">';
@@ -2462,10 +2461,10 @@ function openCalDay(dateStr){
   const isHol=!!holidays[dateStr];
 
   let h='<div class="modal wide"><div class="cal-day-detail">';
-  const calDayLeave=getLeaveForDate(dateStr);
+  const calDayLeavesTitle=getLeavesForDate(dateStr);
   h+='<div class="cal-day-title">'+month+'월 '+day+'일 ('+dowStr+') ';
   if(isHol)h+='<span style="font-size:12px;color:var(--red);font-weight:600;background:var(--red-bg);padding:2px 8px;border-radius:99px">'+esc(holidays[dateStr])+'</span>';
-  if(calDayLeave)h+='<span style="font-size:12px;color:#7c3aed;font-weight:600;background:#f3e8ff;padding:2px 8px;border-radius:99px">🏖️ '+esc(calDayLeave.type)+'</span>';
+  calDayLeavesTitle.forEach(lv=>{h+='<span style="font-size:12px;color:#7c3aed;font-weight:600;background:#f3e8ff;padding:2px 8px;border-radius:99px">🏖️ '+(lv.who?esc(lv.who)+' ':'')+esc(lv.type)+'</span>';});
   h+='<span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:auto">'+weekYear+'년 '+weekNum+'주차</span>';
   h+='</div>';
 
@@ -2500,20 +2499,30 @@ function openCalDay(dateStr){
     });
   }
 
-  // 연차 추가/삭제
-  if(calDayLeave){
-    h+='<div style="margin-top:10px;padding:8px 10px;background:#f3e8ff;border-radius:8px;display:flex;align-items:center;justify-content:space-between">';
-    h+='<span style="font-size:13px;color:#7c3aed;font-weight:600">🏖️ '+esc(calDayLeave.type)+'</span>';
-    h+='<button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="removeLeave(\''+dateStr+'\');closeModal();renderCalendar()">연차 삭제</button>';
-    h+='</div>';
-  }else{
-    h+='<div style="margin-top:10px;padding:8px 10px;border:1px dashed var(--gray-300);border-radius:8px">';
-    h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">';
-    h+='<span style="font-size:12px;color:var(--gray-500);font-weight:600">🏖️ 연차:</span>';
-    LEAVE_TYPES.forEach(t=>{
-      h+='<button class="btn btn-outline btn-sm" style="font-size:11px;padding:2px 8px;color:#7c3aed;border-color:#c4b5fd" onclick="addLeaveFromCal(\''+dateStr+'\',\''+t+'\')">'+t+'</button>';
+  // 연차 추가/삭제 (이름별)
+  const calDayLeaves=getLeavesForDate(dateStr);
+  if(calDayLeaves.length){
+    calDayLeaves.forEach(lv=>{
+      h+='<div style="margin-top:6px;padding:6px 10px;background:#f3e8ff;border-radius:8px;display:flex;align-items:center;justify-content:space-between">';
+      h+='<span style="font-size:13px;color:#7c3aed;font-weight:600">🏖️ '+(lv.who?esc(lv.who)+' - ':'')+esc(lv.type)+'</span>';
+      h+='<button class="btn btn-outline btn-sm" style="font-size:11px;color:var(--red);border-color:var(--red)" onclick="removeLeave(\''+dateStr+'\',\''+esc(lv.who||'')+'\');closeModal();renderCalendar()">삭제</button>';
+      h+='</div>';
     });
-    h+='</div></div>';
+  }
+  // 아직 등록 안 된 사람 표시
+  const registeredWho=calDayLeaves.map(l=>l.who);
+  const unregistered=AUTHORS.filter(a=>!registeredWho.includes(a));
+  if(unregistered.length){
+    h+='<div style="margin-top:6px;padding:8px 10px;border:1px dashed var(--gray-300);border-radius:8px">';
+    unregistered.forEach(who=>{
+      h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">';
+      h+='<span style="font-size:12px;color:var(--gray-500);font-weight:600;min-width:50px">🏖️ '+who+':</span>';
+      LEAVE_TYPES.forEach(t=>{
+        h+='<button class="btn btn-outline btn-sm" style="font-size:11px;padding:2px 8px;color:#7c3aed;border-color:#c4b5fd" onclick="addLeaveFromCal(\''+dateStr+'\',\''+t+'\',\''+who+'\')">'+t+'</button>';
+      });
+      h+='</div>';
+    });
+    h+='</div>';
   }
 
   h+='<div class="modal-btns" style="margin-top:12px">';
