@@ -389,7 +389,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 </style></head><body>
 
 <!-- 인쇄용 헤더 -->
-<div class="print-header"><h1>목공실 주간 업무보고</h1><p id="printDate"></p></div>
+<div class="print-header"><h1>목공실 주간 업무보고</h1><p id="printDate"></p><p id="printAuthor" style="font-size:14px;color:#333;margin-top:4px"></p></div>
 
 <div class="hdr">
   <h1>목공실 관리</h1>
@@ -503,6 +503,8 @@ let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[
     nextId=1, filter='all', catFilter='all', currentTab='stock', currentRoomBld='';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
+const AUTHORS=['백영인','전서원'];
+let selectedAuthor=localStorage.getItem('ws3_author')||'';
 
 const ROOMS_SEED=[];
 let productMap=new Map();
@@ -755,6 +757,11 @@ function renderReport(){
   h+='<div class="summary-item"><div class="val blue">'+totalMats+'</div><div class="lbl">자재 사용</div></div>';
   h+='<div class="sep"></div>';
   h+='<div class="summary-item"><div class="val">'+usedProducts.size+'</div><div class="lbl">사용 품목</div></div>';
+  h+='<div class="sep"></div>';
+  h+='<div class="summary-item"><select id="authorSelect" onchange="setAuthor(this.value)" style="border:1px solid var(--gray-300);border-radius:6px;padding:4px 8px;font-size:13px;font-weight:600;color:var(--gray-800);background:white;cursor:pointer">';
+  h+='<option value=""'+(selectedAuthor===''?' selected':'')+'>작성자 선택</option>';
+  AUTHORS.forEach(a=>{h+='<option value="'+a+'"'+(selectedAuthor===a?' selected':'')+'>'+a+'</option>';});
+  h+='</select><div class="lbl">✍️ 작성자</div></div>';
   h+='</div></div>';
 
   days.forEach((d,di)=>{
@@ -1688,8 +1695,14 @@ function exportCSV(){
   toast('CSV 파일이 저장되었습니다');
 }
 
+function setAuthor(name){
+  selectedAuthor=name;
+  localStorage.setItem('ws3_author',name);
+}
+
 // === 인쇄 ===
 function printReport(){
+  document.getElementById('printAuthor').textContent=selectedAuthor?'작성자: '+selectedAuthor:'';
   const matMap={};
   days.forEach(d=>d.tasks.forEach(t=>t.mats.forEach(m=>{
     if(!matMap[m.pid])matMap[m.pid]=0;
