@@ -2760,35 +2760,42 @@ function importRoomExcel(e){
     try{
       const data=new Uint8Array(ev.target.result);
       const wb=XLSX.read(data,{type:'array'});
-      const ws=wb.Sheets[wb.SheetNames[0]];
-      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-      if(!rows.length){toast('엑셀 파일에 데이터가 없습니다');return;}
-      // 컬럼 매핑 (유연하게 처리)
       const colMap={bld:['건물','건물명','bld','building'],floor:['층','floor'],room:['호실','실번호','room','호수'],type:['종류','type','유형'],desc:['설명','desc','description','용도'],dept:['소속','dept','부서'],damage:['파손','damage','파손좌판','파손수'],repaired:['수리','repaired','수리완료','수리수'],note:['비고','note','메모']};
       function findCol(row,keys){for(const k of keys){if(row[k]!==undefined)return k;}return null;}
-      const sample=rows[0];
-      const mapping={};
-      for(const[field,keys] of Object.entries(colMap)){mapping[field]=findCol(sample,keys);}
-      if(!mapping.bld&&!mapping.room){toast('건물 또는 호실 컬럼을 찾을 수 없습니다.\n컬럼명: 건물, 층, 호실, 종류, 설명, 소속, 파손, 수리, 비고');return;}
-      const maxId=rooms.reduce((m,r)=>Math.max(m,r.id),0);
-      const newRooms=rows.map((row,i)=>({
-        id:maxId+i+1,
-        bld:String(mapping.bld?row[mapping.bld]:'').trim(),
-        floor:parseInt(mapping.floor?row[mapping.floor]:0)||1,
-        room:String(mapping.room?row[mapping.room]:'').trim(),
-        type:String(mapping.type?row[mapping.type]:'').trim(),
-        desc:String(mapping.desc?row[mapping.desc]:'').trim(),
-        dept:String(mapping.dept?row[mapping.dept]:'').trim(),
-        damage:parseInt(mapping.damage?row[mapping.damage]:0)||0,
-        repaired:parseInt(mapping.repaired?row[mapping.repaired]:0)||0,
-        note:String(mapping.note?row[mapping.note]:'').trim()
-      })).filter(r=>r.bld||r.room);
-      if(!newRooms.length){toast('유효한 데이터가 없습니다');return;}
+      let allNewRooms=[];
+      let idCounter=rooms.reduce((m,r)=>Math.max(m,r.id),0);
+      const sheetResults=[];
+      wb.SheetNames.forEach(sheetName=>{
+        const ws=wb.Sheets[sheetName];
+        const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+        if(!rows.length)return;
+        const sample=rows[0];
+        const mapping={};
+        for(const[field,keys] of Object.entries(colMap)){mapping[field]=findCol(sample,keys);}
+        const hasBldCol=!!mapping.bld;
+        const parsed=rows.map(row=>{
+          idCounter++;
+          return{
+            id:idCounter,
+            bld:String(hasBldCol&&mapping.bld?row[mapping.bld]:sheetName).trim(),
+            floor:parseInt(mapping.floor?row[mapping.floor]:0)||1,
+            room:String(mapping.room?row[mapping.room]:'').trim(),
+            type:String(mapping.type?row[mapping.type]:'').trim(),
+            desc:String(mapping.desc?row[mapping.desc]:'').trim(),
+            dept:String(mapping.dept?row[mapping.dept]:'').trim(),
+            damage:parseInt(mapping.damage?row[mapping.damage]:0)||0,
+            repaired:parseInt(mapping.repaired?row[mapping.repaired]:0)||0,
+            note:String(mapping.note?row[mapping.note]:'').trim()
+          };
+        }).filter(r=>r.bld||r.room);
+        if(parsed.length){allNewRooms=allNewRooms.concat(parsed);sheetResults.push(sheetName+'('+parsed.length+'건)');}
+      });
+      if(!allNewRooms.length){toast('엑셀 파일에 유효한 데이터가 없습니다');return;}
       const mode=rooms.length?confirm('기존 데이터에 추가하시겠습니까?\n[확인] = 추가 / [취소] = 전체 교체'):false;
-      if(mode){rooms=rooms.concat(newRooms);}else{rooms=newRooms;}
+      if(mode){rooms=rooms.concat(allNewRooms);}else{rooms=allNewRooms;}
       currentRoomBld=rooms[0]?.bld||'';
       saveRooms();renderClassroom();
-      toast(newRooms.length+'개 호실 데이터를 불러왔습니다');
+      toast(wb.SheetNames.length+'개 시트에서 총 '+allNewRooms.length+'개 호실 불러옴\n'+sheetResults.join(', '));
     }catch(err){
       console.error('엑셀 임포트 오류:',err);
       toast('엑셀 파일 읽기 실패: '+err.message);
