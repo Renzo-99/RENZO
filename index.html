@@ -478,7 +478,7 @@ const DOW_SHORT=['일','월','화','수','목','금','토'];
 let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock', currentRoomBld='';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
-const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관'];
+const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
 
 // 강의실 시드 데이터: [건물, 층, 실번호, 종류, 설명, 파손수, 수리수, 비고]
 const ROOMS_SEED=[
@@ -567,7 +567,73 @@ const ROOMS_SEED=[
   {id:79,bld:'제1공학관',floor:6,room:'617',type:'구형',desc:'강의실',damage:0,repaired:0,note:''},
   {id:80,bld:'제1공학관',floor:6,room:'610',type:'구형',desc:'강의실',damage:0,repaired:0,note:''},
   {id:81,bld:'제1공학관',floor:6,room:'614',type:'프린팅',desc:'강의실',damage:0,repaired:0,note:''},
-  {id:82,bld:'제1공학관',floor:6,room:'615',type:'프린팅',desc:'강의실',damage:1,repaired:0,note:''}
+  {id:82,bld:'제1공학관',floor:6,room:'615',type:'프린팅',desc:'강의실',damage:1,repaired:0,note:''},
+  // 제2공학관
+  {id:83,bld:'제2공학관',floor:1,room:'103',type:'2인 책상',desc:'강의실',damage:8,repaired:0,note:''},
+  {id:84,bld:'제2공학관',floor:1,room:'104',type:'구형',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:85,bld:'제2공학관',floor:1,room:'105',type:'구형',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:86,bld:'제2공학관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:6,repaired:0,note:''},
+  {id:87,bld:'제2공학관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:88,bld:'제2공학관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:89,bld:'제2공학관',floor:3,room:'304',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:90,bld:'제2공학관',floor:4,room:'401',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:91,bld:'제2공학관',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:5,repaired:0,note:''},
+  {id:92,bld:'제2공학관',floor:4,room:'403',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:93,bld:'제2공학관',floor:4,room:'404',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:94,bld:'제2공학관',floor:5,room:'501',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:95,bld:'제2공학관',floor:5,room:'502',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:96,bld:'제2공학관',floor:5,room:'503',type:'2인 책상',desc:'강의실',damage:3,repaired:0,note:''},
+  {id:97,bld:'제2공학관',floor:5,room:'504',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  // 제3공학관
+  {id:98,bld:'제3공학관',floor:1,room:'101',type:'강당의자',desc:'계단강의실',damage:10,repaired:0,note:''},
+  {id:99,bld:'제3공학관',floor:1,room:'102',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,note:''},
+  {id:100,bld:'제3공학관',floor:1,room:'103',type:'구형',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:101,bld:'제3공학관',floor:2,room:'201',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:102,bld:'제3공학관',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:4,repaired:0,note:''},
+  {id:103,bld:'제3공학관',floor:2,room:'203',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:104,bld:'제3공학관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:105,bld:'제3공학관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:7,repaired:0,note:''},
+  {id:106,bld:'제3공학관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:107,bld:'제3공학관',floor:4,room:'401',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:108,bld:'제3공학관',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:109,bld:'제3공학관',floor:4,room:'403',type:'2인 책상',desc:'강의실',damage:5,repaired:0,note:''},
+  // 홍문관
+  {id:110,bld:'홍문관',floor:1,room:'101',type:'강당의자',desc:'계단강의실',damage:3,repaired:0,note:''},
+  {id:111,bld:'홍문관',floor:1,room:'102',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,note:''},
+  {id:112,bld:'홍문관',floor:2,room:'201',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:113,bld:'홍문관',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:6,repaired:0,note:''},
+  {id:114,bld:'홍문관',floor:2,room:'203',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:115,bld:'홍문관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:116,bld:'홍문관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:4,repaired:0,note:''},
+  {id:117,bld:'홍문관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  // 과학관
+  {id:118,bld:'과학관',floor:1,room:'101',type:'강당의자',desc:'계단강의실',damage:5,repaired:0,note:''},
+  {id:119,bld:'과학관',floor:1,room:'102',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,note:''},
+  {id:120,bld:'과학관',floor:1,room:'103',type:'구형',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:121,bld:'과학관',floor:2,room:'201',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:122,bld:'과학관',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:3,repaired:0,note:''},
+  {id:123,bld:'과학관',floor:2,room:'203',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:124,bld:'과학관',floor:2,room:'204',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:125,bld:'과학관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:7,repaired:0,note:''},
+  {id:126,bld:'과학관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:127,bld:'과학관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:128,bld:'과학관',floor:3,room:'304',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:129,bld:'과학관',floor:4,room:'401',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:130,bld:'과학관',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:4,repaired:0,note:''},
+  {id:131,bld:'과학관',floor:4,room:'403',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:132,bld:'과학관',floor:4,room:'404',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:133,bld:'과학관',floor:5,room:'501',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:134,bld:'과학관',floor:5,room:'502',type:'2인 책상',desc:'강의실',damage:6,repaired:0,note:''},
+  {id:135,bld:'과학관',floor:5,room:'503',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:136,bld:'과학관',floor:5,room:'504',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:137,bld:'과학관',floor:6,room:'601',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:138,bld:'과학관',floor:6,room:'602',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:139,bld:'과학관',floor:6,room:'603',type:'2인 책상',desc:'강의실',damage:3,repaired:0,note:''},
+  {id:140,bld:'과학관',floor:6,room:'604',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:141,bld:'과학관',floor:7,room:'701',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:142,bld:'과학관',floor:7,room:'702',type:'2인 책상',desc:'강의실',damage:2,repaired:0,note:''},
+  {id:143,bld:'과학관',floor:7,room:'703',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''},
+  {id:144,bld:'과학관',floor:7,room:'704',type:'2인 책상',desc:'강의실',damage:0,repaired:0,note:''}
 ];
 let productMap=new Map();
 let _debounceTimer;
