@@ -62,6 +62,22 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .holiday-badge:hover{opacity:.8}
 .holiday-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px dashed var(--gray-300);background:#fff;cursor:pointer;color:var(--gray-400);transition:.15s}
 .holiday-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
+/* 연차 뱃지 */
+.leave-badge{font-size:10px;color:#7c3aed;font-weight:600;padding:2px 8px;background:#f3e8ff;border-radius:99px;cursor:pointer}
+.leave-badge:hover{opacity:.8}
+.leave-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px dashed var(--gray-300);background:#fff;cursor:pointer;color:var(--gray-400);transition:.15s}
+.leave-btn:hover{border-color:#7c3aed;color:#7c3aed;background:#f3e8ff}
+/* 연차 관리 모달 */
+.leave-form{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.leave-form input[type="date"]{padding:6px 10px;border:1px solid var(--gray-300);border-radius:var(--radius);font-size:13px}
+.leave-form label{font-size:12px;cursor:pointer;display:flex;align-items:center;gap:3px}
+.leave-form label input[type="radio"]{margin:0}
+.leave-list{max-height:260px;overflow-y:auto}
+.leave-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:4px}
+.leave-item .li-date{font-size:13px;font-weight:600;color:var(--gray-800)}
+.leave-item .li-type{font-size:11px;font-weight:600;color:#7c3aed;background:#f3e8ff;padding:2px 8px;border-radius:99px;margin-left:8px}
+.leave-item .li-del{font-size:12px;color:var(--gray-400);cursor:pointer;border:none;background:none;padding:4px}
+.leave-item .li-del:hover{color:var(--red)}
 
 /* 작업 카드 */
 .task{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;box-shadow:var(--shadow);transition:box-shadow .15s,opacity .15s,transform .15s}
@@ -199,6 +215,8 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
   .mat-badge.zero-qty{display:none!important}
   .day-header{margin-top:16px}
   .holiday-badge{border:1px solid var(--red);color:#dc2626!important;background:#fef2f2!important}
+  .leave-badge{border:1px solid #7c3aed;color:#7c3aed!important;background:#f3e8ff!important}
+  .leave-btn{display:none!important}
   .print-inventory{display:block!important;page-break-before:always;padding-top:20px}
   .print-inventory h2{font-size:16px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #000}
   .print-inventory table{width:100%;border-collapse:collapse;font-size:11px}
@@ -257,6 +275,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .cal-cell.sat .cal-date{color:var(--blue)}
 .cal-cell.today .cal-date{background:var(--blue);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .cal-holiday{font-size:9px;color:var(--red);font-weight:600;padding:0 4px;margin-top:1px}
+.cal-leave{font-size:9px;font-weight:600;padding:1px 4px;margin-top:1px;color:#7c3aed;background:#f3e8ff;border-radius:3px}
 .cal-tasks{margin-top:2px;overflow:hidden}
 .cal-task-item{font-size:10px;padding:2px 4px;margin-bottom:1px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--blue-bg);color:var(--blue);font-weight:500;cursor:pointer;transition:background .1s}
 .cal-task-item:hover{background:#d0e3ff}
@@ -480,7 +499,7 @@ const DAY_NAMES=['월요일','화요일','수요일','목요일','금요일'];
 const DOW_SHORT=['일','월','화','수','목','금','토'];
 
 // === 상태 ===
-let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[],
+let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[], leaves=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock', currentRoomBld='';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
@@ -497,7 +516,7 @@ function debouncedRenderInventory(){clearTimeout(_debounceTimer);_debounceTimer=
 // === 자동 백업 타이머 (5분) ===
 let _autoBackupTimer=null,_lastDataHash='';
 function getDataHash(){
-  let s=JSON.stringify(products)+JSON.stringify(history)+JSON.stringify(holidays)+JSON.stringify(buildings)+JSON.stringify(plans)+JSON.stringify(rooms);
+  let s=JSON.stringify(products)+JSON.stringify(history)+JSON.stringify(holidays)+JSON.stringify(buildings)+JSON.stringify(plans)+JSON.stringify(rooms)+JSON.stringify(leaves);
   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('ws3_week_'))s+=localStorage.getItem(k);}
   let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}
   return h.toString();
@@ -532,11 +551,11 @@ function checkLocalStorage(){
 // === 초기화 ===
 async function init(){
   if(!checkLocalStorage()){
-    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
+    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     return;
   }
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
   // 클라우드 동기화는 사용자가 수동으로 ☁️ 버튼을 눌렀을 때만 실행
@@ -576,6 +595,8 @@ function loadPlans(){const s=localStorage.getItem('ws3_plans');plans=s?JSON.pars
 function savePlans(){safeSave('ws3_plans',plans);}
 function loadRooms(){const s=localStorage.getItem('ws3_rooms');rooms=s?JSON.parse(s):ROOMS_SEED.slice();}
 function saveRooms(){safeSave('ws3_rooms',rooms);}
+function loadLeaves(){const s=localStorage.getItem('ws3_leaves');leaves=s?JSON.parse(s):[];}
+function saveLeaves(){safeSave('ws3_leaves',leaves);}
 // === Undo 스택 ===
 const undoStack=[];
 const UNDO_MAX=30;
@@ -734,14 +755,18 @@ function renderReport(){
   h+='<div class="summary-item"><div class="val blue">'+totalMats+'</div><div class="lbl">자재 사용</div></div>';
   h+='<div class="sep"></div>';
   h+='<div class="summary-item"><div class="val">'+usedProducts.size+'</div><div class="lbl">사용 품목</div></div>';
+  h+='<div class="sep"></div>';
+  h+='<div class="summary-item" style="cursor:pointer" onclick="openLeaveManager()"><div class="val" style="color:#7c3aed">'+leaves.length+'</div><div class="lbl">🏖️ 연차</div></div>';
   h+='</div></div>';
 
   days.forEach((d,di)=>{
     const dateKey=getDayDate(di);
     const isHoliday=!!holidays[dateKey];
+    const leave=getLeaveForDate(dateKey);
     h+='<div class="day-header'+(isHoliday?' holiday':'')+'">';
     h+='<div class="left-part"><div class="day-dot"></div><h3>'+d.dn+'</h3><span class="date">'+d.dt+'</span>';
     if(isHoliday)h+='<span class="holiday-badge" onclick="removeHoliday(\''+dateKey+'\')">'+esc(holidays[dateKey])+' ✕</span>';
+    if(leave)h+='<span class="leave-badge" onclick="openLeaveManager()">🏖️ '+esc(leave.type)+'</span>';
     h+='</div>';
     h+='<div class="right-part">';
     if(!isHoliday)h+='<button class="holiday-btn" onclick="openHolidayInput('+di+',\''+dateKey+'\')">📅 공휴일</button>';
@@ -1080,6 +1105,64 @@ function removeHoliday(dateKey){
   delete holidays[dateKey];
   saveHolidays();renderReport();
   toast(name+' 공휴일 해제');
+}
+
+// === 연차/휴가 관리 ===
+const LEAVE_TYPES=['전일','오전반차','오후반차','반반차'];
+function openLeaveManager(){
+  let h='<div class="modal" style="max-width:420px"><h2>🏖️ 연차/휴가 관리</h2>';
+  h+='<div class="leave-form">';
+  h+='<input type="date" id="leaveDate">';
+  LEAVE_TYPES.forEach((t,i)=>{
+    h+='<label><input type="radio" name="leaveType" value="'+t+'"'+(i===0?' checked':'')+'>'+t+'</label>';
+  });
+  h+='<button class="btn btn-blue btn-sm" onclick="addLeave()">추가</button>';
+  h+='</div>';
+  h+='<div class="leave-list" id="leaveList"></div>';
+  h+='<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal()">닫기</button></div></div>';
+  showModal(h);
+  // 오늘 날짜 기본값
+  const today=new Date();
+  document.getElementById('leaveDate').value=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  renderLeaveList();
+}
+function renderLeaveList(){
+  const el=document.getElementById('leaveList');
+  if(!el)return;
+  if(!leaves.length){el.innerHTML='<p style="text-align:center;color:var(--gray-400);padding:16px;font-size:13px">등록된 연차가 없습니다</p>';return;}
+  // 날짜 오름차순 정렬
+  const sorted=leaves.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  let h='';
+  sorted.forEach(lv=>{
+    const parts=lv.date.split('-');
+    const dateLabel=parseInt(parts[1])+'월 '+parseInt(parts[2])+'일';
+    const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+    const dow=DOW_SHORT[d.getDay()];
+    h+='<div class="leave-item">';
+    h+='<div><span class="li-date">'+dateLabel+' ('+dow+')</span><span class="li-type">'+esc(lv.type)+'</span></div>';
+    h+='<button class="li-del" onclick="removeLeave(\''+lv.date+'\')" title="삭제">✕</button>';
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+function addLeave(){
+  const dateVal=document.getElementById('leaveDate').value;
+  if(!dateVal){toast('날짜를 선택해주세요');return;}
+  const typeEl=document.querySelector('input[name="leaveType"]:checked');
+  const type=typeEl?typeEl.value:'전일';
+  // 중복 체크
+  if(leaves.find(l=>l.date===dateVal)){toast('이미 등록된 날짜입니다');return;}
+  leaves.push({date:dateVal,type:type});
+  saveLeaves();renderLeaveList();renderReport();
+  toast(dateVal+' '+type+' 연차 등록');
+}
+function removeLeave(dateStr){
+  leaves=leaves.filter(l=>l.date!==dateStr);
+  saveLeaves();renderLeaveList();renderReport();
+  toast('연차 삭제 완료');
+}
+function getLeaveForDate(dateKey){
+  return leaves.find(l=>l.date===dateKey)||null;
 }
 
 // === 자재 관리 (작업 내 출고) ===
@@ -1466,7 +1549,7 @@ function createSnapshot(reason){
     id:Date.now(),
     reason:reason||'수동 백업',
     date:new Date().toISOString(),
-    data:{products,history,holidays,buildings,plans,rooms,weeks:allWeeks}
+    data:{products,history,holidays,buildings,plans,rooms,leaves,weeks:allWeeks}
   };
   const backups=getBackups();
   backups.unshift(snapshot);
@@ -1490,6 +1573,7 @@ function restoreBackup(id){
   buildings=d.buildings||BUILDINGS_DEFAULT.slice();saveBuildings();
   plans=d.plans||[];savePlans();
   rooms=d.rooms||[];saveRooms();
+  leaves=d.leaves||[];saveLeaves();
   if(d.weeks){Object.entries(d.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
   recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
   toast('✅ 백업이 복원되었습니다');
@@ -1548,7 +1632,7 @@ function exportData(){
     const k=localStorage.key(i);
     if(k.startsWith('ws3_week_'))allWeeks[k]=JSON.parse(localStorage.getItem(k));
   }
-  const data={version:7,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans,rooms,weeks:allWeeks};
+  const data={version:8,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans,rooms,leaves,weeks:allWeeks};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -1578,6 +1662,7 @@ function importData(event){
       if(data.buildings){buildings=data.buildings;saveBuildings();}
       if(data.plans){plans=data.plans;savePlans();}
       if(data.rooms){rooms=data.rooms;saveRooms();}
+      if(data.leaves){leaves=data.leaves;saveLeaves();}
       if(data.weeks){Object.entries(data.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
       recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
       toast('데이터를 불러왔습니다');
@@ -2084,6 +2169,7 @@ async function uploadAllToCloud(){
   items.push({key:'holidays',value:JSON.stringify(holidays)});
   items.push({key:'buildings',value:JSON.stringify(buildings)});
   items.push({key:'plans',value:JSON.stringify(plans)});
+  items.push({key:'leaves',value:JSON.stringify(leaves)});
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
     if(k&&k.startsWith('ws3_week_'))items.push({key:k.replace('ws3_',''),value:localStorage.getItem(k)});
@@ -2268,6 +2354,8 @@ function renderCalendar(){
     h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+(cellDow===0?' sun':'')+(cellDow===6?' sat':'')+'" onclick="openCalDay(\''+dateStr+'\')">';
     h+='<span class="cal-date">'+d+'</span>';
     if(isHol)h+='<div class="cal-holiday">'+esc(holidays[dateStr])+'</div>';
+    const calLeave=leaves.find(l=>l.date===dateStr);
+    if(calLeave)h+='<div class="cal-leave">🏖️ '+esc(calLeave.type)+'</div>';
 
     // 작업 표시 (최대 3개)
     h+='<div class="cal-tasks">';
@@ -2358,8 +2446,10 @@ function openCalDay(dateStr){
   const isHol=!!holidays[dateStr];
 
   let h='<div class="modal wide"><div class="cal-day-detail">';
+  const calDayLeave=getLeaveForDate(dateStr);
   h+='<div class="cal-day-title">'+month+'월 '+day+'일 ('+dowStr+') ';
   if(isHol)h+='<span style="font-size:12px;color:var(--red);font-weight:600;background:var(--red-bg);padding:2px 8px;border-radius:99px">'+esc(holidays[dateStr])+'</span>';
+  if(calDayLeave)h+='<span style="font-size:12px;color:#7c3aed;font-weight:600;background:#f3e8ff;padding:2px 8px;border-radius:99px">🏖️ '+esc(calDayLeave.type)+'</span>';
   h+='<span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:auto">'+weekYear+'년 '+weekNum+'주차</span>';
   h+='</div>';
 
