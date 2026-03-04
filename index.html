@@ -2,6 +2,7 @@
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>목공실 관리</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--blue:#3182F6;--blue-h:#1B64DA;--blue-bg:#E8F3FF;--red:#F04452;--red-bg:#FFF0F1;--green:#30B47A;--green-bg:#E8FAF0;--orange:#F59E0B;--orange-bg:#FFF8E1;--gray-50:#F9FAFB;--gray-100:#F2F4F6;--gray-200:#E5E8EB;--gray-400:#B0B8C1;--gray-500:#8B95A1;--gray-600:#6B7684;--gray-700:#4E5968;--gray-800:#333D4B;--gray-900:#191F28;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08)}
@@ -328,16 +329,9 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .plan-actions button.del:hover{color:var(--red);background:var(--red-bg)}
 .plan-actions button.move:hover{color:var(--green);background:var(--green-bg)}
 
-/* 강의실 현황 - 패널 요약 */
-.cr-panel-summary{padding:20px 14px;text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
-.cr-panel-stats{display:flex;gap:16px}
-.cr-panel-stats .cr-ps{text-align:center}
-.cr-panel-stats .cr-ps .val{font-size:20px;font-weight:800}
-.cr-panel-stats .cr-ps .lbl{font-size:10px;color:var(--gray-500)}
-.cr-panel-blds{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:4px}
-.cr-panel-blds span{font-size:10px;padding:3px 8px;background:var(--gray-100);border-radius:99px;color:var(--gray-600)}
+/* 건물 호실 현황 */
 
-/* 강의실 현황 - 전체화면 오버레이 */
+/* 건물 호실 현황 - 전체화면 오버레이 */
 .cr-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
 .cr-container{background:#fff;border-radius:16px;width:1100px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,.18);overflow:hidden}
 .cr-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--gray-200)}
@@ -390,7 +384,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
   </div>
   <div class="hdr-right">
     <span id="syncStatus" style="font-size:14px;cursor:pointer;margin-right:4px" onclick="openCloudSettings()" title="클라우드 상태"></span>
-    <button class="btn btn-outline btn-sm" onclick="openClassroom()" title="강의실 현황">🏫 강의실</button>
+    <button class="btn btn-outline btn-sm" onclick="openClassroom()" title="건물 호실 현황">🏢 호실</button>
     <button class="btn btn-outline btn-sm" onclick="openCalendar()" title="캘린더 보기">📅 캘린더</button>
     <button class="btn btn-outline btn-sm" onclick="openBackupManager()" title="백업 관리">📋 백업</button>
     <button class="btn btn-outline btn-sm" onclick="exportData()" title="파일로 내보내기">💾 내보내기</button>
@@ -414,7 +408,6 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
       <button id="tabHistory" onclick="switchTab('history')">입출고 내역</button>
       <button id="tabTasks" onclick="switchTab('tasks')">작업 이력</button>
       <button id="tabPlan" onclick="switchTab('plan')">작업 예정</button>
-      <button id="tabRoom" onclick="switchTab('room')">강의실</button>
     </div>
     <div id="stockView">
       <div class="inv-search">
@@ -434,7 +427,6 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <div id="historyView" style="display:none;flex:1;overflow-y:auto;padding:14px"></div>
     <div id="tasksView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
     <div id="planView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
-    <div id="roomView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
   </div>
 </div>
 
@@ -492,161 +484,7 @@ let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
 
-// 강의실 시드 데이터: [건물, 층, 실번호, 종류, 설명, 파손수, 수리수, 비고]
-const ROOMS_SEED=[
-  // 경영대학
-  {id:1,bld:'경영대학',floor:1,room:'101',type:'강당의자',desc:'강의실',damage:8,repaired:0,dept:'',note:''},
-  {id:2,bld:'경영대학',floor:1,room:'103',type:'반원 테이블+의자',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:3,bld:'경영대학',floor:1,room:'104',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:4,bld:'경영대학',floor:1,room:'105',type:'구형',desc:'강의실',damage:1,repaired:0,dept:'',note:''},
-  {id:5,bld:'경영대학',floor:2,room:'201',type:'강당의자',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:6,bld:'경영대학',floor:2,room:'203',type:'구형 다수',desc:'강의실',damage:0,repaired:0,dept:'',note:'신형(2)'},
-  {id:7,bld:'경영대학',floor:2,room:'209',type:'PC 실기실',desc:'강의실',damage:7,repaired:0,dept:'',note:''},
-  // 인문사회관C
-  {id:8,bld:'인문사회관C',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:15,repaired:0,dept:'',note:''},
-  {id:9,bld:'인문사회관C',floor:2,room:'203',type:'',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:10,bld:'인문사회관C',floor:2,room:'204',type:'',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:11,bld:'인문사회관C',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:8,repaired:0,dept:'',note:''},
-  {id:12,bld:'인문사회관C',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:13,bld:'인문사회관C',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:12,repaired:0,dept:'',note:''},
-  {id:14,bld:'인문사회관C',floor:3,room:'304',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:15,bld:'인문사회관C',floor:4,room:'401',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:16,bld:'인문사회관C',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:9,repaired:0,dept:'',note:''},
-  {id:17,bld:'인문사회관C',floor:4,room:'403',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:18,bld:'인문사회관C',floor:4,room:'404',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:19,bld:'인문사회관C',floor:5,room:'501',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:20,bld:'인문사회관C',floor:5,room:'502',type:'2인 책상',desc:'강의실',damage:10,repaired:0,dept:'',note:''},
-  {id:21,bld:'인문사회관C',floor:5,room:'503',type:'',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:22,bld:'인문사회관C',floor:5,room:'504',type:'2인 책상',desc:'강의실',damage:3,repaired:0,dept:'',note:''},
-  {id:23,bld:'인문사회관C',floor:6,room:'601',type:'',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:24,bld:'인문사회관C',floor:6,room:'602',type:'2인 책상',desc:'강의실',damage:8,repaired:0,dept:'',note:''},
-  {id:25,bld:'인문사회관C',floor:6,room:'603',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:26,bld:'인문사회관C',floor:6,room:'604',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:27,bld:'인문사회관C',floor:7,room:'701',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:28,bld:'인문사회관C',floor:7,room:'702',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:29,bld:'인문사회관C',floor:7,room:'703',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:30,bld:'인문사회관C',floor:7,room:'704',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:31,bld:'인문사회관C',floor:8,room:'801',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:32,bld:'인문사회관C',floor:8,room:'802',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:33,bld:'인문사회관C',floor:8,room:'803',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:34,bld:'인문사회관C',floor:8,room:'804',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:35,bld:'인문사회관C',floor:9,room:'901',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:36,bld:'인문사회관C',floor:9,room:'902',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:37,bld:'인문사회관C',floor:9,room:'903',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:38,bld:'인문사회관C',floor:9,room:'904',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  // 제4학관
-  {id:39,bld:'제4학관',floor:1,room:'102',type:'강당의자',desc:'계단강의실',damage:3,repaired:0,dept:'',note:''},
-  {id:40,bld:'제4학관',floor:1,room:'104',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:41,bld:'제4학관',floor:1,room:'106',type:'강당의자',desc:'계단강의실',damage:5,repaired:0,dept:'',note:''},
-  {id:42,bld:'제4학관',floor:2,room:'201',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:43,bld:'제4학관',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:44,bld:'제4학관',floor:2,room:'204',type:'2인 책상',desc:'강의실',damage:8,repaired:0,dept:'',note:''},
-  {id:45,bld:'제4학관',floor:2,room:'207',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:46,bld:'제4학관',floor:3,room:'301',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:47,bld:'제4학관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:48,bld:'제4학관',floor:3,room:'304',type:'2인 책상',desc:'강의실',damage:6,repaired:0,dept:'',note:''},
-  {id:49,bld:'제4학관',floor:3,room:'307',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:50,bld:'제4학관',floor:4,room:'401',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:51,bld:'제4학관',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:52,bld:'제4학관',floor:4,room:'404',type:'2인 책상',desc:'강의실',damage:4,repaired:0,dept:'',note:''},
-  {id:53,bld:'제4학관',floor:4,room:'407',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:54,bld:'제4학관',floor:5,room:'501',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:55,bld:'제4학관',floor:5,room:'502',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:56,bld:'제4학관',floor:5,room:'504',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:57,bld:'제4학관',floor:5,room:'507',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:58,bld:'제4학관',floor:6,room:'601',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:59,bld:'제4학관',floor:6,room:'602',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:60,bld:'제4학관',floor:6,room:'604',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:61,bld:'제4학관',floor:6,room:'607',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:62,bld:'제4학관',floor:7,room:'701',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:63,bld:'제4학관',floor:7,room:'702',type:'2인 책상',desc:'강의실',damage:7,repaired:0,dept:'',note:''},
-  {id:64,bld:'제4학관',floor:7,room:'704',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:65,bld:'제4학관',floor:7,room:'707',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:66,bld:'제4학관',floor:8,room:'801',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:67,bld:'제4학관',floor:8,room:'802',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:68,bld:'제4학관',floor:8,room:'804',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:69,bld:'제4학관',floor:9,room:'901',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:70,bld:'제4학관',floor:9,room:'902',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:71,bld:'제4학관',floor:9,room:'904',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:72,bld:'제4학관',floor:10,room:'1001',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:73,bld:'제4학관',floor:10,room:'1002',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:74,bld:'제4학관',floor:10,room:'1004',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  // 제1공학관
-  {id:75,bld:'제1공학관',floor:1,room:'103',type:'2인 책상',desc:'강의실',damage:8,repaired:0,dept:'',note:''},
-  {id:76,bld:'제1공학관',floor:1,room:'104',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:77,bld:'제1공학관',floor:1,room:'105',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:78,bld:'제1공학관',floor:6,room:'616',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:79,bld:'제1공학관',floor:6,room:'617',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:80,bld:'제1공학관',floor:6,room:'610',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:81,bld:'제1공학관',floor:6,room:'614',type:'프린팅',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:82,bld:'제1공학관',floor:6,room:'615',type:'프린팅',desc:'강의실',damage:1,repaired:0,dept:'',note:''},
-  // 제2공학관
-  {id:83,bld:'제2공학관',floor:1,room:'103',type:'2인 책상',desc:'강의실',damage:8,repaired:0,dept:'',note:''},
-  {id:84,bld:'제2공학관',floor:1,room:'104',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:85,bld:'제2공학관',floor:1,room:'105',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:86,bld:'제2공학관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:6,repaired:0,dept:'',note:''},
-  {id:87,bld:'제2공학관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:88,bld:'제2공학관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:89,bld:'제2공학관',floor:3,room:'304',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:90,bld:'제2공학관',floor:4,room:'401',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:91,bld:'제2공학관',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:5,repaired:0,dept:'',note:''},
-  {id:92,bld:'제2공학관',floor:4,room:'403',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:93,bld:'제2공학관',floor:4,room:'404',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:94,bld:'제2공학관',floor:5,room:'501',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:95,bld:'제2공학관',floor:5,room:'502',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:96,bld:'제2공학관',floor:5,room:'503',type:'2인 책상',desc:'강의실',damage:3,repaired:0,dept:'',note:''},
-  {id:97,bld:'제2공학관',floor:5,room:'504',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  // 제3공학관
-  {id:98,bld:'제3공학관',floor:1,room:'101',type:'강당의자',desc:'계단강의실',damage:10,repaired:0,dept:'',note:''},
-  {id:99,bld:'제3공학관',floor:1,room:'102',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:100,bld:'제3공학관',floor:1,room:'103',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:101,bld:'제3공학관',floor:2,room:'201',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:102,bld:'제3공학관',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:4,repaired:0,dept:'',note:''},
-  {id:103,bld:'제3공학관',floor:2,room:'203',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:104,bld:'제3공학관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:105,bld:'제3공학관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:7,repaired:0,dept:'',note:''},
-  {id:106,bld:'제3공학관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:107,bld:'제3공학관',floor:4,room:'401',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:108,bld:'제3공학관',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:109,bld:'제3공학관',floor:4,room:'403',type:'2인 책상',desc:'강의실',damage:5,repaired:0,dept:'',note:''},
-  // 홍문관
-  {id:110,bld:'홍문관',floor:1,room:'101',type:'강당의자',desc:'계단강의실',damage:3,repaired:0,dept:'',note:''},
-  {id:111,bld:'홍문관',floor:1,room:'102',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:112,bld:'홍문관',floor:2,room:'201',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:113,bld:'홍문관',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:6,repaired:0,dept:'',note:''},
-  {id:114,bld:'홍문관',floor:2,room:'203',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:115,bld:'홍문관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:116,bld:'홍문관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:4,repaired:0,dept:'',note:''},
-  {id:117,bld:'홍문관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  // 과학관
-  {id:118,bld:'과학관',floor:1,room:'101',type:'강당의자',desc:'계단강의실',damage:5,repaired:0,dept:'',note:''},
-  {id:119,bld:'과학관',floor:1,room:'102',type:'강당의자',desc:'계단강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:120,bld:'과학관',floor:1,room:'103',type:'구형',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:121,bld:'과학관',floor:2,room:'201',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:122,bld:'과학관',floor:2,room:'202',type:'2인 책상',desc:'강의실',damage:3,repaired:0,dept:'',note:''},
-  {id:123,bld:'과학관',floor:2,room:'203',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:124,bld:'과학관',floor:2,room:'204',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:125,bld:'과학관',floor:3,room:'301',type:'2인 책상',desc:'강의실',damage:7,repaired:0,dept:'',note:''},
-  {id:126,bld:'과학관',floor:3,room:'302',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:127,bld:'과학관',floor:3,room:'303',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:128,bld:'과학관',floor:3,room:'304',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:129,bld:'과학관',floor:4,room:'401',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:130,bld:'과학관',floor:4,room:'402',type:'2인 책상',desc:'강의실',damage:4,repaired:0,dept:'',note:''},
-  {id:131,bld:'과학관',floor:4,room:'403',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:132,bld:'과학관',floor:4,room:'404',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:133,bld:'과학관',floor:5,room:'501',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:134,bld:'과학관',floor:5,room:'502',type:'2인 책상',desc:'강의실',damage:6,repaired:0,dept:'',note:''},
-  {id:135,bld:'과학관',floor:5,room:'503',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:136,bld:'과학관',floor:5,room:'504',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:137,bld:'과학관',floor:6,room:'601',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:138,bld:'과학관',floor:6,room:'602',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:139,bld:'과학관',floor:6,room:'603',type:'2인 책상',desc:'강의실',damage:3,repaired:0,dept:'',note:''},
-  {id:140,bld:'과학관',floor:6,room:'604',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:141,bld:'과학관',floor:7,room:'701',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:142,bld:'과학관',floor:7,room:'702',type:'2인 책상',desc:'강의실',damage:2,repaired:0,dept:'',note:''},
-  {id:143,bld:'과학관',floor:7,room:'703',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''},
-  {id:144,bld:'과학관',floor:7,room:'704',type:'2인 책상',desc:'강의실',damage:0,repaired:0,dept:'',note:''}
-];
+const ROOMS_SEED=[];
 let productMap=new Map();
 let _debounceTimer;
 // 클라우드 연동
@@ -752,7 +590,7 @@ function performUndo(){
   else localStorage.setItem(key,data);
   // 메모리 변수 재로드
   if(key==='ws3_plans'){loadPlans();renderPlanList();}
-  else if(key==='ws3_rooms'){loadRooms();renderRoomView();}
+  else if(key==='ws3_rooms'){loadRooms();}
   else if(key==='ws3_products'){loadProducts();renderInventory();renderAlerts();}
   else if(key==='ws3_history'){loadHistory();renderInventory();}
   else if(key==='ws3_holidays'){loadHolidays();renderReport();}
@@ -1465,16 +1303,13 @@ function switchTab(tab){
   document.getElementById('tabHistory').className=tab==='history'?'active':'';
   document.getElementById('tabTasks').className=tab==='tasks'?'active':'';
   document.getElementById('tabPlan').className=tab==='plan'?'active':'';
-  document.getElementById('tabRoom').className=tab==='room'?'active':'';
   document.getElementById('stockView').style.display=tab==='stock'?'flex':'none';
   document.getElementById('historyView').style.display=tab==='history'?'block':'none';
   document.getElementById('tasksView').style.display=tab==='tasks'?'flex':'none';
   document.getElementById('planView').style.display=tab==='plan'?'flex':'none';
-  document.getElementById('roomView').style.display=tab==='room'?'flex':'none';
   if(tab==='history')renderHistory();
   if(tab==='tasks')renderTaskHistory();
   if(tab==='plan')renderPlanList();
-  if(tab==='room')renderRoomView();
 }
 
 function renderHistory(){
@@ -2762,39 +2597,11 @@ function calGoToWeek(wy,ww){
   toast(wy+'년 '+ww+'주차로 이동');
 }
 
-// === 강의실 현황 ===
+// === 건물 호실 현황 ===
 function getRoomBuildings(){
   const set=new Set();
   rooms.forEach(r=>set.add(r.bld));
   return Array.from(set);
-}
-
-// 우측 패널 요약 뷰
-function renderRoomView(){
-  const rv=document.getElementById('roomView');
-  if(!rv)return;
-  const blds=getRoomBuildings();
-  const totalRooms=rooms.length;
-  const totalDmg=rooms.reduce((s,r)=>s+(r.damage||0),0);
-  const totalRep=rooms.reduce((s,r)=>s+(r.repaired||0),0);
-
-  let h='<div class="cr-panel-summary">';
-  h+='<div style="font-size:14px;font-weight:700;color:var(--gray-800)">🏫 강의실 현황</div>';
-  h+='<div class="cr-panel-stats">';
-  h+='<div class="cr-ps"><div class="val" style="color:var(--blue)">'+blds.length+'</div><div class="lbl">건물</div></div>';
-  h+='<div class="cr-ps"><div class="val" style="color:var(--gray-800)">'+totalRooms+'</div><div class="lbl">강의실</div></div>';
-  h+='<div class="cr-ps"><div class="val" style="color:var(--red)">'+totalDmg+'</div><div class="lbl">파손</div></div>';
-  h+='<div class="cr-ps"><div class="val" style="color:var(--green)">'+totalRep+'</div><div class="lbl">수리</div></div>';
-  h+='</div>';
-  h+='<div class="cr-panel-blds">';
-  blds.forEach(b=>{
-    const cnt=rooms.filter(r=>r.bld===b).length;
-    h+='<span>'+esc(b)+' '+cnt+'</span>';
-  });
-  h+='</div>';
-  h+='<button class="btn btn-blue" onclick="openClassroom()" style="margin-top:8px">📋 상세 보기</button>';
-  h+='</div>';
-  rv.innerHTML=h;
 }
 
 // 전체화면 오버레이
@@ -2821,8 +2628,10 @@ function renderClassroom(){
   h+='<div class="cr-container">';
   // 헤더
   h+='<div class="cr-header">';
-  h+='<h2>🏫 강의실 현황</h2>';
+  h+='<h2>🏢 건물 호실 현황</h2>';
   h+='<div class="cr-header-right">';
+  h+='<button class="btn btn-outline btn-sm" onclick="document.getElementById(\'roomExcelInput\').click()">📥 엑셀 불러오기</button>';
+  h+='<input type="file" id="roomExcelInput" accept=".xlsx,.xls,.csv" onchange="importRoomExcel(event)" style="display:none">';
   h+='<button class="btn btn-blue btn-sm" onclick="openRoomForm(null)">➕ 추가</button>';
   h+='<button class="btn btn-ghost btn-sm" style="font-size:16px" onclick="closeClassroom()" title="닫기">✕</button>';
   h+='</div></div>';
@@ -2835,14 +2644,14 @@ function renderClassroom(){
   h+='</div>';
   // 요약
   h+='<div class="cr-summary">';
-  h+='<div class="cr-stat"><div class="val" style="color:var(--blue)">'+filtered.length+'</div><div class="lbl">강의실</div></div>';
+  h+='<div class="cr-stat"><div class="val" style="color:var(--blue)">'+filtered.length+'</div><div class="lbl">호실</div></div>';
   h+='<div class="cr-stat"><div class="val" style="color:var(--red)">'+totalDmg+'</div><div class="lbl">파손 좌판</div></div>';
   h+='<div class="cr-stat"><div class="val" style="color:var(--green)">'+totalRep+'</div><div class="lbl">수리 완료</div></div>';
   h+='</div>';
   // 테이블
   h+='<div class="cr-body">';
   if(!filtered.length){
-    h+='<p class="cr-empty">이 건물에 등록된 강의실이 없습니다</p>';
+    h+='<p class="cr-empty">이 건물에 등록된 호실이 없습니다</p>';
   }else{
     h+='<table class="cr-table"><thead><tr>';
     h+='<th>층</th><th>실번호</th><th>종류</th><th>설명</th><th>소속</th><th>파손좌판</th><th>수리완료</th><th>비고</th><th></th>';
@@ -2884,7 +2693,7 @@ function openRoomForm(rid){
   const blds=getRoomBuildings();
   const allBlds=[...new Set([...blds,currentRoomBld].filter(Boolean))];
 
-  let h='<div class="modal"><h2>'+(isEdit?'✏️ 강의실 수정':'➕ 강의실 추가')+'</h2>';
+  let h='<div class="modal"><h2>'+(isEdit?'✏️ 호실 수정':'➕ 호실 추가')+'</h2>';
   h+='<label>건물</label>';
   h+='<select id="rmBld">';
   allBlds.forEach(b=>{h+='<option value="'+esc(b)+'"'+(r&&r.bld===b||!r&&b===currentRoomBld?' selected':'')+'>'+esc(b)+'</option>';});
@@ -2894,7 +2703,7 @@ function openRoomForm(rid){
   h+='<div class="form-row"><div><label>층</label><input type="number" id="rmFloor" value="'+(r?r.floor:1)+'" min="1"></div>';
   h+='<div><label>실번호</label><input id="rmRoom" value="'+esc(r?r.room:'')+'" placeholder="예: 201"></div></div>';
   h+='<label>종류</label><input id="rmType" value="'+esc(r?r.type:'')+'" placeholder="예: 2인 책상, 강당의자, 구형...">';
-  h+='<label>설명</label><input id="rmDesc" value="'+esc(r?r.desc:'강의실')+'" placeholder="강의실, 계단강의실, 실기실 등">';
+  h+='<label>설명</label><input id="rmDesc" value="'+esc(r?r.desc:'')+'" placeholder="강의실, 실험실, 사무실 등">';
   h+='<label>소속</label><input id="rmDept" value="'+esc(r?r.dept||'':'')+'" placeholder="소속 학과/부서 (선택사항)">';
   h+='<div class="form-row"><div><label>파손 좌판</label><input type="number" id="rmDmg" value="'+(r?r.damage:0)+'" min="0"></div>';
   h+='<div><label>수리 완료</label><input type="number" id="rmRep" value="'+(r?r.repaired:0)+'" min="0"></div></div>';
@@ -2933,15 +2742,60 @@ function saveRoom(rid){
     rooms.push({id:maxId+1,bld,floor,room,type,desc,dept,damage,repaired,note});
   }
   currentRoomBld=bld;
-  saveRooms();closeModal();renderClassroom();renderRoomView();
-  toast(rid?'강의실이 수정되었습니다':'강의실이 추가되었습니다');
+  saveRooms();closeModal();renderClassroom();  toast(rid?'호실 정보가 수정되었습니다':'호실이 추가되었습니다');
 }
 
 function deleteRoom(rid){
-  if(!confirm('이 강의실을 삭제하시겠습니까?'))return;
+  if(!confirm('이 호실을 삭제하시겠습니까?'))return;
   rooms=rooms.filter(r=>r.id!==rid);
-  saveRooms();renderClassroom();renderRoomView();
-  toast('강의실이 삭제되었습니다');
+  saveRooms();renderClassroom();  toast('호실이 삭제되었습니다');
+}
+
+// 엑셀 파일 임포트
+function importRoomExcel(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=new Uint8Array(ev.target.result);
+      const wb=XLSX.read(data,{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      if(!rows.length){toast('엑셀 파일에 데이터가 없습니다');return;}
+      // 컬럼 매핑 (유연하게 처리)
+      const colMap={bld:['건물','건물명','bld','building'],floor:['층','floor'],room:['호실','실번호','room','호수'],type:['종류','type','유형'],desc:['설명','desc','description','용도'],dept:['소속','dept','부서'],damage:['파손','damage','파손좌판','파손수'],repaired:['수리','repaired','수리완료','수리수'],note:['비고','note','메모']};
+      function findCol(row,keys){for(const k of keys){if(row[k]!==undefined)return k;}return null;}
+      const sample=rows[0];
+      const mapping={};
+      for(const[field,keys] of Object.entries(colMap)){mapping[field]=findCol(sample,keys);}
+      if(!mapping.bld&&!mapping.room){toast('건물 또는 호실 컬럼을 찾을 수 없습니다.\n컬럼명: 건물, 층, 호실, 종류, 설명, 소속, 파손, 수리, 비고');return;}
+      const maxId=rooms.reduce((m,r)=>Math.max(m,r.id),0);
+      const newRooms=rows.map((row,i)=>({
+        id:maxId+i+1,
+        bld:String(mapping.bld?row[mapping.bld]:'').trim(),
+        floor:parseInt(mapping.floor?row[mapping.floor]:0)||1,
+        room:String(mapping.room?row[mapping.room]:'').trim(),
+        type:String(mapping.type?row[mapping.type]:'').trim(),
+        desc:String(mapping.desc?row[mapping.desc]:'').trim(),
+        dept:String(mapping.dept?row[mapping.dept]:'').trim(),
+        damage:parseInt(mapping.damage?row[mapping.damage]:0)||0,
+        repaired:parseInt(mapping.repaired?row[mapping.repaired]:0)||0,
+        note:String(mapping.note?row[mapping.note]:'').trim()
+      })).filter(r=>r.bld||r.room);
+      if(!newRooms.length){toast('유효한 데이터가 없습니다');return;}
+      const mode=rooms.length?confirm('기존 데이터에 추가하시겠습니까?\n[확인] = 추가 / [취소] = 전체 교체'):false;
+      if(mode){rooms=rooms.concat(newRooms);}else{rooms=newRooms;}
+      currentRoomBld=rooms[0]?.bld||'';
+      saveRooms();renderClassroom();
+      toast(newRooms.length+'개 호실 데이터를 불러왔습니다');
+    }catch(err){
+      console.error('엑셀 임포트 오류:',err);
+      toast('엑셀 파일 읽기 실패: '+err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  e.target.value='';
 }
 
 // 시작
