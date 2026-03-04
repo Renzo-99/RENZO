@@ -1134,6 +1134,13 @@ function confirmHoliday(dateKey){
   toast(name+' 공휴일 지정 완료');
 }
 
+function calAddHoliday(dateStr){
+  const name=(document.getElementById('calHolidayName')?.value.trim())||'휴일';
+  holidays[dateStr]=name;
+  saveHolidays();closeModal();renderCalendar();
+  openCalDay(dateStr);
+  toast(name+' 휴일 지정 완료');
+}
 function removeHoliday(dateKey){
   const name=holidays[dateKey]||'공휴일';
   delete holidays[dateKey];
@@ -2560,6 +2567,22 @@ function openCalDay(dateStr){
       h+='</div>';
     });
     h+='</div>';
+  }
+
+  // 휴일 추가/삭제
+  if(isHol){
+    h+='<div style="margin-top:8px;padding:6px 10px;background:var(--red-bg);border-radius:8px;display:flex;align-items:center;justify-content:space-between">';
+    h+='<span style="font-size:13px;color:var(--red);font-weight:600">📅 '+esc(holidays[dateStr])+'</span>';
+    if(!DEFAULT_HOLIDAYS[dateStr]){
+      h+='<button class="btn btn-outline btn-sm" style="font-size:11px;color:var(--red);border-color:var(--red)" onclick="removeHoliday(\''+dateStr+'\');closeModal();renderCalendar()">삭제</button>';
+    }
+    h+='</div>';
+  }else{
+    h+='<div style="margin-top:8px">';
+    h+='<div style="display:flex;gap:6px;align-items:center">';
+    h+='<input id="calHolidayName" placeholder="휴일 이름 (예: 개교기념일)" style="flex:1;border:1px solid var(--gray-300);border-radius:6px;padding:6px 10px;font-size:13px">';
+    h+='<button class="btn btn-outline btn-sm" style="font-size:12px;color:var(--red);border-color:var(--red)" onclick="calAddHoliday(\''+dateStr+'\')">📅 휴일 추가</button>';
+    h+='</div></div>';
   }
 
   h+='<div class="modal-btns" style="margin-top:12px">';
