@@ -196,6 +196,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
   .task-note.has-note{background:#fef2f2!important;color:#dc2626!important;padding:2px 6px;border-radius:4px}
   .mat-badge{border:1px solid #16a34a;background:#f0fdf4!important;color:#15803d!important}
   .mat-badge .qty{background:#16a34a!important;color:#fff!important}
+  .mat-badge.zero-qty{display:none!important}
   .day-header{margin-top:16px}
   .holiday-badge{border:1px solid var(--red);color:#dc2626!important;background:#fef2f2!important}
   .print-inventory{display:block!important;page-break-before:always;padding-top:20px}
@@ -774,7 +775,7 @@ function renderReport(){
         h+='<div class="mats">';
         t.mats.forEach(x=>{
           const p=productMap.get(x.pid);
-          h+='<span class="mat-badge">'+esc(p?p.name:'알수없음')+' <span class="qty">×'+x.qty+'</span>';
+          h+='<span class="mat-badge'+(x.qty===0?' zero-qty':'')+'">'+esc(p?p.name:'알수없음')+' <span class="qty">×'+x.qty+'</span>';
           h+='<span class="remove" onclick="removeMaterial('+di+','+ti+','+x.id+')">✕</span></span>';
         });
         h+='</div>';
@@ -1607,7 +1608,7 @@ function printReport(){
     if(!matMap[m.pid])matMap[m.pid]=0;
     matMap[m.pid]+=m.qty;
   })));
-  const matEntries=Object.entries(matMap);
+  const matEntries=Object.entries(matMap).filter(([,qty])=>qty>0);
   if(matEntries.length){
     let sh='<h2>자재 사용 요약</h2><table><tr><th>품목코드</th><th>품목명</th><th>사용량</th><th>단위</th></tr>';
     matEntries.forEach(([pid,qty])=>{
@@ -1619,7 +1620,7 @@ function printReport(){
   }else{document.getElementById('printSummary').innerHTML='';}
 
   let ih='<h2>재고 현황</h2><table><tr><th>코드</th><th>품목명</th><th>분류</th><th>현재고</th><th>단위</th></tr>';
-  products.filter(p=>p.stock>0||p.tin>0||p.tout>0).forEach(p=>{
+  products.filter(p=>p.stock>0).forEach(p=>{
     ih+='<tr><td>'+p.code+'</td><td>'+esc(p.name)+'</td><td>'+(p.cat==='A'?'철물':'목재')+'</td>';
     ih+='<td class="num">'+p.stock+'</td><td>'+p.unit+'</td></tr>';
   });
