@@ -2759,43 +2759,202 @@ function importRoomExcel(e){
   reader.onload=function(ev){
     try{
       const data=new Uint8Array(ev.target.result);
-      const wb=XLSX.read(data,{type:'array'});
-      const colMap={bld:['건물','건물명','bld','building'],floor:['층','floor'],room:['호실','실번호','room','호수'],type:['종류','type','유형'],desc:['설명','desc','description','용도'],dept:['소속','dept','부서'],damage:['파손','damage','파손좌판','파손수'],repaired:['수리','repaired','수리완료','수리수'],note:['비고','note','메모']};
-      function findCol(row,keys){for(const k of keys){if(row[k]!==undefined)return k;}return null;}
+      const wb=XLSX.read(data,{type:'array',cellDates:true,cellText:false,cellStyles:true});
+
+      // 컬럼명 매핑 (우선순위 순서: 앞에 있을수록 먼저 매칭)
+      const colMap={
+        bld:['건물명','건물','건물이름','bld','building','빌딩','건물동','동명'],
+        floor:['층','층수','floor','fl','층번호'],
+        room:['실번호','호실','호실번호','호수','room','roomno','room_no','room_number'],
+        type:['종류','type','유형','타입','구분','분류','책상종류','책상유형','좌석유형','책상타입','의자종류'],
+        desc:['실명','설명','용도','사용용도','desc','description','상세','상세설명','특이사항'],
+        dept:['소속','부서','학과','dept','department','소속학과','소속부서','관리부서','담당부서','사용부서'],
+        damage:['파손좌판','파손','파손수','파손개수','파손수량','파손좌판수','damage','broken','손상','손상수','고장','고장수'],
+        repaired:['수리완료','수리','완료','수리수','수리완료수','수리수량','수리개수','수리완료수량','완료수','repaired','fixed'],
+        note:['비고','note','메모','notes','memo','참고','기타','remarks','remark','comment','comments']
+      };
+
+      // 정규화 함수: 공백/특수문자/괄호 내용 제거 후 소문자
+      function normalize(s){return String(s).replace(/\([^)]*\)/g,'').replace(/[\s_\-\.·]/g,'').toLowerCase();}
+
+      // 컬럼 매핑: 3단계 (정확매칭 → 정규화매칭 → 헤더에 별칭 포함)
+      function findCol(headerKeys,aliases,usedCols){
+        // 이미 매핑된 컬럼은 제외
+        const available=headerKeys.filter(h=>!usedCols.has(h));
+        // 1단계: 원본 그대로 정확 매칭
+        for(const h of available){
+          for(const a of aliases){if(h===a)return h;}
+        }
+        // 2단계: 정규화 후 정확 매칭 (괄호 내용 제거 등)
+        for(const h of available){
+          const hn=normalize(h);
+          for(const a of aliases){if(hn&&normalize(a)===hn)return h;}
+        }
+        // 3단계: 헤더 정규화값이 별칭을 포함 (별칭 2글자 이상만)
+        for(const h of available){
+          const hn=normalize(h);
+          for(const a of aliases){
+            const an=normalize(a);
+            if(an.length>=2&&hn.includes(an))return h;
+          }
+        }
+        return null;
+      }
+
+      // 헤더 행 자동 감지
+      function detectHeaderRow(ws){
+        const range=XLSX.utils.decode_range(ws['!ref']||'A1');
+        let bestRow=0,bestScore=0;
+        const maxScan=Math.min(range.e.r,10);
+        for(let r=range.s.r;r<=maxScan;r++){
+          let score=0;
+          const rowKeys=[];
+          for(let c=range.s.c;c<=range.e.c;c++){
+            const addr=XLSX.utils.encode_cell({r,c});
+            const cell=ws[addr];
+            if(cell&&cell.v!==undefined&&cell.v!==null&&String(cell.v).trim()){
+              rowKeys.push(String(cell.v).trim());
+            }
+          }
+          const tempUsed=new Set();
+          for(const[,aliases] of Object.entries(colMap)){
+            if(findCol(rowKeys,aliases,tempUsed))score++;
+          }
+          if(score>bestScore&&score>=2){bestScore=score;bestRow=r;}
+        }
+        return bestRow;
+      }
+
+      // 병합셀 처리: 병합된 셀의 값을 하위 셀에 전파
+      function fillMergedCells(ws){
+        if(!ws['!merges'])return;
+        ws['!merges'].forEach(merge=>{
+          const topLeft=ws[XLSX.utils.encode_cell({r:merge.s.r,c:merge.s.c})];
+          if(!topLeft)return;
+          for(let r=merge.s.r;r<=merge.e.r;r++){
+            for(let c=merge.s.c;c<=merge.e.c;c++){
+              if(r===merge.s.r&&c===merge.s.c)continue;
+              const addr=XLSX.utils.encode_cell({r,c});
+              if(!ws[addr])ws[addr]={t:topLeft.t,v:topLeft.v};
+            }
+          }
+        });
+      }
+
       let allNewRooms=[];
       let idCounter=rooms.reduce((m,r)=>Math.max(m,r.id),0);
       const sheetResults=[];
+      const unmappedCols=[];
+
       wb.SheetNames.forEach(sheetName=>{
         const ws=wb.Sheets[sheetName];
-        const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+        if(!ws['!ref'])return;
+
+        // 병합셀 값 전파
+        fillMergedCells(ws);
+
+        // 헤더 행 자동 감지
+        const headerRow=detectHeaderRow(ws);
+
+        // 헤더 행부터 데이터 파싱
+        const rows=XLSX.utils.sheet_to_json(ws,{defval:'',range:headerRow,raw:true,rawNumbers:false});
         if(!rows.length)return;
+
         const sample=rows[0];
+        const headerKeys=Object.keys(sample);
+
+        // 순서대로 매핑 (이미 사용된 컬럼 제외하여 중복 방지)
+        const usedCols=new Set();
         const mapping={};
-        for(const[field,keys] of Object.entries(colMap)){mapping[field]=findCol(sample,keys);}
+        for(const[field,aliases] of Object.entries(colMap)){
+          const col=findCol(headerKeys,aliases,usedCols);
+          mapping[field]=col;
+          if(col)usedCols.add(col);
+        }
+
+        // 매핑되지 않은 컬럼 수집
+        const sheetUnmapped=headerKeys.filter(h=>!usedCols.has(h)&&h!=='__EMPTY'&&!h.startsWith('__EMPTY'));
+        if(sheetUnmapped.length)unmappedCols.push({sheet:sheetName,cols:sheetUnmapped});
+
+        // 같은 필드에 매핑될 수 있는 추가 컬럼 탐색 (예: 소속 컬럼 2개)
+        const extraDeptCols=headerKeys.filter(h=>{
+          if(usedCols.has(h)||h==='__EMPTY'||h.startsWith('__EMPTY'))return false;
+          const hn=normalize(h);
+          return hn.includes('소속')||hn.includes('dept');
+        });
+
         const hasBldCol=!!mapping.bld;
+
+        // 매핑 결과 콘솔 출력 (디버그용)
+        console.log('['+sheetName+'] 컬럼 매핑:', JSON.stringify(mapping));
+        if(sheetUnmapped.length)console.log('['+sheetName+'] 미매핑 → 비고:', sheetUnmapped);
+
         const parsed=rows.map(row=>{
+          // 행 전체가 비어있으면 건너뛰기
+          const hasAnyValue=headerKeys.some(k=>{
+            const v=row[k];
+            return v!==undefined&&v!==null&&String(v).trim()!=='';
+          });
+          if(!hasAnyValue)return null;
+
           idCounter++;
+          const bldVal=hasBldCol&&mapping.bld?row[mapping.bld]:sheetName;
+          const floorRaw=mapping.floor?row[mapping.floor]:'';
+          const floorParsed=parseInt(String(floorRaw).replace(/[^0-9\-]/g,''))||1;
+
+          // 소속: 메인 매핑 + 추가 소속 컬럼 합산
+          let deptVal=String(mapping.dept?row[mapping.dept]:'').trim();
+          if(extraDeptCols.length){
+            const extras=extraDeptCols.map(c=>String(row[c]||'').trim()).filter(Boolean);
+            if(extras.length){
+              deptVal=deptVal?deptVal+' / '+extras.join(' / '):extras.join(' / ');
+            }
+          }
+
+          // 매핑되지 않은 컬럼의 값을 비고에 병합
+          let noteVal=String(mapping.note?row[mapping.note]:'').trim();
+          const unmappedForNote=sheetUnmapped.filter(c=>!extraDeptCols.includes(c));
+          if(unmappedForNote.length){
+            const extras=unmappedForNote.map(col=>{
+              const v=row[col];
+              if(v===undefined||v===null||String(v).trim()==='')return null;
+              return col+': '+String(v).trim();
+            }).filter(Boolean);
+            if(extras.length){
+              noteVal=noteVal?(noteVal+' | '+extras.join(' | ')):extras.join(' | ');
+            }
+          }
+
           return{
             id:idCounter,
-            bld:String(hasBldCol&&mapping.bld?row[mapping.bld]:sheetName).trim(),
-            floor:parseInt(mapping.floor?row[mapping.floor]:0)||1,
+            bld:String(bldVal).trim()||sheetName,
+            floor:floorParsed,
             room:String(mapping.room?row[mapping.room]:'').trim(),
             type:String(mapping.type?row[mapping.type]:'').trim(),
             desc:String(mapping.desc?row[mapping.desc]:'').trim(),
-            dept:String(mapping.dept?row[mapping.dept]:'').trim(),
-            damage:parseInt(mapping.damage?row[mapping.damage]:0)||0,
-            repaired:parseInt(mapping.repaired?row[mapping.repaired]:0)||0,
-            note:String(mapping.note?row[mapping.note]:'').trim()
+            dept:deptVal,
+            damage:parseInt(String(mapping.damage?row[mapping.damage]:'0').replace(/[^0-9]/g,''))||0,
+            repaired:parseInt(String(mapping.repaired?row[mapping.repaired]:'0').replace(/[^0-9]/g,''))||0,
+            note:noteVal
           };
-        }).filter(r=>r.bld||r.room);
+        }).filter(r=>r!==null);
+
         if(parsed.length){allNewRooms=allNewRooms.concat(parsed);sheetResults.push(sheetName+'('+parsed.length+'건)');}
       });
+
       if(!allNewRooms.length){toast('엑셀 파일에 유효한 데이터가 없습니다');return;}
+
       const mode=rooms.length?confirm('기존 데이터에 추가하시겠습니까?\n[확인] = 추가 / [취소] = 전체 교체'):false;
       if(mode){rooms=rooms.concat(allNewRooms);}else{rooms=allNewRooms;}
       currentRoomBld=rooms[0]?.bld||'';
       saveRooms();renderClassroom();
-      toast(wb.SheetNames.length+'개 시트에서 총 '+allNewRooms.length+'개 호실 불러옴\n'+sheetResults.join(', '));
+
+      let msg=wb.SheetNames.length+'개 시트에서 총 '+allNewRooms.length+'개 호실 불러옴\n'+sheetResults.join(', ');
+      if(unmappedCols.length){
+        const extraColNames=[...new Set(unmappedCols.flatMap(u=>u.cols))];
+        msg+='\n\n※ 추가 컬럼 → 비고에 병합: '+extraColNames.join(', ');
+      }
+      toast(msg);
     }catch(err){
       console.error('엑셀 임포트 오류:',err);
       toast('엑셀 파일 읽기 실패: '+err.message);
