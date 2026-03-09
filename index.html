@@ -502,6 +502,50 @@ const DOW_SHORT=['일','월','화','수','목','금','토'];
 let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[], leaves=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock', currentRoomBld='';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
+let undoStack=[];
+// Ctrl+Z 실행 취소
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){
+    const tag=document.activeElement?.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+    e.preventDefault();
+    undoLastDelete();
+  }
+});
+function undoLastDelete(){
+  if(!undoStack.length){toast('복원할 항목이 없습니다');return;}
+  const u=undoStack.pop();
+  if(u.type==='deleteTask'){
+    // 해당 주차 데이터 로드
+    if(u.weekYear===yr&&u.weekNum===wk){
+      // 현재 주차면 days에 직접 삽입
+      days[u.di].tasks.splice(u.ti,0,u.task);
+      // 자재 재고 복원 (차감)
+      const desc=u.task.desc||'(미입력)';
+      u.task.mats.forEach(m=>{
+        const p=productMap.get(m.pid);
+        if(p){p.stock-=m.qty;p.tout+=m.qty;}
+        addHistory('out',m.pid,m.qty,'작업: '+desc);
+      });
+      saveWeek();saveProducts();saveHistory();renderReport();renderInventory();renderHistory();renderAlerts();
+    }else{
+      // 다른 주차면 localStorage에서 로드
+      const wk2='ws3_week_'+u.weekYear+'_'+u.weekNum;
+      let wd;try{wd=JSON.parse(localStorage.getItem(wk2));}catch(e){wd=null;}
+      if(wd){
+        wd[u.di].tasks.splice(u.ti,0,u.task);
+        safeSave(wk2,wd);
+        u.task.mats.forEach(m=>{
+          const p=productMap.get(m.pid);
+          if(p){p.stock-=m.qty;p.tout+=m.qty;}
+          addHistory('out',m.pid,m.qty,'작업: '+(u.task.desc||'(미입력)'));
+        });
+        saveProducts();saveHistory();renderInventory();renderHistory();renderAlerts();
+      }
+    }
+    toast('"'+(u.task.desc||'작업')+'" 복원 완료');
+  }
+}
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
 const AUTHORS=['백영인','전서원'];
 
@@ -1103,6 +1147,9 @@ function focusEditInput(){setTimeout(()=>{const inp=document.querySelector('.tas
 function deleteTask(di,ti){
   const t=days[di].tasks[ti];
   const desc=t.desc||'(미입력)';
+  // Undo 스택에 삭제 전 상태 저장
+  undoStack.push({type:'deleteTask',di,ti,task:JSON.parse(JSON.stringify(t)),weekYear:yr,weekNum:wk});
+  if(undoStack.length>20)undoStack.shift();
   t.mats.forEach(m=>{
     const p=productMap.get(m.pid);
     if(p){p.stock+=m.qty;p.tout=Math.max(0,p.tout-m.qty);}
@@ -1110,7 +1157,7 @@ function deleteTask(di,ti){
   });
   days[di].tasks.splice(ti,1);
   saveWeek();saveProducts();saveHistory();renderReport();renderInventory();renderHistory();renderAlerts();
-  toast('작업이 삭제되었습니다');
+  toast('작업이 삭제되었습니다 (Ctrl+Z로 복원)');
 }
 
 // === 공휴일 관리 ===
@@ -2697,6 +2744,9 @@ function calDeleteTask(wy,ww,di,ti){
   if(!weekData||!weekData[di])return;
 
   const task=weekData[di].tasks[ti];
+  // Undo 스택에 저장
+  undoStack.push({type:'deleteTask',di,ti,task:JSON.parse(JSON.stringify(task)),weekYear:wy,weekNum:ww});
+  if(undoStack.length>20)undoStack.shift();
   // 자재 재고 복구
   if(task.mats&&task.mats.length){
     task.mats.forEach(m=>{
@@ -2716,7 +2766,7 @@ function calDeleteTask(wy,ww,di,ti){
   const dateStr=getCalDateStrFromWeek(wy,ww,di);
   openCalDay(dateStr);
   renderCalendar();
-  toast('작업이 삭제되었습니다');
+  toast('작업이 삭제되었습니다 (Ctrl+Z로 복원)');
 }
 
 // 캘린더에서 새 작업 추가
