@@ -3,6 +3,7 @@
 <title>목공실 관리</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--blue:#3182F6;--blue-h:#1B64DA;--blue-bg:#E8F3FF;--red:#F04452;--red-bg:#FFF0F1;--green:#30B47A;--green-bg:#E8FAF0;--orange:#F59E0B;--orange-bg:#FFF8E1;--gray-50:#F9FAFB;--gray-100:#F2F4F6;--gray-200:#E5E8EB;--gray-400:#B0B8C1;--gray-500:#8B95A1;--gray-600:#6B7684;--gray-700:#4E5968;--gray-800:#333D4B;--gray-900:#191F28;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08)}
@@ -403,6 +404,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <button class="btn btn-outline btn-sm" onclick="goToday()">오늘</button>
   </div>
   <div class="hdr-right">
+    <span id="sbStatusBtn" style="font-size:14px;cursor:pointer;margin-right:2px" onclick="openSupabaseSettings()" title="Supabase 실시간"></span>
     <span id="autoSyncBtn" style="font-size:14px;cursor:pointer;margin-right:2px" onclick="toggleAutoSync()" title="실시간 동기화"></span>
     <span id="syncStatus" style="font-size:14px;cursor:pointer;margin-right:4px" onclick="openCloudSettings()" title="클라우드 상태"></span>
     <button class="btn btn-outline btn-sm" onclick="openClassroom()" title="건물 호실 현황">🏢 호실</button>
@@ -550,6 +552,11 @@ let _debounceTimer;
 const CLOUD_URL_DEFAULT='https://script.google.com/a/macros/hongik.ac.kr/s/AKfycbwfrvDEaHLxyixA3qH4xTnZDfpOq46He-eN61GJH7MEZdiMxT3XmGCqHZVW9gM5e-g-/exec';
 let SCRIPT_URL=localStorage.getItem('ws3_script_url')||CLOUD_URL_DEFAULT;
 let _cloudQueue={},_cloudTimer=null;
+// Supabase 실시간 연동
+let _sbUrl=localStorage.getItem('ws3_sb_url')||'';
+let _sbKey=localStorage.getItem('ws3_sb_key')||'';
+let _sbClient=null,_sbChannel=null,_sbEnabled=!!_sbUrl&&!!_sbKey;
+let _sbQueue={},_sbTimer=null,_sbSyncing=false;
 function debouncedRenderInventory(){clearTimeout(_debounceTimer);_debounceTimer=setTimeout(renderInventory,150);}
 
 // === 자동 백업 타이머 (5분) ===
@@ -599,6 +606,9 @@ async function init(){
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
   // 클라우드 동기화는 사용자가 수동으로 ☁️ 버튼을 눌렀을 때만 실행
   if(SCRIPT_URL){updateSyncStatus('idle');updateAutoSyncUI();startAutoSync();}
+  // Supabase 실시간 연결
+  if(_sbUrl&&_sbKey){initSupabase();updateSbStatusUI();}
+  else{updateSbStatusUI();}
   startAutoBackup();
   let cnt=0;for(let i=0;i<localStorage.length;i++){if(localStorage.key(i).startsWith('ws3_'))cnt++;}
   console.log('[init] localStorage ws3_ 키 수:',cnt,', 품목 수:',products.length);
@@ -665,8 +675,9 @@ function safeSave(key,data){
   try{localStorage.setItem(key,JSON.stringify(data));
     // 변경 시각 기록 (클라우드 동기화 충돌 해결용)
     localStorage.setItem('ws3_lastModified',String(Date.now()));
-    queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));}
-  catch(e){if(e.name==='QuotaExceededError'||e.code===22){if(history.length>500){history=history.slice(-200);try{localStorage.setItem('ws3_history',JSON.stringify(history));localStorage.setItem(key,JSON.stringify(data));toast('저장 공간 부족 → 오래된 내역 정리됨');return;}catch(e2){}}toast('저장 공간이 부족합니다. 데이터를 백업해주세요.');}else{console.error('저장 실패:',e);}queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));}
+    queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));
+    queueSupabaseSave(key.replace('ws3_',''),JSON.stringify(data));}
+  catch(e){if(e.name==='QuotaExceededError'||e.code===22){if(history.length>500){history=history.slice(-200);try{localStorage.setItem('ws3_history',JSON.stringify(history));localStorage.setItem(key,JSON.stringify(data));toast('저장 공간 부족 → 오래된 내역 정리됨');return;}catch(e2){}}toast('저장 공간이 부족합니다. 데이터를 백업해주세요.');}else{console.error('저장 실패:',e);}queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));queueSupabaseSave(key.replace('ws3_',''),JSON.stringify(data));}
 }
 function saveProducts(){rebuildProductMap();safeSave('ws3_products',products);}
 function saveWeek(){safeSave('ws3_week_'+yr+'_'+wk,days);}
@@ -2349,6 +2360,174 @@ function updateAutoSyncUI(){
   if(!el)return;
   if(_syncEnabled){el.textContent='🔄';el.title='실시간 동기화 켜짐 (30초) — 클릭하여 끄기';el.style.color='var(--blue)';}
   else{el.textContent='⏸';el.title='실시간 동기화 꺼짐 — 클릭하여 켜기';el.style.color='var(--gray-500)';}
+}
+
+// === Supabase 실시간 동기화 ===
+function initSupabase(){
+  if(!_sbUrl||!_sbKey){_sbEnabled=false;return;}
+  try{
+    _sbClient=supabase.createClient(_sbUrl,_sbKey);
+    _sbEnabled=true;
+    subscribeRealtime();
+    console.log('[Supabase] 연결됨');
+  }catch(e){console.error('[Supabase 초기화 오류]',e);_sbEnabled=false;}
+}
+function subscribeRealtime(){
+  if(!_sbClient)return;
+  if(_sbChannel){_sbClient.removeChannel(_sbChannel);}
+  _sbChannel=_sbClient
+    .channel('sync-all')
+    .on('postgres_changes',{event:'*',schema:'public',table:'sync_data'},payload=>{
+      if(_sbSyncing)return; // 내가 저장 중이면 스킵
+      const row=payload.new;
+      if(!row||!row.key)return;
+      const localKey='ws3_'+row.key;
+      const localVal=localStorage.getItem(localKey);
+      if(localVal===row.value)return; // 이미 동일
+      console.log('[Supabase 실시간] 변경 수신:',row.key);
+      localStorage.setItem(localKey,row.value);
+      // 메모리 재로드
+      reloadAllFromStorage();
+      toast('⚡ 실시간 변경 반영: '+friendlyKeyName(row.key));
+    })
+    .subscribe(status=>{
+      console.log('[Supabase Realtime]',status);
+      if(status==='SUBSCRIBED')updateSyncStatus('synced');
+    });
+}
+function friendlyKeyName(key){
+  if(key==='products')return '재고';
+  if(key==='history')return '입출고 내역';
+  if(key==='holidays')return '공휴일';
+  if(key==='buildings')return '건물';
+  if(key==='plans')return '작업 예정';
+  if(key==='leaves')return '연차';
+  if(key==='rooms')return '호실';
+  if(key.startsWith('week_'))return '주간보고서';
+  return key;
+}
+function reloadAllFromStorage(){
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+  loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+  if(currentTab==='history')renderHistory();
+  if(currentTab==='tasks')renderTaskHistory();
+  if(currentTab==='plan')renderPlanList();
+}
+// Supabase에 데이터 upsert (디바운스)
+function queueSupabaseSave(key,value){
+  if(!_sbEnabled||!_sbClient)return;
+  _sbQueue[key]=value;
+  clearTimeout(_sbTimer);
+  _sbTimer=setTimeout(flushSupabaseQueue,1500);
+}
+async function flushSupabaseQueue(){
+  const keys=Object.keys(_sbQueue);
+  if(!keys.length||!_sbClient)return;
+  const items=keys.map(k=>({key:k,value:_sbQueue[k],updated_at:new Date().toISOString()}));
+  _sbQueue={};
+  _sbSyncing=true;
+  try{
+    const{error}=await _sbClient.from('sync_data').upsert(items,{onConflict:'key'});
+    if(error)console.warn('[Supabase 저장 오류]',error);
+    else console.log('[Supabase 저장]',keys.length+'개');
+  }catch(e){console.warn('[Supabase 저장 실패]',e);}
+  finally{setTimeout(()=>{_sbSyncing=false;},500);}
+}
+// Supabase에서 전체 데이터 로드
+async function loadAllFromSupabase(){
+  if(!_sbClient)return false;
+  try{
+    const{data,error}=await _sbClient.from('sync_data').select('key,value');
+    if(error){console.warn('[Supabase 로드 오류]',error);return false;}
+    if(!data||!data.length)return false;
+    createSnapshot('Supabase 동기화 전 백업');
+    data.forEach(row=>{
+      localStorage.setItem('ws3_'+row.key,row.value);
+    });
+    reloadAllFromStorage();
+    return true;
+  }catch(e){console.warn('[Supabase 로드 실패]',e);return false;}
+}
+// Supabase에 전체 업로드
+async function uploadAllToSupabase(){
+  if(!_sbClient){toast('Supabase가 연결되지 않았습니다');return;}
+  _sbSyncing=true;
+  const items=[];
+  items.push({key:'products',value:JSON.stringify(products),updated_at:new Date().toISOString()});
+  items.push({key:'history',value:JSON.stringify(history),updated_at:new Date().toISOString()});
+  items.push({key:'holidays',value:JSON.stringify(holidays),updated_at:new Date().toISOString()});
+  items.push({key:'buildings',value:JSON.stringify(buildings),updated_at:new Date().toISOString()});
+  items.push({key:'plans',value:JSON.stringify(plans),updated_at:new Date().toISOString()});
+  items.push({key:'leaves',value:JSON.stringify(leaves),updated_at:new Date().toISOString()});
+  items.push({key:'rooms',value:JSON.stringify(rooms),updated_at:new Date().toISOString()});
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('ws3_week_'))items.push({key:k.replace('ws3_',''),value:localStorage.getItem(k),updated_at:new Date().toISOString()});
+  }
+  try{
+    const{error}=await _sbClient.from('sync_data').upsert(items,{onConflict:'key'});
+    if(error){toast('⚠️ 업로드 오류: '+error.message);console.error(error);}
+    else toast('⚡ Supabase 전체 업로드 완료 ('+items.length+'개)');
+  }catch(e){toast('⚠️ 업로드 실패');console.error(e);}
+  finally{setTimeout(()=>{_sbSyncing=false;},500);}
+}
+function openSupabaseSettings(){
+  let h='<div class="modal" style="max-width:520px"><h2>⚡ Supabase 실시간 동기화</h2>';
+  h+='<p style="font-size:13px;color:var(--gray-600);margin-bottom:12px">Supabase를 사용하면 다른 사용자의 변경이 <b>즉시(1~2초)</b> 반영됩니다.</p>';
+  h+='<div style="background:var(--blue-bg);padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;line-height:1.6">';
+  h+='<b>설정 방법:</b><br>';
+  h+='1. <a href="https://supabase.com" target="_blank" style="color:var(--blue)">supabase.com</a>에서 무료 프로젝트 생성<br>';
+  h+='2. SQL Editor에서 아래 SQL 실행<br>';
+  h+='3. Project Settings → API에서 URL과 anon key 복사</div>';
+  h+='<details style="margin-bottom:12px"><summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--blue)">📋 테이블 생성 SQL (클릭하여 펼치기)</summary>';
+  h+='<pre style="background:var(--gray-100);padding:10px;border-radius:8px;font-size:11px;margin-top:8px;overflow-x:auto;white-space:pre-wrap">';
+  h+='CREATE TABLE sync_data (\n  key TEXT PRIMARY KEY,\n  value TEXT,\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\n';
+  h+='ALTER TABLE sync_data ENABLE ROW LEVEL SECURITY;\n';
+  h+='CREATE POLICY "Allow all" ON sync_data FOR ALL USING (true) WITH CHECK (true);\n\n';
+  h+='-- Realtime 활성화\nALTER PUBLICATION supabase_realtime ADD TABLE sync_data;</pre>';
+  h+='<button class="btn btn-outline btn-sm" style="margin-top:6px;font-size:11px" onclick="navigator.clipboard.writeText(document.querySelector(\'details pre\').textContent);toast(\'SQL 복사됨\')">📋 SQL 복사</button>';
+  h+='</details>';
+  h+='<label style="font-size:13px;font-weight:600">Supabase URL</label>';
+  h+='<input id="sbUrl" style="width:100%;margin:4px 0 12px;padding:8px;border:1px solid var(--gray-300);border-radius:8px;font-size:12px" value="'+esc(_sbUrl)+'" placeholder="https://xxxxx.supabase.co">';
+  h+='<label style="font-size:13px;font-weight:600">Anon Key</label>';
+  h+='<input id="sbKey" style="width:100%;margin:4px 0 16px;padding:8px;border:1px solid var(--gray-300);border-radius:8px;font-size:12px" value="'+esc(_sbKey)+'" placeholder="eyJhbGci...">';
+  const connected=_sbEnabled&&_sbClient;
+  h+='<div style="margin-bottom:12px;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600;'+(connected?'background:var(--green-bg);color:var(--green)':'background:var(--gray-100);color:var(--gray-500)')+'">'+(connected?'⚡ 실시간 연결됨':'⏸ 연결 안 됨')+'</div>';
+  h+='<div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">';
+  h+='<button class="btn btn-outline btn-sm" onclick="closeModal()">닫기</button>';
+  if(connected){
+    h+='<button class="btn btn-outline btn-sm" onclick="loadAllFromSupabase().then(ok=>{if(ok)toast(\'⚡ 불러오기 완료\');else toast(\'⚠️ 실패\');closeModal()})">📥 불러오기</button>';
+    h+='<button class="btn btn-outline btn-sm" onclick="uploadAllToSupabase();closeModal()">📤 전체 업로드</button>';
+  }
+  h+='<button class="btn btn-blue btn-sm" onclick="saveSupabaseConfig()">저장 및 연결</button>';
+  h+='</div></div>';
+  showModal(h);
+}
+function saveSupabaseConfig(){
+  const url=(document.getElementById('sbUrl').value.trim()).replace(/\/$/,'');
+  const key=document.getElementById('sbKey').value.trim();
+  _sbUrl=url;_sbKey=key;
+  if(url)localStorage.setItem('ws3_sb_url',url);else localStorage.removeItem('ws3_sb_url');
+  if(key)localStorage.setItem('ws3_sb_key',key);else localStorage.removeItem('ws3_sb_key');
+  if(url&&key){
+    initSupabase();
+    updateSbStatusUI();
+    closeModal();
+    toast('⚡ Supabase 연결됨 — 실시간 동기화 활성화');
+  }else{
+    _sbEnabled=false;_sbClient=null;
+    if(_sbChannel){_sbChannel.unsubscribe();_sbChannel=null;}
+    updateSbStatusUI();
+    closeModal();
+    toast('Supabase 연결 해제됨');
+  }
+}
+function updateSbStatusUI(){
+  const el=document.getElementById('sbStatusBtn');
+  if(!el)return;
+  if(_sbEnabled&&_sbClient){el.textContent='⚡';el.title='Supabase 실시간 연결됨 — 클릭하여 설정';el.style.color='var(--green)';}
+  else if(_sbUrl){el.textContent='⚡';el.title='Supabase 연결 안 됨 — 클릭하여 설정';el.style.color='var(--orange)';}
+  else{el.textContent='⚡';el.title='Supabase 미설정 — 클릭하여 설정';el.style.color='var(--gray-400)';}
 }
 
 // === 캘린더 뷰 ===
