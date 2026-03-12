@@ -403,6 +403,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <button class="btn btn-outline btn-sm" onclick="goToday()">오늘</button>
   </div>
   <div class="hdr-right">
+    <span id="autoSyncBtn" style="font-size:14px;cursor:pointer;margin-right:2px" onclick="toggleAutoSync()" title="실시간 동기화"></span>
     <span id="syncStatus" style="font-size:14px;cursor:pointer;margin-right:4px" onclick="openCloudSettings()" title="클라우드 상태"></span>
     <button class="btn btn-outline btn-sm" onclick="openClassroom()" title="건물 호실 현황">🏢 호실</button>
     <button class="btn btn-outline btn-sm" onclick="openCalendar()" title="캘린더 보기">📅 캘린더</button>
@@ -597,7 +598,7 @@ async function init(){
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
   // 클라우드 동기화는 사용자가 수동으로 ☁️ 버튼을 눌렀을 때만 실행
-  if(SCRIPT_URL){updateSyncStatus('idle');}
+  if(SCRIPT_URL){updateSyncStatus('idle');updateAutoSyncUI();startAutoSync();}
   startAutoBackup();
   let cnt=0;for(let i=0;i<localStorage.length;i++){if(localStorage.key(i).startsWith('ws3_'))cnt++;}
   console.log('[init] localStorage ws3_ 키 수:',cnt,', 품목 수:',products.length);
@@ -2289,6 +2290,65 @@ async function testCloudConnection(){
   formPost({action:'save',key:'_test',value:'test_'+new Date().toISOString()});
   SCRIPT_URL=origUrl;
   setTimeout(()=>toast('📤 저장 요청 전송됨. 스프레드시트 "data" 시트에서 "_test" 확인해주세요.'),3000);
+}
+
+// === 실시간 자동 동기화 (폴링) ===
+let _syncInterval=null;
+let _syncEnabled=localStorage.getItem('ws3_autoSync')!=='false'; // 기본 켜짐
+const SYNC_INTERVAL_MS=30000; // 30초
+
+function startAutoSync(){
+  if(_syncInterval)clearInterval(_syncInterval);
+  if(!_syncEnabled||!SCRIPT_URL)return;
+  _syncInterval=setInterval(autoSyncPoll,SYNC_INTERVAL_MS);
+  updateAutoSyncUI();
+}
+function stopAutoSync(){
+  if(_syncInterval){clearInterval(_syncInterval);_syncInterval=null;}
+  updateAutoSyncUI();
+}
+async function autoSyncPoll(){
+  if(!SCRIPT_URL||!_syncEnabled)return;
+  // 모달이나 편집 중이면 스킵 (데이터 충돌 방지)
+  if(document.getElementById('modalRoot').innerHTML)return;
+  if(document.querySelector('.task-edit-area'))return;
+  try{
+    const url=SCRIPT_URL+'?action=loadAll';
+    let json=await tryFetch(url,6000);
+    if(!json||!json.success){json=await tryJsonp(url,6000);}
+    if(!json||!json.success)return;
+    const cloudTs=parseInt(json.data.lastModified||'0',10);
+    const localTs=parseInt(localStorage.getItem('ws3_lastModified')||'0',10);
+    if(cloudTs>localTs){
+      // 클라우드가 더 최신 → 자동 적용
+      console.log('[자동동기화] 클라우드 변경 감지 (클라우드:'+new Date(cloudTs).toLocaleTimeString()+', 로컬:'+new Date(localTs).toLocaleTimeString()+')');
+      createSnapshot('자동동기화 전 백업');
+      Object.entries(json.data).forEach(([k,v])=>{
+        try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
+      });
+      // 메모리 재로드
+      loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+      loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+      if(currentTab==='history')renderHistory();
+      if(currentTab==='tasks')renderTaskHistory();
+      if(currentTab==='plan')renderPlanList();
+      updateSyncStatus('synced');
+      toast('🔄 다른 사용자의 변경사항이 반영되었습니다');
+    }
+  }catch(e){console.warn('[자동동기화 오류]',e);}
+}
+function toggleAutoSync(){
+  _syncEnabled=!_syncEnabled;
+  localStorage.setItem('ws3_autoSync',_syncEnabled?'true':'false');
+  if(_syncEnabled){startAutoSync();toast('🔄 실시간 동기화 켜짐 (30초)');}
+  else{stopAutoSync();toast('⏸ 실시간 동기화 꺼짐');}
+  updateAutoSyncUI();
+}
+function updateAutoSyncUI(){
+  const el=document.getElementById('autoSyncBtn');
+  if(!el)return;
+  if(_syncEnabled){el.textContent='🔄';el.title='실시간 동기화 켜짐 (30초) — 클릭하여 끄기';el.style.color='var(--blue)';}
+  else{el.textContent='⏸';el.title='실시간 동기화 꺼짐 — 클릭하여 켜기';el.style.color='var(--gray-500)';}
 }
 
 // === 캘린더 뷰 ===
