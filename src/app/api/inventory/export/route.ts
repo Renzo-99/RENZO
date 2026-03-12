@@ -1,20 +1,21 @@
 import { NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 export async function GET() {
   try {
-    const { rows } = await pool.query(
-      `SELECT code, name, category, unit, current_stock, total_in, total_out, min_stock, note
-       FROM products
-       WHERE is_active = true
-       ORDER BY code`
-    );
+    const { data: rows, error } = await supabase
+      .from("products")
+      .select("code, name, category, unit, current_stock, total_in, total_out, min_stock, note")
+      .eq("is_active", true)
+      .order("code");
+
+    if (error) throw error;
 
     // BOM + CSV 헤더
     const BOM = "\uFEFF";
     const headers = ["품목코드", "품목명", "분류", "단위", "현재재고", "총입고", "총출고", "안전재고", "비고"];
 
-    const csvRows = rows.map((r) =>
+    const csvRows = (rows || []).map((r) =>
       [
         r.code,
         `"${(r.name || "").replace(/"/g, '""')}"`,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 // 입출고 내역 조회
 export async function GET(req: NextRequest) {
@@ -8,25 +8,41 @@ export async function GET(req: NextRequest) {
   const offset = Number(searchParams.get("offset") || "0");
 
   try {
-    const { rows } = await pool.query(
-      `SELECT il.*, p.name as product_name, p.code as product_code, p.unit as product_unit
-       FROM inventory_logs il
-       JOIN products p ON il.product_id = p.id
-       ORDER BY il.logged_date DESC, il.created_at DESC
-       LIMIT $1 OFFSET $2`,
-      [limit, offset]
-    );
+    const { data: rows, error } = await supabase
+      .from("inventory_logs")
+      .select("*, product:products(name, code, unit)", { count: "exact" })
+      .order("logged_date", { ascending: false })
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
 
-    const { rows: [{ count }] } = await pool.query("SELECT COUNT(*) FROM inventory_logs");
+    if (error) throw error;
 
-    return NextResponse.json({ logs: rows, total: Number(count) });
+    // 기존 API 형태 유지 (플랫 필드)
+    const logs = (rows || []).map((row) => {
+      const { product, ...rest } = row;
+      return {
+        ...rest,
+        product_name: product?.name,
+        product_code: product?.code,
+        product_unit: product?.unit,
+      };
+    });
+
+    // 전체 건수 조회
+    const { count, error: countErr } = await supabase
+      .from("inventory_logs")
+      .select("*", { count: "exact", head: true });
+
+    if (countErr) throw countErr;
+
+    return NextResponse.json({ logs, total: count || 0 });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-// 입출고 내역 삭제 (재고 자동 연동)
+// 입출고 내역 삭제 (RPC 트랜잭션으로 재고 복원)
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
@@ -35,51 +51,15 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "id 파라미터 필수" }, { status: 400 });
   }
 
-  const client = await pool.connect();
   try {
-    await client.query("BEGIN");
+    const { data, error } = await supabase.rpc("delete_inventory_log", {
+      p_log_id: Number(id),
+    });
 
-    // 삭제 대상 로그 조회
-    const { rows: [log] } = await client.query(
-      "SELECT * FROM inventory_logs WHERE id = $1",
-      [id]
-    );
-
-    if (!log) {
-      await client.query("ROLLBACK");
-      return NextResponse.json({ error: "내역을 찾을 수 없습니다" }, { status: 404 });
-    }
-
-    // 재고 복원: 입고 삭제 → 재고 감소, 출고 삭제 → 재고 증가
-    if (log.type === "inbound") {
-      await client.query(
-        "UPDATE products SET current_stock = current_stock - $1, total_in = total_in - $1, updated_at = NOW() WHERE id = $2",
-        [log.quantity, log.product_id]
-      );
-    } else {
-      await client.query(
-        "UPDATE products SET current_stock = current_stock + $1, total_out = total_out - $1, updated_at = NOW() WHERE id = $2",
-        [log.quantity, log.product_id]
-      );
-    }
-
-    // 출고 로그에 연결된 task_material이 있으면 함께 삭제
-    if (log.task_material_id) {
-      await client.query(
-        "DELETE FROM task_materials WHERE id = $1",
-        [log.task_material_id]
-      );
-    }
-
-    await client.query("DELETE FROM inventory_logs WHERE id = $1", [id]);
-
-    await client.query("COMMIT");
-    return NextResponse.json({ success: true });
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
-    await client.query("ROLLBACK");
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
-  } finally {
-    client.release();
   }
 }

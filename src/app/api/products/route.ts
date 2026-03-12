@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -8,32 +8,30 @@ export async function GET(req: NextRequest) {
   const filter = searchParams.get("filter");
 
   try {
-    let sql = "SELECT * FROM products WHERE is_active = true";
-    const params: (string | number)[] = [];
-    let idx = 1;
+    let query = supabase
+      .from("products")
+      .select("*")
+      .eq("is_active", true);
 
     if (search) {
-      sql += ` AND (name ILIKE $${idx} OR code ILIKE $${idx})`;
-      params.push(`%${search}%`);
-      idx++;
+      query = query.or(`name.ilike.%${search}%,code.ilike.%${search}%`);
     }
 
     if (category) {
-      sql += ` AND category = $${idx}`;
-      params.push(category);
-      idx++;
+      query = query.eq("category", category);
     }
 
     if (filter === "zero") {
-      sql += " AND current_stock = 0";
+      query = query.eq("current_stock", 0);
     } else if (filter === "low") {
-      sql += " AND current_stock > 0 AND current_stock <= 5";
+      query = query.gt("current_stock", 0).lte("current_stock", 5);
     }
 
-    sql += " ORDER BY code";
+    query = query.order("code");
 
-    const { rows } = await pool.query(sql, params);
-    return NextResponse.json(rows);
+    const { data, error } = await query;
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
@@ -54,18 +52,29 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { rows: [data] } = await pool.query(
-      "INSERT INTO products (code, name, category, unit, min_stock) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [code.trim(), name.trim(), category || "A", unit || "개", min_stock ?? 5]
-    );
+    const { data, error } = await supabase
+      .from("products")
+      .insert({
+        code: code.trim(),
+        name: name.trim(),
+        category: category || "A",
+        unit: unit || "개",
+        min_stock: min_stock ?? 5,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      const isDuplicate = error.code === "23505";
+      return NextResponse.json(
+        { error: isDuplicate ? "이미 존재하는 품목코드입니다" : error.message },
+        { status: isDuplicate ? 409 : 500 }
+      );
+    }
     return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
-    const isDuplicate = message.includes("unique") || message.includes("duplicate");
-    return NextResponse.json(
-      { error: isDuplicate ? "이미 존재하는 품목코드입니다" : message },
-      { status: isDuplicate ? 409 : 500 }
-    );
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -83,11 +92,21 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const { rowCount } = await pool.query(
-      "UPDATE products SET name = $1, category = $2, unit = $3, min_stock = $4, updated_at = NOW() WHERE id = $5 AND is_active = true",
-      [name, category, unit, min_stock, id]
-    );
-    if (rowCount === 0) {
+    const { data, error } = await supabase
+      .from("products")
+      .update({
+        name,
+        category,
+        unit,
+        min_stock,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .eq("is_active", true)
+      .select();
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
       return NextResponse.json({ error: "상품을 찾을 수 없습니다" }, { status: 404 });
     }
     return NextResponse.json({ success: true });

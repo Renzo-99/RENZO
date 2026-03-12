@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 // 주간 재고 변동 요약
 export async function GET(req: NextRequest) {
@@ -12,13 +12,16 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { rows } = await pool.query(
-      "SELECT product_id, type, quantity FROM inventory_logs WHERE logged_date >= $1 AND logged_date <= $2",
-      [from, to]
-    );
+    const { data: rows, error } = await supabase
+      .from("inventory_logs")
+      .select("product_id, type, quantity")
+      .gte("logged_date", from)
+      .lte("logged_date", to);
+
+    if (error) throw error;
 
     const changes: Record<number, { inbound: number; outbound: number }> = {};
-    for (const log of rows) {
+    for (const log of rows || []) {
       if (!changes[log.product_id]) {
         changes[log.product_id] = { inbound: 0, outbound: 0 };
       }

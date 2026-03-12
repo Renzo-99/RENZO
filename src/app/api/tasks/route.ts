@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 // 작업 추가
 export async function POST(req: NextRequest) {
@@ -16,16 +16,29 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { rows: existing } = await pool.query(
-      "SELECT sort_order FROM daily_tasks WHERE report_id = $1 AND day_of_week = $2 ORDER BY sort_order DESC LIMIT 1",
-      [reportId, dayOfWeek]
-    );
-    const nextOrder = existing.length > 0 ? existing[0].sort_order + 1 : 0;
+    // 현재 최대 sort_order 조회
+    const { data: existing } = await supabase
+      .from("daily_tasks")
+      .select("sort_order")
+      .eq("report_id", reportId)
+      .eq("day_of_week", dayOfWeek)
+      .order("sort_order", { ascending: false })
+      .limit(1);
 
-    const { rows: [data] } = await pool.query(
-      "INSERT INTO daily_tasks (report_id, day_of_week, sort_order, description) VALUES ($1, $2, $3, $4) RETURNING *",
-      [reportId, dayOfWeek, nextOrder, ""]
-    );
+    const nextOrder = existing && existing.length > 0 ? existing[0].sort_order + 1 : 0;
+
+    const { data, error } = await supabase
+      .from("daily_tasks")
+      .insert({
+        report_id: reportId,
+        day_of_week: dayOfWeek,
+        sort_order: nextOrder,
+        description: "",
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
     return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
@@ -48,10 +61,18 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const { rows: [data] } = await pool.query(
-      "UPDATE daily_tasks SET description = $1, note = $2, updated_at = NOW() WHERE id = $3 RETURNING *",
-      [description, note || null, id]
-    );
+    const { data, error } = await supabase
+      .from("daily_tasks")
+      .update({
+        description,
+        note: note || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
     return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
@@ -59,7 +80,7 @@ export async function PUT(req: NextRequest) {
   }
 }
 
-// 작업 삭제 (자재 재고 복원 후 삭제)
+// 작업 삭제 (RPC로 자재 재고 복원 후 삭제)
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = Number(searchParams.get("id"));
@@ -68,27 +89,15 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "id 필수" }, { status: 400 });
   }
 
-  const client = await pool.connect();
   try {
-    await client.query("BEGIN");
+    const { data, error } = await supabase.rpc("delete_task_with_materials", {
+      p_task_id: id,
+    });
 
-    const { rows: materials } = await client.query(
-      "SELECT id FROM task_materials WHERE task_id = $1",
-      [id]
-    );
-
-    for (const mat of materials) {
-      await client.query("SELECT remove_material_from_task($1)", [mat.id]);
-    }
-
-    await client.query("DELETE FROM daily_tasks WHERE id = $1", [id]);
-    await client.query("COMMIT");
-    return NextResponse.json({ success: true });
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
-    await client.query("ROLLBACK");
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
-  } finally {
-    client.release();
   }
 }

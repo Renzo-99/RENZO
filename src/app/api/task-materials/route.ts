@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
-// 자재 추가 (PostgreSQL 함수 호출 → 트랜잭션으로 재고 자동 차감)
+// 자재 추가 (RPC 호출 → 트랜잭션으로 재고 자동 차감)
 export async function POST(req: NextRequest) {
   let body;
   try {
@@ -16,18 +16,23 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { rows: [result] } = await pool.query(
-      "SELECT add_material_to_task($1, $2, $3, $4, $5) as data",
-      [taskId, productId, quantity, locationId || null, detailLocation || null]
-    );
-    return NextResponse.json(result.data);
+    const { data, error } = await supabase.rpc("add_material_to_task", {
+      p_task_id: taskId,
+      p_product_id: productId,
+      p_quantity: quantity,
+      p_location_id: locationId || null,
+      p_detail_location: detailLocation || null,
+    });
+
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
 
-// 자재 삭제 (PostgreSQL 함수 호출 → 트랜잭션으로 재고 자동 복원)
+// 자재 삭제 (RPC 호출 → 트랜잭션으로 재고 자동 복원)
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = Number(searchParams.get("id"));
@@ -37,11 +42,12 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    const { rows: [result] } = await pool.query(
-      "SELECT remove_material_from_task($1) as data",
-      [id]
-    );
-    return NextResponse.json(result.data);
+    const { data, error } = await supabase.rpc("remove_material_from_task", {
+      p_task_material_id: id,
+    });
+
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 400 });

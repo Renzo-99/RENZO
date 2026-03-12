@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 import { generateWeeklyReport } from "@/utils/exportDocx";
 
 export async function GET(req: NextRequest) {
@@ -10,41 +10,39 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "reportId 필요" }, { status: 400 });
   }
 
-  const client = await pool.connect();
   try {
-    const { rows: [report] } = await client.query(
-      "SELECT * FROM weekly_reports WHERE id = $1", [reportId]
-    );
+    // 보고서 조회
+    const { data: report, error: reportErr } = await supabase
+      .from("weekly_reports")
+      .select("*")
+      .eq("id", reportId)
+      .single();
 
+    if (reportErr) throw reportErr;
     if (!report) {
       return NextResponse.json({ error: "보고서 없음" }, { status: 404 });
     }
 
-    const { rows: tasks } = await client.query(
-      "SELECT * FROM daily_tasks WHERE report_id = $1 ORDER BY day_of_week, sort_order",
-      [reportId]
-    );
+    // 작업 + 자재 + 상품 조회
+    const { data: tasks, error: taskErr } = await supabase
+      .from("daily_tasks")
+      .select("*, task_materials(*, product:products(id, code, name, current_stock, unit))")
+      .eq("report_id", reportId)
+      .order("day_of_week")
+      .order("sort_order");
 
-    for (const task of tasks) {
-      const { rows: materials } = await client.query(
-        `SELECT tm.*,
-          json_build_object('id', p.id, 'code', p.code, 'name', p.name, 'current_stock', p.current_stock, 'unit', p.unit) as product
-        FROM task_materials tm
-        LEFT JOIN products p ON tm.product_id = p.id
-        WHERE tm.task_id = $1`,
-        [task.id]
-      );
-      task.materials = materials;
-    }
+    if (taskErr) throw taskErr;
 
-    // PostgreSQL DATE → "YYYY-MM-DD" 문자열 변환
-    const toDateStr = (d: Date | string) =>
-      d instanceof Date ? d.toISOString().split("T")[0] : String(d);
+    // task_materials → materials 키로 변환
+    const tasksWithMaterials = (tasks || []).map((task) => {
+      const { task_materials, ...rest } = task;
+      return { ...rest, materials: task_materials || [] };
+    });
 
     const buffer = await generateWeeklyReport({
-      startDate: toDateStr(report.start_date),
-      endDate: toDateStr(report.end_date),
-      tasks,
+      startDate: report.start_date,
+      endDate: report.end_date,
+      tasks: tasksWithMaterials,
     });
 
     const uint8 = new Uint8Array(buffer);
@@ -57,7 +55,5 @@ export async function GET(req: NextRequest) {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
-  } finally {
-    client.release();
   }
 }

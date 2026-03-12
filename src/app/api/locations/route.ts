@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 export async function GET() {
   try {
-    const { rows } = await pool.query(
-      "SELECT * FROM locations WHERE is_active = true ORDER BY name"
-    );
-    return NextResponse.json(rows);
+    const { data, error } = await supabase
+      .from("locations")
+      .select("*")
+      .eq("is_active", true)
+      .order("name");
+
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
@@ -27,10 +31,18 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { rows: [data] } = await pool.query(
-      "INSERT INTO locations (name, dong, building_code, phone) VALUES ($1, $2, $3, $4) RETURNING *",
-      [name.trim(), dong || null, building_code || null, phone || null]
-    );
+    const { data, error } = await supabase
+      .from("locations")
+      .insert({
+        name: name.trim(),
+        dong: dong || null,
+        building_code: building_code || null,
+        phone: phone || null,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
     return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
@@ -52,11 +64,20 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const { rowCount } = await pool.query(
-      "UPDATE locations SET name = $1, dong = $2, building_code = $3, phone = $4 WHERE id = $5 AND is_active = true",
-      [name, dong || null, building_code || null, phone || null, id]
-    );
-    if (rowCount === 0) {
+    const { data, error } = await supabase
+      .from("locations")
+      .update({
+        name,
+        dong: dong || null,
+        building_code: building_code || null,
+        phone: phone || null,
+      })
+      .eq("id", id)
+      .eq("is_active", true)
+      .select();
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
       return NextResponse.json({ error: "건물을 찾을 수 없습니다" }, { status: 404 });
     }
     return NextResponse.json({ success: true });
@@ -75,11 +96,15 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    const { rowCount } = await pool.query(
-      "UPDATE locations SET is_active = false WHERE id = $1 AND is_active = true",
-      [id]
-    );
-    if (rowCount === 0) {
+    const { data, error } = await supabase
+      .from("locations")
+      .update({ is_active: false })
+      .eq("id", Number(id))
+      .eq("is_active", true)
+      .select();
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
       return NextResponse.json({ error: "건물을 찾을 수 없습니다" }, { status: 404 });
     }
     return NextResponse.json({ success: true });

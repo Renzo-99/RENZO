@@ -148,3 +148,86 @@ BEGIN
   RETURN json_build_object('success', true);
 END;
 $$ LANGUAGE plpgsql;
+
+-- RPC: 입고 처리 트랜잭션
+CREATE OR REPLACE FUNCTION process_inbound(
+  p_product_id INTEGER,
+  p_quantity INTEGER,
+  p_unit_price NUMERIC DEFAULT 0,
+  p_memo TEXT DEFAULT NULL
+) RETURNS JSON AS $$
+DECLARE
+  v_total_price NUMERIC;
+  v_product products%ROWTYPE;
+BEGIN
+  v_total_price := p_unit_price * p_quantity;
+
+  UPDATE products
+  SET current_stock = current_stock + p_quantity,
+      total_in = total_in + p_quantity,
+      updated_at = NOW()
+  WHERE id = p_product_id
+  RETURNING * INTO v_product;
+
+  INSERT INTO inventory_logs (product_id, type, quantity, unit_price, total_price, memo, logged_date)
+  VALUES (p_product_id, 'inbound', p_quantity, p_unit_price, v_total_price, p_memo, CURRENT_DATE);
+
+  RETURN json_build_object(
+    'success', true,
+    'currentStock', v_product.current_stock,
+    'totalIn', v_product.total_in
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+-- RPC: 재고 로그 삭제 + 재고 복원
+CREATE OR REPLACE FUNCTION delete_inventory_log(p_log_id INTEGER)
+RETURNS JSON AS $$
+DECLARE
+  v_log inventory_logs%ROWTYPE;
+BEGIN
+  SELECT * INTO v_log FROM inventory_logs WHERE id = p_log_id;
+
+  IF v_log.id IS NULL THEN
+    RAISE EXCEPTION '로그를 찾을 수 없습니다: %', p_log_id;
+  END IF;
+
+  IF v_log.type = 'inbound' THEN
+    UPDATE products
+    SET current_stock = current_stock - v_log.quantity,
+        total_in = total_in - v_log.quantity,
+        updated_at = NOW()
+    WHERE id = v_log.product_id;
+  ELSE
+    UPDATE products
+    SET current_stock = current_stock + v_log.quantity,
+        total_out = total_out - v_log.quantity,
+        updated_at = NOW()
+    WHERE id = v_log.product_id;
+  END IF;
+
+  IF v_log.task_material_id IS NOT NULL THEN
+    DELETE FROM task_materials WHERE id = v_log.task_material_id;
+  END IF;
+
+  DELETE FROM inventory_logs WHERE id = p_log_id;
+
+  RETURN json_build_object('success', true);
+END;
+$$ LANGUAGE plpgsql;
+
+-- RPC: 작업 삭제 (자재 복원 포함)
+CREATE OR REPLACE FUNCTION delete_task_with_materials(p_task_id INTEGER)
+RETURNS JSON AS $$
+DECLARE
+  v_tm RECORD;
+BEGIN
+  FOR v_tm IN SELECT id FROM task_materials WHERE task_id = p_task_id LOOP
+    PERFORM remove_material_from_task(v_tm.id);
+  END LOOP;
+
+  DELETE FROM daily_tasks WHERE id = p_task_id;
+
+  RETURN json_build_object('success', true);
+END;
+$$ LANGUAGE plpgsql;

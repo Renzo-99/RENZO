@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
-// 입고 처리
+// 입고 처리 (RPC 트랜잭션)
 export async function POST(req: NextRequest) {
   let body;
   try {
@@ -15,37 +15,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "productId, quantity(1이상) 필수" }, { status: 400 });
   }
 
-  const client = await pool.connect();
   try {
-    await client.query("BEGIN");
+    const { data, error } = await supabase.rpc("process_inbound", {
+      p_product_id: productId,
+      p_quantity: quantity,
+      p_unit_price: unitPrice || 0,
+      p_memo: memo || null,
+    });
 
-    const { rows: [product] } = await client.query(
-      "SELECT current_stock, total_in FROM products WHERE id = $1",
-      [productId]
-    );
-
-    if (!product) {
-      await client.query("ROLLBACK");
-      return NextResponse.json({ error: "상품을 찾을 수 없습니다" }, { status: 404 });
-    }
-
-    await client.query(
-      "UPDATE products SET current_stock = current_stock + $1, total_in = total_in + $1, updated_at = NOW() WHERE id = $2",
-      [quantity, productId]
-    );
-
-    await client.query(
-      "INSERT INTO inventory_logs (product_id, type, quantity, unit_price, total_price, memo, logged_date) VALUES ($1, 'inbound', $2, $3, $4, $5, CURRENT_DATE)",
-      [productId, quantity, unitPrice || 0, (unitPrice || 0) * quantity, memo || null]
-    );
-
-    await client.query("COMMIT");
-    return NextResponse.json({ success: true });
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
-    await client.query("ROLLBACK");
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
-  } finally {
-    client.release();
   }
 }

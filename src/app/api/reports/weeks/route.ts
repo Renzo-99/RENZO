@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 export async function GET() {
   try {
-    const { rows } = await pool.query(
-      "SELECT id, year, week_number, start_date, end_date, status FROM weekly_reports ORDER BY year DESC, week_number DESC"
-    );
-    return NextResponse.json(rows);
+    const { data, error } = await supabase
+      .from("weekly_reports")
+      .select("id, year, week_number, start_date, end_date, status")
+      .order("year", { ascending: false })
+      .order("week_number", { ascending: false });
+
+    if (error) throw error;
+    return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "서버 오류";
     return NextResponse.json({ error: message }, { status: 500 });
