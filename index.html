@@ -349,6 +349,21 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .plan-actions button:hover{background:var(--gray-100);color:var(--gray-700)}
 .plan-actions button.del:hover{color:var(--red);background:var(--red-bg)}
 .plan-actions button.move:hover{color:var(--green);background:var(--green-bg)}
+.plan-attachments{margin-top:4px;display:flex;flex-direction:column;gap:2px}
+.plan-att{display:flex;align-items:center;gap:4px;font-size:10px;background:var(--blue-bg);border-radius:4px;padding:2px 6px;cursor:pointer;color:var(--blue);transition:.1s}
+.plan-att:hover{background:#dbeafe}
+.plan-att .att-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plan-att .att-size{color:var(--gray-400);flex-shrink:0}
+.plan-att .att-del{color:var(--gray-400);cursor:pointer;padding:0 2px;font-size:12px;flex-shrink:0}
+.plan-att .att-del:hover{color:var(--red)}
+.plan-file-label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);border:1px dashed var(--gray-300);border-radius:6px;padding:6px 10px;cursor:pointer;transition:.15s;margin-top:4px}
+.plan-file-label:hover{border-color:var(--blue);color:var(--blue)}
+.plan-file-preview{margin-top:4px;display:flex;flex-direction:column;gap:3px}
+.plan-file-item{display:flex;align-items:center;gap:4px;font-size:11px;background:var(--gray-100);border-radius:4px;padding:3px 8px}
+.plan-file-item .fpi-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--gray-700)}
+.plan-file-item .fpi-size{color:var(--gray-400);flex-shrink:0}
+.plan-file-item .fpi-del{cursor:pointer;color:var(--gray-400);font-size:13px;padding:0 2px}
+.plan-file-item .fpi-del:hover{color:var(--red)}
 
 /* 건물 호실 현황 */
 
@@ -1974,9 +1989,23 @@ function renderPlanList(){
       if(p.building)h+='<span class="plan-bld">'+esc(p.building)+'</span>';
       h+='<div class="plan-desc">'+esc(p.desc||'(내용 없음)')+'</div>';
       if(p.note)h+='<div class="plan-note">📝 '+esc(p.note)+'</div>';
+      if(p.attachments&&p.attachments.length){
+        h+='<div class="plan-attachments">';
+        p.attachments.forEach((att,ai)=>{
+          const icon=att.type.startsWith('image/')?'🖼️':att.type.includes('pdf')?'📄':'📎';
+          h+='<div class="plan-att" onclick="previewPlanAtt('+p.id+','+ai+')" title="'+esc(att.name)+'">';
+          h+='<span>'+icon+'</span>';
+          h+='<span class="att-name">'+esc(att.name)+'</span>';
+          h+='<span class="att-size">'+formatAttSize(att.size)+'</span>';
+          h+='<span class="att-del" onclick="event.stopPropagation();removePlanAtt('+p.id+','+ai+')" title="삭제">✕</span>';
+          h+='</div>';
+        });
+        h+='</div>';
+      }
       h+='</div>';
       h+='<div class="plan-actions">';
       if(!p.done)h+='<button class="move" onclick="movePlanToWeek('+p.id+')" title="이번 주 작업으로 전환">→</button>';
+      h+='<button onclick="planAttachFile('+p.id+')" title="첨부">📎</button>';
       h+='<button onclick="openPlanForm('+p.id+')" title="수정">✏️</button>';
       h+='<button class="del" onclick="deletePlan('+p.id+')" title="삭제">🗑</button>';
       h+='</div></div>';
@@ -1996,6 +2025,100 @@ function togglePlanRange(){
     if(start&&!endEl.value)endEl.value=start;
   }else{el.style.display='none';}
 }
+
+// === 작업예정 첨부파일 ===
+let _pendingPlanFiles=[];
+const PLAN_MAX_FILE=2*1024*1024;
+
+function formatAttSize(b){
+  if(b<1024)return b+'B';
+  if(b<1048576)return (b/1024).toFixed(1)+'KB';
+  return (b/1048576).toFixed(1)+'MB';
+}
+
+function handlePlanFileSelect(input){
+  if(!input.files)return;
+  let count=0;
+  Array.from(input.files).forEach(f=>{
+    if(f.size>PLAN_MAX_FILE){toast('"'+f.name+'" 은(는) 2MB를 초과합니다 ('+formatAttSize(f.size)+')');return;}
+    const reader=new FileReader();
+    reader.onload=()=>{
+      _pendingPlanFiles.push({name:f.name,type:f.type,size:f.size,data:reader.result});
+      count++;
+      if(count>=input.files.length||count>=20)renderPlanFilePreview();
+    };
+    reader.readAsDataURL(f);
+    count++;
+  });
+  input.value='';
+}
+
+function renderPlanFilePreview(){
+  const el=document.getElementById('planFilePreview');
+  if(!el)return;
+  if(!_pendingPlanFiles.length){el.innerHTML='';return;}
+  let h='';
+  _pendingPlanFiles.forEach((f,i)=>{
+    const icon=f.type.startsWith('image/')?'🖼️':f.type.includes('pdf')?'📄':'📎';
+    h+='<div class="plan-file-item">';
+    h+='<span>'+icon+'</span>';
+    h+='<span class="fpi-name">'+esc(f.name)+'</span>';
+    h+='<span class="fpi-size">'+formatAttSize(f.size)+'</span>';
+    h+='<span class="fpi-del" onclick="removePendingFile('+i+')">✕</span>';
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+
+function removePendingFile(i){
+  _pendingPlanFiles.splice(i,1);
+  renderPlanFilePreview();
+}
+
+function previewPlanAtt(pid,ai){
+  const p=plans.find(x=>x.id===pid);
+  if(!p||!p.attachments||!p.attachments[ai])return;
+  const att=p.attachments[ai];
+  if(att.type.startsWith('image/')){
+    const w=window.open('');
+    if(w){w.document.write('<title>'+esc(att.name)+'</title><img src="'+att.data+'" style="max-width:100%;height:auto">');w.document.close();}
+  }else{
+    const a=document.createElement('a');a.href=att.data;a.download=att.name;a.click();
+  }
+}
+
+function removePlanAtt(pid,ai){
+  const p=plans.find(x=>x.id===pid);
+  if(!p||!p.attachments)return;
+  p.attachments.splice(ai,1);
+  if(!p.attachments.length)delete p.attachments;
+  savePlans();renderPlanList();
+  toast('첨부파일이 삭제되었습니다');
+}
+
+function planAttachFile(pid){
+  const inp=document.createElement('input');
+  inp.type='file';inp.multiple=true;
+  inp.onchange=()=>{
+    if(!inp.files||!inp.files.length)return;
+    const p=plans.find(x=>x.id===pid);
+    if(!p)return;
+    if(!p.attachments)p.attachments=[];
+    let added=0;
+    Array.from(inp.files).forEach(f=>{
+      if(f.size>PLAN_MAX_FILE){toast('"'+f.name+'" 은(는) 2MB를 초과합니다');return;}
+      const reader=new FileReader();
+      reader.onload=()=>{
+        p.attachments.push({name:f.name,type:f.type,size:f.size,data:reader.result});
+        added++;
+        if(added>=inp.files.length){savePlans();renderPlanList();toast(added+'개 파일이 첨부되었습니다');}
+      };
+      reader.readAsDataURL(f);
+    });
+  };
+  inp.click();
+}
+
 function openPlanForm(pid){
   const p=pid?plans.find(x=>x.id===pid):null;
   const isEdit=!!p;
@@ -2020,11 +2143,17 @@ function openPlanForm(pid){
   h+='<input id="planDesc" value="'+esc(p?p.desc:'')+'" placeholder="작업 내용 입력..." onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
   h+='<label>비고</label>';
   h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)" onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
+  h+='<label class="plan-file-label" onclick="document.getElementById(\'planFileInput\').click()">';
+  h+='📎 첨부파일 추가 (최대 2MB/파일)</label>';
+  h+='<input type="file" id="planFileInput" multiple style="display:none" onchange="handlePlanFileSelect(this)">';
+  h+='<div id="planFilePreview" class="plan-file-preview"></div>';
   h+='<div class="modal-btns">';
   h+='<button class="btn btn-outline" onclick="closeModal()">취소</button>';
   h+='<button class="btn btn-blue" onclick="savePlan('+(pid||'null')+')">'+(isEdit?'저장':'추가')+'</button>';
   h+='</div></div>';
   showModal(h);
+  _pendingPlanFiles=p&&p.attachments?p.attachments.slice():[];
+  renderPlanFilePreview();
   setTimeout(()=>document.getElementById('planDesc')?.focus(),50);
 }
 
@@ -2040,14 +2169,16 @@ function savePlan(pid){
   if(rangeOn&&!dateEnd){toast('종료일을 선택하세요');return;}
   if(rangeOn&&dateEnd<date){toast('종료일이 시작일보다 앞설 수 없습니다');return;}
 
+  const atts=_pendingPlanFiles.length?_pendingPlanFiles.slice():undefined;
   if(pid){
     const p=plans.find(x=>x.id===pid);
-    if(p){p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;}
+    if(p){p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;p.attachments=atts;}
     toast('예정 작업이 수정되었습니다');
   }else{
-    plans.push({id:nextId++,date,dateEnd:dateEnd||null,building,desc,note,done:false});
+    plans.push({id:nextId++,date,dateEnd:dateEnd||null,building,desc,note,done:false,attachments:atts});
     toast('예정 작업이 추가되었습니다');
   }
+  _pendingPlanFiles=[];
   savePlans();closeModal();renderPlanList();
 }
 
