@@ -1621,7 +1621,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.getElem
 
 // === 데이터 내보내기/가져오기 ===
 // === 자동 백업 시스템 ===
-const MAX_BACKUPS=10;
+const MAX_BACKUPS=2;
 function createSnapshot(reason){
   const allWeeks={};
   for(let i=0;i<localStorage.length;i++){
