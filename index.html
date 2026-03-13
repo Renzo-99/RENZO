@@ -2126,6 +2126,7 @@ function openPlanForm(pid){
   const hasRange=p&&p.dateEnd;
   const defDateEnd=p&&p.dateEnd?p.dateEnd:'';
   let h='<div class="modal"><h2>'+(isEdit?'✏️ 예정 작업 수정':'📋 예정 작업 추가')+'</h2>';
+  /* v2 - 첨부파일 기능 포함 */
   h+='<div style="display:flex;align-items:center;justify-content:space-between"><label style="margin:0">예정일</label>';
   h+='<label style="margin:0;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--gray-500);cursor:pointer"><input type="checkbox" id="planRangeToggle" onchange="togglePlanRange()"'+(hasRange?' checked':'')+'>기간</label></div>';
   h+='<div style="display:flex;align-items:center;gap:6px">';
@@ -2143,7 +2144,7 @@ function openPlanForm(pid){
   h+='<input id="planDesc" value="'+esc(p?p.desc:'')+'" placeholder="작업 내용 입력..." onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
   h+='<label>비고</label>';
   h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)" onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
-  h+='<div class="plan-file-label" onclick="document.getElementById(\'planFileInput\').click()">';
+  h+='<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500);border:1px dashed var(--gray-300);border-radius:6px;padding:8px 10px;cursor:pointer;margin-top:4px;margin-bottom:12px" onclick="document.getElementById(\'planFileInput\').click()" onmouseover="this.style.borderColor=\'var(--blue)\';this.style.color=\'var(--blue)\'" onmouseout="this.style.borderColor=\'var(--gray-300)\';this.style.color=\'var(--gray-500)\'">';
   h+='📎 첨부파일 추가 (최대 2MB/파일)</div>';
   h+='<input type="file" id="planFileInput" multiple style="display:none" onchange="handlePlanFileSelect(this)">';
   h+='<div id="planFilePreview" class="plan-file-preview"></div>';
