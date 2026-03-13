@@ -1628,17 +1628,27 @@ function createSnapshot(reason){
     const k=localStorage.key(i);
     if(k.startsWith('ws3_week_'))allWeeks[k]=JSON.parse(localStorage.getItem(k));
   }
+  // 백업 시 첨부파일 base64 데이터 제외 (localStorage 용량 초과 방지)
+  const plansLight=plans.map(p=>{
+    if(!p.attachments||!p.attachments.length)return p;
+    return{...p,attachments:p.attachments.map(a=>({name:a.name,type:a.type,size:a.size}))};
+  });
   const snapshot={
     id:Date.now(),
     reason:reason||'수동 백업',
     date:new Date().toISOString(),
-    data:{products,history,holidays,buildings,plans,rooms,leaves,weeks:allWeeks}
+    data:{products,history,holidays,buildings,plans:plansLight,rooms,leaves,weeks:allWeeks}
   };
   const backups=getBackups();
   backups.unshift(snapshot);
   while(backups.length>MAX_BACKUPS)backups.pop();
-  try{localStorage.setItem('ws3_backups',JSON.stringify(backups));}
-  catch(e){backups.splice(5);localStorage.setItem('ws3_backups',JSON.stringify(backups));}
+  try{
+    localStorage.setItem('ws3_backups',JSON.stringify(backups));
+  }catch(e){
+    // 용량 초과 시 백업 수 줄여서 재시도
+    try{backups.splice(3);localStorage.setItem('ws3_backups',JSON.stringify(backups));}
+    catch(e2){console.warn('백업 저장 실패:',e2.message);toast('⚠️ 백업 저장 실패 (용량 부족)');return null;}
+  }
   return snapshot.id;
 }
 function getBackups(){
@@ -1648,6 +1658,7 @@ function restoreBackup(id){
   const backups=getBackups();
   const b=backups.find(x=>x.id===id);
   if(!b){toast('백업을 찾을 수 없습니다');return;}
+  if(!confirm('이 백업('+formatBackupDate(b.date)+')으로 복원하시겠습니까?\n현재 데이터는 자동 백업됩니다.\n\n⚠️ 첨부파일은 백업에 포함되지 않습니다.')){return;}
   createSnapshot('복원 전 자동 백업');
   const d=b.data;
   products=d.products||[];saveProducts();
@@ -1698,7 +1709,7 @@ function openBackupManager(){
       h+='<span style="background:'+(isAuto?'var(--orange-bg)':'var(--blue-bg)')+';color:'+(isAuto?'var(--orange)':'var(--blue)')+';padding:1px 6px;border-radius:99px;font-size:10px;font-weight:600">'+esc(b.reason)+'</span> ';
       h+=getBackupSummary(b.data)+'</div>';
       h+='</div>';
-      h+='<button class="btn btn-outline btn-sm" onclick="if(confirm(\'이 백업으로 복원하시겠습니까?\\n현재 데이터는 자동 백업됩니다.\')){restoreBackup('+b.id+');closeModal();}">복원</button>';
+      h+='<button class="btn btn-outline btn-sm" onclick="restoreBackup('+b.id+');closeModal();">복원</button>';
       h+='<button class="btn btn-danger btn-sm" onclick="deleteBackup('+b.id+');closeModal();openBackupManager();" title="삭제">🗑</button>';
       h+='</div>';
     });
