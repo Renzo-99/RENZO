@@ -1,5 +1,12 @@
 import { create } from "zustand";
 
+export interface PlanAttachment {
+  name: string;
+  type: string;
+  size: number;
+  data: string; // base64
+}
+
 export interface Plan {
   id: number;
   date: string;
@@ -8,6 +15,7 @@ export interface Plan {
   desc: string;
   note: string;
   done: boolean;
+  attachments?: PlanAttachment[];
 }
 
 type PlanFilter = "all" | "pending" | "done";
