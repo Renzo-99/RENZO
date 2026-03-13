@@ -2038,17 +2038,17 @@ function formatAttSize(b){
 
 function handlePlanFileSelect(input){
   if(!input.files)return;
-  let count=0;
+  const total=input.files.length;
+  let loaded=0;
   Array.from(input.files).forEach(f=>{
-    if(f.size>PLAN_MAX_FILE){toast('"'+f.name+'" 은(는) 2MB를 초과합니다 ('+formatAttSize(f.size)+')');return;}
+    if(f.size>PLAN_MAX_FILE){toast('"'+f.name+'" 은(는) 2MB를 초과합니다 ('+formatAttSize(f.size)+')');loaded++;return;}
     const reader=new FileReader();
     reader.onload=()=>{
       _pendingPlanFiles.push({name:f.name,type:f.type,size:f.size,data:reader.result});
-      count++;
-      if(count>=input.files.length||count>=20)renderPlanFilePreview();
+      loaded++;
+      if(loaded>=total)renderPlanFilePreview();
     };
     reader.readAsDataURL(f);
-    count++;
   });
   input.value='';
 }
@@ -2143,8 +2143,8 @@ function openPlanForm(pid){
   h+='<input id="planDesc" value="'+esc(p?p.desc:'')+'" placeholder="작업 내용 입력..." onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
   h+='<label>비고</label>';
   h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)" onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
-  h+='<label class="plan-file-label" onclick="document.getElementById(\'planFileInput\').click()">';
-  h+='📎 첨부파일 추가 (최대 2MB/파일)</label>';
+  h+='<div class="plan-file-label" onclick="document.getElementById(\'planFileInput\').click()">';
+  h+='📎 첨부파일 추가 (최대 2MB/파일)</div>';
   h+='<input type="file" id="planFileInput" multiple style="display:none" onchange="handlePlanFileSelect(this)">';
   h+='<div id="planFilePreview" class="plan-file-preview"></div>';
   h+='<div class="modal-btns">';
