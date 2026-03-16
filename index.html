@@ -332,7 +332,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .plan-dday.past{background:var(--red-bg);color:var(--red)}
 .plan-dday.soon{background:var(--orange-bg);color:var(--orange)}
 .plan-dday.future{background:var(--gray-100);color:var(--gray-500)}
-.plan-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;transition:.1s;border:1px solid var(--gray-200);margin-bottom:5px}
+.plan-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;transition:.1s;border:1px solid var(--gray-200);margin-bottom:5px;cursor:pointer}
 .plan-item:hover{background:var(--gray-50);box-shadow:var(--shadow)}
 .plan-item.done{opacity:.5}
 .plan-item.done .plan-desc{text-decoration:line-through}
@@ -343,8 +343,8 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .plan-bld{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:99px;display:inline-block;margin-bottom:2px}
 .plan-desc{font-size:12px;font-weight:500;color:var(--gray-800)}
 .plan-note{font-size:10px;color:var(--gray-500);margin-top:2px}
-.plan-actions{display:flex;gap:2px;opacity:0;transition:opacity .15s}
-.plan-item:hover .plan-actions{opacity:1}
+.plan-actions{display:flex;gap:2px;opacity:0;pointer-events:none;transition:opacity .15s}
+.plan-item:hover .plan-actions{opacity:1;pointer-events:auto}
 .plan-actions button{width:24px;height:24px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:11px;color:var(--gray-400);transition:.15s}
 .plan-actions button:hover{background:var(--gray-100);color:var(--gray-700)}
 .plan-actions button.del:hover{color:var(--red);background:var(--red-bg)}
@@ -613,10 +613,12 @@ function checkLocalStorage(){
 async function init(){
   if(!checkLocalStorage()){
     loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+    recalcNextId();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     return;
   }
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+  recalcNextId();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
   // 클라우드 동기화는 사용자가 수동으로 ☁️ 버튼을 눌렀을 때만 실행
@@ -634,7 +636,6 @@ function loadProducts(){
   if(s){products=JSON.parse(s);}
   else{products=PRODUCTS_SEED.map((p,i)=>({id:i+1,code:p[0],name:p[1],cat:p[2],unit:p[3],stock:p[4],tin:p[5],tout:p[6]}));}
   rebuildProductMap();
-  recalcNextId();
 }
 function rebuildProductMap(){productMap=new Map(products.map(p=>[p.id,p]));}
 function recalcNextId(){
@@ -648,6 +649,8 @@ function recalcNextId(){
       });
     });
   }
+  plans.forEach(p=>{if(p.id>mx)mx=p.id;});
+  rooms.forEach(r=>{if(r.id>mx)mx=r.id;});
   nextId=mx+1;
 }
 
@@ -655,7 +658,20 @@ function loadHistory(){const s=localStorage.getItem('ws3_history');history=s?JSO
 function loadHolidays(){const s=localStorage.getItem('ws3_holidays');holidays=s?JSON.parse(s):{};Object.entries(DEFAULT_HOLIDAYS).forEach(([k,v])=>{if(!holidays[k])holidays[k]=v;});}
 function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings=s?JSON.parse(s):BUILDINGS_DEFAULT.slice();}
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
-function loadPlans(){const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];}
+function loadPlans(){
+  const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];
+  // 중복 ID 감지 및 수정 — 모든 ID를 숫자로 통일하고 중복 시 재할당
+  const seen=new Set();
+  let mx=plans.reduce((m,p)=>Math.max(m,Number(p.id)||0),0);
+  let changed=false;
+  for(let i=0;i<plans.length;i++){
+    let id=Number(plans[i].id);
+    if(!id||isNaN(id)||seen.has(id)){id=++mx;changed=true;}
+    plans[i].id=id;
+    seen.add(id);
+  }
+  if(changed)try{localStorage.setItem('ws3_plans',JSON.stringify(plans));}catch(e){}
+}
 function savePlans(){safeSave('ws3_plans',plans);}
 function loadRooms(){const s=localStorage.getItem('ws3_rooms');rooms=s?JSON.parse(s):ROOMS_SEED.slice();}
 function saveRooms(){safeSave('ws3_rooms',rooms);}
@@ -682,7 +698,10 @@ function performUndo(){
   }
   // 메모리 변수 재로드
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
-  loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+  recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+  if(currentTab==='history')renderHistory();
+  if(currentTab==='tasks')renderTaskHistory();
+  if(currentTab==='plan')renderPlanList();
   toast('↩ 실행 취소');
 }
 function safeSave(key,data){
@@ -1823,7 +1842,7 @@ function toast(msg){
 // === 새로고침 (로컬 데이터만 다시 로드) ===
 async function refreshAll(){
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
-  loadWeek();renderFilterBar();renderInventory();renderAlerts();
+  recalcNextId();loadWeek();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
   if(currentTab==='plan')renderPlanList();
@@ -1836,7 +1855,7 @@ async function pullFromCloud(){
   const ok=await loadFromCloud();
   if(ok){
     loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
-    loadWeek();renderFilterBar();renderInventory();renderAlerts();
+    recalcNextId();loadWeek();renderFilterBar();renderInventory();renderAlerts();
     if(currentTab==='history')renderHistory();
     if(currentTab==='tasks')renderTaskHistory();
     if(currentTab==='plan')renderPlanList();
@@ -1994,8 +2013,8 @@ function renderPlanList(){
           h+='<div class="plan-group-hdr">'+p.date+' ('+startDow+') <span class="plan-dday '+ddayClass+'">'+ddayText+'</span></div>';
         }
       }
-      h+='<div class="plan-item'+(p.done?' done':'')+'" data-pid="'+p.id+'">';
-      h+='<div class="plan-check" onclick="togglePlan('+p.id+')">'+(p.done?'✓':'')+'</div>';
+      h+='<div class="plan-item'+(p.done?' done':'')+'" data-pid="'+p.id+'" onclick="openPlanForm('+p.id+')">';
+      h+='<div class="plan-check" onclick="event.stopPropagation();togglePlan('+p.id+')">'+(p.done?'✓':'')+'</div>';
       h+='<div class="plan-info">';
       if(p.building)h+='<span class="plan-bld">'+esc(p.building)+'</span>';
       h+='<div class="plan-desc">'+esc(p.desc||'(내용 없음)')+'</div>';
@@ -2004,7 +2023,7 @@ function renderPlanList(){
         h+='<div class="plan-attachments">';
         p.attachments.forEach((att,ai)=>{
           const icon=att.type.startsWith('image/')?'🖼️':att.type.includes('pdf')?'📄':'📎';
-          h+='<div class="plan-att" onclick="previewPlanAtt('+p.id+','+ai+')" title="'+esc(att.name)+'">';
+          h+='<div class="plan-att" onclick="event.stopPropagation();previewPlanAtt('+p.id+','+ai+')" title="'+esc(att.name)+'">';
           h+='<span>'+icon+'</span>';
           h+='<span class="att-name">'+esc(att.name)+'</span>';
           h+='<span class="att-size">'+formatAttSize(att.size)+'</span>';
@@ -2015,10 +2034,10 @@ function renderPlanList(){
       }
       h+='</div>';
       h+='<div class="plan-actions">';
-      if(!p.done)h+='<button class="move" onclick="movePlanToWeek('+p.id+')" title="이번 주 작업으로 전환">→</button>';
-      h+='<button onclick="planAttachFile('+p.id+')" title="첨부">📎</button>';
-      h+='<button onclick="openPlanForm('+p.id+')" title="수정">✏️</button>';
-      h+='<button class="del" onclick="deletePlan('+p.id+')" title="삭제">🗑</button>';
+      if(!p.done)h+='<button class="move" onclick="event.stopPropagation();movePlanToWeek('+p.id+')" title="이번 주 작업으로 전환">→</button>';
+      h+='<button onclick="event.stopPropagation();planAttachFile('+p.id+')" title="첨부">📎</button>';
+      h+='<button onclick="event.stopPropagation();openPlanForm('+p.id+')" title="수정">✏️</button>';
+      h+='<button class="del" onclick="event.stopPropagation();deletePlan('+p.id+')" title="삭제">🗑</button>';
       h+='</div></div>';
     });
   }
@@ -2088,7 +2107,7 @@ function removePendingFile(i){
 }
 
 function previewPlanAtt(pid,ai){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p||!p.attachments||!p.attachments[ai])return;
   const att=p.attachments[ai];
   if(att.type.startsWith('image/')){
@@ -2100,7 +2119,7 @@ function previewPlanAtt(pid,ai){
 }
 
 function removePlanAtt(pid,ai){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p||!p.attachments)return;
   p.attachments.splice(ai,1);
   if(!p.attachments.length)delete p.attachments;
@@ -2110,7 +2129,7 @@ function removePlanAtt(pid,ai){
 
 function planAttachFile(pid,droppedFiles){
   function doAttach(files){
-    const p=plans.find(x=>x.id===pid);
+    const p=plans.find(x=>Number(x.id)===Number(pid));
     if(!p)return;
     if(!p.attachments)p.attachments=[];
     let added=0;const total=files.length;
@@ -2188,7 +2207,7 @@ function initPlanListDrop(){
 }
 
 function openPlanForm(pid){
-  const p=pid?plans.find(x=>x.id===pid):null;
+  const p=pid?plans.find(x=>Number(x.id)===Number(pid)):null;
   const isEdit=!!p;
   const defDate=p?p.date:new Date().toISOString().slice(0,10);
   const hasRange=p&&p.dateEnd;
@@ -2243,11 +2262,14 @@ function savePlan(pid){
 
   const atts=_pendingPlanFiles.length?_pendingPlanFiles.slice():undefined;
   if(pid){
-    const p=plans.find(x=>x.id===pid);
+    const p=plans.find(x=>Number(x.id)===Number(pid));
     if(p){p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;p.attachments=atts;}
     toast('예정 작업이 수정되었습니다');
   }else{
-    plans.push({id:nextId++,date,dateEnd:dateEnd||null,building,desc,note,done:false,attachments:atts});
+    const planMaxId=plans.reduce((mx,x)=>Math.max(mx,Number(x.id)||0),0);
+    const newPlanId=Math.max(nextId,planMaxId)+1;
+    nextId=newPlanId+1;
+    plans.push({id:newPlanId,date,dateEnd:dateEnd||null,building,desc,note,done:false,attachments:atts});
     toast('예정 작업이 추가되었습니다');
   }
   _pendingPlanFiles=[];
@@ -2255,15 +2277,16 @@ function savePlan(pid){
 }
 
 function togglePlan(pid){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(p){p.done=!p.done;savePlans();renderPlanList();}
 }
 
 function deletePlan(pid){
-  const p=plans.find(x=>x.id===pid);
+  console.log('[deletePlan] pid=',pid,'plans IDs=',plans.map(x=>x.id+':'+x.desc));
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p)return;
   if(!confirm('"'+( p.desc||'(미입력)')+'" 예정 작업을 삭제하시겠습니까?'))return;
-  plans=plans.filter(x=>x.id!==pid);
+  plans=plans.filter(x=>Number(x.id)!==Number(pid));
   savePlans();renderPlanList();
   toast('예정 작업이 삭제되었습니다');
 }
@@ -2298,7 +2321,7 @@ function addDateToWeek(date,desc,building,note){
 }
 // 예정 작업을 주간 보고서로 전환
 function movePlanToWeek(pid){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p)return;
 
   if(p.dateEnd){
@@ -2542,7 +2565,7 @@ async function autoSyncPoll(){
       });
       // 메모리 재로드
       loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
-      loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+      recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
       if(currentTab==='history')renderHistory();
       if(currentTab==='tasks')renderTaskHistory();
       if(currentTab==='plan')renderPlanList();
@@ -2611,7 +2634,7 @@ function friendlyKeyName(key){
 }
 function reloadAllFromStorage(){
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
-  loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+  recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
   if(currentTab==='plan')renderPlanList();
