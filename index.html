@@ -660,26 +660,17 @@ function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
 function loadPlans(){
   const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];
-  // 모든 plan ID를 고유하게 재할당 (중복 ID 문제 완전 해결)
-  const usedIds=new Set();
-  let maxId=0;
-  // 기존 products/tasks 등의 ID와 충돌 방지를 위해 큰 수에서 시작
-  plans.forEach(p=>{if(p.id&&typeof p.id==='number')maxId=Math.max(maxId,p.id);});
-  let needsSave=false;
-  plans.forEach(p=>{
-    const numId=Number(p.id);
-    if(!p.id||isNaN(numId)||usedIds.has(numId)){
-      p.id=++maxId;
-      needsSave=true;
-    }else{
-      p.id=numId; // 문자열→숫자 통일
-      usedIds.add(numId);
-    }
-  });
-  if(needsSave){
-    // safeSave 대신 직접 저장 (초기화 중 pushUndo 문제 방지)
-    try{localStorage.setItem('ws3_plans',JSON.stringify(plans));}catch(e){}
+  // 중복 ID 감지 및 수정 — 모든 ID를 숫자로 통일하고 중복 시 재할당
+  const seen=new Set();
+  let mx=plans.reduce((m,p)=>Math.max(m,Number(p.id)||0),0);
+  let changed=false;
+  for(let i=0;i<plans.length;i++){
+    let id=Number(plans[i].id);
+    if(!id||isNaN(id)||seen.has(id)){id=++mx;changed=true;}
+    plans[i].id=id;
+    seen.add(id);
   }
+  if(changed)try{localStorage.setItem('ws3_plans',JSON.stringify(plans));}catch(e){}
 }
 function savePlans(){safeSave('ws3_plans',plans);}
 function loadRooms(){const s=localStorage.getItem('ws3_rooms');rooms=s?JSON.parse(s):ROOMS_SEED.slice();}
@@ -708,6 +699,9 @@ function performUndo(){
   // 메모리 변수 재로드
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
   recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+  if(currentTab==='history')renderHistory();
+  if(currentTab==='tasks')renderTaskHistory();
+  if(currentTab==='plan')renderPlanList();
   toast('↩ 실행 취소');
 }
 function safeSave(key,data){
@@ -2272,7 +2266,10 @@ function savePlan(pid){
     if(p){p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;p.attachments=atts;}
     toast('예정 작업이 수정되었습니다');
   }else{
-    plans.push({id:nextId++,date,dateEnd:dateEnd||null,building,desc,note,done:false,attachments:atts});
+    const planMaxId=plans.reduce((mx,x)=>Math.max(mx,Number(x.id)||0),0);
+    const newPlanId=Math.max(nextId,planMaxId)+1;
+    nextId=newPlanId+1;
+    plans.push({id:newPlanId,date,dateEnd:dateEnd||null,building,desc,note,done:false,attachments:atts});
     toast('예정 작업이 추가되었습니다');
   }
   _pendingPlanFiles=[];
@@ -2285,6 +2282,7 @@ function togglePlan(pid){
 }
 
 function deletePlan(pid){
+  console.log('[deletePlan] pid=',pid,'plans IDs=',plans.map(x=>x.id+':'+x.desc));
   const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p)return;
   if(!confirm('"'+( p.desc||'(미입력)')+'" 예정 작업을 삭제하시겠습니까?'))return;
