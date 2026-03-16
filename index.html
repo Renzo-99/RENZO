@@ -332,7 +332,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .plan-dday.past{background:var(--red-bg);color:var(--red)}
 .plan-dday.soon{background:var(--orange-bg);color:var(--orange)}
 .plan-dday.future{background:var(--gray-100);color:var(--gray-500)}
-.plan-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;transition:.1s;border:1px solid var(--gray-200);margin-bottom:5px}
+.plan-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;transition:.1s;border:1px solid var(--gray-200);margin-bottom:5px;cursor:pointer}
 .plan-item:hover{background:var(--gray-50);box-shadow:var(--shadow)}
 .plan-item.done{opacity:.5}
 .plan-item.done .plan-desc{text-decoration:line-through}
@@ -343,8 +343,8 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .plan-bld{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:99px;display:inline-block;margin-bottom:2px}
 .plan-desc{font-size:12px;font-weight:500;color:var(--gray-800)}
 .plan-note{font-size:10px;color:var(--gray-500);margin-top:2px}
-.plan-actions{display:flex;gap:2px;opacity:0;transition:opacity .15s}
-.plan-item:hover .plan-actions{opacity:1}
+.plan-actions{display:flex;gap:2px;opacity:0;pointer-events:none;transition:opacity .15s}
+.plan-item:hover .plan-actions{opacity:1;pointer-events:auto}
 .plan-actions button{width:24px;height:24px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:11px;color:var(--gray-400);transition:.15s}
 .plan-actions button:hover{background:var(--gray-100);color:var(--gray-700)}
 .plan-actions button.del:hover{color:var(--red);background:var(--red-bg)}
@@ -2006,8 +2006,8 @@ function renderPlanList(){
           h+='<div class="plan-group-hdr">'+p.date+' ('+startDow+') <span class="plan-dday '+ddayClass+'">'+ddayText+'</span></div>';
         }
       }
-      h+='<div class="plan-item'+(p.done?' done':'')+'" data-pid="'+p.id+'">';
-      h+='<div class="plan-check" onclick="togglePlan('+p.id+')">'+(p.done?'✓':'')+'</div>';
+      h+='<div class="plan-item'+(p.done?' done':'')+'" data-pid="'+p.id+'" onclick="openPlanForm('+p.id+')">';
+      h+='<div class="plan-check" onclick="event.stopPropagation();togglePlan('+p.id+')">'+(p.done?'✓':'')+'</div>';
       h+='<div class="plan-info">';
       if(p.building)h+='<span class="plan-bld">'+esc(p.building)+'</span>';
       h+='<div class="plan-desc">'+esc(p.desc||'(내용 없음)')+'</div>';
@@ -2016,7 +2016,7 @@ function renderPlanList(){
         h+='<div class="plan-attachments">';
         p.attachments.forEach((att,ai)=>{
           const icon=att.type.startsWith('image/')?'🖼️':att.type.includes('pdf')?'📄':'📎';
-          h+='<div class="plan-att" onclick="previewPlanAtt('+p.id+','+ai+')" title="'+esc(att.name)+'">';
+          h+='<div class="plan-att" onclick="event.stopPropagation();previewPlanAtt('+p.id+','+ai+')" title="'+esc(att.name)+'">';
           h+='<span>'+icon+'</span>';
           h+='<span class="att-name">'+esc(att.name)+'</span>';
           h+='<span class="att-size">'+formatAttSize(att.size)+'</span>';
@@ -2027,10 +2027,10 @@ function renderPlanList(){
       }
       h+='</div>';
       h+='<div class="plan-actions">';
-      if(!p.done)h+='<button class="move" onclick="movePlanToWeek('+p.id+')" title="이번 주 작업으로 전환">→</button>';
-      h+='<button onclick="planAttachFile('+p.id+')" title="첨부">📎</button>';
-      h+='<button onclick="openPlanForm('+p.id+')" title="수정">✏️</button>';
-      h+='<button class="del" onclick="deletePlan('+p.id+')" title="삭제">🗑</button>';
+      if(!p.done)h+='<button class="move" onclick="event.stopPropagation();movePlanToWeek('+p.id+')" title="이번 주 작업으로 전환">→</button>';
+      h+='<button onclick="event.stopPropagation();planAttachFile('+p.id+')" title="첨부">📎</button>';
+      h+='<button onclick="event.stopPropagation();openPlanForm('+p.id+')" title="수정">✏️</button>';
+      h+='<button class="del" onclick="event.stopPropagation();deletePlan('+p.id+')" title="삭제">🗑</button>';
       h+='</div></div>';
     });
   }
@@ -2100,7 +2100,7 @@ function removePendingFile(i){
 }
 
 function previewPlanAtt(pid,ai){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p||!p.attachments||!p.attachments[ai])return;
   const att=p.attachments[ai];
   if(att.type.startsWith('image/')){
@@ -2112,7 +2112,7 @@ function previewPlanAtt(pid,ai){
 }
 
 function removePlanAtt(pid,ai){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p||!p.attachments)return;
   p.attachments.splice(ai,1);
   if(!p.attachments.length)delete p.attachments;
@@ -2122,7 +2122,7 @@ function removePlanAtt(pid,ai){
 
 function planAttachFile(pid,droppedFiles){
   function doAttach(files){
-    const p=plans.find(x=>x.id===pid);
+    const p=plans.find(x=>Number(x.id)===Number(pid));
     if(!p)return;
     if(!p.attachments)p.attachments=[];
     let added=0;const total=files.length;
@@ -2200,7 +2200,7 @@ function initPlanListDrop(){
 }
 
 function openPlanForm(pid){
-  const p=pid?plans.find(x=>x.id===pid):null;
+  const p=pid?plans.find(x=>Number(x.id)===Number(pid)):null;
   const isEdit=!!p;
   const defDate=p?p.date:new Date().toISOString().slice(0,10);
   const hasRange=p&&p.dateEnd;
@@ -2255,7 +2255,7 @@ function savePlan(pid){
 
   const atts=_pendingPlanFiles.length?_pendingPlanFiles.slice():undefined;
   if(pid){
-    const p=plans.find(x=>x.id===pid);
+    const p=plans.find(x=>Number(x.id)===Number(pid));
     if(p){p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;p.attachments=atts;}
     toast('예정 작업이 수정되었습니다');
   }else{
@@ -2267,15 +2267,15 @@ function savePlan(pid){
 }
 
 function togglePlan(pid){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(p){p.done=!p.done;savePlans();renderPlanList();}
 }
 
 function deletePlan(pid){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p)return;
   if(!confirm('"'+( p.desc||'(미입력)')+'" 예정 작업을 삭제하시겠습니까?'))return;
-  plans=plans.filter(x=>x.id!==pid);
+  plans=plans.filter(x=>Number(x.id)!==Number(pid));
   savePlans();renderPlanList();
   toast('예정 작업이 삭제되었습니다');
 }
@@ -2310,7 +2310,7 @@ function addDateToWeek(date,desc,building,note){
 }
 // 예정 작업을 주간 보고서로 전환
 function movePlanToWeek(pid){
-  const p=plans.find(x=>x.id===pid);
+  const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p)return;
 
   if(p.dateEnd){
