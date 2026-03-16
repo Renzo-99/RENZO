@@ -660,13 +660,26 @@ function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
 function loadPlans(){
   const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];
-  // 중복 ID 수정
-  const seen=new Set();let fixed=false;
+  // 모든 plan ID를 고유하게 재할당 (중복 ID 문제 완전 해결)
+  const usedIds=new Set();
+  let maxId=0;
+  // 기존 products/tasks 등의 ID와 충돌 방지를 위해 큰 수에서 시작
+  plans.forEach(p=>{if(p.id&&typeof p.id==='number')maxId=Math.max(maxId,p.id);});
+  let needsSave=false;
   plans.forEach(p=>{
-    if(!p.id||seen.has(p.id)){p.id=Date.now()+Math.floor(Math.random()*10000)+seen.size;fixed=true;}
-    seen.add(p.id);
+    const numId=Number(p.id);
+    if(!p.id||isNaN(numId)||usedIds.has(numId)){
+      p.id=++maxId;
+      needsSave=true;
+    }else{
+      p.id=numId; // 문자열→숫자 통일
+      usedIds.add(numId);
+    }
   });
-  if(fixed)savePlans();
+  if(needsSave){
+    // safeSave 대신 직접 저장 (초기화 중 pushUndo 문제 방지)
+    try{localStorage.setItem('ws3_plans',JSON.stringify(plans));}catch(e){}
+  }
 }
 function savePlans(){safeSave('ws3_plans',plans);}
 function loadRooms(){const s=localStorage.getItem('ws3_rooms');rooms=s?JSON.parse(s):ROOMS_SEED.slice();}
