@@ -613,10 +613,12 @@ function checkLocalStorage(){
 async function init(){
   if(!checkLocalStorage()){
     loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+    recalcNextId();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     return;
   }
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+  recalcNextId();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
   // 클라우드 동기화는 사용자가 수동으로 ☁️ 버튼을 눌렀을 때만 실행
@@ -634,7 +636,6 @@ function loadProducts(){
   if(s){products=JSON.parse(s);}
   else{products=PRODUCTS_SEED.map((p,i)=>({id:i+1,code:p[0],name:p[1],cat:p[2],unit:p[3],stock:p[4],tin:p[5],tout:p[6]}));}
   rebuildProductMap();
-  recalcNextId();
 }
 function rebuildProductMap(){productMap=new Map(products.map(p=>[p.id,p]));}
 function recalcNextId(){
@@ -648,6 +649,8 @@ function recalcNextId(){
       });
     });
   }
+  plans.forEach(p=>{if(p.id>mx)mx=p.id;});
+  rooms.forEach(r=>{if(r.id>mx)mx=r.id;});
   nextId=mx+1;
 }
 
@@ -655,7 +658,16 @@ function loadHistory(){const s=localStorage.getItem('ws3_history');history=s?JSO
 function loadHolidays(){const s=localStorage.getItem('ws3_holidays');holidays=s?JSON.parse(s):{};Object.entries(DEFAULT_HOLIDAYS).forEach(([k,v])=>{if(!holidays[k])holidays[k]=v;});}
 function loadBuildings(){const s=localStorage.getItem('ws3_buildings');buildings=s?JSON.parse(s):BUILDINGS_DEFAULT.slice();}
 function saveBuildings(){safeSave('ws3_buildings',buildings);}
-function loadPlans(){const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];}
+function loadPlans(){
+  const s=localStorage.getItem('ws3_plans');plans=s?JSON.parse(s):[];
+  // 중복 ID 수정
+  const seen=new Set();let fixed=false;
+  plans.forEach(p=>{
+    if(!p.id||seen.has(p.id)){p.id=Date.now()+Math.floor(Math.random()*10000)+seen.size;fixed=true;}
+    seen.add(p.id);
+  });
+  if(fixed)savePlans();
+}
 function savePlans(){safeSave('ws3_plans',plans);}
 function loadRooms(){const s=localStorage.getItem('ws3_rooms');rooms=s?JSON.parse(s):ROOMS_SEED.slice();}
 function saveRooms(){safeSave('ws3_rooms',rooms);}
@@ -682,7 +694,7 @@ function performUndo(){
   }
   // 메모리 변수 재로드
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
-  loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+  recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   toast('↩ 실행 취소');
 }
 function safeSave(key,data){
@@ -1823,7 +1835,7 @@ function toast(msg){
 // === 새로고침 (로컬 데이터만 다시 로드) ===
 async function refreshAll(){
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
-  loadWeek();renderFilterBar();renderInventory();renderAlerts();
+  recalcNextId();loadWeek();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
   if(currentTab==='plan')renderPlanList();
@@ -1836,7 +1848,7 @@ async function pullFromCloud(){
   const ok=await loadFromCloud();
   if(ok){
     loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
-    loadWeek();renderFilterBar();renderInventory();renderAlerts();
+    recalcNextId();loadWeek();renderFilterBar();renderInventory();renderAlerts();
     if(currentTab==='history')renderHistory();
     if(currentTab==='tasks')renderTaskHistory();
     if(currentTab==='plan')renderPlanList();
@@ -2542,7 +2554,7 @@ async function autoSyncPoll(){
       });
       // 메모리 재로드
       loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
-      loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+      recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
       if(currentTab==='history')renderHistory();
       if(currentTab==='tasks')renderTaskHistory();
       if(currentTab==='plan')renderPlanList();
@@ -2611,7 +2623,7 @@ function friendlyKeyName(key){
 }
 function reloadAllFromStorage(){
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
-  loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
+  recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
   if(currentTab==='plan')renderPlanList();
