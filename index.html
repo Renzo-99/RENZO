@@ -1994,12 +1994,12 @@ function renderPlanList(){
         const startD=new Date(parseInt(pts[0]),parseInt(pts[1])-1,parseInt(pts[2]));
         startD.setHours(0,0,0,0);
         const startDow=DOW_SHORT[startD.getDay()];
-        // D-day는 종료일 기준 (기간이면 종료일, 단일이면 해당 날짜)
+        // D-day는 시작일 기준 (가장 가까운 날짜 기준으로 계산)
+        const diff=Math.round((startD-today)/864e5);
         const endDateStr=p.dateEnd||p.date;
         const epts=endDateStr.split('-');
         const endD=new Date(parseInt(epts[0]),parseInt(epts[1])-1,parseInt(epts[2]));
         endD.setHours(0,0,0,0);
-        const diff=Math.round((endD-today)/864e5);
         let ddayClass='future',ddayText='';
         if(diff<0){ddayClass='past';ddayText='D+'+Math.abs(diff);}
         else if(diff===0){ddayClass='today';ddayText='오늘';}
