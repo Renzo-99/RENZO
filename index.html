@@ -1066,21 +1066,37 @@ function initTouchDrag(){
 
 // === 랜덤 채우기 ===
 function fillRandom(){
+  // 최근 1~2주 키 계산 (제외 대상)
+  const recentKeys=new Set(['ws3_week_'+yr+'_'+wk]);
+  let ry=yr,rw=wk;
+  for(let n=0;n<2;n++){
+    if(rw<=1){ry--;rw=getISOWeeksInYear(ry);}else rw--;
+    recentKeys.add('ws3_week_'+ry+'_'+rw);
+  }
+  // 최근 1~2주 작업 수집 (제외할 desc 목록)
+  const recentDescs=new Set();
+  recentKeys.forEach(rk=>{
+    if(rk==='ws3_week_'+yr+'_'+wk)return;
+    try{const wd=JSON.parse(localStorage.getItem(rk)||'[]');
+      wd.forEach(d=>d.tasks.forEach(t=>{if(t.desc&&t.desc.trim())recentDescs.add(t.desc.trim());}));
+    }catch(e){}
+  });
+  // 나머지 주에서 작업 풀 수집
   const pool=[];const seen=new Set();
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
     if(!k.startsWith('ws3_week_'))continue;
-    if(k==='ws3_week_'+yr+'_'+wk)continue;
+    if(recentKeys.has(k))continue;
     try{const wd=JSON.parse(localStorage.getItem(k));
       wd.forEach(d=>d.tasks.forEach(t=>{
-        if(t.desc&&t.desc.trim()){
+        if(t.desc&&t.desc.trim()&&!recentDescs.has(t.desc.trim())){
           const key=t.desc.trim()+'|||'+(t.building||'');
           if(!seen.has(key)){seen.add(key);pool.push({desc:t.desc.trim(),building:t.building||''});}
         }
       }));
     }catch(e){}
   }
-  if(pool.length<5){toast('이전 작업 데이터가 부족합니다 (최소 5개 필요, 현재 '+pool.length+'개)');return;}
+  if(pool.length<5){toast('겹치지 않는 작업 데이터가 부족합니다 (최소 5개 필요, 현재 '+pool.length+'개)');return;}
   const hasTasks=days.some(d=>d.tasks.length>0);
   if(hasTasks&&!confirm('현재 주차에 이미 작업이 있습니다.\n기존 작업을 유지하고 랜덤 작업을 추가할까요?'))return;
   for(let di=0;di<5;di++){
@@ -1090,7 +1106,7 @@ function fillRandom(){
     });
   }
   saveWeek();renderReport();
-  toast('랜덤 작업이 채워졌습니다 (일 5개 × 5일)');
+  toast('랜덤 작업이 채워졌습니다 (일 5개 × 5일, 최근 2주 제외)');
 }
 
 // === 작업 관리 ===
