@@ -417,6 +417,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     </div>
     <button class="btn btn-ghost" onclick="navWeek(1)">▶</button>
     <button class="btn btn-outline btn-sm" onclick="goToday()">오늘</button>
+    <button class="btn btn-outline btn-sm" onclick="fillRandom()" title="이전 작업 데이터로 랜덤 채우기">🎲 랜덤</button>
   </div>
   <div class="hdr-right">
     <span id="sbStatusBtn" style="font-size:14px;cursor:pointer;margin-right:2px" onclick="openSupabaseSettings()" title="Supabase 실시간"></span>
@@ -1061,6 +1062,35 @@ function initTouchDrag(){
     }
     touchEl=null;touchClone=null;touchDi=null;touchTi=null;
   });
+}
+
+// === 랜덤 채우기 ===
+function fillRandom(){
+  const pool=[];const seen=new Set();
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k.startsWith('ws3_week_'))continue;
+    if(k==='ws3_week_'+yr+'_'+wk)continue;
+    try{const wd=JSON.parse(localStorage.getItem(k));
+      wd.forEach(d=>d.tasks.forEach(t=>{
+        if(t.desc&&t.desc.trim()){
+          const key=t.desc.trim()+'|||'+(t.building||'');
+          if(!seen.has(key)){seen.add(key);pool.push({desc:t.desc.trim(),building:t.building||''});}
+        }
+      }));
+    }catch(e){}
+  }
+  if(pool.length<5){toast('이전 작업 데이터가 부족합니다 (최소 5개 필요, 현재 '+pool.length+'개)');return;}
+  const hasTasks=days.some(d=>d.tasks.length>0);
+  if(hasTasks&&!confirm('현재 주차에 이미 작업이 있습니다.\n기존 작업을 유지하고 랜덤 작업을 추가할까요?'))return;
+  for(let di=0;di<5;di++){
+    const shuffled=[...pool].sort(()=>Math.random()-0.5);
+    shuffled.slice(0,5).forEach(p=>{
+      days[di].tasks.push({id:nextId++,desc:p.desc,building:p.building,note:'',editing:false,mats:[]});
+    });
+  }
+  saveWeek();renderReport();
+  toast('랜덤 작업이 채워졌습니다 (일 5개 × 5일)');
 }
 
 // === 작업 관리 ===
