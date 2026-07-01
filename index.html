@@ -282,6 +282,11 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .cal-task-item:hover{background:#d0e3ff}
 .cal-task-item.plan{background:#fff3e0;color:#e65100}
 .cal-task-item.plan:hover{background:#ffe0b2}
+.cal-task-item.draggable-task{cursor:grab}
+.cal-task-item.draggable-task:active{cursor:grabbing}
+.cal-task-item.dragging{opacity:.4}
+.cal-cell.drag-over{outline:2px dashed #7c3aed;outline-offset:-2px;background:#f3e8ff!important}
+.cal-cell.drag-invalid{outline:2px dashed var(--gray-300);outline-offset:-2px;background:var(--gray-50)!important}
 .cal-task-more{font-size:9px;color:var(--gray-500);padding:1px 4px;cursor:pointer}
 .cal-task-more:hover{color:var(--blue)}
 /* 캘린더 날짜 상세 모달 */
@@ -2848,8 +2853,8 @@ function getCalTasks(year,month){
       if(dd.getMonth()+1!==month)return;
       const key=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
       if(!map[key])map[key]=[];
-      d.tasks.forEach(t=>{
-        map[key].push({desc:t.desc||'',building:t.building||'',note:t.note||'',mats:t.mats||[],weekYear:wy,weekNum:ww,dayIndex:di});
+      d.tasks.forEach((t,ti)=>{
+        map[key].push({desc:t.desc||'',building:t.building||'',note:t.note||'',mats:t.mats||[],weekYear:wy,weekNum:ww,dayIndex:di,taskId:t.id,taskIndex:ti});
       });
     });
   }
@@ -2925,7 +2930,8 @@ function renderCalendar(){
     const isHol=!!holidays[dateStr];
     const cellDow=(startDow+d-1)%7; // 0=일
 
-    h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+(cellDow===0?' sun':'')+(cellDow===6?' sat':'')+'" onclick="openCalDay(\''+dateStr+'\')">';
+    const isWeekendCell=(cellDow===0||cellDow===6);
+    h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+(cellDow===0?' sun':'')+(cellDow===6?' sat':'')+'" data-date="'+dateStr+'"'+(isWeekendCell?'':' ondragover="calDragOver(event,this)" ondragleave="calDragLeave(event,this)" ondrop="calDrop(event,\''+dateStr+'\',this)"')+' onclick="openCalDay(\''+dateStr+'\')">';
     h+='<span class="cal-date">'+d+'</span>';
     if(isHol)h+='<div class="cal-holiday">'+esc(holidays[dateStr])+'</div>';
     const calLeaves=leaves.filter(l=>l.date===dateStr);
@@ -2938,7 +2944,11 @@ function renderCalendar(){
       const label=t.building?(t.building+' '):'';
       const planCls=t.isPlan?' plan':'';
       const prefix=t.isPlan?'[예정] ':'';
-      h+='<div class="cal-task-item'+planCls+'" title="'+esc(prefix+t.desc)+'">'+esc(label+(t.desc||'(미입력)'))+'</div>';
+      if(t.isPlan){
+        h+='<div class="cal-task-item plan" title="'+esc(prefix+t.desc)+'">'+esc(label+(t.desc||'(미입력)'))+'</div>';
+      }else{
+        h+='<div class="cal-task-item draggable-task" draggable="true" ondragstart="calDragStart(event,'+t.weekYear+','+t.weekNum+','+t.dayIndex+','+t.taskId+',this)" ondragend="calDragEnd(event,this)" title="'+esc(t.desc)+' (드래그하여 날짜 이동)">'+esc(label+(t.desc||'(미입력)'))+'</div>';
+      }
     });
     if(tasks.length>maxShow){
       h+='<div class="cal-task-more">+'+(tasks.length-maxShow)+'건 더보기</div>';
@@ -2964,6 +2974,7 @@ function renderCalendar(){
 
 // 캘린더 날짜 클릭 → 해당 날짜의 작업 상세 + 수정
 function openCalDay(dateStr){
+  if(window._calDragging)return; // 드래그 직후 클릭 방지
   const parts=dateStr.split('-');
   const year=parseInt(parts[0]),month=parseInt(parts[1]),day=parseInt(parts[2]);
   const date=new Date(year,month-1,day);
@@ -3296,6 +3307,76 @@ function calConfirmAdd(wy,ww,di){
   openCalDay(dateStr);
   renderCalendar();
   toast('작업이 추가되었습니다');
+}
+
+// === 캘린더 드래그앤드롭 이동 ===
+let calDragData=null;
+function calDragStart(e,wy,ww,di,taskId,el){
+  calDragData={wy,ww,di,taskId};
+  if(el)el.classList.add('dragging');
+  if(e.dataTransfer){e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(taskId));}catch(x){}}
+  // 클릭(openCalDay) 방지용 플래그
+  window._calDragging=true;
+}
+function calDragEnd(e,el){
+  if(el)el.classList.remove('dragging');
+  document.querySelectorAll('.cal-cell.drag-over,.cal-cell.drag-invalid').forEach(c=>c.classList.remove('drag-over','drag-invalid'));
+  calDragData=null;
+  setTimeout(()=>{window._calDragging=false;},50);
+}
+function calDragOver(e,cell){
+  if(!calDragData)return;
+  e.preventDefault();
+  if(e.dataTransfer)e.dataTransfer.dropEffect='move';
+  if(cell&&!cell.classList.contains('drag-over'))cell.classList.add('drag-over');
+}
+function calDragLeave(e,cell){
+  if(cell)cell.classList.remove('drag-over','drag-invalid');
+}
+function calDrop(e,dateStr,cell){
+  e.preventDefault();
+  if(cell)cell.classList.remove('drag-over','drag-invalid');
+  if(!calDragData)return;
+  const src=calDragData;calDragData=null;
+  calMoveTaskById(src.wy,src.ww,src.di,src.taskId,dateStr);
+}
+
+// id로 작업 찾아 다른 날짜로 이동 (드래그앤드롭 공용)
+function calMoveTaskById(wy,ww,di,taskId,targetDateStr){
+  const parts=targetDateStr.split('-');
+  const targetDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  const info=getWeekInfoForDate(targetDate);
+  if(!info||info.dayIndex<0||info.dayIndex>4){toast('주말로는 이동할 수 없습니다 (평일만 가능)');return;}
+  const {weekYear:twy,weekNum:tww,dayIndex:tdi}=info;
+
+  const srcKey='ws3_week_'+wy+'_'+ww;
+  let srcData;
+  try{srcData=JSON.parse(localStorage.getItem(srcKey));}catch(e){return;}
+  if(!srcData||!srcData[di])return;
+  const ti=srcData[di].tasks.findIndex(t=>t.id===taskId);
+  if(ti<0)return;
+
+  // 같은 날짜면 무시
+  if(twy===wy&&tww===ww&&tdi===di)return;
+
+  const [task]=srcData[di].tasks.splice(ti,1);
+  safeSave('ws3_week_'+wy+'_'+ww,srcData);
+  if(wy===yr&&ww===wk)days=srcData;
+
+  const tgtKey='ws3_week_'+twy+'_'+tww;
+  let tgtData;
+  try{tgtData=JSON.parse(localStorage.getItem(tgtKey));}catch(e){tgtData=null;}
+  if(!tgtData){
+    const mon=getMondayOf(twy,tww);
+    tgtData=DAY_NAMES.map((n,i)=>{const dd=new Date(mon);dd.setDate(mon.getDate()+i);return{dn:n,dt:fmt(dd),tasks:[]};});
+  }
+  tgtData[tdi].tasks.push(task);
+  safeSave('ws3_week_'+twy+'_'+tww,tgtData);
+  if(twy===yr&&tww===wk)days=tgtData;
+
+  if((wy===yr&&ww===wk)||(twy===yr&&tww===wk))renderReport();
+  renderCalendar();
+  toast('작업을 '+targetDateStr+'로 이동했습니다');
 }
 
 // 캘린더에서 작업을 다른 날짜로 이동
