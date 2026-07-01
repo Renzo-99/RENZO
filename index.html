@@ -1066,7 +1066,7 @@ function initTouchDrag(){
 
 // === 랜덤 채우기 ===
 // 랜덤 채우기에서 제외할 키워드 (대동제 등 일회성 행사)
-const FILL_EXCLUDE_KEYWORDS=['대동제','축제'];
+const FILL_EXCLUDE_KEYWORDS=['대동제','축제','교육환경개선공사','교육환경개선'];
 function isExcludedTask(desc){
   if(!desc)return false;
   return FILL_EXCLUDE_KEYWORDS.some(kw=>desc.includes(kw));
