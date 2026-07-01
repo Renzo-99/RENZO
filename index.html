@@ -3158,6 +3158,7 @@ function calEditTask(wy,ww,di,ti){
     h+='<div class="modal-btns">';
     h+='<button class="btn btn-outline" onclick="closeModal();openCalDay(\''+getCalDateStrFromWeek(wy,ww,di)+'\')">취소</button>';
     h+='<button class="btn btn-danger btn-sm" onclick="calDeleteTask('+wy+','+ww+','+di+','+ti+')" style="background:none;border:1px solid var(--gray-200)">🗑 삭제</button>';
+    h+='<button class="btn btn-outline btn-sm" onclick="calMoveTask('+wy+','+ww+','+di+','+ti+')" style="color:#7c3aed;border-color:#c4b5fd">📆 날짜 이동</button>';
     h+='<button class="btn btn-blue" onclick="calSaveTask('+wy+','+ww+','+di+','+ti+')">저장</button>';
     h+='</div></div>';
     showModal(h);
@@ -3295,6 +3296,70 @@ function calConfirmAdd(wy,ww,di){
   openCalDay(dateStr);
   renderCalendar();
   toast('작업이 추가되었습니다');
+}
+
+// 캘린더에서 작업을 다른 날짜로 이동
+function calMoveTask(wy,ww,di,ti){
+  const weekKey='ws3_week_'+wy+'_'+ww;
+  let weekData;
+  try{weekData=JSON.parse(localStorage.getItem(weekKey));}catch(e){return;}
+  if(!weekData||!weekData[di]||!weekData[di].tasks[ti])return;
+  const task=weekData[di].tasks[ti];
+  const curDateStr=getCalDateStrFromWeek(wy,ww,di);
+
+  let h='<div class="modal"><h2>📆 작업 날짜 이동</h2>';
+  h+='<div style="padding:8px 10px;background:var(--gray-50);border-radius:8px;margin-bottom:12px;font-size:13px">';
+  if(task.building)h+='<span class="cdt-bld">'+esc(task.building)+'</span> ';
+  h+='<strong>'+(esc(task.desc)||'(내용 없음)')+'</strong>';
+  h+='<div style="font-size:12px;color:var(--gray-500);margin-top:4px">현재: '+curDateStr+'</div></div>';
+  h+='<label>옮길 날짜 (평일만 가능)</label>';
+  h+='<input type="date" id="calMoveDate" value="'+curDateStr+'" style="border:1px solid var(--gray-300);border-radius:6px;padding:6px 10px;font-size:13px;width:100%">';
+  h+='<div class="modal-btns" style="margin-top:14px">';
+  h+='<button class="btn btn-outline" onclick="calEditTask('+wy+','+ww+','+di+','+ti+')">취소</button>';
+  h+='<button class="btn btn-blue" onclick="calConfirmMove('+wy+','+ww+','+di+','+ti+')">이동</button>';
+  h+='</div></div>';
+  showModal(h);
+}
+
+function calConfirmMove(wy,ww,di,ti){
+  const dv=document.getElementById('calMoveDate').value;
+  if(!dv){toast('날짜를 선택하세요');return;}
+  const parts=dv.split('-');
+  const targetDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  const info=getWeekInfoForDate(targetDate);
+  if(!info||info.dayIndex<0||info.dayIndex>4){toast('주말로는 이동할 수 없습니다 (평일만 가능)');return;}
+  const {weekYear:twy,weekNum:tww,dayIndex:tdi}=info;
+
+  // 같은 날짜면 무시
+  if(twy===wy&&tww===ww&&tdi===di){closeModal();openCalDay(getCalDateStrFromWeek(wy,ww,di));return;}
+
+  // 원본에서 작업 꺼내기
+  const srcKey='ws3_week_'+wy+'_'+ww;
+  let srcData;
+  try{srcData=JSON.parse(localStorage.getItem(srcKey));}catch(e){return;}
+  if(!srcData||!srcData[di]||!srcData[di].tasks[ti])return;
+  const [task]=srcData[di].tasks.splice(ti,1);
+  safeSave('ws3_week_'+wy+'_'+ww,srcData);
+  if(wy===yr&&ww===wk){days=srcData;}
+
+  // 대상 주차 로드(없으면 생성) 후 추가
+  const tgtKey='ws3_week_'+twy+'_'+tww;
+  let tgtData;
+  try{tgtData=JSON.parse(localStorage.getItem(tgtKey));}catch(e){tgtData=null;}
+  if(!tgtData){
+    const mon=getMondayOf(twy,tww);
+    tgtData=DAY_NAMES.map((n,i)=>{const dd=new Date(mon);dd.setDate(mon.getDate()+i);return{dn:n,dt:fmt(dd),tasks:[]};});
+  }
+  tgtData[tdi].tasks.push(task);
+  safeSave('ws3_week_'+twy+'_'+tww,tgtData);
+  if(twy===yr&&tww===wk){days=tgtData;}
+
+  if((wy===yr&&ww===wk)||(twy===yr&&tww===wk))renderReport();
+
+  closeModal();
+  openCalDay(getCalDateStrFromWeek(twy,tww,tdi));
+  renderCalendar();
+  toast('작업이 '+dv+'로 이동되었습니다');
 }
 
 // 캘린더에서 해당 주차로 이동
