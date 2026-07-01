@@ -282,9 +282,9 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .cal-task-item:hover{background:#d0e3ff}
 .cal-task-item.plan{background:#fff3e0;color:#e65100}
 .cal-task-item.plan:hover{background:#ffe0b2}
-.cal-task-item.draggable-task{cursor:grab}
+.cal-task-item.draggable-task{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 .cal-task-item.draggable-task:active{cursor:grabbing}
-.cal-task-item.dragging{opacity:.4}
+.cal-task-item.dragging{opacity:.35}
 .cal-cell.drag-over{outline:2px dashed #7c3aed;outline-offset:-2px;background:#f3e8ff!important}
 .cal-cell.drag-invalid{outline:2px dashed var(--gray-300);outline-offset:-2px;background:var(--gray-50)!important}
 .cal-task-more{font-size:9px;color:var(--gray-500);padding:1px 4px;cursor:pointer}
@@ -2930,8 +2930,7 @@ function renderCalendar(){
     const isHol=!!holidays[dateStr];
     const cellDow=(startDow+d-1)%7; // 0=일
 
-    const isWeekendCell=(cellDow===0||cellDow===6);
-    h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+(cellDow===0?' sun':'')+(cellDow===6?' sat':'')+'" data-date="'+dateStr+'"'+(isWeekendCell?'':' ondragover="calDragOver(event,this)" ondragleave="calDragLeave(event,this)" ondrop="calDrop(event,\''+dateStr+'\',this)"')+' onclick="openCalDay(\''+dateStr+'\')">';
+    h+='<div class="cal-cell'+(isToday?' today':'')+(hasTask?' has-task':'')+(cellDow===0?' sun':'')+(cellDow===6?' sat':'')+'" data-date="'+dateStr+'" onclick="openCalDay(\''+dateStr+'\')">';
     h+='<span class="cal-date">'+d+'</span>';
     if(isHol)h+='<div class="cal-holiday">'+esc(holidays[dateStr])+'</div>';
     const calLeaves=leaves.filter(l=>l.date===dateStr);
@@ -2947,7 +2946,7 @@ function renderCalendar(){
       if(t.isPlan){
         h+='<div class="cal-task-item plan" title="'+esc(prefix+t.desc)+'">'+esc(label+(t.desc||'(미입력)'))+'</div>';
       }else{
-        h+='<div class="cal-task-item draggable-task" draggable="true" ondragstart="calDragStart(event,'+t.weekYear+','+t.weekNum+','+t.dayIndex+','+t.taskId+',this)" ondragend="calDragEnd(event,this)" title="'+esc(t.desc)+' (드래그하여 날짜 이동)">'+esc(label+(t.desc||'(미입력)'))+'</div>';
+        h+='<div class="cal-task-item draggable-task" data-wy="'+t.weekYear+'" data-ww="'+t.weekNum+'" data-di="'+t.dayIndex+'" data-tid="'+t.taskId+'" title="'+esc(t.desc)+' (끌어서 날짜 이동)">'+esc(label+(t.desc||'(미입력)'))+'</div>';
       }
     });
     if(tasks.length>maxShow){
@@ -2970,6 +2969,7 @@ function renderCalendar(){
   let root=document.getElementById('calendarRoot');
   if(!root){root=document.createElement('div');root.id='calendarRoot';document.body.appendChild(root);}
   root.innerHTML=h;
+  initCalDrag();
 }
 
 // 캘린더 날짜 클릭 → 해당 날짜의 작업 상세 + 수정
@@ -3309,36 +3309,63 @@ function calConfirmAdd(wy,ww,di){
   toast('작업이 추가되었습니다');
 }
 
-// === 캘린더 드래그앤드롭 이동 ===
-let calDragData=null;
-function calDragStart(e,wy,ww,di,taskId,el){
-  calDragData={wy,ww,di,taskId};
-  if(el)el.classList.add('dragging');
-  if(e.dataTransfer){e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(taskId));}catch(x){}}
-  // 클릭(openCalDay) 방지용 플래그
-  window._calDragging=true;
+// === 캘린더 드래그앤드롭 이동 (마우스+터치 포인터 방식) ===
+let _cdState=null,_calDragBound=false;
+function initCalDrag(){
+  if(_calDragBound)return;
+  _calDragBound=true;
+  document.addEventListener('pointerdown',calPointerDown,{passive:true});
+  document.addEventListener('pointermove',calPointerMove,{passive:false});
+  document.addEventListener('pointerup',calPointerUp);
+  document.addEventListener('pointercancel',calPointerUp);
 }
-function calDragEnd(e,el){
-  if(el)el.classList.remove('dragging');
-  document.querySelectorAll('.cal-cell.drag-over,.cal-cell.drag-invalid').forEach(c=>c.classList.remove('drag-over','drag-invalid'));
-  calDragData=null;
-  setTimeout(()=>{window._calDragging=false;},50);
+function calCellUnder(x,y){
+  const el=document.elementFromPoint(x,y);
+  if(!el)return null;
+  const cell=el.closest('.cal-cell');
+  if(!cell||!cell.dataset.date)return null;
+  if(cell.classList.contains('sun')||cell.classList.contains('sat')||cell.classList.contains('other'))return null;
+  return cell;
 }
-function calDragOver(e,cell){
-  if(!calDragData)return;
+function calPointerDown(e){
+  const item=e.target.closest?e.target.closest('.cal-task-item.draggable-task'):null;
+  if(!item)return;
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  _cdState={item:item,startX:e.clientX,startY:e.clientY,active:false,clone:null};
+}
+function calPointerMove(e){
+  if(!_cdState)return;
+  const s=_cdState;
+  const dx=e.clientX-s.startX,dy=e.clientY-s.startY;
+  if(!s.active){
+    if(Math.abs(dx)+Math.abs(dy)<6)return; // 이동 임계값 (탭과 구분)
+    s.active=true;window._calDragging=true;
+    s.item.classList.add('dragging');
+    const r=s.item.getBoundingClientRect();
+    const c=s.item.cloneNode(true);
+    c.style.cssText='position:fixed;z-index:99999;pointer-events:none;opacity:.9;width:'+r.width+'px;left:'+r.left+'px;top:'+r.top+'px;box-shadow:0 4px 14px rgba(0,0,0,.3);white-space:nowrap';
+    document.body.appendChild(c);s.clone=c;
+  }
   e.preventDefault();
-  if(e.dataTransfer)e.dataTransfer.dropEffect='move';
-  if(cell&&!cell.classList.contains('drag-over'))cell.classList.add('drag-over');
+  s.clone.style.left=(e.clientX-s.clone.offsetWidth/2)+'px';
+  s.clone.style.top=(e.clientY-14)+'px';
+  document.querySelectorAll('.cal-cell.drag-over').forEach(x=>x.classList.remove('drag-over'));
+  const cell=calCellUnder(e.clientX,e.clientY);
+  if(cell)cell.classList.add('drag-over');
 }
-function calDragLeave(e,cell){
-  if(cell)cell.classList.remove('drag-over','drag-invalid');
-}
-function calDrop(e,dateStr,cell){
-  e.preventDefault();
-  if(cell)cell.classList.remove('drag-over','drag-invalid');
-  if(!calDragData)return;
-  const src=calDragData;calDragData=null;
-  calMoveTaskById(src.wy,src.ww,src.di,src.taskId,dateStr);
+function calPointerUp(e){
+  if(!_cdState)return;
+  const s=_cdState;_cdState=null;
+  if(s.clone)s.clone.remove();
+  s.item.classList.remove('dragging');
+  document.querySelectorAll('.cal-cell.drag-over').forEach(x=>x.classList.remove('drag-over'));
+  if(s.active){
+    const cell=calCellUnder(e.clientX,e.clientY);
+    if(cell){
+      calMoveTaskById(parseInt(s.item.dataset.wy),parseInt(s.item.dataset.ww),parseInt(s.item.dataset.di),parseInt(s.item.dataset.tid),cell.dataset.date);
+    }
+    setTimeout(()=>{window._calDragging=false;},60);
+  }
 }
 
 // id로 작업 찾아 다른 날짜로 이동 (드래그앤드롭 공용)
