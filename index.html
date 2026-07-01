@@ -1065,6 +1065,12 @@ function initTouchDrag(){
 }
 
 // === 랜덤 채우기 ===
+// 랜덤 채우기에서 제외할 키워드 (대동제 등 일회성 행사)
+const FILL_EXCLUDE_KEYWORDS=['대동제','축제'];
+function isExcludedTask(desc){
+  if(!desc)return false;
+  return FILL_EXCLUDE_KEYWORDS.some(kw=>desc.includes(kw));
+}
 function fillRandom(){
   // 최근 1~2주 키 계산 (제외 대상)
   const recentKeys=new Set(['ws3_week_'+yr+'_'+wk]);
@@ -1089,7 +1095,7 @@ function fillRandom(){
     if(recentKeys.has(k))continue;
     try{const wd=JSON.parse(localStorage.getItem(k));
       wd.forEach(d=>d.tasks.forEach(t=>{
-        if(t.desc&&t.desc.trim()&&!recentDescs.has(t.desc.trim())){
+        if(t.desc&&t.desc.trim()&&!recentDescs.has(t.desc.trim())&&!isExcludedTask(t.desc)){
           const key=t.desc.trim()+'|||'+(t.building||'');
           if(!seen.has(key)){seen.add(key);pool.push({desc:t.desc.trim(),building:t.building||''});}
         }
