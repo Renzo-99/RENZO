@@ -106,7 +106,16 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .task-actions button{width:26px;height:26px;border:none;background:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--gray-400);transition:.15s}
 .task-actions .act-add{color:var(--blue)}.task-actions .act-add:hover{background:var(--blue-bg)}
 .task-actions .act-edit{color:var(--gray-500)}.task-actions .act-edit:hover{color:var(--blue);background:var(--blue-bg)}
+.task-actions .act-copy{color:#7c3aed}.task-actions .act-copy:hover{background:#f3e8ff}
 .task-actions .act-del:hover{color:var(--red);background:var(--red-bg)}
+/* 작업 복사 모달 */
+.cp-day-chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.cp-day-chips button{padding:6px 14px;border-radius:99px;border:1.5px solid var(--gray-300);background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--gray-600);transition:.12s}
+.cp-day-chips button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.cp-day-chips button:disabled{opacity:.4;cursor:not-allowed}
+.cp-sec{border-top:1px solid var(--gray-100);margin-top:14px;padding-top:12px}
+.cp-sec-title{font-size:12px;font-weight:700;color:var(--gray-600);margin-bottom:2px}
+.cp-sec-desc{font-size:11px;color:var(--gray-400);margin-bottom:6px}
 .empty-msg{font-size:12px;color:var(--gray-400);padding-left:16px;margin-bottom:8px}
 .task-building{display:inline-block;font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:2px 8px;border-radius:99px;margin-bottom:4px}
 .task-note{font-size:11px;color:var(--gray-500);margin-top:4px;cursor:text}
@@ -325,6 +334,19 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .th-month-card .th-mc-stats{display:flex;gap:16px;margin-top:6px;font-size:12px;color:var(--gray-500)}
 .th-month-card .th-mc-stats b{color:var(--gray-800)}
 .th-empty{text-align:center;color:var(--gray-400);padding:40px 0;font-size:13px}
+/* 작업 이력 통계 */
+.th-stats{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
+.th-stats-title{font-size:12px;font-weight:700;color:var(--gray-700);margin:0 0 8px;display:flex;align-items:center;gap:5px}
+.th-stats-title:not(:first-child){margin-top:14px}
+.th-bld-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px}
+.th-bld-row .th-bld-name{width:96px;flex-shrink:0;color:var(--gray-700);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.th-bld-row .th-bar-wrap{flex:1;background:var(--gray-100);border-radius:99px;height:14px;overflow:hidden}
+.th-bld-row .th-bar{height:100%;background:linear-gradient(90deg,#4d8bff,#2f6fed);border-radius:99px;min-width:3px}
+.th-bld-row .th-bld-cnt{width:38px;flex-shrink:0;text-align:right;color:var(--gray-600);font-weight:600}
+.th-kw{display:flex;flex-wrap:wrap;gap:6px}
+.th-kw .th-kw-item{font-size:12px;font-weight:600;color:#7c3aed;background:#f3e8ff;padding:3px 10px;border-radius:99px}
+.th-kw .th-kw-item b{font-weight:700}
+.th-kw .th-kw-rank{font-size:10px;color:#a78bda;margin-right:2px}
 
 /* 작업 예정 */
 .plan-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--gray-200)}
@@ -891,6 +913,7 @@ function renderReport(){
       h+='</div>';
       h+='<div class="task-actions">';
       h+='<button class="act-edit" onclick="startEdit('+di+','+ti+')" title="수정">✏️</button>';
+      h+='<button class="act-copy" onclick="copyTaskDialog('+di+','+ti+')" title="복사 / 기간 반복">📋</button>';
       h+='<button class="act-add" onclick="openMaterialPicker('+di+','+ti+')" title="자재 추가">+</button>';
       h+='<button class="act-del" onclick="deleteTask('+di+','+ti+')" title="삭제">🗑</button>';
       h+='</div></div>';
@@ -1122,6 +1145,121 @@ function fillRandom(){
 
 // === 작업 관리 ===
 function addTask(di){days[di].tasks.push({id:nextId++,desc:'',building:'',note:'',editing:true,mats:[]});saveWeek();renderReport();focusEditInput();}
+
+// === 작업 복사 / 기간 반복 ===
+let _cpSelDays=[];
+function copyTaskDialog(di,ti){
+  const t=days[di]&&days[di].tasks[ti];
+  if(!t)return;
+  _cpSelDays=[];
+  const src={building:t.building||'',desc:t.desc||'',note:t.note||''};
+  const mon=getMonday();
+  // 이번 주 각 요일 날짜 텍스트
+  let h='<div class="modal"><h2>📋 작업 복사 / 반복</h2>';
+  h+='<div style="padding:8px 10px;background:var(--gray-50);border-radius:8px;margin-bottom:4px;font-size:13px">';
+  if(src.building)h+='<span class="task-building">'+esc(src.building)+'</span> ';
+  h+='<strong>'+(esc(src.desc)||'(내용 없음)')+'</strong>';
+  if(src.note)h+='<div style="font-size:11px;color:var(--gray-500);margin-top:3px">📝 '+esc(src.note)+'</div>';
+  h+='</div>';
+  h+='<p style="font-size:11px;color:var(--gray-400);margin:6px 0 0">※ 자재는 복사되지 않습니다 (재고 중복 방지)</p>';
+
+  // A. 같은 날 한 번 더
+  h+='<div class="cp-sec" style="border-top:none;padding-top:8px">';
+  h+='<button class="btn btn-outline btn-sm" style="width:100%" onclick="copyTaskSameDay('+di+','+ti+')">＋ 이 날('+d_name(di)+')에 한 번 더 복사</button>';
+  h+='</div>';
+
+  // B. 이번 주 요일 선택
+  h+='<div class="cp-sec"><div class="cp-sec-title">이번 주 요일에 복사</div>';
+  h+='<div class="cp-sec-desc">복사할 요일을 선택하세요</div>';
+  h+='<div class="cp-day-chips">';
+  for(let x=0;x<5;x++){
+    const dd=new Date(mon);dd.setDate(mon.getDate()+x);
+    h+='<button id="cpchip'+x+'" onclick="cpToggleDay('+x+')">'+DOW_NAMES[x]+'<br><span style="font-size:10px;font-weight:400">'+(dd.getMonth()+1)+'/'+dd.getDate()+'</span></button>';
+  }
+  h+='</div>';
+  h+='<button class="btn btn-blue btn-sm" style="width:100%;margin-top:4px" onclick="copyTaskToSelectedDays('+di+','+ti+')">선택한 요일에 복사</button>';
+  h+='</div>';
+
+  // C. 기간 지정
+  const todayStr=getCalDateStrFromWeek(yr,wk,Math.min(di,4));
+  h+='<div class="cp-sec"><div class="cp-sec-title">기간으로 반복</div>';
+  h+='<div class="cp-sec-desc">지정한 기간의 <b>평일(월~금)</b> 각 날짜에 자동으로 추가됩니다</div>';
+  h+='<div style="display:flex;align-items:center;gap:6px">';
+  h+='<input type="date" id="cpStart" value="'+todayStr+'" style="flex:1;border:1px solid var(--gray-300);border-radius:6px;padding:6px 8px;font-size:13px">';
+  h+='<span style="color:var(--gray-400)">~</span>';
+  h+='<input type="date" id="cpEnd" value="'+todayStr+'" style="flex:1;border:1px solid var(--gray-300);border-radius:6px;padding:6px 8px;font-size:13px">';
+  h+='</div>';
+  h+='<button class="btn btn-blue btn-sm" style="width:100%;margin-top:8px;background:#7c3aed;border-color:#7c3aed" onclick="copyTaskToRange('+di+','+ti+')">기간 내 평일에 복사</button>';
+  h+='</div>';
+
+  h+='<div class="modal-btns" style="margin-top:12px"><button class="btn btn-outline" onclick="closeModal()">닫기</button></div>';
+  h+='</div>';
+  showModal(h);
+}
+function d_name(di){return DOW_NAMES[di]||'';}
+function cpToggleDay(x){
+  const i=_cpSelDays.indexOf(x);
+  if(i>=0)_cpSelDays.splice(i,1);else _cpSelDays.push(x);
+  const btn=document.getElementById('cpchip'+x);
+  if(btn)btn.classList.toggle('on');
+}
+function _cpNewTask(src){return{id:nextId++,desc:src.desc,building:src.building,note:src.note,mats:[]};}
+
+function copyTaskSameDay(di,ti){
+  const t=days[di]&&days[di].tasks[ti];if(!t)return;
+  const src={building:t.building||'',desc:t.desc||'',note:t.note||''};
+  days[di].tasks.splice(ti+1,0,_cpNewTask(src));
+  saveWeek();renderReport();closeModal();
+  toast(d_name(di)+'에 복사됨');
+}
+function copyTaskToSelectedDays(di,ti){
+  const t=days[di]&&days[di].tasks[ti];if(!t)return;
+  if(!_cpSelDays.length){toast('요일을 선택하세요');return;}
+  const src={building:t.building||'',desc:t.desc||'',note:t.note||''};
+  const targets=[..._cpSelDays].sort((a,b)=>a-b);
+  targets.forEach(x=>{days[x].tasks.push(_cpNewTask(src));});
+  saveWeek();renderReport();closeModal();
+  toast(targets.map(x=>DOW_NAMES[x]).join('·')+' 에 복사됨 ('+targets.length+'일)');
+}
+function copyTaskToRange(di,ti){
+  const t=days[di]&&days[di].tasks[ti];if(!t)return;
+  const sv=document.getElementById('cpStart').value,ev=document.getElementById('cpEnd').value;
+  if(!sv||!ev){toast('시작/끝 날짜를 입력하세요');return;}
+  const sp=sv.split('-'),ep=ev.split('-');
+  let sd=new Date(parseInt(sp[0]),parseInt(sp[1])-1,parseInt(sp[2]));
+  let ed=new Date(parseInt(ep[0]),parseInt(ep[1])-1,parseInt(ep[2]));
+  if(sd>ed){const tmp=sd;sd=ed;ed=tmp;}
+  const src={building:t.building||'',desc:t.desc||'',note:t.note||''};
+  // 주차별로 묶어서 저장 (localStorage 접근 최소화)
+  const cur=new Date(sd);let added=0;const touched={};
+  while(cur<=ed){
+    const dow=cur.getDay();
+    if(dow>=1&&dow<=5){ // 평일
+      const info=getWeekInfoForDate(new Date(cur));
+      if(info&&info.dayIndex>=0&&info.dayIndex<=4){
+        const key='ws3_week_'+info.weekYear+'_'+info.weekNum;
+        let wd=touched[key];
+        if(!wd){
+          try{wd=JSON.parse(localStorage.getItem(key));}catch(e){wd=null;}
+          if(!wd){const m=getMondayOf(info.weekYear,info.weekNum);wd=DAY_NAMES.map((n,i)=>{const dd=new Date(m);dd.setDate(m.getDate()+i);return{dn:n,dt:fmt(dd),tasks:[]};});}
+          touched[key]=wd;
+        }
+        wd[info.dayIndex].tasks.push(_cpNewTask(src));
+        added++;
+      }
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+  if(!added){toast('기간 내 평일이 없습니다');return;}
+  // 저장
+  Object.keys(touched).forEach(key=>{
+    safeSave(key,touched[key]);
+    const pts=key.replace('ws3_week_','').split('_');
+    if(parseInt(pts[0])===yr&&parseInt(pts[1])===wk)days=touched[key];
+  });
+  renderReport();closeModal();
+  toast('기간 내 평일 '+added+'일에 복사됨');
+}
 function startEdit(di,ti){days[di].tasks[ti].editing=true;renderReport();focusEditInput();}
 function finishEdit(di,ti,el){
   days[di].tasks[ti].desc=el.value.trim();saveWeek();
@@ -1954,6 +2092,63 @@ function loadAllTasks(year,month){
   return tasks;
 }
 
+// 건물별 이슈 건수 집계
+function getBuildingStats(tasks){
+  const map={};
+  tasks.forEach(t=>{const b=t.building||'(건물 미지정)';map[b]=(map[b]||0)+1;});
+  return Object.keys(map).map(b=>({building:b,count:map[b]})).sort((a,b)=>b.count-a.count);
+}
+
+// 주요 이슈 키워드 추출 (작업 내용에서 자주 등장하는 단어 top N)
+function getIssueKeywords(tasks,n){
+  const STOP=new Set(['수리','점검','및','확인','작업','교체','설치','제거','보수']);
+  const freq={};
+  tasks.forEach(t=>{
+    const desc=(t.desc||'').trim();
+    if(!desc)return;
+    // 공백/구두점으로 분리
+    desc.split(/[\s,()\/·\-~]+/).forEach(w=>{
+      let tok=w.trim();
+      if(!tok)return;
+      // 호실/층수 등 순수 위치 토큰 제거 (예: 1011호, 9층, 405호, 8층)
+      if(/^\d+호$/.test(tok))return;
+      if(/^\d+층$/.test(tok))return;
+      if(/^\d+$/.test(tok))return;
+      if(tok.length<2)return;
+      if(STOP.has(tok))return;
+      freq[tok]=(freq[tok]||0)+1;
+    });
+  });
+  return Object.keys(freq).map(k=>({word:k,count:freq[k]})).filter(x=>x.count>=2).sort((a,b)=>b.count-a.count).slice(0,n);
+}
+
+// 통계 카드 HTML 생성
+function buildStatsCard(tasks){
+  if(!tasks.length)return '';
+  const blds=getBuildingStats(tasks);
+  const kws=getIssueKeywords(tasks,3);
+  const maxCnt=blds.length?blds[0].count:1;
+  let h='<div class="th-stats">';
+  h+='<div class="th-stats-title">🏢 건물별 이슈 ('+tasks.length+'건)</div>';
+  blds.slice(0,8).forEach(b=>{
+    const pct=Math.round(b.count/maxCnt*100);
+    h+='<div class="th-bld-row"><span class="th-bld-name" title="'+esc(b.building)+'">'+esc(b.building)+'</span>';
+    h+='<div class="th-bar-wrap"><div class="th-bar" style="width:'+pct+'%"></div></div>';
+    h+='<span class="th-bld-cnt">'+b.count+'건</span></div>';
+  });
+  if(blds.length>8)h+='<div style="font-size:11px;color:var(--gray-400);margin-top:2px">외 '+(blds.length-8)+'개 건물</div>';
+  h+='<div class="th-stats-title">🔑 주요 이슈 키워드</div>';
+  if(kws.length){
+    h+='<div class="th-kw">';
+    kws.forEach((k,i)=>{h+='<span class="th-kw-item"><span class="th-kw-rank">'+(i+1)+'</span>'+esc(k.word)+' <b>'+k.count+'</b></span>';});
+    h+='</div>';
+  }else{
+    h+='<div style="font-size:11px;color:var(--gray-400)">반복 키워드가 아직 부족합니다</div>';
+  }
+  h+='</div>';
+  return h;
+}
+
 function renderTaskHistory(){
   let h='<div class="th-nav">';
   h+='<button class="btn btn-ghost btn-sm" onclick="navTH(-1)">◀</button>';
@@ -1969,6 +2164,7 @@ function renderTaskHistory(){
     const tasks=loadAllTasks(thYear,thMonth);
     if(!tasks.length){h+='<p class="th-empty">이 기간의 작업 이력이 없습니다</p>';}
     else{
+      h+=buildStatsCard(tasks);
       let ld='';
       tasks.forEach(t=>{
         if(t.dateStr!==ld){ld=t.dateStr;h+='<div class="th-day-hdr">'+t.dateStr+' ('+t.dow+')</div>';}
@@ -1984,6 +2180,7 @@ function renderTaskHistory(){
     const all=loadAllTasks(thYear);
     if(!all.length){h+='<p class="th-empty">'+thYear+'년 작업 이력이 없습니다</p>';}
     else{
+      h+=buildStatsCard(all);
       const byM={};
       all.forEach(t=>{const m=t.date.getMonth()+1;if(!byM[m])byM[m]=[];byM[m].push(t);});
       for(let m=1;m<=12;m++){
