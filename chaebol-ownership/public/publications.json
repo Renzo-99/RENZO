@@ -1,0 +1,928 @@
+{
+ "updatedAt": "2026-08-05T12:59:42.690Z",
+ "items": [
+  {
+   "id": "publication-49509",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "글로벌 복합위기 시대 - 한반도 평화전략과 정책과제",
+   "date": "2026-08-05",
+   "meta": "NARS 브리프 175호 · 이승열",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49509",
+   "tracks": []
+  },
+  {
+   "id": "publication-49504",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "미국 유권자의 정서적 양극화와 한국정치에의 함의",
+   "date": "2026-08-03",
+   "meta": "NARS 브리프 174호 · 송진미",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49504",
+   "tracks": []
+  },
+  {
+   "id": "publication-49503",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "회생절차 폐지 결정 이후 절차와 쟁점",
+   "date": "2026-08-03",
+   "meta": "NARS 브리프 173호 · 이수진",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49503",
+   "tracks": []
+  },
+  {
+   "id": "publication-49496",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "한국 국익 재정립의 필요성과 의회외교의 방향",
+   "date": "2026-07-30",
+   "meta": "NARS 브리프 172호 · 김예경,유채영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49496",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49491",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "청년 자산형성 지원사업은 취약청년에게 어떤 의미인가?",
+   "date": "2026-07-27",
+   "meta": "이슈와논점 2517호 · 김대성",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49491",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-49495",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "마약류 중독질환자의 치료중단과 건강보험 재정 부담 가중 현상",
+   "date": "2026-07-27",
+   "meta": "NARS 입법·정책 183호 · 김은정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49495",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49474",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "511명의 무투표당선, 지방선거는 경쟁하고 있는가? - 3인 이상 선거구로 확산된 무투표당선과 지방선거 경쟁구조의 과제 -",
+   "date": "2026-07-21",
+   "meta": "이슈와논점 2516호 · 송진미",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49474",
+   "tracks": []
+  },
+  {
+   "id": "publication-49473",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "미래 의학교육과 연구·산업·지역혁신 생태계 진단 및 제도개선 방향 모색",
+   "date": "2026-07-21",
+   "meta": "NARS 브리프 171호 · 한진옥",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49473",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49467",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "AI 챗봇의 위험에 노출된 아동·청소년 사전예방 중심 규제체제 도입의 필요성과 방향성",
+   "date": "2026-07-20",
+   "meta": "이슈와논점 2515호 · 김나정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49467",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49463",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "청소년 대의기구, 형식에 머물지 않으려면 : 유럽 3개국 청소년의회 사례 비교와 제도개선 방향",
+   "date": "2026-07-20",
+   "meta": "이슈와논점 2514호 · 김현아",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49463",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49455",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "대한민국 헌법제정, 그 현재적 의미와 발전적 계승 -제헌절에 다시 돌아보는 대한민국 헌법의 제정",
+   "date": "2026-07-16",
+   "meta": "이슈와논점 2513호 · 김선화",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49455",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49464",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "고령운전자 사고예방, 운전면허 자진반납으로 충분한가? 조건부 면허제도 도입을 중심으로",
+   "date": "2026-07-16",
+   "meta": "이슈와논점 2512호 · 정주완",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49464",
+   "tracks": []
+  },
+  {
+   "id": "publication-49468",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "베트남 공무국외출장 보고서",
+   "date": "2026-07-16",
+   "meta": "기타자료 · 이정진 외 2인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49468",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49449",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "한국예술종합학교는 어떤 학교여야 하는가? 법적 지위 정비와 캠퍼스 이전·입지의 쟁점",
+   "date": "2026-07-15",
+   "meta": "이슈와논점 2511호 · 배성희",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49449",
+   "tracks": []
+  },
+  {
+   "id": "publication-49447",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "학생 신체 활동·건강 실태 및 개선과제",
+   "date": "2026-07-15",
+   "meta": "NARS 브리프 170호 · 조종오",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49447",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49446",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "미국 정부의 미토스(Mythos) 수출 통제가 남긴 것 고성능 AI 모델 전략자산화와 한국 소버린 AI의 과제",
+   "date": "2026-07-14",
+   "meta": "이슈와논점 2510호 · 정준화",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49446",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49443",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "사생활 훔쳐보는 로봇청소기를 그대로 둘 것인가? 사물인터넷(IoT) 보안 강화를 위한 입법 및 정책 과제",
+   "date": "2026-07-14",
+   "meta": "이슈와논점 2509호 · 강은수",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49443",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49437",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "장애인 노동의 가치는 어떻게 평가되어야 하는가 장애인 최저임금 적용 제외 제도의 재검토 필요성과 방향성",
+   "date": "2026-07-13",
+   "meta": "NARS 현안분석 425호 · 구슬이,권다영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49437",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49439",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "재점검 필요한 학교 AI 교육의 방향과 방식 OECD·EU 공동 AILit 프레임워크와 국내 교육정책 비교를 중심으로",
+   "date": "2026-07-13",
+   "meta": "이슈와논점 2508호 · 김범주",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49439",
+   "tracks": []
+  },
+  {
+   "id": "publication-49434",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "가습기살균제 참사 국가배상체계 전환의 의미와 과제",
+   "date": "2026-07-13",
+   "meta": "NARS 브리프 169호 · 이동영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49434",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49432",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "구멍난 선거관리, 어떻게 할 것인가",
+   "date": "2026-07-12",
+   "meta": "이슈와논점 2507호 · 허석재,김현아",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49432",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49429",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "재사용 유리병은 왜 1회용 용기로 대체되고 있는가?",
+   "date": "2026-07-09",
+   "meta": "NARS 현안분석 424호 · 김경민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49429",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49418",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "재활용품 처리시설에서 발견된 인체 조직물: 조직물류폐기물 관리책임과 의료기관 안전관리의 입법적 검토",
+   "date": "2026-07-07",
+   "meta": "이슈와논점 2506호 · 김경민,김은정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49418",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49397",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "남양주 스토킹 살인 사건이 드러낸 '위치추적 스토킹'의 법적 공백",
+   "date": "2026-06-30",
+   "meta": "NARS 현안분석 423호 · 허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49397",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-49384",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "입국장 면세품 인도장 설치의 입법영향분석",
+   "date": "2026-06-29",
+   "meta": "NARS 입법영향분석 66호 · 박인환",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=49384",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49380",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "인공지능(AI) 시대의 법인지방소득세 안분 기준 개편 과제",
+   "date": "2026-06-25",
+   "meta": "NARS 현안분석 422호 · 류영아",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49380",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49376",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "전남광주통합특별시 출범, 성공을 위한 과제는 무엇인가",
+   "date": "2026-06-24",
+   "meta": "이슈와논점 2505호 · 하혜영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49376",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-49361",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "기후위기 대응을 위한 물관리 성과지표 체계 전환 과제",
+   "date": "2026-06-21",
+   "meta": "NARS 입법·정책 182호 · 김경민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49361",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49363",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "프랑스 핵전력 강화 정책과 한국 안보에 대한 시사점",
+   "date": "2026-06-18",
+   "meta": "NARS 현안분석 421호 · 심성은",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49363",
+   "tracks": [
+    "security",
+    "energy"
+   ]
+  },
+  {
+   "id": "nars-analysis-49345",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "18년간 방치된 저작권 침해죄에 대한 교육조건부 기소유예, 형사처분 실효성 없어",
+   "date": "2026-06-18",
+   "meta": "NARS 현안분석 420호 · 백지연,김혜미",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49345",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49332",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "섬 주민을 찾아가는 병원선(Hospital Ship), 법·제도 공백 언제까지 방치할 것인가",
+   "date": "2026-06-15",
+   "meta": "이슈와논점 2504호 · 한진옥",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49332",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49329",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "아프리카돼지열병(ASF) 대확산이 남긴 과제 돼지 혈장단백질 사료 등 발생 원인별 방역관리 강화 필요",
+   "date": "2026-06-14",
+   "meta": "이슈와논점 2503호 · 김현민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49329",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49309",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "쿠팡 사례를 통해 본 플랫폼 시장 거래질서의 쟁점과 과제",
+   "date": "2026-06-11",
+   "meta": "이슈와논점 2502호 · 최은진,박미영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49309",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49302",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "개성공단 중단 10년, 현황과 과제",
+   "date": "2026-06-10",
+   "meta": "이슈와논점 2501호 · 김현정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49302",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49288",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "헝가리 총선과 오르반 정부의 퇴장 득표 연동형 비례대표제의 효과",
+   "date": "2026-06-07",
+   "meta": "이슈와논점 2500호 · 허석재",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49288",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49263",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "지방선거, 계속 이렇게 치러도 되나?",
+   "date": "2026-06-02",
+   "meta": "NARS 현안분석 419호 · 송진미",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49263",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49262",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "식품기부체계 혁신으로 먹거리 기본권 보장해야",
+   "date": "2026-06-02",
+   "meta": "NARS 현안분석 418호 · 정용제",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49262",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49251",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "2026년 중국 양회(兩會)와 우리의 대응전략",
+   "date": "2026-05-31",
+   "meta": "NARS 현안분석 417호 · 김예경",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49251",
+   "tracks": [
+    "security"
+   ]
+  },
+  {
+   "id": "issue-point-49238",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "공장 화재 왜 커지나 -고위험 공정의 구조적 위험과 안전관리의 사각지대",
+   "date": "2026-05-27",
+   "meta": "이슈와논점 2499호 · 노세현",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49238",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-49241",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "법률의 중립성이라는 한계를 어떻게 극복할 것인가 : 캐나다 GBA Plus 기반 교차성 분석을 중심으로",
+   "date": "2026-05-26",
+   "meta": "NARS 입법·정책 181호 · 허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49241",
+   "tracks": []
+  },
+  {
+   "id": "issue-point-49234",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "「집시법」 헌법불합치 결정, 개선입법 어떻게? 미신고 집회·시위에 대한 형사처벌 규정 개정 방안",
+   "date": "2026-05-24",
+   "meta": "이슈와논점 2498호 · 정재하,고지원",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49234",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49203",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "신재생에너지 설비 폐기물의 전주기 관리 체계로의 전환 태양광·풍력·ESS의 폐기물 발생 전망과 제도개선 방향",
+   "date": "2026-05-18",
+   "meta": "NARS 현안분석 416호 · 김경민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49203",
+   "tracks": [
+    "energy"
+   ]
+  },
+  {
+   "id": "policy-report-49145",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "고령 치매환자의 자산을 어떻게 보호할 것인가 : 후견과 신탁의 상호보완 전략",
+   "date": "2026-04-28",
+   "meta": "NARS 입법·정책 180호 · 이윤경",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49145",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49110",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "미성년 청소년 부모의 '주소 없는 삶'",
+   "date": "2026-04-21",
+   "meta": "NARS 현안분석 415호 · 허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49110",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-49091",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "1인 고령자 가구의 자발적 상호돌봄 제도화를 위한 입법·정책 과제",
+   "date": "2026-04-16",
+   "meta": "NARS 입법·정책 179호 · 김주경 외 3인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49091",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49075",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "비례대표 의석배분 저지규정의 현황과 쟁점",
+   "date": "2026-04-14",
+   "meta": "NARS 현안분석 414호 · 허석재",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49075",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49072",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "'일하는 장애인'의 빈곤탈출을 위한 입법 및 정책과제",
+   "date": "2026-04-14",
+   "meta": "NARS 현안분석 413호 · 정용제",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49072",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49071",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "지방에는 왜 의사가 없을까",
+   "date": "2026-04-13",
+   "meta": "NARS 현안분석 412호 · 김은정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49071",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49069",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "잠자는 페이·머니는 누구의 것인가?",
+   "date": "2026-04-13",
+   "meta": "NARS 현안분석 411호 · 이수진",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49069",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49067",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "축소사회를 전제로 한 일본의 지방창생 2.0 특징과 시사점",
+   "date": "2026-04-12",
+   "meta": "NARS 현안분석 410호 · 하혜영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49067",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49055",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "FACT CHECK: 용인 반도체 클러스터 조성을 둘러싼 논란과 현실",
+   "date": "2026-04-06",
+   "meta": "NARS 현안분석 409호 · 유재국 외 2인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49055",
+   "tracks": [
+    "semiconductor"
+   ]
+  },
+  {
+   "id": "nars-analysis-49053",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "기후위기 대응을 위한 보험의 역할과 정책과제",
+   "date": "2026-04-06",
+   "meta": "NARS 현안분석 408호 · 장영진",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49053",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49045",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "기본권으로 보장받아야 할 보편적 월경권",
+   "date": "2026-04-02",
+   "meta": "NARS 현안분석 407호 · 한진옥,허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49045",
+   "tracks": []
+  },
+  {
+   "id": "nars-analysis-49042",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "EU 「1회용 플라스틱 지침」 이행결정과 국내 재생원료 의무사용 제도의 정비 과제",
+   "date": "2026-04-01",
+   "meta": "NARS 현안분석 406호 · 김경민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49042",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48959",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "공무원 정년 및 연금제도의 현황과 과제",
+   "date": "2026-03-09",
+   "meta": "NARS 입법·정책 178호 · 김인태",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48959",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48680",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "선거주기 조정의 제도적 조건",
+   "date": "2025-12-31",
+   "meta": "NARS 입법·정책 176호 · 송정민,김현아",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48680",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-48682",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "정보통신망 이용촉진 및 정보보호 등에 관한 법률 일부개정법률안(의안번호 2213740) 입법영향분석 - 온라인 광고의 AI 생성물(딥페이크) 활용 고지ㆍ표시의 훼손 또는 위ㆍ변조 금지 의무",
+   "date": "2025-12-31",
+   "meta": "NARS 입법영향분석 65호 · 정준화",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=48682",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48674",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "정부 연구개발 거버넌스 개선을 위한 입법과제: 부처와 연구기관의 조정 체계를 중심으로",
+   "date": "2025-12-30",
+   "meta": "NARS 입법·정책 177호 · 권성훈",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48674",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48675",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "정치의 사법화의 유형과 개선방향",
+   "date": "2025-12-30",
+   "meta": "NARS 입법·정책 175호 · 김선화,정재하",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48675",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48664",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "국제질서 패러다임의 변화와 한국의 대(對)주요국 전략",
+   "date": "2025-12-29",
+   "meta": "NARS 입법·정책 174호 · 김도희 외 4인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48664",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48543",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "빈집 정비 및 관리체계 개선을 위한 입법·정책과제",
+   "date": "2025-12-11",
+   "meta": "NARS 입법·정책 173호 · 박인숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48543",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48444",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "‘내 집에서 생을 마감할 권리’를 위한 자택임종 활성화 방안 - 초고령사회와 다사(多死) 사회 시대 자택임종의 쟁점과 향후 과제 -",
+   "date": "2025-11-20",
+   "meta": "NARS 입법·정책 172호 · 이윤경",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48444",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48412",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "미국·영국 의회의 의원과 보좌직원 관계: 고용계약과 고충처리제도를 중심으로",
+   "date": "2025-11-11",
+   "meta": "NARS 입법·정책 171호 · 전진영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48412",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48333",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "미등록 이주아동 지원을 위한 입법·정책적 대응 방향과 향후 과제",
+   "date": "2025-10-26",
+   "meta": "NARS 입법·정책 170호 · 박선권",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48333",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48263",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "지방소멸 대응책, 생활인구 제도의 성공 과제 : 지역 방문 넘어 체류·정주로 재설계",
+   "date": "2025-10-13",
+   "meta": "NARS 입법·정책 169호 · 하혜영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48263",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-48206",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "“고립·은둔·고독의 대한민국”, 사회적 연결 회복을 위한 입법·정책 과제",
+   "date": "2025-10-01",
+   "meta": "NARS 입법·정책 168호 · 정용제",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48206",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-48041",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "「중대재해 처벌 등에 관한 법률」의 입법영향분석 -중대산업재해 관련 규정(제3조~제7조)을 중심으로-",
+   "date": "2025-08-28",
+   "meta": "NARS 입법영향분석 64호 · 이동영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=48041",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-47818",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "지방공무원 기준인건비 제도 운영실태 및 개선과제",
+   "date": "2025-06-30",
+   "meta": "NARS 입법·정책 167호 · 류영아",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47818",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-47351",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "주요국의 부동산 가격공시제도 운영 현황과 시사점",
+   "date": "2025-04-22",
+   "meta": "NARS 입법·정책 166호 · 장경석",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47351",
+   "tracks": []
+  },
+  {
+   "id": "policy-report-47200",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "북한 엘리트 내 권력구조의 변화와 시사점 ： 최룡해 비공식조직의 공식조직 장악을 중심으로",
+   "date": "2025-04-10",
+   "meta": "NARS 입법·정책 165호 · 이승열",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47200",
+   "tracks": [
+    "security"
+   ]
+  },
+  {
+   "id": "policy-report-47079",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "친밀한 관계 살인의 해부 - 가정폭력 사망검토제 도입을 위한 입법·정책 과제",
+   "date": "2025-03-25",
+   "meta": "NARS 입법·정책 164호 · 허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47079",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-46794",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "공직선거법 일부개정법률안(의안번호 2203037) 입법영향분석 - 지방자치단체장 선거의 결선투표제 도입",
+   "date": "2025-02-07",
+   "meta": "NARS 입법영향분석 63호 · 허석재",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=46794",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-43735",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "등록금 인상률 제한규정(「고등교육법」 제11조)의 입법영향분석",
+   "date": "2023-12-29",
+   "meta": "NARS 입법영향분석 62호 · 조인식",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=43735",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-43734",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "고객응대근로자 건강장해 예방조치규정 (「산업안전보건법」 제41조제1항)의 입법영향분석",
+   "date": "2023-12-29",
+   "meta": "NARS 입법영향분석 61호 · 이동영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=43734",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-40956",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "법조경력자 법관임용제도의 입법영향분석",
+   "date": "2022-12-26",
+   "meta": "NARS 입법영향분석 60호 · 류호연",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40956",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-40878",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "화학물질 등록·평가 제도의 입법영향분석",
+   "date": "2022-12-16",
+   "meta": "NARS 입법영향분석 59호 · 이동영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40878",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-40736",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "「연근해어업의 구조개선 및 지원에 관한 법률」에 따른 연근해어선 감척사업의 입법영향분석",
+   "date": "2022-11-24",
+   "meta": "NARS 입법영향분석 58호 · 유제범",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40736",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-40723",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "방치건축물정비법의 입법영향분석",
+   "date": "2022-11-23",
+   "meta": "NARS 입법영향분석 57호 · 김예성",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40723",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-40081",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "「양육비이행법」의 입법영향분석",
+   "date": "2022-09-08",
+   "meta": "NARS 입법영향분석 56호 · 허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40081",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-39940",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "「주거급여법」의 입법영향분석",
+   "date": "2022-08-19",
+   "meta": "NARS 입법영향분석 55호 · 장경석,김강산",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=39940",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-39866",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "청렴계약제의 입법영향분석",
+   "date": "2022-08-09",
+   "meta": "NARS 입법영향분석 54호 · 박인환",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=39866",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-37445",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "화물자동차 유가보조금 제도의 입법영향분석",
+   "date": "2021-12-28",
+   "meta": "NARS 입법영향분석 53호 · 구세주",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=37445",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-37166",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "공공부문 민간 클라우드 이용의 입법영향분석",
+   "date": "2021-12-09",
+   "meta": "NARS 입법영향분석 52호 · 정준화",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=37166",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-36006",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "청소년 인터넷게임 셧다운제의 입법영향분석",
+   "date": "2021-08-20",
+   "meta": "NARS 입법영향분석 51호 · 허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=36006",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-33055",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "「선행교육규제법」상 선행교육 및 선행학습 유발행위 금지 등의 입법영향분석",
+   "date": "2020-12-31",
+   "meta": "NARS 입법영향분석 50호 · 이덕난",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=33055",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-33053",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "결핵검진등 대상 확대에 관한 입법영향분석",
+   "date": "2020-12-31",
+   "meta": "NARS 입법영향분석 48호 · 김은진",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=33053",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-33054",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "적극적 고용개선조치의 입법영향분석",
+   "date": "2020-12-31",
+   "meta": "NARS 입법영향분석 49호 · 전윤정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=33054",
+   "tracks": []
+  },
+  {
+   "id": "impact-analysis-32567",
+   "sourceId": "impact-analysis",
+   "sourceName": "연구보고서(입법영향분석보고서)",
+   "title": "총기안전관리 규제강화의 입법영향분석",
+   "date": "2020-12-04",
+   "meta": "NARS 입법영향분석 47호 · 김현정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=32567",
+   "tracks": []
+  }
+ ],
+ "statuses": [
+  {
+   "id": "nars-analysis",
+   "name": "연구보고서(NARS 현안분석)",
+   "ok": true,
+   "count": 20
+  },
+  {
+   "id": "issue-point",
+   "name": "연구보고서(이슈와 논점)",
+   "ok": true,
+   "count": 20
+  },
+  {
+   "id": "policy-report",
+   "name": "연구보고서(입법·정책보고서)",
+   "ok": true,
+   "count": 20
+  },
+  {
+   "id": "impact-analysis",
+   "name": "연구보고서(입법영향분석보고서)",
+   "ok": true,
+   "count": 20
+  },
+  {
+   "id": "publication",
+   "name": "국회입법조사처_발간물",
+   "ok": true,
+   "count": 8
+  }
+ ]
+}
