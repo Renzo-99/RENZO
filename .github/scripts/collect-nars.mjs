@@ -99,18 +99,43 @@ async function recon() {
     }
   }
 
-  // 2) RSS 존재 여부 탐색
-  const rssCandidates = [
-    `${BASE}/rss/report.do`,
-    `${BASE}/rss.do`,
-    `${BASE}/report/rss.do?cmsCode=CM0043`,
+  // 2) 목록 페이지 세부 구조: 카테고리/날짜/아이템 원문
+  const detailTargets = [
+    `${BASE}/report/list.do?cmsCode=CM0043`,
+    `${BASE}/report/list.do?cmsCode=CM0018`,
+    `${BASE}/report/list.do?cmsCode=CM0156`,
   ];
-  for (const url of rssCandidates) {
+  for (const url of detailTargets) {
     try {
-      const { status, type, text } = await get(url);
-      console.log(`\nRSS 후보 ${url}: status=${status} type=${type} <item> ${(text.match(/<item>/g) ?? []).length}개`);
+      const { text } = await get(url);
+      console.log(`\n===== 세부 정찰: ${url}`);
+      // 카테고리 선택지 (categoryId)
+      const catLinks = [...text.matchAll(/href="([^"]*categoryId=([^"&]+)[^"]*)"[^>]*>([\s\S]*?)<\/a>/g)]
+        .map((m) => `${m[2]} → ${m[3].replace(/<[^>]+>/g, "").trim()}`)
+        .filter((v, i, a) => a.indexOf(v) === i);
+      console.log(`categoryId 링크 ${catLinks.length}개:`);
+      catLinks.slice(0, 30).forEach((v) => console.log("  " + v));
+      const options = [...text.matchAll(/<option[^>]*value="([^"]*)"[^>]*>([^<]*)<\/option>/g)]
+        .map((m) => `${m[1]} → ${m[2].trim()}`);
+      console.log(`<option> ${options.length}개:`);
+      options.slice(0, 30).forEach((v) => console.log("  " + v));
+      // '현안' / '입법영향' 주변 문맥
+      for (const kw of ["현안", "입법영향"]) {
+        let idx = text.indexOf(kw);
+        let n = 0;
+        while (idx !== -1 && n < 3) {
+          console.log(`[${kw} 문맥${n}] ` + text.slice(Math.max(0, idx - 250), idx + 120).replace(/\s+/g, " "));
+          idx = text.indexOf(kw, idx + 1);
+          n++;
+        }
+      }
+      // view.do 링크 주변 원문 (날짜 포함 여부 확인)
+      const viewIdx = [...text.matchAll(/view\.do/g)].map((m) => m.index).slice(0, 3);
+      viewIdx.forEach((i, n) =>
+        console.log(`[view링크 주변${n}] ` + text.slice(Math.max(0, i - 150), i + 700).replace(/\s+/g, " ").slice(0, 700))
+      );
     } catch (e) {
-      console.log(`RSS 후보 ${url} 실패: ${e.message}`);
+      console.log(`${url} 실패: ${e.message}`);
     }
   }
   console.log("\n===== 정찰 모드 끝 =====");
