@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-08-05T12:59:42.690Z",
+ "updatedAt": "2026-08-05T14:04:46.020Z",
  "items": [
   {
    "id": "publication-49509",
@@ -9,7 +9,8 @@
    "date": "2026-08-05",
    "meta": "NARS 브리프 175호 · 이승열",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49509",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "publication-49504",
@@ -19,7 +20,8 @@
    "date": "2026-08-03",
    "meta": "NARS 브리프 174호 · 송진미",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49504",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "publication-49503",
@@ -29,7 +31,8 @@
    "date": "2026-08-03",
    "meta": "NARS 브리프 173호 · 이수진",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49503",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "publication-49496",
@@ -39,7 +42,10 @@
    "date": "2026-07-30",
    "meta": "NARS 브리프 172호 · 김예경,유채영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49496",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "재정"
+   ]
   },
   {
    "id": "issue-point-49491",
@@ -49,7 +55,8 @@
    "date": "2026-07-27",
    "meta": "이슈와논점 2517호 · 김대성",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49491",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-49495",
@@ -59,7 +66,11 @@
    "date": "2026-07-27",
    "meta": "NARS 입법·정책 183호 · 김은정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49495",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "재정",
+    "건강보험"
+   ]
   },
   {
    "id": "issue-point-49474",
@@ -69,7 +80,10 @@
    "date": "2026-07-21",
    "meta": "이슈와논점 2516호 · 송진미",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49474",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "선거"
+   ]
   },
   {
    "id": "publication-49473",
@@ -79,7 +93,8 @@
    "date": "2026-07-21",
    "meta": "NARS 브리프 171호 · 한진옥",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49473",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49467",
@@ -89,7 +104,10 @@
    "date": "2026-07-20",
    "meta": "이슈와논점 2515호 · 김나정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49467",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "AI"
+   ]
   },
   {
    "id": "issue-point-49463",
@@ -99,7 +117,8 @@
    "date": "2026-07-20",
    "meta": "이슈와논점 2514호 · 김현아",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49463",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49455",
@@ -109,7 +128,8 @@
    "date": "2026-07-16",
    "meta": "이슈와논점 2513호 · 김선화",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49455",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49464",
@@ -119,7 +139,8 @@
    "date": "2026-07-16",
    "meta": "이슈와논점 2512호 · 정주완",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49464",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "publication-49468",
@@ -129,7 +150,8 @@
    "date": "2026-07-16",
    "meta": "기타자료 · 이정진 외 2인",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49468",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49449",
@@ -139,7 +161,8 @@
    "date": "2026-07-15",
    "meta": "이슈와논점 2511호 · 배성희",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49449",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "publication-49447",
@@ -149,7 +172,8 @@
    "date": "2026-07-15",
    "meta": "NARS 브리프 170호 · 조종오",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49447",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49446",
@@ -159,7 +183,11 @@
    "date": "2026-07-14",
    "meta": "이슈와논점 2510호 · 정준화",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49446",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "AI",
+    "수출"
+   ]
   },
   {
    "id": "issue-point-49443",
@@ -169,7 +197,8 @@
    "date": "2026-07-14",
    "meta": "이슈와논점 2509호 · 강은수",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49443",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49437",
@@ -179,7 +208,10 @@
    "date": "2026-07-13",
    "meta": "NARS 현안분석 425호 · 구슬이,권다영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49437",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "노동"
+   ]
   },
   {
    "id": "issue-point-49439",
@@ -189,7 +221,10 @@
    "date": "2026-07-13",
    "meta": "이슈와논점 2508호 · 김범주",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49439",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "AI"
+   ]
   },
   {
    "id": "publication-49434",
@@ -199,7 +234,8 @@
    "date": "2026-07-13",
    "meta": "NARS 브리프 169호 · 이동영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49434",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49432",
@@ -209,7 +245,10 @@
    "date": "2026-07-12",
    "meta": "이슈와논점 2507호 · 허석재,김현아",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49432",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "선거"
+   ]
   },
   {
    "id": "nars-analysis-49429",
@@ -219,7 +258,8 @@
    "date": "2026-07-09",
    "meta": "NARS 현안분석 424호 · 김경민",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49429",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49418",
@@ -229,7 +269,10 @@
    "date": "2026-07-07",
    "meta": "이슈와논점 2506호 · 김경민,김은정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49418",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "의료"
+   ]
   },
   {
    "id": "nars-analysis-49397",
@@ -239,7 +282,8 @@
    "date": "2026-06-30",
    "meta": "NARS 현안분석 423호 · 허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49397",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-49384",
@@ -249,7 +293,8 @@
    "date": "2026-06-29",
    "meta": "NARS 입법영향분석 66호 · 박인환",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=49384",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49380",
@@ -259,7 +304,11 @@
    "date": "2026-06-25",
    "meta": "NARS 현안분석 422호 · 류영아",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49380",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "AI",
+    "인공지능"
+   ]
   },
   {
    "id": "issue-point-49376",
@@ -269,7 +318,8 @@
    "date": "2026-06-24",
    "meta": "이슈와논점 2505호 · 하혜영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49376",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-49361",
@@ -279,7 +329,10 @@
    "date": "2026-06-21",
    "meta": "NARS 입법·정책 182호 · 김경민",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49361",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "기후"
+   ]
   },
   {
    "id": "nars-analysis-49363",
@@ -292,6 +345,10 @@
    "tracks": [
     "security",
     "energy"
+   ],
+   "keywords": [
+    "안보",
+    "전력"
    ]
   },
   {
@@ -302,7 +359,8 @@
    "date": "2026-06-18",
    "meta": "NARS 현안분석 420호 · 백지연,김혜미",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49345",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49332",
@@ -312,7 +370,8 @@
    "date": "2026-06-15",
    "meta": "이슈와논점 2504호 · 한진옥",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49332",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49329",
@@ -322,7 +381,8 @@
    "date": "2026-06-14",
    "meta": "이슈와논점 2503호 · 김현민",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49329",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49309",
@@ -332,7 +392,10 @@
    "date": "2026-06-11",
    "meta": "이슈와논점 2502호 · 최은진,박미영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49309",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "플랫폼"
+   ]
   },
   {
    "id": "issue-point-49302",
@@ -342,7 +405,8 @@
    "date": "2026-06-10",
    "meta": "이슈와논점 2501호 · 김현정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49302",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49288",
@@ -352,7 +416,8 @@
    "date": "2026-06-07",
    "meta": "이슈와논점 2500호 · 허석재",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49288",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49263",
@@ -362,7 +427,10 @@
    "date": "2026-06-02",
    "meta": "NARS 현안분석 419호 · 송진미",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49263",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "선거"
+   ]
   },
   {
    "id": "nars-analysis-49262",
@@ -372,7 +440,8 @@
    "date": "2026-06-02",
    "meta": "NARS 현안분석 418호 · 정용제",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49262",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49251",
@@ -384,6 +453,9 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49251",
    "tracks": [
     "security"
+   ],
+   "keywords": [
+    "중국"
    ]
   },
   {
@@ -394,7 +466,8 @@
    "date": "2026-05-27",
    "meta": "이슈와논점 2499호 · 노세현",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49238",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-49241",
@@ -404,7 +477,8 @@
    "date": "2026-05-26",
    "meta": "NARS 입법·정책 181호 · 허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49241",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49234",
@@ -414,7 +488,8 @@
    "date": "2026-05-24",
    "meta": "이슈와논점 2498호 · 정재하,고지원",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49234",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49203",
@@ -426,6 +501,10 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49203",
    "tracks": [
     "energy"
+   ],
+   "keywords": [
+    "재생에너지",
+    "에너지"
    ]
   },
   {
@@ -436,7 +515,8 @@
    "date": "2026-04-28",
    "meta": "NARS 입법·정책 180호 · 이윤경",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49145",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49110",
@@ -446,7 +526,8 @@
    "date": "2026-04-21",
    "meta": "NARS 현안분석 415호 · 허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49110",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-49091",
@@ -456,7 +537,8 @@
    "date": "2026-04-16",
    "meta": "NARS 입법·정책 179호 · 김주경 외 3인",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49091",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49075",
@@ -466,7 +548,8 @@
    "date": "2026-04-14",
    "meta": "NARS 현안분석 414호 · 허석재",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49075",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49072",
@@ -476,7 +559,8 @@
    "date": "2026-04-14",
    "meta": "NARS 현안분석 413호 · 정용제",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49072",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49071",
@@ -486,7 +570,8 @@
    "date": "2026-04-13",
    "meta": "NARS 현안분석 412호 · 김은정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49071",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49069",
@@ -496,7 +581,8 @@
    "date": "2026-04-13",
    "meta": "NARS 현안분석 411호 · 이수진",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49069",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49067",
@@ -506,7 +592,8 @@
    "date": "2026-04-12",
    "meta": "NARS 현안분석 410호 · 하혜영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49067",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49055",
@@ -518,6 +605,9 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49055",
    "tracks": [
     "semiconductor"
+   ],
+   "keywords": [
+    "반도체"
    ]
   },
   {
@@ -528,7 +618,10 @@
    "date": "2026-04-06",
    "meta": "NARS 현안분석 408호 · 장영진",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49053",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "기후"
+   ]
   },
   {
    "id": "nars-analysis-49045",
@@ -538,7 +631,8 @@
    "date": "2026-04-02",
    "meta": "NARS 현안분석 407호 · 한진옥,허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49045",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "nars-analysis-49042",
@@ -548,7 +642,8 @@
    "date": "2026-04-01",
    "meta": "NARS 현안분석 406호 · 김경민",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49042",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-48959",
@@ -558,7 +653,10 @@
    "date": "2026-03-09",
    "meta": "NARS 입법·정책 178호 · 김인태",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48959",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "연금"
+   ]
   },
   {
    "id": "policy-report-48680",
@@ -568,7 +666,10 @@
    "date": "2025-12-31",
    "meta": "NARS 입법·정책 176호 · 송정민,김현아",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48680",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "선거"
+   ]
   },
   {
    "id": "impact-analysis-48682",
@@ -578,7 +679,10 @@
    "date": "2025-12-31",
    "meta": "NARS 입법영향분석 65호 · 정준화",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=48682",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "AI"
+   ]
   },
   {
    "id": "policy-report-48674",
@@ -588,7 +692,8 @@
    "date": "2025-12-30",
    "meta": "NARS 입법·정책 177호 · 권성훈",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48674",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-48675",
@@ -598,7 +703,8 @@
    "date": "2025-12-30",
    "meta": "NARS 입법·정책 175호 · 김선화,정재하",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48675",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-48664",
@@ -608,7 +714,8 @@
    "date": "2025-12-29",
    "meta": "NARS 입법·정책 174호 · 김도희 외 4인",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48664",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-48543",
@@ -618,7 +725,8 @@
    "date": "2025-12-11",
    "meta": "NARS 입법·정책 173호 · 박인숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48543",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-48444",
@@ -628,7 +736,8 @@
    "date": "2025-11-20",
    "meta": "NARS 입법·정책 172호 · 이윤경",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48444",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-48412",
@@ -638,7 +747,10 @@
    "date": "2025-11-11",
    "meta": "NARS 입법·정책 171호 · 전진영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48412",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "고용"
+   ]
   },
   {
    "id": "policy-report-48333",
@@ -648,7 +760,8 @@
    "date": "2025-10-26",
    "meta": "NARS 입법·정책 170호 · 박선권",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48333",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-48263",
@@ -658,7 +771,10 @@
    "date": "2025-10-13",
    "meta": "NARS 입법·정책 169호 · 하혜영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48263",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "지방소멸"
+   ]
   },
   {
    "id": "policy-report-48206",
@@ -668,7 +784,8 @@
    "date": "2025-10-01",
    "meta": "NARS 입법·정책 168호 · 정용제",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=48206",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-48041",
@@ -678,7 +795,8 @@
    "date": "2025-08-28",
    "meta": "NARS 입법영향분석 64호 · 이동영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=48041",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-47818",
@@ -688,7 +806,8 @@
    "date": "2025-06-30",
    "meta": "NARS 입법·정책 167호 · 류영아",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47818",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "policy-report-47351",
@@ -698,7 +817,10 @@
    "date": "2025-04-22",
    "meta": "NARS 입법·정책 166호 · 장경석",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47351",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "부동산"
+   ]
   },
   {
    "id": "policy-report-47200",
@@ -710,6 +832,9 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47200",
    "tracks": [
     "security"
+   ],
+   "keywords": [
+    "북한"
    ]
   },
   {
@@ -720,7 +845,8 @@
    "date": "2025-03-25",
    "meta": "NARS 입법·정책 164호 · 허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47079",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-46794",
@@ -730,7 +856,10 @@
    "date": "2025-02-07",
    "meta": "NARS 입법영향분석 63호 · 허석재",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=46794",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "선거"
+   ]
   },
   {
    "id": "impact-analysis-43735",
@@ -740,7 +869,8 @@
    "date": "2023-12-29",
    "meta": "NARS 입법영향분석 62호 · 조인식",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=43735",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-43734",
@@ -750,7 +880,8 @@
    "date": "2023-12-29",
    "meta": "NARS 입법영향분석 61호 · 이동영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=43734",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-40956",
@@ -760,7 +891,8 @@
    "date": "2022-12-26",
    "meta": "NARS 입법영향분석 60호 · 류호연",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40956",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-40878",
@@ -770,7 +902,8 @@
    "date": "2022-12-16",
    "meta": "NARS 입법영향분석 59호 · 이동영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40878",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-40736",
@@ -780,7 +913,8 @@
    "date": "2022-11-24",
    "meta": "NARS 입법영향분석 58호 · 유제범",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40736",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-40723",
@@ -790,7 +924,8 @@
    "date": "2022-11-23",
    "meta": "NARS 입법영향분석 57호 · 김예성",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40723",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-40081",
@@ -800,7 +935,8 @@
    "date": "2022-09-08",
    "meta": "NARS 입법영향분석 56호 · 허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=40081",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-39940",
@@ -810,7 +946,8 @@
    "date": "2022-08-19",
    "meta": "NARS 입법영향분석 55호 · 장경석,김강산",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=39940",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-39866",
@@ -820,7 +957,8 @@
    "date": "2022-08-09",
    "meta": "NARS 입법영향분석 54호 · 박인환",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=39866",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-37445",
@@ -830,7 +968,10 @@
    "date": "2021-12-28",
    "meta": "NARS 입법영향분석 53호 · 구세주",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=37445",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "자동차"
+   ]
   },
   {
    "id": "impact-analysis-37166",
@@ -840,7 +981,8 @@
    "date": "2021-12-09",
    "meta": "NARS 입법영향분석 52호 · 정준화",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=37166",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-36006",
@@ -850,7 +992,8 @@
    "date": "2021-08-20",
    "meta": "NARS 입법영향분석 51호 · 허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=36006",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-33055",
@@ -860,7 +1003,8 @@
    "date": "2020-12-31",
    "meta": "NARS 입법영향분석 50호 · 이덕난",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=33055",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-33053",
@@ -870,7 +1014,8 @@
    "date": "2020-12-31",
    "meta": "NARS 입법영향분석 48호 · 김은진",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=33053",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "impact-analysis-33054",
@@ -880,7 +1025,10 @@
    "date": "2020-12-31",
    "meta": "NARS 입법영향분석 49호 · 전윤정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=33054",
-   "tracks": []
+   "tracks": [],
+   "keywords": [
+    "고용"
+   ]
   },
   {
    "id": "impact-analysis-32567",
@@ -890,7 +1038,8 @@
    "date": "2020-12-04",
    "meta": "NARS 입법영향분석 47호 · 김현정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0152&brdSeq=32567",
-   "tracks": []
+   "tracks": [],
+   "keywords": []
   }
  ],
  "statuses": [
