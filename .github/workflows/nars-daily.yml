@@ -1,0 +1,48 @@
+name: NARS 자료 일일 수집
+
+on:
+  workflow_dispatch:
+    inputs:
+      recon:
+        description: "정찰 모드 (수집 없이 페이지 구조만 로그로 확인)"
+        required: false
+        default: "false"
+  schedule:
+    # 매일 06:23 KST (21:23 UTC)
+    - cron: "23 21 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      # 수집 스크립트 (이 워크플로가 있는 브랜치)
+      - uses: actions/checkout@v4
+
+      # 데이터를 쌓는 브랜치 (stock1 번들)
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/stock1-bundle
+          path: bundle
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 수집 실행
+        env:
+          RECON: ${{ inputs.recon }}
+        run: |
+          mkdir -p bundle/chaebol-ownership/public
+          node .github/scripts/collect-nars.mjs bundle/chaebol-ownership/public/publications.json
+
+      - name: 데이터 커밋
+        if: ${{ inputs.recon != 'true' }}
+        run: |
+          cd bundle
+          git config user.name "nars-collector[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || { git commit -m "data: NARS 자료 일일 수집 ($(date -u +%F))"; git push; }
