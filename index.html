@@ -366,6 +366,17 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .plan-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--gray-300);cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:.15s;font-size:10px}
 .plan-check:hover{border-color:var(--blue);background:var(--blue-bg)}
 .plan-item.done .plan-check{border-color:var(--green);background:var(--green);color:#fff}
+/* 작업 예정 알림 팝업 */
+.rmd-sec-title{font-size:13px;font-weight:700;margin-bottom:6px}
+.rmd-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--gray-200);border-radius:9px;margin-bottom:6px;background:#fff}
+.rmd-item.due{border-left:3px solid var(--red);background:var(--red-bg)}
+.rmd-item.pre{border-left:3px solid #f59e0b;background:#fffbeb}
+.rmd-body{flex:1;min-width:0}
+.rmd-desc{font-size:13px;font-weight:600;color:var(--gray-800)}
+.rmd-date{font-size:11px;color:var(--gray-500);margin-top:2px}
+.rmd-note{font-size:11px;color:var(--gray-500);margin-top:2px}
+.rmd-actions{display:flex;gap:4px;flex-shrink:0}
+.rmd-actions .btn-sm{padding:4px 10px;font-size:12px}
 .plan-info{flex:1;min-width:0}
 .plan-bld{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:99px;display:inline-block;margin-bottom:2px}
 .plan-desc{font-size:12px;font-weight:500;color:var(--gray-800)}
@@ -643,6 +654,7 @@ async function init(){
     loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
     recalcNextId();
     goToday();renderFilterBar();renderInventory();renderAlerts();
+    setupPlanReminderWatch();
     return;
   }
   loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
@@ -657,6 +669,17 @@ async function init(){
   startAutoBackup();
   let cnt=0;for(let i=0;i<localStorage.length;i++){if(localStorage.key(i).startsWith('ws3_'))cnt++;}
   console.log('[init] localStorage ws3_ 키 수:',cnt,', 품목 수:',products.length);
+  setupPlanReminderWatch();
+}
+
+// 예정 작업 알림 감시 시작 (로드 시 + 앱 재포커스 시 재확인)
+let _remWatchBound=false;
+function setupPlanReminderWatch(){
+  setTimeout(checkPlanReminders,600);
+  if(_remWatchBound)return;
+  _remWatchBound=true;
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(checkPlanReminders,300);});
+  window.addEventListener('focus',()=>{setTimeout(checkPlanReminders,300);});
 }
 
 function loadProducts(){
@@ -2533,6 +2556,106 @@ function savePlan(pid){
 function togglePlan(pid){
   const p=plans.find(x=>Number(x.id)===Number(pid));
   if(p){p.done=!p.done;savePlans();renderPlanList();}
+}
+
+// === 작업 예정 알림 (전 주 금요일 + 당일 팝업, 확인 기능) ===
+function _ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function _todayYMD(){return _ymd(new Date());}
+// 작업일이 속한 주의 '직전 주 금요일' 날짜 계산
+function prevWeekFriday(dateStr){
+  const p=dateStr.split('-');
+  const d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+  const dow=d.getDay()||7;          // 월=1 ... 일=7
+  const monday=new Date(d);monday.setDate(d.getDate()-(dow-1)); // 그 주 월요일
+  const fri=new Date(monday);fri.setDate(monday.getDate()-3);   // 전 주 금요일
+  return _ymd(fri);
+}
+function fmtKDate(dateStr){
+  const p=dateStr.split('-');const d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+  return (d.getMonth()+1)+'월 '+d.getDate()+'일('+DOW_SHORT[d.getDay()]+')';
+}
+function loadReminderAck(){try{return JSON.parse(localStorage.getItem('ws3_plan_reminder_ack')||'{}');}catch(e){return{};}}
+function saveReminderAck(a){try{localStorage.setItem('ws3_plan_reminder_ack',JSON.stringify(a));}catch(e){}}
+// 오늘 팝업 대상 수집: due(당일/기간중), pre(전 주 금요일~작업 전날)
+function collectPlanReminders(){
+  const today=_todayYMD();const ack=loadReminderAck();
+  const due=[],pre=[];
+  plans.forEach(p=>{
+    if(p.done||!p.date)return;
+    const start=p.date,end=p.dateEnd||p.date;
+    if(today>=start&&today<=end){
+      const key='due@'+p.id+'@'+today;
+      if(!ack[key])due.push({plan:p,key:key});
+    }else if(today<start){
+      const pf=prevWeekFriday(start);
+      if(today>=pf&&today<start){
+        const key='pre@'+p.id;
+        if(!ack[key])pre.push({plan:p,key:key});
+      }
+    }
+  });
+  return{due:due,pre:pre};
+}
+let _remCache=null;
+function checkPlanReminders(){
+  if(document.getElementById('modalRoot')&&document.getElementById('modalRoot').innerHTML)return; // 다른 모달 방해 금지
+  const r=collectPlanReminders();
+  if(!r.due.length&&!r.pre.length)return;
+  _remCache=r;
+  renderReminderModal();
+}
+function _remItemHtml(it,type){
+  const p=it.plan;
+  const dateLabel=type==='due'
+    ?('오늘 · '+fmtKDate(p.date)+(p.dateEnd&&p.dateEnd!==p.date?(' ~ '+fmtKDate(p.dateEnd)):''))
+    :('예정일 '+fmtKDate(p.date));
+  let h='<div class="rmd-item '+type+'"><div class="rmd-body">';
+  if(p.building)h+='<span class="th-bld" style="margin-right:4px">'+esc(p.building)+'</span>';
+  h+='<span class="rmd-desc">'+(esc(p.desc)||'(내용 없음)')+'</span>';
+  h+='<div class="rmd-date">'+dateLabel+'</div>';
+  if(p.note)h+='<div class="rmd-note">📝 '+esc(p.note)+'</div>';
+  h+='</div><div class="rmd-actions">';
+  h+='<button class="btn btn-outline btn-sm" onclick="ackReminder(\''+it.key+'\')">확인</button>';
+  if(type==='due')h+='<button class="btn btn-blue btn-sm" onclick="reminderDone('+p.id+',\''+it.key+'\')">완료</button>';
+  h+='</div></div>';
+  return h;
+}
+function renderReminderModal(){
+  const r=_remCache;if(!r)return;
+  if(!r.due.length&&!r.pre.length){closeModal();return;}
+  let h='<div class="modal"><h2>🔔 작업 예정 알림</h2>';
+  if(r.due.length){
+    h+='<div class="rmd-sec-title" style="color:var(--red)">📌 오늘 예정된 작업 ('+r.due.length+'건)</div>';
+    r.due.forEach(it=>{h+=_remItemHtml(it,'due');});
+  }
+  if(r.pre.length){
+    h+='<div class="rmd-sec-title" style="color:#d97706;margin-top:'+(r.due.length?'12px':'0')+'">⏰ 곧 예정된 작업 ('+r.pre.length+'건)</div>';
+    r.pre.forEach(it=>{h+=_remItemHtml(it,'pre');});
+  }
+  h+='<div class="modal-btns" style="margin-top:12px">';
+  h+='<button class="btn btn-outline" onclick="ackAllReminders()">모두 확인</button>';
+  h+='<button class="btn btn-blue" onclick="closeModal()">나중에</button>';
+  h+='</div></div>';
+  showModal(h);
+}
+function ackReminder(key){
+  const ack=loadReminderAck();ack[key]=1;saveReminderAck(ack);
+  if(_remCache){_remCache.due=_remCache.due.filter(x=>x.key!==key);_remCache.pre=_remCache.pre.filter(x=>x.key!==key);}
+  renderReminderModal();
+}
+function ackAllReminders(){
+  const ack=loadReminderAck();
+  if(_remCache){_remCache.due.concat(_remCache.pre).forEach(x=>{ack[x.key]=1;});}
+  saveReminderAck(ack);_remCache={due:[],pre:[]};closeModal();
+  toast('모든 알림을 확인했습니다');
+}
+function reminderDone(pid,key){
+  const p=plans.find(x=>Number(x.id)===Number(pid));
+  if(p){p.done=true;savePlans();if(currentTab==='plan')renderPlanList();}
+  const ack=loadReminderAck();ack[key]=1;saveReminderAck(ack);
+  if(_remCache){_remCache.due=_remCache.due.filter(x=>x.key!==key);_remCache.pre=_remCache.pre.filter(x=>x.key!==key);}
+  renderReminderModal();
+  toast('완료 처리되었습니다');
 }
 
 function deletePlan(pid){
