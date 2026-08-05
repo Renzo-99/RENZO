@@ -50,6 +50,21 @@ function classifyTracks(title) {
     .map(([id]) => id);
 }
 
+/** 화면에 칩으로 보여줄 키워드 — 트랙 키워드 + 투자 관심 일반 키워드 */
+const EXTRA_KEYWORDS = [
+  "AI", "인공지능", "부동산", "주택", "연금", "세금", "재정", "노동", "고용",
+  "기후", "환경", "의료", "건강보험", "플랫폼", "데이터", "개인정보", "선거",
+  "가상자산", "암호화폐", "조선", "철강", "자동차", "이차전지", "배터리",
+  "바이오", "제약", "금리", "환율", "수출", "설비투자", "지방소멸",
+];
+function extractKeywords(title) {
+  const fromTracks = Object.values(TRACKS).flatMap((t) =>
+    t.keywords.filter((kw) => title.includes(kw))
+  );
+  const extra = EXTRA_KEYWORDS.filter((kw) => title.includes(kw));
+  return [...new Set([...fromTracks, ...extra])].slice(0, 4);
+}
+
 /* ---------------- 정찰 모드 ---------------- */
 
 async function recon() {
@@ -233,6 +248,7 @@ async function collect(outPath) {
           meta: it.meta,
           link: it.link,
           tracks: classifyTracks(it.title),
+          keywords: extractKeywords(it.title),
         })
       );
       statuses.push({ id: cat.sourceId, name: cat.sourceName, ok: true, count: parsed.length });
