@@ -129,11 +129,26 @@ async function recon() {
           n++;
         }
       }
-      // view.do 링크 주변 원문 (날짜 포함 여부 확인)
-      const viewIdx = [...text.matchAll(/view\.do/g)].map((m) => m.index).slice(0, 3);
-      viewIdx.forEach((i, n) =>
-        console.log(`[view링크 주변${n}] ` + text.slice(Math.max(0, i - 150), i + 700).replace(/\s+/g, " ").slice(0, 700))
+      // 게시물 식별자/이동 함수 패턴 파악
+      console.log(`view.do 등장: ${(text.match(/view\.do/g) ?? []).length}회, brdSeq 등장: ${(text.match(/brdSeq/g) ?? []).length}회`);
+      const fnCalls = [...text.matchAll(/javascript:([A-Za-z_]\w*)\(([^)]*)\)/g)]
+        .map((m) => `${m[1]}(${m[2]})`)
+        .filter((v, i, a) => a.indexOf(v) === i);
+      console.log(`js 함수 호출 ${fnCalls.length}종:`);
+      fnCalls.slice(0, 20).forEach((v) => console.log("  " + v));
+      // 게시물로 보이는 <li> 원문 (nav 제외: setCmsCode 미포함 + 텍스트 40자 이상)
+      const lis = [...text.matchAll(/<li[\s\S]{0,1200}?<\/li>/g)]
+        .map((m) => m[0])
+        .filter((li) => !li.includes("setCmsCode") && li.replace(/<[^>]+>/g, "").trim().length > 40);
+      console.log(`게시물 후보 <li> ${lis.length}개`);
+      lis.slice(0, 4).forEach((li, i) =>
+        console.log(`[li원문${i}] ` + li.replace(/\s+/g, " ").slice(0, 800))
       );
+      // 인라인 스크립트 속 AJAX 엔드포인트 후보
+      const ajax = [...text.matchAll(/["'](\/[\w/]*(?:list|List)\w*\.do[^"']*)["']/g)]
+        .map((m) => m[1])
+        .filter((v, i, a) => a.indexOf(v) === i);
+      console.log(`AJAX/URL 후보: ${ajax.slice(0, 10).join(", ")}`);
     } catch (e) {
       console.log(`${url} 실패: ${e.message}`);
     }
