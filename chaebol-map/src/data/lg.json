@@ -1,0 +1,294 @@
+{
+  "group": {
+    "id": "lg",
+    "name": "엘지",
+    "slug": "lg",
+    "controllerName": "구광모",
+    "description": "LG그룹은 전자, 화학, 통신 등을 주력으로 하는 대한민국의 대표 재벌 그룹이다. 지주회사 LG를 정점으로 LG화학, LG전자, LG생활건강, LG유플러스 등 핵심 계열사를 거느리고 있으며, LG에너지솔루션은 글로벌 배터리 시장의 선두주자이다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 12,
+    "listedCompanies": 8
+  },
+  "companies": [
+    {
+      "id": "lg-holding",
+      "groupId": "lg",
+      "name": "LG(엘지)",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "003550",
+      "stockPrice": 103400,
+      "priceChange": 3500,
+      "priceChangePercent": 3.5,
+      "marketCap": 168000,
+      "sector": "지주회사"
+    },
+    {
+      "id": "lg-chem",
+      "groupId": "lg",
+      "name": "LG화학",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "051910",
+      "stockPrice": 338000,
+      "priceChange": 16500,
+      "priceChangePercent": 5.13,
+      "marketCap": 239000,
+      "sector": "화학"
+    },
+    {
+      "id": "lg-electronics",
+      "groupId": "lg",
+      "name": "LG전자",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "066570",
+      "stockPrice": 117200,
+      "priceChange": -4300,
+      "priceChangePercent": -3.54,
+      "marketCap": 192000,
+      "sector": "전자/가전"
+    },
+    {
+      "id": "lg-household",
+      "groupId": "lg",
+      "name": "LG생활건강",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "051900",
+      "stockPrice": 269000,
+      "priceChange": 1000,
+      "priceChangePercent": 0.37,
+      "marketCap": 41164,
+      "sector": "생활용품/화장품"
+    },
+    {
+      "id": "lg-uplus",
+      "groupId": "lg",
+      "name": "LG유플러스",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "통신",
+      "stockCode": "032640",
+      "stockPrice": 11250,
+      "priceChange": 150,
+      "priceChangePercent": 1.35,
+      "marketCap": 49200000000000,
+      "sector": "통신"
+    },
+    {
+      "id": "lg-innotek",
+      "groupId": "lg",
+      "name": "LG이노텍",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "011070",
+      "stockPrice": 345000,
+      "priceChange": 57600,
+      "priceChangePercent": 20.03,
+      "marketCap": 81500,
+      "sector": "전자부품"
+    },
+    {
+      "id": "lg-display",
+      "groupId": "lg",
+      "name": "LG디스플레이",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "034220",
+      "stockPrice": 14500,
+      "priceChange": 150,
+      "priceChangePercent": 1.04,
+      "marketCap": 51800,
+      "sector": "디스플레이"
+    },
+    {
+      "id": "lg-energy-solution",
+      "groupId": "lg",
+      "name": "LG에너지솔루션",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "373220",
+      "stockPrice": 427000,
+      "priceChange": 1000,
+      "priceChangePercent": 0.23,
+      "marketCap": 999180,
+      "sector": "배터리"
+    },
+    {
+      "id": "lg-cns",
+      "groupId": "lg",
+      "name": "LG씨엔에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "lg-management",
+      "groupId": "lg",
+      "name": "LG경영개발원",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "lg-hellovision",
+      "groupId": "lg",
+      "name": "LG헬로비전",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "통신"
+    },
+    {
+      "id": "lg-sports",
+      "groupId": "lg",
+      "name": "LG스포츠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    }
+  ],
+  "relations": [
+    {
+      "id": "r-lg-01",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-chem",
+      "ownershipPct": 31.53
+    },
+    {
+      "id": "r-lg-02",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-electronics",
+      "ownershipPct": 31.8
+    },
+    {
+      "id": "r-lg-03",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-household",
+      "ownershipPct": 30
+    },
+    {
+      "id": "r-lg-04",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-uplus",
+      "ownershipPct": 37.72
+    },
+    {
+      "id": "r-lg-05",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-cns",
+      "ownershipPct": 45
+    },
+    {
+      "id": "r-lg-06",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-management",
+      "ownershipPct": 100
+    },
+    {
+      "id": "r-lg-07",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-sports",
+      "ownershipPct": 100
+    },
+    {
+      "id": "r-lg-08",
+      "groupId": "lg",
+      "fromCompanyId": "lg-chem",
+      "toCompanyId": "lg-energy-solution",
+      "ownershipPct": 81.84
+    },
+    {
+      "id": "r-lg-09",
+      "groupId": "lg",
+      "fromCompanyId": "lg-electronics",
+      "toCompanyId": "lg-innotek",
+      "ownershipPct": 40.79
+    },
+    {
+      "id": "r-lg-10",
+      "groupId": "lg",
+      "fromCompanyId": "lg-electronics",
+      "toCompanyId": "lg-display",
+      "ownershipPct": 37.91
+    },
+    {
+      "id": "r-lg-11",
+      "groupId": "lg",
+      "fromCompanyId": "lg-electronics",
+      "toCompanyId": "lg-hellovision",
+      "ownershipPct": 50
+    },
+    {
+      "id": "r-lg-12",
+      "groupId": "lg",
+      "fromCompanyId": "lg-uplus",
+      "toCompanyId": "lg-hellovision",
+      "ownershipPct": 0
+    },
+    {
+      "id": "r-lg-13",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-innotek",
+      "ownershipPct": 0
+    },
+    {
+      "id": "r-lg-14",
+      "groupId": "lg",
+      "fromCompanyId": "lg-holding",
+      "toCompanyId": "lg-display",
+      "ownershipPct": 0
+    },
+    {
+      "id": "r-lg-15",
+      "groupId": "lg",
+      "fromCompanyId": "lg-cns",
+      "toCompanyId": "lg-uplus",
+      "ownershipPct": 0
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "lg",
+      "companyId": "lg-holding",
+      "ownershipPct": 15.7
+    },
+    {
+      "groupId": "lg",
+      "companyId": "lg-chem",
+      "ownershipPct": 0
+    },
+    {
+      "groupId": "lg",
+      "companyId": "lg-electronics",
+      "ownershipPct": 0
+    }
+  ]
+}

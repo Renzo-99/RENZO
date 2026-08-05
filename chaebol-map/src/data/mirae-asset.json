@@ -1,0 +1,672 @@
+{
+  "group": {
+    "id": "mirae-asset",
+    "name": "미래에셋",
+    "slug": "mirae-asset",
+    "controllerName": "박현주",
+    "description": "미래에셋그룹은 증권, 자산운용, 생명보험 등 금융투자 중심의 대한민국 대표 금융그룹",
+    "dataDate": "2025-05-01",
+    "totalCompanies": 40,
+    "listedCompanies": 3
+  },
+  "companies": [
+    {
+      "id": "mirae-controller",
+      "groupId": "mirae-asset",
+      "name": "박현주",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "mirae-securities",
+      "groupId": "mirae-asset",
+      "name": "미래에셋증권",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융",
+      "stockCode": "006800",
+      "stockPrice": 8950,
+      "priceChange": 120,
+      "priceChangePercent": 1.36,
+      "marketCap": 55800,
+      "sector": "증권"
+    },
+    {
+      "id": "mirae-life",
+      "groupId": "mirae-asset",
+      "name": "미래에셋생명",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험",
+      "stockCode": "085620",
+      "stockPrice": 4500,
+      "priceChange": -50,
+      "priceChangePercent": -1.10,
+      "marketCap": 14700,
+      "sector": "생명보험"
+    },
+    {
+      "id": "mirae-venture",
+      "groupId": "mirae-asset",
+      "name": "미래에셋벤처투자",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융",
+      "stockCode": "100790",
+      "stockPrice": 5200,
+      "priceChange": 80,
+      "priceChangePercent": 1.56,
+      "marketCap": 3600,
+      "sector": "벤처투자"
+    },
+    {
+      "id": "mirae-asset-mgmt",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산운용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-capital",
+      "groupId": "mirae-asset",
+      "name": "미래에셋캐피탈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "mirae-consulting",
+      "groupId": "mirae-asset",
+      "name": "미래에셋컨설팅",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "컨설팅"
+    },
+    {
+      "id": "mirae-global-investments",
+      "groupId": "mirae-asset",
+      "name": "미래에셋글로벌인베스트먼츠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-savings-bank",
+      "groupId": "mirae-asset",
+      "name": "미래에셋저축은행",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "mirae-asset-wealth-mgmt",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산배분",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-robo-advisor",
+      "groupId": "mirae-asset",
+      "name": "미래에셋로보어드바이저",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "핀테크"
+    },
+    {
+      "id": "mirae-alternative",
+      "groupId": "mirae-asset",
+      "name": "미래에셋대체투자운용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-real-estate",
+      "groupId": "mirae-asset",
+      "name": "미래에셋부동산자산운용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-pension",
+      "groupId": "mirae-asset",
+      "name": "미래에셋연금운용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-fund-service",
+      "groupId": "mirae-asset",
+      "name": "미래에셋펀드서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융서비스"
+    },
+    {
+      "id": "mirae-life-insurance-service",
+      "groupId": "mirae-asset",
+      "name": "미래에셋생명보험서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "보험서비스"
+    },
+    {
+      "id": "mirae-asset-mgmt-hk",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산운용홍콩",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-asset-mgmt-us",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산운용USA",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-asset-mgmt-uk",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산운용UK",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-asset-mgmt-india",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산운용인도",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-asset-mgmt-brazil",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산운용브라질",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-asset-mgmt-sg",
+      "groupId": "mirae-asset",
+      "name": "미래에셋자산운용싱가포르",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-securities-hk",
+      "groupId": "mirae-asset",
+      "name": "미래에셋증권홍콩",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "증권"
+    },
+    {
+      "id": "mirae-securities-us",
+      "groupId": "mirae-asset",
+      "name": "미래에셋증권USA",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "증권"
+    },
+    {
+      "id": "mirae-securities-id",
+      "groupId": "mirae-asset",
+      "name": "미래에셋증권인도네시아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "증권"
+    },
+    {
+      "id": "mirae-securities-vn",
+      "groupId": "mirae-asset",
+      "name": "미래에셋증권베트남",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "증권"
+    },
+    {
+      "id": "mirae-securities-uk",
+      "groupId": "mirae-asset",
+      "name": "미래에셋증권UK",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "증권"
+    },
+    {
+      "id": "mirae-securities-india",
+      "groupId": "mirae-asset",
+      "name": "미래에셋증권인도",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "증권"
+    },
+    {
+      "id": "mirae-capital-us",
+      "groupId": "mirae-asset",
+      "name": "미래에셋캐피탈USA",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "mirae-hotel-resort",
+      "groupId": "mirae-asset",
+      "name": "미래에셋호텔앤리조트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "mirae-venture-asia",
+      "groupId": "mirae-asset",
+      "name": "미래에셋벤처투자아시아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "mirae-etf",
+      "groupId": "mirae-asset",
+      "name": "미래에셋ETF운용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-private-equity",
+      "groupId": "mirae-asset",
+      "name": "미래에셋프라이빗에쿼티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "mirae-foundation",
+      "groupId": "mirae-asset",
+      "name": "미래에셋박현주재단",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "재단"
+    },
+    {
+      "id": "mirae-asset-maps",
+      "groupId": "mirae-asset",
+      "name": "미래에셋맵스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자산운용"
+    },
+    {
+      "id": "mirae-data-systems",
+      "groupId": "mirae-asset",
+      "name": "미래에셋데이타시스템즈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "mirae-financial-service",
+      "groupId": "mirae-asset",
+      "name": "미래에셋금융서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융서비스"
+    },
+    {
+      "id": "mirae-global-discovery",
+      "groupId": "mirae-asset",
+      "name": "미래에셋글로벌디스커버리",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "mirae-credit-info",
+      "groupId": "mirae-asset",
+      "name": "미래에셋신용정보",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융서비스"
+    },
+    {
+      "id": "mirae-venture-partners",
+      "groupId": "mirae-asset",
+      "name": "미래에셋벤처파트너스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    }
+  ],
+  "relations": [
+    {
+      "id": "ma-rel-001",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-asset-mgmt",
+      "ownershipPct": 90.0
+    },
+    {
+      "id": "ma-rel-002",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-capital",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-003",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-life",
+      "ownershipPct": 47.4
+    },
+    {
+      "id": "ma-rel-004",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-venture",
+      "ownershipPct": 29.5
+    },
+    {
+      "id": "ma-rel-005",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-consulting",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-006",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-savings-bank",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-007",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-securities-hk",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-008",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-securities-us",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-009",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-securities-id",
+      "ownershipPct": 99.6
+    },
+    {
+      "id": "ma-rel-010",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-securities-vn",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-011",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-securities-uk",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-012",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-securities-india",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-013",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-fund-service",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-014",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-data-systems",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-015",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-credit-info",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-016",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-financial-service",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-017",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-private-equity",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-018",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-global-investments",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-019",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-mgmt-hk",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-020",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-mgmt-us",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-021",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-mgmt-uk",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-022",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-mgmt-india",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-023",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-mgmt-brazil",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-024",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-mgmt-sg",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-025",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-alternative",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-026",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-real-estate",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-027",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-pension",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-028",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-etf",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-029",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-wealth-mgmt",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-030",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-asset-maps",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-031",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-asset-mgmt",
+      "toCompanyId": "mirae-robo-advisor",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-032",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-life",
+      "toCompanyId": "mirae-life-insurance-service",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-033",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-capital",
+      "toCompanyId": "mirae-capital-us",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-034",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-hotel-resort",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-035",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-venture",
+      "toCompanyId": "mirae-venture-asia",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-036",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-venture",
+      "toCompanyId": "mirae-venture-partners",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-037",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-foundation",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "ma-rel-038",
+      "groupId": "mirae-asset",
+      "fromCompanyId": "mirae-securities",
+      "toCompanyId": "mirae-global-discovery",
+      "ownershipPct": 100.0
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "mirae-asset",
+      "companyId": "mirae-securities",
+      "ownershipPct": 15.2
+    },
+    {
+      "groupId": "mirae-asset",
+      "companyId": "mirae-venture",
+      "ownershipPct": 3.8
+    }
+  ]
+}

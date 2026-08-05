@@ -1,0 +1,384 @@
+{
+  "group": {
+    "id": "hyundai",
+    "name": "현대자동차",
+    "slug": "hyundai",
+    "controllerName": "정의선",
+    "description": "현대자동차그룹은 현대자동차와 기아를 양대 축으로 하는 글로벌 완성차 그룹이다. 자동차 제조를 중심으로 부품, 철강, 건설, 물류, 금융 등 다양한 분야에 걸쳐 사업을 영위하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 15,
+    "listedCompanies": 9
+  },
+  "companies": [
+    {
+      "id": "hyundai-motor",
+      "groupId": "hyundai",
+      "name": "현대자동차",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차",
+      "stockCode": "005380",
+      "stockPrice": 580000,
+      "priceChange": 21400,
+      "priceChangePercent": 3.82,
+      "marketCap": 1160000,
+      "sector": "자동차"
+    },
+    {
+      "id": "kia",
+      "groupId": "hyundai",
+      "name": "기아",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차",
+      "stockCode": "000270",
+      "stockPrice": 196100,
+      "priceChange": 11100,
+      "priceChangePercent": 5.98,
+      "marketCap": 795000,
+      "sector": "자동차"
+    },
+    {
+      "id": "hyundai-mobis",
+      "groupId": "hyundai",
+      "name": "현대모비스",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차",
+      "stockCode": "012330",
+      "stockPrice": 400000,
+      "priceChange": 12000,
+      "priceChangePercent": 3.09,
+      "marketCap": 380000,
+      "sector": "자동차부품"
+    },
+    {
+      "id": "hyundai-glovis",
+      "groupId": "hyundai",
+      "name": "현대글로비스",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "086280",
+      "stockPrice": 213000,
+      "priceChange": 3000,
+      "priceChangePercent": 1.43,
+      "marketCap": 80000,
+      "sector": "물류"
+    },
+    {
+      "id": "hyundai-construction",
+      "groupId": "hyundai",
+      "name": "현대건설",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설",
+      "stockCode": "000720",
+      "stockPrice": 63000,
+      "priceChange": 500,
+      "priceChangePercent": 0.8,
+      "marketCap": 70300,
+      "sector": "건설"
+    },
+    {
+      "id": "hyundai-wia",
+      "groupId": "hyundai",
+      "name": "현대위아",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차",
+      "stockCode": "011210",
+      "stockPrice": 52700,
+      "priceChange": 700,
+      "priceChangePercent": 1.35,
+      "marketCap": 14400000000000,
+      "sector": "자동차부품"
+    },
+    {
+      "id": "hyundai-autoever",
+      "groupId": "hyundai",
+      "name": "현대오토에버",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "307950",
+      "stockPrice": 143000,
+      "priceChange": 1000,
+      "priceChangePercent": 0.7,
+      "marketCap": 40000000000000,
+      "sector": "IT서비스"
+    },
+    {
+      "id": "hyundai-steel",
+      "groupId": "hyundai",
+      "name": "현대제철",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "004020",
+      "stockPrice": 27350,
+      "priceChange": -250,
+      "priceChangePercent": -0.91,
+      "marketCap": 36900000000000,
+      "sector": "철강"
+    },
+    {
+      "id": "hyundai-securities",
+      "groupId": "hyundai",
+      "name": "현대차증권",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험",
+      "stockCode": "001500",
+      "stockPrice": 8650,
+      "priceChange": 50,
+      "priceChangePercent": 0.58,
+      "marketCap": 5800000000000,
+      "sector": "증권"
+    },
+    {
+      "id": "hyundai-card",
+      "groupId": "hyundai",
+      "name": "현대카드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "hyundai-commercial",
+      "groupId": "hyundai",
+      "name": "현대커머셜",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "hyundai-engineering",
+      "groupId": "hyundai",
+      "name": "현대엔지니어링",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "innocean",
+      "groupId": "hyundai",
+      "name": "이노션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hyundai-capital",
+      "groupId": "hyundai",
+      "name": "현대캐피탈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "hyundai-rotem",
+      "groupId": "hyundai",
+      "name": "현대로템",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    }
+  ],
+  "relations": [
+    {
+      "id": "r-hd-01",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "kia",
+      "ownershipPct": 33.88
+    },
+    {
+      "id": "r-hd-02",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-mobis",
+      "ownershipPct": 0
+    },
+    {
+      "id": "r-hd-03",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-construction",
+      "ownershipPct": 21.3
+    },
+    {
+      "id": "r-hd-04",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-steel",
+      "ownershipPct": 21.4
+    },
+    {
+      "id": "r-hd-05",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-autoever",
+      "ownershipPct": 40.68
+    },
+    {
+      "id": "r-hd-06",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-card",
+      "ownershipPct": 65.57
+    },
+    {
+      "id": "r-hd-07",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-capital",
+      "ownershipPct": 56.46
+    },
+    {
+      "id": "r-hd-08",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-engineering",
+      "ownershipPct": 100
+    },
+    {
+      "id": "r-hd-09",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-commercial",
+      "ownershipPct": 100
+    },
+    {
+      "id": "r-hd-10",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-mobis",
+      "toCompanyId": "hyundai-motor",
+      "ownershipPct": 21.43
+    },
+    {
+      "id": "r-hd-11",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-mobis",
+      "toCompanyId": "kia",
+      "ownershipPct": 16.88
+    },
+    {
+      "id": "r-hd-12",
+      "groupId": "hyundai",
+      "fromCompanyId": "kia",
+      "toCompanyId": "hyundai-motor",
+      "ownershipPct": 0
+    },
+    {
+      "id": "r-hd-13",
+      "groupId": "hyundai",
+      "fromCompanyId": "kia",
+      "toCompanyId": "hyundai-mobis",
+      "ownershipPct": 17.28
+    },
+    {
+      "id": "r-hd-14",
+      "groupId": "hyundai",
+      "fromCompanyId": "kia",
+      "toCompanyId": "hyundai-wia",
+      "ownershipPct": 44.99
+    },
+    {
+      "id": "r-hd-15",
+      "groupId": "hyundai",
+      "fromCompanyId": "kia",
+      "toCompanyId": "hyundai-securities",
+      "ownershipPct": 23.27
+    },
+    {
+      "id": "r-hd-16",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-glovis",
+      "ownershipPct": 0
+    },
+    {
+      "id": "r-hd-17",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-rotem",
+      "ownershipPct": 42.12
+    },
+    {
+      "id": "r-hd-18",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-steel",
+      "toCompanyId": "hyundai-wia",
+      "ownershipPct": 0.83
+    },
+    {
+      "id": "r-hd-19",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-construction",
+      "toCompanyId": "hyundai-engineering",
+      "ownershipPct": 0
+    },
+    {
+      "id": "r-hd-20",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-securities",
+      "ownershipPct": 22.98
+    },
+    {
+      "id": "r-hd-21",
+      "groupId": "hyundai",
+      "fromCompanyId": "hyundai-motor",
+      "toCompanyId": "hyundai-wia",
+      "ownershipPct": 0
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "hyundai",
+      "companyId": "hyundai-motor",
+      "ownershipPct": 2.63
+    },
+    {
+      "groupId": "hyundai",
+      "companyId": "hyundai-mobis",
+      "ownershipPct": 0
+    },
+    {
+      "groupId": "hyundai",
+      "companyId": "kia",
+      "ownershipPct": 0
+    },
+    {
+      "groupId": "hyundai",
+      "companyId": "hyundai-glovis",
+      "ownershipPct": 23.3
+    },
+    {
+      "groupId": "hyundai",
+      "companyId": "innocean",
+      "ownershipPct": 2
+    },
+    {
+      "groupId": "hyundai",
+      "companyId": "hyundai-construction",
+      "ownershipPct": 5.96
+    }
+  ]
+}

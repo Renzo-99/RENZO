@@ -1,0 +1,149 @@
+{
+  "group": {
+    "id": "hdc",
+    "name": "HDC",
+    "slug": "hdc",
+    "controllerName": "정몽규",
+    "description": "HDC그룹은 건설·부동산 개발 중심의 그룹으로 HDC현대산업개발이 핵심 계열사",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 2
+  },
+  "companies": [
+    {
+      "id": "hdc-controller",
+      "groupId": "hdc",
+      "name": "정몽규",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "hdc-holdings",
+      "groupId": "hdc",
+      "name": "HDC",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "012630",
+      "stockPrice": 8200,
+      "priceChange": 150,
+      "priceChangePercent": 1.86,
+      "marketCap": 8800,
+      "sector": "지주회사"
+    },
+    {
+      "id": "hdc-hyundai-dev",
+      "groupId": "hdc",
+      "name": "HDC현대산업개발",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설",
+      "stockCode": "294870",
+      "stockPrice": 15500,
+      "priceChange": -300,
+      "priceChangePercent": -1.9,
+      "marketCap": 11600,
+      "sector": "건설"
+    },
+    {
+      "id": "hdc-ipark-mall",
+      "groupId": "hdc",
+      "name": "HDC아이파크몰",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "hdc-ep",
+      "groupId": "hdc",
+      "name": "HDC현대EP",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학"
+    },
+    {
+      "id": "hdc-labs",
+      "groupId": "hdc",
+      "name": "HDC랩스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "hdc-resort",
+      "groupId": "hdc",
+      "name": "HDC리조트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "호텔/리조트"
+    },
+    {
+      "id": "hdc-construction",
+      "groupId": "hdc",
+      "name": "HDC건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-hdc-1",
+      "groupId": "hdc",
+      "fromCompanyId": "hdc-holdings",
+      "toCompanyId": "hdc-hyundai-dev",
+      "ownershipPct": 35.1
+    },
+    {
+      "id": "rel-hdc-2",
+      "groupId": "hdc",
+      "fromCompanyId": "hdc-holdings",
+      "toCompanyId": "hdc-ipark-mall",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hdc-3",
+      "groupId": "hdc",
+      "fromCompanyId": "hdc-holdings",
+      "toCompanyId": "hdc-ep",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hdc-4",
+      "groupId": "hdc",
+      "fromCompanyId": "hdc-holdings",
+      "toCompanyId": "hdc-labs",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hdc-5",
+      "groupId": "hdc",
+      "fromCompanyId": "hdc-hyundai-dev",
+      "toCompanyId": "hdc-resort",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hdc-6",
+      "groupId": "hdc",
+      "fromCompanyId": "hdc-hyundai-dev",
+      "toCompanyId": "hdc-construction",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "hdc",
+      "companyId": "hdc-holdings",
+      "ownershipPct": 30.2
+    }
+  ]
+}

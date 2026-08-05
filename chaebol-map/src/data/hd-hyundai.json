@@ -1,0 +1,483 @@
+{
+  "group": {
+    "id": "hd-hyundai",
+    "name": "HD현대",
+    "slug": "hd-hyundai",
+    "controllerName": "정몽준",
+    "description": "HD현대그룹은 조선·해양, 에너지, 산업기계 등을 핵심 사업으로 하는 글로벌 중공업 그룹이다. 한국조선해양을 중심으로 세계 최대 규모의 조선 역량을 보유하고 있으며, 친환경 에너지와 로보틱스 등 미래 사업을 확대하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 25,
+    "listedCompanies": 10
+  },
+  "companies": [
+    {
+      "id": "hd-hyundai-corp",
+      "groupId": "hd-hyundai",
+      "name": "HD현대",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "267250",
+      "stockPrice": 29500,
+      "priceChange": 250,
+      "priceChangePercent": 0.85,
+      "marketCap": 24700,
+      "sector": "지주회사"
+    },
+    {
+      "id": "hd-ksoe",
+      "groupId": "hd-hyundai",
+      "name": "HD한국조선해양",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "009540",
+      "stockPrice": 168000,
+      "priceChange": 3000,
+      "priceChangePercent": 1.82,
+      "marketCap": 96000,
+      "sector": "조선·해양"
+    },
+    {
+      "id": "hd-hhi",
+      "groupId": "hd-hyundai",
+      "name": "HD현대중공업",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "329180",
+      "stockPrice": 232000,
+      "priceChange": 4000,
+      "priceChangePercent": 1.75,
+      "marketCap": 48000,
+      "sector": "조선·중공업"
+    },
+    {
+      "id": "hd-hyundai-electric",
+      "groupId": "hd-hyundai",
+      "name": "HD현대일렉트릭",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "267260",
+      "stockPrice": 95000,
+      "priceChange": 1500,
+      "priceChangePercent": 1.6,
+      "marketCap": 45000,
+      "sector": "전력기기"
+    },
+    {
+      "id": "hd-hyundai-marine-solution",
+      "groupId": "hd-hyundai",
+      "name": "HD현대마린솔루션",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "443060",
+      "stockPrice": 112300,
+      "priceChange": 2300,
+      "priceChangePercent": 2.09,
+      "marketCap": 56200000000000,
+      "sector": "선박서비스"
+    },
+    {
+      "id": "hd-hyundai-energy-solution",
+      "groupId": "hd-hyundai",
+      "name": "HD현대에너지솔루션",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "322000",
+      "stockPrice": 27450,
+      "priceChange": -550,
+      "priceChangePercent": -1.96,
+      "marketCap": 16500000000000,
+      "sector": "태양광"
+    },
+    {
+      "id": "hd-hyundai-mipo",
+      "groupId": "hd-hyundai",
+      "name": "HD현대미포",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "010620",
+      "stockPrice": 189000,
+      "priceChange": 2500,
+      "priceChangePercent": 1.34,
+      "marketCap": 114000,
+      "sector": "중형조선"
+    },
+    {
+      "id": "hd-hyundai-marine-engine",
+      "groupId": "hd-hyundai",
+      "name": "HD현대마린엔진",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "071970",
+      "stockPrice": 15450,
+      "priceChange": 350,
+      "priceChangePercent": 2.32,
+      "marketCap": 12400000000000,
+      "sector": "선박엔진"
+    },
+    {
+      "id": "hd-hyundai-ce",
+      "groupId": "hd-hyundai",
+      "name": "HD현대건설기계",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "267270",
+      "stockPrice": 52400,
+      "priceChange": -1100,
+      "priceChangePercent": -2.06,
+      "marketCap": 27800000000000,
+      "sector": "건설기계"
+    },
+    {
+      "id": "hd-hyundai-infracore",
+      "groupId": "hd-hyundai",
+      "name": "HD현대인프라코어",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "042670",
+      "stockPrice": 7860,
+      "priceChange": -140,
+      "priceChangePercent": -1.75,
+      "marketCap": 15700000000000,
+      "sector": "건설기계·엔진"
+    },
+    {
+      "id": "hd-oilbank",
+      "groupId": "hd-hyundai",
+      "name": "HD현대오일뱅크",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hd-site-solution",
+      "groupId": "hd-hyundai",
+      "name": "HD현대사이트솔루션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hd-robotics",
+      "groupId": "hd-hyundai",
+      "name": "HD현대로보틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "hd-future-partners",
+      "groupId": "hd-hyundai",
+      "name": "HD현대미래파트너스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "hd-chemical",
+      "groupId": "hd-hyundai",
+      "name": "HD현대케미칼",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hd-shell-base-oil",
+      "groupId": "hd-hyundai",
+      "name": "HD현대쉘베이스오일",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hd-oci",
+      "groupId": "hd-hyundai",
+      "name": "HD현대OCI",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hd-engine",
+      "groupId": "hd-hyundai",
+      "name": "HD현대엔진",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "hd-mns",
+      "groupId": "hd-hyundai",
+      "name": "HD현대엠엔에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hd-global-service",
+      "groupId": "hd-hyundai",
+      "name": "HD현대글로벌서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hd-avison-young",
+      "groupId": "hd-hyundai",
+      "name": "에비슨영코리아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hd-hyundai-welding",
+      "groupId": "hd-hyundai",
+      "name": "HD현대용접봉",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "hd-korea-shipbuilding",
+      "groupId": "hd-hyundai",
+      "name": "한국조선해양기자재연구원",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hd-hyundai-samho",
+      "groupId": "hd-hyundai",
+      "name": "HD현대삼호",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "hd-hyundai-vinashin",
+      "groupId": "hd-hyundai",
+      "name": "HD현대비나신",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    }
+  ],
+  "relations": [
+    {
+      "id": "hd-rel-001",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-ksoe",
+      "ownershipPct": 35.1
+    },
+    {
+      "id": "hd-rel-002",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-oilbank",
+      "ownershipPct": 73.8
+    },
+    {
+      "id": "hd-rel-003",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-site-solution",
+      "ownershipPct": 80.2
+    },
+    {
+      "id": "hd-rel-004",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-hyundai-electric",
+      "ownershipPct": 37
+    },
+    {
+      "id": "hd-rel-005",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-hyundai-marine-solution",
+      "ownershipPct": 55.3
+    },
+    {
+      "id": "hd-rel-006",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-robotics",
+      "ownershipPct": 90
+    },
+    {
+      "id": "hd-rel-007",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-future-partners",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-008",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-hyundai-corp",
+      "ownershipPct": 10.5
+    },
+    {
+      "id": "hd-rel-009",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-ksoe",
+      "toCompanyId": "hd-hhi",
+      "ownershipPct": 74.8
+    },
+    {
+      "id": "hd-rel-010",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-ksoe",
+      "toCompanyId": "hd-hyundai-energy-solution",
+      "ownershipPct": 53.6
+    },
+    {
+      "id": "hd-rel-011",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-ksoe",
+      "toCompanyId": "hd-hyundai-mipo",
+      "ownershipPct": 42.4
+    },
+    {
+      "id": "hd-rel-012",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-ksoe",
+      "toCompanyId": "hd-hyundai-marine-engine",
+      "ownershipPct": 35.05
+    },
+    {
+      "id": "hd-rel-013",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-ksoe",
+      "toCompanyId": "hd-hyundai-samho",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-014",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-oilbank",
+      "toCompanyId": "hd-chemical",
+      "ownershipPct": 60
+    },
+    {
+      "id": "hd-rel-015",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-oilbank",
+      "toCompanyId": "hd-shell-base-oil",
+      "ownershipPct": 60
+    },
+    {
+      "id": "hd-rel-016",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-oilbank",
+      "toCompanyId": "hd-oci",
+      "ownershipPct": 51
+    },
+    {
+      "id": "hd-rel-017",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hhi",
+      "toCompanyId": "hd-engine",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-018",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hhi",
+      "toCompanyId": "hd-mns",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-019",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hhi",
+      "toCompanyId": "hd-hyundai-welding",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-020",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-global-service",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-021",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-avison-young",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-022",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-corp",
+      "toCompanyId": "hd-hyundai-ce",
+      "ownershipPct": 72.5
+    },
+    {
+      "id": "hd-rel-023",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-hyundai-ce",
+      "toCompanyId": "hd-hyundai-infracore",
+      "ownershipPct": 34.3
+    },
+    {
+      "id": "hd-rel-024",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-ksoe",
+      "toCompanyId": "hd-hyundai-vinashin",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hd-rel-025",
+      "groupId": "hd-hyundai",
+      "fromCompanyId": "hd-ksoe",
+      "toCompanyId": "hd-korea-shipbuilding",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "hd-hyundai",
+      "companyId": "hd-hyundai-corp",
+      "ownershipPct": 26.6
+    }
+  ]
+}

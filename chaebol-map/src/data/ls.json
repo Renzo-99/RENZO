@@ -1,0 +1,305 @@
+{
+  "group": {
+    "id": "ls",
+    "name": "엘에스",
+    "slug": "ls",
+    "controllerName": "구자은",
+    "description": "LS그룹은 전선, 전력기기, 자동화 등 전기·에너지 분야를 주력으로 하는 대한민국의 대표 재벌 그룹이다. 지주회사 LS를 정점으로 LS일렉트릭, LS전선, LS엠트론 등 핵심 계열사를 보유하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 15,
+    "listedCompanies": 7
+  },
+  "companies": [
+    {
+      "id": "ls-corp",
+      "groupId": "ls",
+      "name": "엘에스",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "006260",
+      "stockPrice": 145000,
+      "priceChange": 3000,
+      "priceChangePercent": 2.11,
+      "marketCap": 46800,
+      "sector": "지주회사"
+    },
+    {
+      "id": "ls-electric",
+      "groupId": "ls",
+      "name": "엘에스일렉트릭",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "010120",
+      "stockPrice": 260000,
+      "priceChange": 5000,
+      "priceChangePercent": 1.96,
+      "marketCap": 82000,
+      "sector": "전력기기"
+    },
+    {
+      "id": "ls-marine-solution",
+      "groupId": "ls",
+      "name": "엘에스마린솔루션",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "060370",
+      "stockPrice": 12800,
+      "priceChange": -100,
+      "priceChangePercent": -0.78,
+      "marketCap": 3200,
+      "sector": "선박전기"
+    },
+    {
+      "id": "ls-gaon-cable",
+      "groupId": "ls",
+      "name": "가온전선",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "000500",
+      "stockPrice": 38400,
+      "priceChange": 400,
+      "priceChangePercent": 1.05,
+      "marketCap": 4900,
+      "sector": "전선"
+    },
+    {
+      "id": "ls-eco-energy",
+      "groupId": "ls",
+      "name": "엘에스에코에너지",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "229640",
+      "stockPrice": 21600,
+      "priceChange": 250,
+      "priceChangePercent": 1.17,
+      "marketCap": 3800,
+      "sector": "전선·에너지"
+    },
+    {
+      "id": "ls-securities",
+      "groupId": "ls",
+      "name": "LS증권",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험",
+      "stockCode": "030610",
+      "stockPrice": 5680,
+      "priceChange": -40,
+      "priceChangePercent": -0.7,
+      "marketCap": 2800,
+      "sector": "증권"
+    },
+    {
+      "id": "ls-inveni",
+      "groupId": "ls",
+      "name": "인베니",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "474580",
+      "stockPrice": 8750,
+      "priceChange": 120,
+      "priceChangePercent": 1.39,
+      "marketCap": 1100,
+      "sector": "배터리소재"
+    },
+    {
+      "id": "ls-mnm",
+      "groupId": "ls",
+      "name": "엘에스엠앤엠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "ls-global-inc",
+      "groupId": "ls",
+      "name": "엘에스글로벌인코퍼레이티드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "ls-elink",
+      "groupId": "ls",
+      "name": "엘에스이링크",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "ls-ind",
+      "groupId": "ls",
+      "name": "엘에스아이앤디",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "ls-mtron",
+      "groupId": "ls",
+      "name": "엘에스엠트론",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기계"
+    },
+    {
+      "id": "ls-cable",
+      "groupId": "ls",
+      "name": "엘에스전선",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "ls-lnf-battery",
+      "groupId": "ls",
+      "name": "엘에스엘앤에프배터리솔루션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "ls-automation",
+      "groupId": "ls",
+      "name": "엘에스오토메이션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-mnm",
+      "ownershipPct": 75.1
+    },
+    {
+      "id": "rel-002",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-global-inc",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-003",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-electric",
+      "ownershipPct": 48.5
+    },
+    {
+      "id": "rel-004",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-elink",
+      "ownershipPct": 50
+    },
+    {
+      "id": "rel-005",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-ind",
+      "ownershipPct": 95.1
+    },
+    {
+      "id": "rel-006",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-mtron",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-007",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-cable",
+      "ownershipPct": 92.3
+    },
+    {
+      "id": "rel-008",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-lnf-battery",
+      "ownershipPct": 55
+    },
+    {
+      "id": "rel-009",
+      "groupId": "ls",
+      "fromCompanyId": "ls-corp",
+      "toCompanyId": "ls-securities",
+      "ownershipPct": 50.5
+    },
+    {
+      "id": "rel-010",
+      "groupId": "ls",
+      "fromCompanyId": "ls-electric",
+      "toCompanyId": "ls-marine-solution",
+      "ownershipPct": 66.8
+    },
+    {
+      "id": "rel-011",
+      "groupId": "ls",
+      "fromCompanyId": "ls-cable",
+      "toCompanyId": "ls-gaon-cable",
+      "ownershipPct": 69.9
+    },
+    {
+      "id": "rel-012",
+      "groupId": "ls",
+      "fromCompanyId": "ls-cable",
+      "toCompanyId": "ls-eco-energy",
+      "ownershipPct": 81.6
+    },
+    {
+      "id": "rel-013",
+      "groupId": "ls",
+      "fromCompanyId": "ls-electric",
+      "toCompanyId": "ls-automation",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-014",
+      "groupId": "ls",
+      "fromCompanyId": "ls-lnf-battery",
+      "toCompanyId": "ls-inveni",
+      "ownershipPct": 60
+    },
+    {
+      "id": "rel-015",
+      "groupId": "ls",
+      "fromCompanyId": "ls-mnm",
+      "toCompanyId": "ls-eco-energy",
+      "ownershipPct": 5.2
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "ls",
+      "companyId": "ls-corp",
+      "ownershipPct": 3.6
+    }
+  ]
+}

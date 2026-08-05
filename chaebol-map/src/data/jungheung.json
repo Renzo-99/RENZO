@@ -1,0 +1,420 @@
+{
+  "group": {
+    "id": "jungheung",
+    "name": "중흥건설",
+    "slug": "jungheung",
+    "controllerName": "정창선",
+    "description": "중흥건설그룹은 건설업을 중심으로 성장한 대한민국의 재벌그룹으로 토건·주택 사업을 핵심으로 영위",
+    "dataDate": "2025-05-01",
+    "totalCompanies": 25,
+    "listedCompanies": 1
+  },
+  "companies": [
+    {
+      "id": "jungheung-controller",
+      "groupId": "jungheung",
+      "name": "정창선",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "jungheung-construction",
+      "groupId": "jungheung",
+      "name": "중흥건설",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설",
+      "stockCode": "000540",
+      "stockPrice": 4800,
+      "priceChange": -50,
+      "priceChangePercent": -1.03,
+      "marketCap": 3200,
+      "sector": "건설"
+    },
+    {
+      "id": "jungheung-togun",
+      "groupId": "jungheung",
+      "name": "중흥토건",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-s-class",
+      "groupId": "jungheung",
+      "name": "중흥S-클래스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-development",
+      "groupId": "jungheung",
+      "name": "중흥개발",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "부동산"
+    },
+    {
+      "id": "jungheung-engineering",
+      "groupId": "jungheung",
+      "name": "중흥엔지니어링",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-environment",
+      "groupId": "jungheung",
+      "name": "중흥환경",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "환경"
+    },
+    {
+      "id": "jungheung-cm",
+      "groupId": "jungheung",
+      "name": "중흥씨엠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-housing",
+      "groupId": "jungheung",
+      "name": "중흥주택",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-gn",
+      "groupId": "jungheung",
+      "name": "중흥지엔",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-asset",
+      "groupId": "jungheung",
+      "name": "중흥자산개발",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "부동산"
+    },
+    {
+      "id": "jungheung-landscape",
+      "groupId": "jungheung",
+      "name": "중흥조경",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-pns",
+      "groupId": "jungheung",
+      "name": "중흥피앤에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-hotel",
+      "groupId": "jungheung",
+      "name": "중흥호텔리조트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "jungheung-golf",
+      "groupId": "jungheung",
+      "name": "중흥골프",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "jungheung-energy",
+      "groupId": "jungheung",
+      "name": "중흥에너지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지"
+    },
+    {
+      "id": "jungheung-remodeling",
+      "groupId": "jungheung",
+      "name": "중흥리모델링",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-design",
+      "groupId": "jungheung",
+      "name": "중흥디자인",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "jungheung-cs",
+      "groupId": "jungheung",
+      "name": "중흥CS",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "jungheung-logistics",
+      "groupId": "jungheung",
+      "name": "중흥로지스틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "jungheung-electric",
+      "groupId": "jungheung",
+      "name": "중흥전기",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-infra",
+      "groupId": "jungheung",
+      "name": "중흥인프라",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-tech",
+      "groupId": "jungheung",
+      "name": "중흥테크",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "jungheung-fm",
+      "groupId": "jungheung",
+      "name": "중흥FM",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "jungheung-partners",
+      "groupId": "jungheung",
+      "name": "중흥파트너스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    }
+  ],
+  "relations": [
+    {
+      "id": "jh-rel-001",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-togun",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-002",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-s-class",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-003",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-development",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-004",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-engineering",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-005",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-environment",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-006",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-cm",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-007",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-housing",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-008",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-gn",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-009",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-asset",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-010",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-landscape",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-011",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-hotel",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-012",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-golf",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-013",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-energy",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-014",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-togun",
+      "toCompanyId": "jungheung-pns",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-015",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-togun",
+      "toCompanyId": "jungheung-remodeling",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-016",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-design",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-017",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-cs",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-018",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-logistics",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-019",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-electric",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-020",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-infra",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-021",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-tech",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-022",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-fm",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "jh-rel-023",
+      "groupId": "jungheung",
+      "fromCompanyId": "jungheung-construction",
+      "toCompanyId": "jungheung-partners",
+      "ownershipPct": 100.0
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "jungheung",
+      "companyId": "jungheung-construction",
+      "ownershipPct": 47.6
+    },
+    {
+      "groupId": "jungheung",
+      "companyId": "jungheung-togun",
+      "ownershipPct": 12.3
+    }
+  ]
+}

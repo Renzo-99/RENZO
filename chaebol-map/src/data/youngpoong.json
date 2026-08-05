@@ -1,0 +1,170 @@
+{
+  "group": {
+    "id": "youngpoong",
+    "name": "영풍",
+    "slug": "youngpoong",
+    "controllerName": "장형진",
+    "description": "영풍그룹은 비철금속(아연) 제련 중심의 그룹으로 고려아연이 핵심 계열사",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 2
+  },
+  "companies": [
+    {
+      "id": "yp-controller",
+      "groupId": "youngpoong",
+      "name": "장형진",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "youngpoong-corp",
+      "groupId": "youngpoong",
+      "name": "영풍",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "비철금속",
+      "stockCode": "000670",
+      "stockPrice": 635000,
+      "priceChange": 12000,
+      "priceChangePercent": 1.93,
+      "marketCap": 12700,
+      "sector": "비철금속제련"
+    },
+    {
+      "id": "korea-zinc",
+      "groupId": "youngpoong",
+      "name": "고려아연",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "비철금속",
+      "stockCode": "010130",
+      "stockPrice": 890000,
+      "priceChange": -15000,
+      "priceChangePercent": -1.66,
+      "marketCap": 168000,
+      "sector": "비철금속제련"
+    },
+    {
+      "id": "yp-precision",
+      "groupId": "youngpoong",
+      "name": "영풍정밀",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "정밀기계"
+    },
+    {
+      "id": "yp-mining",
+      "groupId": "youngpoong",
+      "name": "영풍광업",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "광업"
+    },
+    {
+      "id": "yp-electronics",
+      "groupId": "youngpoong",
+      "name": "영풍전자",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자"
+    },
+    {
+      "id": "yp-development",
+      "groupId": "youngpoong",
+      "name": "영풍개발",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "개발"
+    },
+    {
+      "id": "stc-metal",
+      "groupId": "youngpoong",
+      "name": "STC메탈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "비철금속"
+    },
+    {
+      "id": "yp-global",
+      "groupId": "youngpoong",
+      "name": "영풍글로벌",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "무역"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-yp-1",
+      "groupId": "youngpoong",
+      "fromCompanyId": "youngpoong-corp",
+      "toCompanyId": "korea-zinc",
+      "ownershipPct": 25.4
+    },
+    {
+      "id": "rel-yp-2",
+      "groupId": "youngpoong",
+      "fromCompanyId": "youngpoong-corp",
+      "toCompanyId": "yp-precision",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-yp-3",
+      "groupId": "youngpoong",
+      "fromCompanyId": "youngpoong-corp",
+      "toCompanyId": "yp-mining",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-yp-4",
+      "groupId": "youngpoong",
+      "fromCompanyId": "korea-zinc",
+      "toCompanyId": "yp-electronics",
+      "ownershipPct": 56.2
+    },
+    {
+      "id": "rel-yp-5",
+      "groupId": "youngpoong",
+      "fromCompanyId": "korea-zinc",
+      "toCompanyId": "stc-metal",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-yp-6",
+      "groupId": "youngpoong",
+      "fromCompanyId": "youngpoong-corp",
+      "toCompanyId": "yp-development",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-yp-7",
+      "groupId": "youngpoong",
+      "fromCompanyId": "youngpoong-corp",
+      "toCompanyId": "yp-global",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "youngpoong",
+      "companyId": "youngpoong-corp",
+      "ownershipPct": 22.5
+    },
+    {
+      "groupId": "youngpoong",
+      "companyId": "korea-zinc",
+      "ownershipPct": 1.5
+    }
+  ]
+}

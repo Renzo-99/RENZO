@@ -1,0 +1,512 @@
+{
+  "group": {
+    "id": "dl",
+    "name": "DL",
+    "slug": "dl",
+    "controllerName": "이준용",
+    "description": "DL그룹은 건설, 화학, 에너지 분야를 중심으로 사업을 영위하는 대한민국의 주요 재벌그룹",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 30,
+    "listedCompanies": 3
+  },
+  "companies": [
+    {
+      "id": "dl-controller",
+      "groupId": "dl",
+      "name": "이준용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "dl-holdings",
+      "groupId": "dl",
+      "name": "DL",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주",
+      "stockCode": "000210",
+      "stockPrice": 78000,
+      "priceChange": 1500,
+      "priceChangePercent": 1.96,
+      "marketCap": 41000,
+      "sector": "지주회사"
+    },
+    {
+      "id": "dl-enc",
+      "groupId": "dl",
+      "name": "DL이앤씨",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설",
+      "stockCode": "375500",
+      "stockPrice": 42000,
+      "priceChange": 500,
+      "priceChangePercent": 1.2,
+      "marketCap": 22000,
+      "sector": "건설"
+    },
+    {
+      "id": "dl-chemical",
+      "groupId": "dl",
+      "name": "DL케미칼",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학",
+      "stockCode": "092200",
+      "stockPrice": 47200,
+      "priceChange": 200,
+      "priceChangePercent": 0.43,
+      "marketCap": 13600,
+      "sector": "석유화학"
+    },
+    {
+      "id": "dl-construction",
+      "groupId": "dl",
+      "name": "DL건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-energy",
+      "groupId": "dl",
+      "name": "DL에너지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지"
+    },
+    {
+      "id": "dl-global",
+      "groupId": "dl",
+      "name": "DL글로벌",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "dl-industrial",
+      "groupId": "dl",
+      "name": "DL인더스트리",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학"
+    },
+    {
+      "id": "cabot-korea",
+      "groupId": "dl",
+      "name": "카봇코리아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학"
+    },
+    {
+      "id": "dl-partners",
+      "groupId": "dl",
+      "name": "DL파트너스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "yido",
+      "groupId": "dl",
+      "name": "와이디오",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "dl-data-center",
+      "groupId": "dl",
+      "name": "DL데이터센터",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "dl-ld",
+      "groupId": "dl",
+      "name": "DL이앤디",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-cm",
+      "groupId": "dl",
+      "name": "DL씨엠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-prime",
+      "groupId": "dl",
+      "name": "DL프라임",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-living",
+      "groupId": "dl",
+      "name": "DL리빙",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "dl-power",
+      "groupId": "dl",
+      "name": "DL파워",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지"
+    },
+    {
+      "id": "dl-solvent",
+      "groupId": "dl",
+      "name": "DL솔벤트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학"
+    },
+    {
+      "id": "dl-mates",
+      "groupId": "dl",
+      "name": "DL메이츠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "dl-enc-vietnam",
+      "groupId": "dl",
+      "name": "DL이앤씨베트남",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-chemical-usa",
+      "groupId": "dl",
+      "name": "DL케미칼USA",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학"
+    },
+    {
+      "id": "dl-polychem",
+      "groupId": "dl",
+      "name": "DL폴리켐",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학"
+    },
+    {
+      "id": "dl-logistics",
+      "groupId": "dl",
+      "name": "DL로지스틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "dl-asset",
+      "groupId": "dl",
+      "name": "DL자산운용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "dl-ecowin",
+      "groupId": "dl",
+      "name": "DL에코윈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지"
+    },
+    {
+      "id": "dl-stm",
+      "groupId": "dl",
+      "name": "DL에스티엠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-concrete",
+      "groupId": "dl",
+      "name": "DL콘크리트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-infra",
+      "groupId": "dl",
+      "name": "DL인프라",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "dl-creative",
+      "groupId": "dl",
+      "name": "DL크리에이티브",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "dl-smart-city",
+      "groupId": "dl",
+      "name": "DL스마트시티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    }
+  ],
+  "relations": [
+    {
+      "id": "dl-rel-001",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-enc",
+      "ownershipPct": 38.1
+    },
+    {
+      "id": "dl-rel-002",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-chemical",
+      "ownershipPct": 48.8
+    },
+    {
+      "id": "dl-rel-003",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-energy",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-004",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-global",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-005",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-partners",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-006",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "yido",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-007",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-asset",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-008",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-data-center",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-009",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-living",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-010",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-creative",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-011",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-construction",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-012",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-ld",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-013",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-cm",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-014",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-prime",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-015",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-enc-vietnam",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-016",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-stm",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-017",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-concrete",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-018",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-infra",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-019",
+      "groupId": "dl",
+      "fromCompanyId": "dl-enc",
+      "toCompanyId": "dl-smart-city",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-020",
+      "groupId": "dl",
+      "fromCompanyId": "dl-chemical",
+      "toCompanyId": "dl-industrial",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-021",
+      "groupId": "dl",
+      "fromCompanyId": "dl-chemical",
+      "toCompanyId": "cabot-korea",
+      "ownershipPct": 50
+    },
+    {
+      "id": "dl-rel-022",
+      "groupId": "dl",
+      "fromCompanyId": "dl-chemical",
+      "toCompanyId": "dl-solvent",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-023",
+      "groupId": "dl",
+      "fromCompanyId": "dl-chemical",
+      "toCompanyId": "dl-polychem",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-024",
+      "groupId": "dl",
+      "fromCompanyId": "dl-chemical",
+      "toCompanyId": "dl-chemical-usa",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-025",
+      "groupId": "dl",
+      "fromCompanyId": "dl-energy",
+      "toCompanyId": "dl-power",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-026",
+      "groupId": "dl",
+      "fromCompanyId": "dl-energy",
+      "toCompanyId": "dl-ecowin",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-027",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-mates",
+      "ownershipPct": 100
+    },
+    {
+      "id": "dl-rel-028",
+      "groupId": "dl",
+      "fromCompanyId": "dl-holdings",
+      "toCompanyId": "dl-logistics",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "dl",
+      "companyId": "dl-holdings",
+      "ownershipPct": 33.2
+    },
+    {
+      "groupId": "dl",
+      "companyId": "dl-enc",
+      "ownershipPct": 1.2
+    }
+  ]
+}

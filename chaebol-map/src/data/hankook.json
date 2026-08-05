@@ -1,0 +1,522 @@
+{
+  "group": {
+    "id": "hankook",
+    "name": "한국앤컴퍼니",
+    "slug": "hankook",
+    "controllerName": "조현범",
+    "description": "한국앤컴퍼니그룹은 타이어 제조를 중심으로 한 대한민국의 주요 재벌 그룹이다. 지주회사 한국앤컴퍼니를 중심으로 한국타이어앤테크놀로지, 한국아트라스BX 등 핵심 계열사를 보유하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 30,
+    "listedCompanies": 2
+  },
+  "companies": [
+    {
+      "id": "hankook-controller",
+      "groupId": "hankook",
+      "name": "조현범",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "hankook-company",
+      "groupId": "hankook",
+      "name": "한국앤컴퍼니",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "000240",
+      "stockPrice": 18500,
+      "priceChange": 200,
+      "priceChangePercent": 1.09,
+      "marketCap": 10200,
+      "sector": "지주회사"
+    },
+    {
+      "id": "hankook-tire",
+      "groupId": "hankook",
+      "name": "한국타이어앤테크놀로지",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품",
+      "stockCode": "161390",
+      "stockPrice": 56000,
+      "priceChange": 800,
+      "priceChangePercent": 1.45,
+      "marketCap": 74000,
+      "sector": "타이어"
+    },
+    {
+      "id": "hankook-atlasbx",
+      "groupId": "hankook",
+      "name": "한국아트라스BX",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-precision-works",
+      "groupId": "hankook",
+      "name": "한국프리시전웍스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "제조"
+    },
+    {
+      "id": "hankook-networks",
+      "groupId": "hankook",
+      "name": "한국네트웍스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hankook-tire-worldwide",
+      "groupId": "hankook",
+      "name": "한국타이어월드와이드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hankook-engineering",
+      "groupId": "hankook",
+      "name": "한국엔지니어링",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "hankook-donggeurami",
+      "groupId": "hankook",
+      "name": "한국동그라미",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hankook-tps",
+      "groupId": "hankook",
+      "name": "한국테크놀로지그룹서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "emfrontier",
+      "groupId": "hankook",
+      "name": "이엠프론티어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "hankook-tire-japan",
+      "groupId": "hankook",
+      "name": "한국타이어재팬",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-america",
+      "groupId": "hankook",
+      "name": "한국타이어아메리카",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-europe",
+      "groupId": "hankook",
+      "name": "한국타이어유럽",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-china",
+      "groupId": "hankook",
+      "name": "한국타이어중국",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-canada",
+      "groupId": "hankook",
+      "name": "한국타이어캐나다",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-uk",
+      "groupId": "hankook",
+      "name": "한국타이어UK",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-hungary",
+      "groupId": "hankook",
+      "name": "한국타이어헝가리",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "제조"
+    },
+    {
+      "id": "hankook-tire-indonesia",
+      "groupId": "hankook",
+      "name": "한국타이어인도네시아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "제조"
+    },
+    {
+      "id": "hankook-networks-logistics",
+      "groupId": "hankook",
+      "name": "한국네트웍스로지스틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    },
+    {
+      "id": "atlasbx-china",
+      "groupId": "hankook",
+      "name": "아트라스BX중국",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-tennessee",
+      "groupId": "hankook",
+      "name": "한국타이어테네시",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "제조"
+    },
+    {
+      "id": "hankook-tire-germany",
+      "groupId": "hankook",
+      "name": "한국타이어독일",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-technodome",
+      "groupId": "hankook",
+      "name": "한국테크노돔",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hankook-development",
+      "groupId": "hankook",
+      "name": "한국개발",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "hankook-networks-service",
+      "groupId": "hankook",
+      "name": "한국네트웍스서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hankook-tire-australia",
+      "groupId": "hankook",
+      "name": "한국타이어호주",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-france",
+      "groupId": "hankook",
+      "name": "한국타이어프랑스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-mexico",
+      "groupId": "hankook",
+      "name": "한국타이어멕시코",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-india",
+      "groupId": "hankook",
+      "name": "한국타이어인디아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    },
+    {
+      "id": "hankook-tire-spain",
+      "groupId": "hankook",
+      "name": "한국타이어스페인",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차부품"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-tire",
+      "ownershipPct": 30.73
+    },
+    {
+      "id": "rel-002",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-atlasbx",
+      "ownershipPct": 51
+    },
+    {
+      "id": "rel-003",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-precision-works",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-004",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-networks",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-005",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-engineering",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-006",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-donggeurami",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-007",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-tps",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-008",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "emfrontier",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-009",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-development",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-010",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-technodome",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-011",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-japan",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-012",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-america",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-013",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-europe",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-014",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-china",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-015",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-canada",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-016",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-uk",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-017",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-hungary",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-018",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-indonesia",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-019",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-tennessee",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-020",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-germany",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-021",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-australia",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-022",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-france",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-023",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-mexico",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-024",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-india",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-025",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-tire",
+      "toCompanyId": "hankook-tire-spain",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-026",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-networks",
+      "toCompanyId": "hankook-networks-logistics",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-027",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-networks",
+      "toCompanyId": "hankook-networks-service",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-028",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-atlasbx",
+      "toCompanyId": "atlasbx-china",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-029",
+      "groupId": "hankook",
+      "fromCompanyId": "hankook-company",
+      "toCompanyId": "hankook-tire-worldwide",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "hankook",
+      "companyId": "hankook-company",
+      "ownershipPct": 24.73
+    },
+    {
+      "groupId": "hankook",
+      "companyId": "hankook-tire",
+      "ownershipPct": 1.27
+    }
+  ]
+}

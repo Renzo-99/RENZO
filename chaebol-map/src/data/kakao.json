@@ -1,0 +1,376 @@
+{
+  "group": {
+    "id": "kakao",
+    "name": "카카오",
+    "slug": "kakao",
+    "controllerName": "김범수",
+    "description": "카카오그룹은 플랫폼, 핀테크, 엔터테인먼트, 모빌리티 등을 주력으로 하는 대한민국의 대표 IT 그룹이다. 카카오를 정점으로 카카오뱅크, 카카오페이, 카카오엔터테인먼트 등 핵심 계열사를 보유하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 7
+  },
+  "companies": [
+    {
+      "id": "kakao-corp",
+      "groupId": "kakao",
+      "name": "카카오",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "035720",
+      "stockPrice": 55100,
+      "priceChange": -800,
+      "priceChangePercent": -1.43,
+      "marketCap": 245000,
+      "sector": "인터넷플랫폼"
+    },
+    {
+      "id": "kakao-bank",
+      "groupId": "kakao",
+      "name": "카카오뱅크",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험",
+      "stockCode": "323410",
+      "stockPrice": 24350,
+      "priceChange": 200,
+      "priceChangePercent": 0.83,
+      "marketCap": 115600,
+      "sector": "인터넷은행"
+    },
+    {
+      "id": "kakao-pay",
+      "groupId": "kakao",
+      "name": "카카오페이",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험",
+      "stockCode": "377300",
+      "stockPrice": 27800,
+      "priceChange": -300,
+      "priceChangePercent": -1.07,
+      "marketCap": 37200,
+      "sector": "핀테크"
+    },
+    {
+      "id": "kakao-games",
+      "groupId": "kakao",
+      "name": "카카오게임즈",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "293490",
+      "stockPrice": 18200,
+      "priceChange": 250,
+      "priceChangePercent": 1.39,
+      "marketCap": 16100,
+      "sector": "게임"
+    },
+    {
+      "id": "kakao-sm-ent",
+      "groupId": "kakao",
+      "name": "에스엠엔터테인먼트",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "041510",
+      "stockPrice": 78500,
+      "priceChange": 1500,
+      "priceChangePercent": 1.95,
+      "marketCap": 18200,
+      "sector": "엔터테인먼트"
+    },
+    {
+      "id": "kakao-neptune",
+      "groupId": "kakao",
+      "name": "넵튠",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "217270",
+      "stockPrice": 5280,
+      "priceChange": -60,
+      "priceChangePercent": -1.12,
+      "marketCap": 2200,
+      "sector": "게임·플랫폼"
+    },
+    {
+      "id": "kakao-keyeast",
+      "groupId": "kakao",
+      "name": "키이스트",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "054780",
+      "stockPrice": 3650,
+      "priceChange": 45,
+      "priceChangePercent": 1.25,
+      "marketCap": 1400,
+      "sector": "연예·콘텐츠"
+    },
+    {
+      "id": "kakao-entertainment",
+      "groupId": "kakao",
+      "name": "카카오엔터테인먼트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kakao-investment",
+      "groupId": "kakao",
+      "name": "카카오인베스트먼트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/투자"
+    },
+    {
+      "id": "kakao-mobility",
+      "groupId": "kakao",
+      "name": "카카오모빌리티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kakao-ventures",
+      "groupId": "kakao",
+      "name": "카카오벤처스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/투자"
+    },
+    {
+      "id": "kakao-kcube",
+      "groupId": "kakao",
+      "name": "케이큐브홀딩스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/투자"
+    },
+    {
+      "id": "kakao-gline",
+      "groupId": "kakao",
+      "name": "글라인",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kakao-antenna",
+      "groupId": "kakao",
+      "name": "안테나",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kakao-ist",
+      "groupId": "kakao",
+      "name": "IST엔터",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kakao-lionheart",
+      "groupId": "kakao",
+      "name": "라이온하트스튜디오",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kakao-piccoma",
+      "groupId": "kakao",
+      "name": "카카오픽코마",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kakao-brain",
+      "groupId": "kakao",
+      "name": "카카오브레인",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kakao-healthcare",
+      "groupId": "kakao",
+      "name": "카카오헬스케어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "kakao-enterprise",
+      "groupId": "kakao",
+      "name": "카카오엔터프라이즈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-entertainment",
+      "ownershipPct": 66
+    },
+    {
+      "id": "rel-002",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-sm-ent",
+      "ownershipPct": 21.6
+    },
+    {
+      "id": "rel-003",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-games",
+      "ownershipPct": 40.7
+    },
+    {
+      "id": "rel-004",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-investment",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-005",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-mobility",
+      "ownershipPct": 57.2
+    },
+    {
+      "id": "rel-006",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-bank",
+      "ownershipPct": 27.2
+    },
+    {
+      "id": "rel-007",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-pay",
+      "ownershipPct": 46.3
+    },
+    {
+      "id": "rel-008",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-ventures",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-009",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-piccoma",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-010",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-brain",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-011",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-healthcare",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-012",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-corp",
+      "toCompanyId": "kakao-enterprise",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-013",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-entertainment",
+      "toCompanyId": "kakao-gline",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-014",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-entertainment",
+      "toCompanyId": "kakao-antenna",
+      "ownershipPct": 57.9
+    },
+    {
+      "id": "rel-015",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-entertainment",
+      "toCompanyId": "kakao-ist",
+      "ownershipPct": 81
+    },
+    {
+      "id": "rel-016",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-entertainment",
+      "toCompanyId": "kakao-keyeast",
+      "ownershipPct": 48.6
+    },
+    {
+      "id": "rel-017",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-games",
+      "toCompanyId": "kakao-neptune",
+      "ownershipPct": 39.4
+    },
+    {
+      "id": "rel-018",
+      "groupId": "kakao",
+      "fromCompanyId": "kakao-games",
+      "toCompanyId": "kakao-lionheart",
+      "ownershipPct": 24.6
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "kakao",
+      "companyId": "kakao-corp",
+      "ownershipPct": 13.3
+    },
+    {
+      "groupId": "kakao",
+      "companyId": "kakao-kcube",
+      "ownershipPct": 100
+    }
+  ]
+}

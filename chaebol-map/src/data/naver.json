@@ -1,0 +1,981 @@
+{
+  "group": {
+    "id": "naver",
+    "name": "네이버",
+    "slug": "naver",
+    "controllerName": "최수연",
+    "description": "네이버그룹은 대한민국 최대 IT플랫폼 기업으로 검색, 커머스, 웹툰, 클라우드, AI 등 다양한 디지털 서비스를 운영",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 60,
+    "listedCompanies": 2
+  },
+  "companies": [
+    {
+      "id": "naver-controller",
+      "groupId": "naver",
+      "name": "최수연",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "naver-corp",
+      "groupId": "naver",
+      "name": "네이버",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT플랫폼",
+      "stockCode": "035420",
+      "stockPrice": 263750,
+      "priceChange": 10750,
+      "priceChangePercent": 4.25,
+      "marketCap": 432000,
+      "sector": "인터넷서비스"
+    },
+    {
+      "id": "naver-webtoon",
+      "groupId": "naver",
+      "name": "네이버웹툰",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "엔터테인먼트",
+      "stockCode": "WBTN",
+      "stockPrice": 15200,
+      "priceChange": -300,
+      "priceChangePercent": -1.94,
+      "marketCap": 32000,
+      "sector": "디지털콘텐츠"
+    },
+    {
+      "id": "naver-cloud",
+      "groupId": "naver",
+      "name": "네이버클라우드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "클라우드/AI"
+    },
+    {
+      "id": "naver-financial",
+      "groupId": "naver",
+      "name": "네이버파이낸셜",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "naver-labs",
+      "groupId": "naver",
+      "name": "네이버랩스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "로보틱스/AI"
+    },
+    {
+      "id": "line-plus",
+      "groupId": "naver",
+      "name": "라인플러스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "메신저"
+    },
+    {
+      "id": "snow-corp",
+      "groupId": "naver",
+      "name": "스노우",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI/카메라앱"
+    },
+    {
+      "id": "naver-i-and-s",
+      "groupId": "naver",
+      "name": "네이버아이앤에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "works-mobile",
+      "groupId": "naver",
+      "name": "웍스모바일",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "협업도구"
+    },
+    {
+      "id": "naver-z",
+      "groupId": "naver",
+      "name": "네이버제트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "메타버스"
+    },
+    {
+      "id": "naver-search-trend",
+      "groupId": "naver",
+      "name": "네이버서치트렌드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "naver-shopping",
+      "groupId": "naver",
+      "name": "네이버쇼핑",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "이커머스"
+    },
+    {
+      "id": "naver-place",
+      "groupId": "naver",
+      "name": "네이버플레이스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "spring-camp",
+      "groupId": "naver",
+      "name": "스프링캠프",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "naver-dna-plus",
+      "groupId": "naver",
+      "name": "네이버디앤에이플러스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "광고"
+    },
+    {
+      "id": "naver-data-center",
+      "groupId": "naver",
+      "name": "네이버데이터센터",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT인프라"
+    },
+    {
+      "id": "naver-business-platform",
+      "groupId": "naver",
+      "name": "네이버비즈니스플랫폼",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "광고"
+    },
+    {
+      "id": "audioclip",
+      "groupId": "naver",
+      "name": "오디오클립",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "clova-care",
+      "groupId": "naver",
+      "name": "클로바케어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI/헬스케어"
+    },
+    {
+      "id": "naver-vibe",
+      "groupId": "naver",
+      "name": "바이브",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "음악스트리밍"
+    },
+    {
+      "id": "line-studio",
+      "groupId": "naver",
+      "name": "라인스튜디오",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "line-friends",
+      "groupId": "naver",
+      "name": "라인프렌즈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "캐릭터/IP"
+    },
+    {
+      "id": "naver-pay",
+      "groupId": "naver",
+      "name": "네이버페이",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "핀테크"
+    },
+    {
+      "id": "naver-investment",
+      "groupId": "naver",
+      "name": "네이버투자",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "snow-japan",
+      "groupId": "naver",
+      "name": "스노우재팬",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "cream",
+      "groupId": "naver",
+      "name": "크림",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "이커머스"
+    },
+    {
+      "id": "naver-plus-membership",
+      "groupId": "naver",
+      "name": "네이버플러스멤버십",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "naver-cloud-japan",
+      "groupId": "naver",
+      "name": "네이버클라우드재팬",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "클라우드"
+    },
+    {
+      "id": "naver-cloud-asia-pacific",
+      "groupId": "naver",
+      "name": "네이버클라우드아시아퍼시픽",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "클라우드"
+    },
+    {
+      "id": "naver-cloud-europe",
+      "groupId": "naver",
+      "name": "네이버클라우드유럽",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "클라우드"
+    },
+    {
+      "id": "naver-financial-plus",
+      "groupId": "naver",
+      "name": "네이버파이낸셜플러스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "naver-insurance",
+      "groupId": "naver",
+      "name": "네이버보험서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "nhn-edutech",
+      "groupId": "naver",
+      "name": "NHN에듀테크",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "교육"
+    },
+    {
+      "id": "naver-labs-europe",
+      "groupId": "naver",
+      "name": "네이버랩스유럽",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI연구"
+    },
+    {
+      "id": "naver-labs-japan",
+      "groupId": "naver",
+      "name": "네이버랩스재팬",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI연구"
+    },
+    {
+      "id": "wattpad",
+      "groupId": "naver",
+      "name": "왓패드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "munpia",
+      "groupId": "naver",
+      "name": "문피아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "naver-series-on",
+      "groupId": "naver",
+      "name": "네이버시리즈온",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "naver-cloud-trust",
+      "groupId": "naver",
+      "name": "네이버클라우드트러스트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "보안"
+    },
+    {
+      "id": "works-mobile-japan",
+      "groupId": "naver",
+      "name": "웍스모바일재팬",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "협업도구"
+    },
+    {
+      "id": "line-taiwan",
+      "groupId": "naver",
+      "name": "라인타이완",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "메신저"
+    },
+    {
+      "id": "line-thailand",
+      "groupId": "naver",
+      "name": "라인태국",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "메신저"
+    },
+    {
+      "id": "v-live",
+      "groupId": "naver",
+      "name": "브이라이브",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "naver-property",
+      "groupId": "naver",
+      "name": "네이버부동산",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "naver-maps",
+      "groupId": "naver",
+      "name": "네이버맵스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "naver-1784",
+      "groupId": "naver",
+      "name": "네이버1784",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "부동산/IT"
+    },
+    {
+      "id": "naver-clova",
+      "groupId": "naver",
+      "name": "네이버클로바",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI"
+    },
+    {
+      "id": "smart-studio",
+      "groupId": "naver",
+      "name": "스마트스튜디오",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "happybean",
+      "groupId": "naver",
+      "name": "해피빈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "사회공헌"
+    },
+    {
+      "id": "snowbell",
+      "groupId": "naver",
+      "name": "스노우벨",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI"
+    },
+    {
+      "id": "naver-square",
+      "groupId": "naver",
+      "name": "네이버스퀘어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "playlist-corp",
+      "groupId": "naver",
+      "name": "플레이리스트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "콘텐츠"
+    },
+    {
+      "id": "naver-genie",
+      "groupId": "naver",
+      "name": "네이버지니",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI"
+    },
+    {
+      "id": "naver-cloud-platform",
+      "groupId": "naver",
+      "name": "네이버클라우드플랫폼",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "클라우드"
+    },
+    {
+      "id": "line-financial",
+      "groupId": "naver",
+      "name": "라인파이낸셜",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "line-pay",
+      "groupId": "naver",
+      "name": "라인페이",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "핀테크"
+    },
+    {
+      "id": "naver-ai-lab",
+      "groupId": "naver",
+      "name": "네이버AI연구소",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "AI연구"
+    },
+    {
+      "id": "naver-connect",
+      "groupId": "naver",
+      "name": "네이버커넥트재단",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "재단"
+    },
+    {
+      "id": "naver-cultural",
+      "groupId": "naver",
+      "name": "네이버문화재단",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "재단"
+    }
+  ],
+  "relations": [
+    {
+      "id": "nv-rel-001",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-cloud",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-002",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-financial",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-003",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-webtoon",
+      "ownershipPct": 67.6
+    },
+    {
+      "id": "nv-rel-004",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "line-plus",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-005",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "snow-corp",
+      "ownershipPct": 42.8
+    },
+    {
+      "id": "nv-rel-006",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-labs",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-007",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-i-and-s",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-008",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "works-mobile",
+      "ownershipPct": 73.5
+    },
+    {
+      "id": "nv-rel-009",
+      "groupId": "naver",
+      "fromCompanyId": "snow-corp",
+      "toCompanyId": "naver-z",
+      "ownershipPct": 46.5
+    },
+    {
+      "id": "nv-rel-010",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-business-platform",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-011",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-data-center",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-012",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "spring-camp",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-013",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-dna-plus",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-014",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-investment",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-015",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "cream",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-016",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-1784",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-017",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "happybean",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-018",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-connect",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-019",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-cultural",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-020",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-clova",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-021",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-ai-lab",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-022",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-square",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-023",
+      "groupId": "naver",
+      "fromCompanyId": "naver-cloud",
+      "toCompanyId": "naver-cloud-japan",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-024",
+      "groupId": "naver",
+      "fromCompanyId": "naver-cloud",
+      "toCompanyId": "naver-cloud-asia-pacific",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-025",
+      "groupId": "naver",
+      "fromCompanyId": "naver-cloud",
+      "toCompanyId": "naver-cloud-europe",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-026",
+      "groupId": "naver",
+      "fromCompanyId": "naver-cloud",
+      "toCompanyId": "naver-cloud-trust",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-027",
+      "groupId": "naver",
+      "fromCompanyId": "naver-cloud",
+      "toCompanyId": "naver-cloud-platform",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-028",
+      "groupId": "naver",
+      "fromCompanyId": "naver-financial",
+      "toCompanyId": "naver-pay",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-029",
+      "groupId": "naver",
+      "fromCompanyId": "naver-financial",
+      "toCompanyId": "naver-financial-plus",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-030",
+      "groupId": "naver",
+      "fromCompanyId": "naver-financial",
+      "toCompanyId": "naver-insurance",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-031",
+      "groupId": "naver",
+      "fromCompanyId": "naver-labs",
+      "toCompanyId": "naver-labs-europe",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-032",
+      "groupId": "naver",
+      "fromCompanyId": "naver-labs",
+      "toCompanyId": "naver-labs-japan",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-033",
+      "groupId": "naver",
+      "fromCompanyId": "naver-webtoon",
+      "toCompanyId": "wattpad",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-034",
+      "groupId": "naver",
+      "fromCompanyId": "naver-webtoon",
+      "toCompanyId": "munpia",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-035",
+      "groupId": "naver",
+      "fromCompanyId": "line-plus",
+      "toCompanyId": "line-studio",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-036",
+      "groupId": "naver",
+      "fromCompanyId": "line-plus",
+      "toCompanyId": "line-friends",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-037",
+      "groupId": "naver",
+      "fromCompanyId": "line-plus",
+      "toCompanyId": "line-taiwan",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-038",
+      "groupId": "naver",
+      "fromCompanyId": "line-plus",
+      "toCompanyId": "line-thailand",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-039",
+      "groupId": "naver",
+      "fromCompanyId": "line-plus",
+      "toCompanyId": "line-financial",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-040",
+      "groupId": "naver",
+      "fromCompanyId": "line-financial",
+      "toCompanyId": "line-pay",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-041",
+      "groupId": "naver",
+      "fromCompanyId": "works-mobile",
+      "toCompanyId": "works-mobile-japan",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-042",
+      "groupId": "naver",
+      "fromCompanyId": "snow-corp",
+      "toCompanyId": "snow-japan",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-043",
+      "groupId": "naver",
+      "fromCompanyId": "snow-corp",
+      "toCompanyId": "snowbell",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-044",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-search-trend",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-045",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "smart-studio",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-046",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "playlist-corp",
+      "ownershipPct": 72
+    },
+    {
+      "id": "nv-rel-047",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-vibe",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-048",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-series-on",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-049",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "audioclip",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-050",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "clova-care",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-051",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "v-live",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-052",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-genie",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-053",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "nhn-edutech",
+      "ownershipPct": 51
+    },
+    {
+      "id": "nv-rel-054",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-property",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-055",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-maps",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-056",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-shopping",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-057",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-place",
+      "ownershipPct": 100
+    },
+    {
+      "id": "nv-rel-058",
+      "groupId": "naver",
+      "fromCompanyId": "naver-corp",
+      "toCompanyId": "naver-plus-membership",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "naver",
+      "companyId": "naver-corp",
+      "ownershipPct": 0.5
+    }
+  ]
+}

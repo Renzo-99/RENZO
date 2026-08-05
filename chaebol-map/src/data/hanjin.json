@@ -1,0 +1,405 @@
+{
+  "group": {
+    "id": "hanjin",
+    "name": "한진",
+    "slug": "hanjin",
+    "controllerName": "조원태",
+    "description": "한진그룹은 항공, 물류, 관광을 주력으로 하는 대한민국의 대표 재벌 그룹이다. 한진칼을 지주회사로 대한항공, 아시아나항공, 진에어 등 항공사와 (주)한진 등 물류 계열사를 보유하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 7
+  },
+  "companies": [
+    {
+      "id": "hanjin-kal",
+      "groupId": "hanjin",
+      "name": "한진칼",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "180640",
+      "stockPrice": 125000,
+      "priceChange": 100,
+      "priceChangePercent": 0.08,
+      "marketCap": 49000,
+      "sector": "지주회사"
+    },
+    {
+      "id": "hanjin-korean-air",
+      "groupId": "hanjin",
+      "name": "대한항공",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수",
+      "stockCode": "003490",
+      "stockPrice": 24150,
+      "priceChange": -350,
+      "priceChangePercent": -1.43,
+      "marketCap": 89500,
+      "sector": "항공"
+    },
+    {
+      "id": "hanjin-asiana",
+      "groupId": "hanjin",
+      "name": "아시아나항공",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수",
+      "stockCode": "020560",
+      "stockPrice": 9780,
+      "priceChange": 120,
+      "priceChangePercent": 1.24,
+      "marketCap": 24100,
+      "sector": "항공"
+    },
+    {
+      "id": "hanjin-jinair",
+      "groupId": "hanjin",
+      "name": "진에어",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수",
+      "stockCode": "272450",
+      "stockPrice": 11200,
+      "priceChange": -80,
+      "priceChangePercent": -0.71,
+      "marketCap": 5600,
+      "sector": "저가항공"
+    },
+    {
+      "id": "hanjin-airbusan",
+      "groupId": "hanjin",
+      "name": "에어부산",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수",
+      "stockCode": "298690",
+      "stockPrice": 3450,
+      "priceChange": 45,
+      "priceChangePercent": 1.32,
+      "marketCap": 2800,
+      "sector": "저가항공"
+    },
+    {
+      "id": "hanjin-korea-airport",
+      "groupId": "hanjin",
+      "name": "한국공항",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수",
+      "stockCode": "005765",
+      "stockPrice": 42300,
+      "priceChange": 300,
+      "priceChangePercent": 0.71,
+      "marketCap": 6500,
+      "sector": "공항서비스"
+    },
+    {
+      "id": "hanjin-corp",
+      "groupId": "hanjin",
+      "name": "(주)한진",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수",
+      "stockCode": "002320",
+      "stockPrice": 30500,
+      "priceChange": -200,
+      "priceChangePercent": -0.65,
+      "marketCap": 7200,
+      "sector": "육운·물류"
+    },
+    {
+      "id": "hanjin-calhotel",
+      "groupId": "hanjin",
+      "name": "칼호텔네트워크",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanjin-jungseok",
+      "groupId": "hanjin",
+      "name": "정석기업",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanjin-topas",
+      "groupId": "hanjin",
+      "name": "토파스여행정보",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanjin-tour",
+      "groupId": "hanjin",
+      "name": "한진관광",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanjin-info",
+      "groupId": "hanjin",
+      "name": "한진정보통신",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "hanjin-incheon-terminal",
+      "groupId": "hanjin",
+      "name": "한진인천컨테이너터미널",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    },
+    {
+      "id": "hanjin-busan-terminal",
+      "groupId": "hanjin",
+      "name": "한진부산컨테이너터미널",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    },
+    {
+      "id": "hanjin-aero",
+      "groupId": "hanjin",
+      "name": "한국항공우주정비",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    },
+    {
+      "id": "hanjin-cargo",
+      "groupId": "hanjin",
+      "name": "대한항공서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    },
+    {
+      "id": "hanjin-catering",
+      "groupId": "hanjin",
+      "name": "한진기내식",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료"
+    },
+    {
+      "id": "hanjin-ground",
+      "groupId": "hanjin",
+      "name": "한진에스에이티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    },
+    {
+      "id": "hanjin-ict",
+      "groupId": "hanjin",
+      "name": "한진아이씨티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "hanjin-logistics",
+      "groupId": "hanjin",
+      "name": "한진로지스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-kal",
+      "toCompanyId": "hanjin-korean-air",
+      "ownershipPct": 26.05
+    },
+    {
+      "id": "rel-002",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-kal",
+      "toCompanyId": "hanjin-calhotel",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-003",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-kal",
+      "toCompanyId": "hanjin-jungseok",
+      "ownershipPct": 48.27
+    },
+    {
+      "id": "rel-004",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-kal",
+      "toCompanyId": "hanjin-topas",
+      "ownershipPct": 94.35
+    },
+    {
+      "id": "rel-005",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-kal",
+      "toCompanyId": "hanjin-tour",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-006",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-kal",
+      "toCompanyId": "hanjin-corp",
+      "ownershipPct": 30.78
+    },
+    {
+      "id": "rel-007",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-asiana",
+      "ownershipPct": 63.88
+    },
+    {
+      "id": "rel-008",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-jinair",
+      "ownershipPct": 54.91
+    },
+    {
+      "id": "rel-009",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-info",
+      "ownershipPct": 99.35
+    },
+    {
+      "id": "rel-010",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-korea-airport",
+      "ownershipPct": 59.54
+    },
+    {
+      "id": "rel-011",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-aero",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-012",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-cargo",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-013",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-catering",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-014",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-ground",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-015",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-asiana",
+      "toCompanyId": "hanjin-airbusan",
+      "ownershipPct": 44.17
+    },
+    {
+      "id": "rel-016",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-corp",
+      "toCompanyId": "hanjin-incheon-terminal",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-017",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-corp",
+      "toCompanyId": "hanjin-busan-terminal",
+      "ownershipPct": 65.32
+    },
+    {
+      "id": "rel-018",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-corp",
+      "toCompanyId": "hanjin-logistics",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-019",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-corp",
+      "toCompanyId": "hanjin-ict",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-020",
+      "groupId": "hanjin",
+      "fromCompanyId": "hanjin-korean-air",
+      "toCompanyId": "hanjin-airbusan",
+      "ownershipPct": 18.96
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "hanjin",
+      "companyId": "hanjin-kal",
+      "ownershipPct": 5.73
+    },
+    {
+      "groupId": "hanjin",
+      "companyId": "hanjin-korean-air",
+      "ownershipPct": 0.01
+    },
+    {
+      "groupId": "hanjin",
+      "companyId": "hanjin-corp",
+      "ownershipPct": 0.03
+    },
+    {
+      "groupId": "hanjin",
+      "companyId": "hanjin-jungseok",
+      "ownershipPct": 3.83
+    },
+    {
+      "groupId": "hanjin",
+      "companyId": "hanjin-topas",
+      "ownershipPct": 0.14
+    }
+  ]
+}

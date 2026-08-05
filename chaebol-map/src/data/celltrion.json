@@ -1,0 +1,346 @@
+{
+  "group": {
+    "id": "celltrion",
+    "name": "셀트리온",
+    "slug": "celltrion",
+    "controllerName": "서정진",
+    "description": "셀트리온그룹은 바이오시밀러 분야의 글로벌 리더로 바이오의약품 개발·생산·판매를 핵심 사업으로 영위",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 2
+  },
+  "companies": [
+    {
+      "id": "celltrion-controller",
+      "groupId": "celltrion",
+      "name": "서정진",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "celltrion-inc",
+      "groupId": "celltrion",
+      "name": "셀트리온",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오",
+      "stockCode": "068270",
+      "stockPrice": 200000,
+      "priceChange": 4500,
+      "priceChangePercent": 2.3,
+      "marketCap": 274000,
+      "sector": "바이오시밀러"
+    },
+    {
+      "id": "celltrion-pharm",
+      "groupId": "celltrion",
+      "name": "셀트리온제약",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "제약",
+      "stockCode": "068760",
+      "stockPrice": 82000,
+      "priceChange": 1000,
+      "priceChangePercent": 1.23,
+      "marketCap": 56000,
+      "sector": "의약품유통"
+    },
+    {
+      "id": "celltrion-healthcare",
+      "groupId": "celltrion",
+      "name": "셀트리온헬스케어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "의약품유통"
+    },
+    {
+      "id": "celltrion-skincure",
+      "groupId": "celltrion",
+      "name": "셀트리온스킨큐어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "화장품"
+    },
+    {
+      "id": "celltrion-chemical",
+      "groupId": "celltrion",
+      "name": "셀트리온케미칼연구소",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-diagnostics",
+      "groupId": "celltrion",
+      "name": "셀트리온다이어그노스틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-partner",
+      "groupId": "celltrion",
+      "name": "셀트리온파트너스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "컨설팅"
+    },
+    {
+      "id": "celltrion-logistics",
+      "groupId": "celltrion",
+      "name": "셀트리온로지스틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "celltrion-healthcare-eu",
+      "groupId": "celltrion",
+      "name": "셀트리온헬스케어EU",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-usa",
+      "groupId": "celltrion",
+      "name": "셀트리온USA",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-fe",
+      "groupId": "celltrion",
+      "name": "셀트리온엔터테인먼트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "엔터테인먼트"
+    },
+    {
+      "id": "celltrion-life-sciences",
+      "groupId": "celltrion",
+      "name": "셀트리온생명과학",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-advanced-bio",
+      "groupId": "celltrion",
+      "name": "셀트리온어드밴스드바이오",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-cm",
+      "groupId": "celltrion",
+      "name": "셀트리온씨엠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "celltrion-bio-japan",
+      "groupId": "celltrion",
+      "name": "셀트리온바이오재팬",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-asia-pacific",
+      "groupId": "celltrion",
+      "name": "셀트리온아시아퍼시픽",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-ct",
+      "groupId": "celltrion",
+      "name": "셀트리온CT",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    },
+    {
+      "id": "celltrion-investment",
+      "groupId": "celltrion",
+      "name": "셀트리온투자",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    },
+    {
+      "id": "celltrion-global",
+      "groupId": "celltrion",
+      "name": "셀트리온글로벌",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오"
+    }
+  ],
+  "relations": [
+    {
+      "id": "ct-rel-001",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-pharm",
+      "ownershipPct": 56
+    },
+    {
+      "id": "ct-rel-002",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-healthcare",
+      "ownershipPct": 96.2
+    },
+    {
+      "id": "ct-rel-003",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-skincure",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-004",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-chemical",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-005",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-diagnostics",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-006",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-partner",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-007",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-logistics",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-008",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-usa",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-009",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-healthcare-eu",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-010",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-life-sciences",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-011",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-advanced-bio",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-012",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-cm",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-013",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-bio-japan",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-014",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-asia-pacific",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-015",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-ct",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-016",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-global",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-017",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-fe",
+      "ownershipPct": 100
+    },
+    {
+      "id": "ct-rel-018",
+      "groupId": "celltrion",
+      "fromCompanyId": "celltrion-inc",
+      "toCompanyId": "celltrion-investment",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "celltrion",
+      "companyId": "celltrion-inc",
+      "ownershipPct": 19.5
+    },
+    {
+      "groupId": "celltrion",
+      "companyId": "celltrion-pharm",
+      "ownershipPct": 3.5
+    }
+  ]
+}

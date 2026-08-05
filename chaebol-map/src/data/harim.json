@@ -1,0 +1,177 @@
+{
+  "group": {
+    "id": "harim",
+    "name": "하림",
+    "slug": "harim",
+    "controllerName": "김홍국",
+    "description": "하림그룹은 축산·식품 중심 그룹으로 팬오션(해운), NS쇼핑 등 다각화 진행",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 30,
+    "listedCompanies": 4
+  },
+  "companies": [
+    {
+      "id": "harim-controller",
+      "groupId": "harim",
+      "name": "김홍국",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "harim-holdings",
+      "groupId": "harim",
+      "name": "하림지주",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "003380",
+      "stockPrice": 12500,
+      "priceChange": 200,
+      "priceChangePercent": 1.63,
+      "marketCap": 7800,
+      "sector": "지주회사"
+    },
+    {
+      "id": "harim-corp",
+      "groupId": "harim",
+      "name": "하림",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품",
+      "stockCode": "136480",
+      "stockPrice": 5500,
+      "priceChange": -80,
+      "priceChangePercent": -1.43,
+      "marketCap": 4400,
+      "sector": "축산가공"
+    },
+    {
+      "id": "pan-ocean",
+      "groupId": "harim",
+      "name": "팬오션",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "해운",
+      "stockCode": "028670",
+      "stockPrice": 4100,
+      "priceChange": 50,
+      "priceChangePercent": 1.23,
+      "marketCap": 28900,
+      "sector": "해운"
+    },
+    {
+      "id": "ns-shopping",
+      "groupId": "harim",
+      "name": "NS쇼핑",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통",
+      "stockCode": "138250",
+      "stockPrice": 8200,
+      "priceChange": -100,
+      "priceChangePercent": -1.2,
+      "marketCap": 2800,
+      "sector": "홈쇼핑"
+    },
+    {
+      "id": "sunjin",
+      "groupId": "harim",
+      "name": "선진",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "축산"
+    },
+    {
+      "id": "harim-feed",
+      "groupId": "harim",
+      "name": "하림사료",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "사료"
+    },
+    {
+      "id": "harim-pet",
+      "groupId": "harim",
+      "name": "하림펫푸드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품"
+    },
+    {
+      "id": "harim-processing",
+      "groupId": "harim",
+      "name": "하림에프앤에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-hr-1",
+      "groupId": "harim",
+      "fromCompanyId": "harim-holdings",
+      "toCompanyId": "harim-corp",
+      "ownershipPct": 48.3
+    },
+    {
+      "id": "rel-hr-2",
+      "groupId": "harim",
+      "fromCompanyId": "harim-holdings",
+      "toCompanyId": "pan-ocean",
+      "ownershipPct": 36.7
+    },
+    {
+      "id": "rel-hr-3",
+      "groupId": "harim",
+      "fromCompanyId": "harim-holdings",
+      "toCompanyId": "ns-shopping",
+      "ownershipPct": 40
+    },
+    {
+      "id": "rel-hr-4",
+      "groupId": "harim",
+      "fromCompanyId": "harim-holdings",
+      "toCompanyId": "sunjin",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hr-5",
+      "groupId": "harim",
+      "fromCompanyId": "harim-corp",
+      "toCompanyId": "harim-feed",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hr-6",
+      "groupId": "harim",
+      "fromCompanyId": "harim-corp",
+      "toCompanyId": "harim-pet",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hr-7",
+      "groupId": "harim",
+      "fromCompanyId": "harim-corp",
+      "toCompanyId": "harim-processing",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "harim",
+      "companyId": "harim-holdings",
+      "ownershipPct": 41.5
+    }
+  ]
+}

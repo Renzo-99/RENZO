@@ -1,0 +1,355 @@
+{
+  "group": {
+    "id": "cj",
+    "name": "씨제이",
+    "slug": "cj",
+    "controllerName": "이재현",
+    "description": "CJ그룹은 식품, 물류, 엔터테인먼트, 바이오를 주력으로 하는 대한민국의 대표 재벌 그룹이다. 지주회사 CJ를 정점으로 CJ제일제당, CJ대한통운, CJ ENM, CGV 등 핵심 계열사를 보유하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 18,
+    "listedCompanies": 8
+  },
+  "companies": [
+    {
+      "id": "cj-corp",
+      "groupId": "cj",
+      "name": "씨제이",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "001040",
+      "stockPrice": 130000,
+      "priceChange": 1000,
+      "priceChangePercent": 0.78,
+      "marketCap": 39800,
+      "sector": "지주회사"
+    },
+    {
+      "id": "cj-cheiljedang",
+      "groupId": "cj",
+      "name": "씨제이제일제당",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료",
+      "stockCode": "097950",
+      "stockPrice": 216000,
+      "priceChange": -3500,
+      "priceChangePercent": -1.59,
+      "marketCap": 32500,
+      "sector": "식품·바이오"
+    },
+    {
+      "id": "cj-logistics",
+      "groupId": "cj",
+      "name": "씨제이대한통운",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수",
+      "stockCode": "000120",
+      "stockPrice": 108000,
+      "priceChange": -1200,
+      "priceChangePercent": -1.1,
+      "marketCap": 33500,
+      "sector": "물류·택배"
+    },
+    {
+      "id": "cj-enm",
+      "groupId": "cj",
+      "name": "씨제이이엔엠",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "035760",
+      "stockPrice": 20000,
+      "priceChange": 250,
+      "priceChangePercent": 1.27,
+      "marketCap": 31500,
+      "sector": "미디어·엔터"
+    },
+    {
+      "id": "cj-cgv",
+      "groupId": "cj",
+      "name": "씨제이씨지브이",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "079160",
+      "stockPrice": 6850,
+      "priceChange": -50,
+      "priceChangePercent": -0.72,
+      "marketCap": 5900,
+      "sector": "영화·극장"
+    },
+    {
+      "id": "cj-seafood",
+      "groupId": "cj",
+      "name": "씨제이씨푸드",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료",
+      "stockCode": "011150",
+      "stockPrice": 3600,
+      "priceChange": 45,
+      "priceChangePercent": 1.27,
+      "marketCap": 720,
+      "sector": "수산·식품"
+    },
+    {
+      "id": "cj-bioscience",
+      "groupId": "cj",
+      "name": "씨제이바이오사이언스",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "바이오",
+      "stockCode": "311690",
+      "stockPrice": 10200,
+      "priceChange": 150,
+      "priceChangePercent": 1.49,
+      "marketCap": 4100,
+      "sector": "바이오·사료"
+    },
+    {
+      "id": "cj-freshway",
+      "groupId": "cj",
+      "name": "씨제이프레시웨이",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료",
+      "stockCode": "020150",
+      "stockPrice": 18700,
+      "priceChange": -120,
+      "priceChangePercent": -0.64,
+      "marketCap": 4500,
+      "sector": "식자재·유통"
+    },
+    {
+      "id": "cj-foodville",
+      "groupId": "cj",
+      "name": "씨제이푸드빌",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료"
+    },
+    {
+      "id": "cj-olivenetworks",
+      "groupId": "cj",
+      "name": "씨제이올리브네트웍스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "cj-oliveyoung",
+      "groupId": "cj",
+      "name": "씨제이올리브영",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "cj-enstory",
+      "groupId": "cj",
+      "name": "씨제이이엔스토리",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "cj-telenix",
+      "groupId": "cj",
+      "name": "씨제이텔레닉스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "cj-md1",
+      "groupId": "cj",
+      "name": "씨제이엠디원",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "cj-onstyle",
+      "groupId": "cj",
+      "name": "씨제이온스타일",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "cj-feed-care",
+      "groupId": "cj",
+      "name": "씨제이피드앤케어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료"
+    },
+    {
+      "id": "cj-splashentertainment",
+      "groupId": "cj",
+      "name": "스플래시엔터테인먼트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "cj-logistics-intl",
+      "groupId": "cj",
+      "name": "씨제이로지스틱스글로벌",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-cheiljedang",
+      "ownershipPct": 40.9
+    },
+    {
+      "id": "rel-002",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-foodville",
+      "ownershipPct": 84.2
+    },
+    {
+      "id": "rel-003",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-olivenetworks",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-004",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-enm",
+      "ownershipPct": 40.1
+    },
+    {
+      "id": "rel-005",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-cgv",
+      "ownershipPct": 50.9
+    },
+    {
+      "id": "rel-006",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-freshway",
+      "ownershipPct": 47.1
+    },
+    {
+      "id": "rel-007",
+      "groupId": "cj",
+      "fromCompanyId": "cj-cheiljedang",
+      "toCompanyId": "cj-seafood",
+      "ownershipPct": 46.3
+    },
+    {
+      "id": "rel-008",
+      "groupId": "cj",
+      "fromCompanyId": "cj-cheiljedang",
+      "toCompanyId": "cj-bioscience",
+      "ownershipPct": 61.9
+    },
+    {
+      "id": "rel-009",
+      "groupId": "cj",
+      "fromCompanyId": "cj-cheiljedang",
+      "toCompanyId": "cj-logistics",
+      "ownershipPct": 40.2
+    },
+    {
+      "id": "rel-010",
+      "groupId": "cj",
+      "fromCompanyId": "cj-cheiljedang",
+      "toCompanyId": "cj-feed-care",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-011",
+      "groupId": "cj",
+      "fromCompanyId": "cj-enm",
+      "toCompanyId": "cj-oliveyoung",
+      "ownershipPct": 51.2
+    },
+    {
+      "id": "rel-012",
+      "groupId": "cj",
+      "fromCompanyId": "cj-enm",
+      "toCompanyId": "cj-onstyle",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-013",
+      "groupId": "cj",
+      "fromCompanyId": "cj-enm",
+      "toCompanyId": "cj-splashentertainment",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-014",
+      "groupId": "cj",
+      "fromCompanyId": "cj-logistics",
+      "toCompanyId": "cj-logistics-intl",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-015",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-telenix",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-016",
+      "groupId": "cj",
+      "fromCompanyId": "cj-corp",
+      "toCompanyId": "cj-md1",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "cj",
+      "companyId": "cj-corp",
+      "ownershipPct": 34.4
+    },
+    {
+      "groupId": "cj",
+      "companyId": "cj-foodville",
+      "ownershipPct": 2.2
+    },
+    {
+      "groupId": "cj",
+      "companyId": "cj-oliveyoung",
+      "ownershipPct": 11
+    }
+  ]
+}

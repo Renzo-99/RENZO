@@ -1,0 +1,371 @@
+{
+  "group": {
+    "id": "kt",
+    "name": "케이티",
+    "slug": "kt",
+    "controllerName": "케이티(KT)",
+    "description": "KT그룹은 대한민국 대표 통신 그룹으로 유무선 통신, 미디어, 금융, 부동산 등 다양한 사업을 영위하고 있다. 동일인은 KT 법인 자체이며 자기주식을 통해 지배구조를 형성하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 7
+  },
+  "companies": [
+    {
+      "id": "kt-corp",
+      "groupId": "kt",
+      "name": "케이티",
+      "isListed": true,
+      "isHolding": true,
+      "isController": true,
+      "category": "전자/IT",
+      "stockCode": "030200",
+      "stockPrice": 54000,
+      "priceChange": 700,
+      "priceChangePercent": 1.31,
+      "marketCap": 141000,
+      "sector": "통신"
+    },
+    {
+      "id": "kt-skylife",
+      "groupId": "kt",
+      "name": "케이티스카이라이프",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "053210",
+      "stockPrice": 8250,
+      "priceChange": -70,
+      "priceChangePercent": -0.84,
+      "marketCap": 3800,
+      "sector": "미디어·방송"
+    },
+    {
+      "id": "kt-genie-music",
+      "groupId": "kt",
+      "name": "케이티지니뮤직",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "043610",
+      "stockPrice": 5820,
+      "priceChange": 80,
+      "priceChangePercent": 1.39,
+      "marketCap": 2100,
+      "sector": "음악·콘텐츠"
+    },
+    {
+      "id": "kt-nas-media",
+      "groupId": "kt",
+      "name": "케이티나스미디어",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "101400",
+      "stockPrice": 18900,
+      "priceChange": 200,
+      "priceChangePercent": 1.07,
+      "marketCap": 1500,
+      "sector": "디지털광고"
+    },
+    {
+      "id": "kt-is",
+      "groupId": "kt",
+      "name": "케이티아이에스",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "058860",
+      "stockPrice": 24500,
+      "priceChange": -150,
+      "priceChangePercent": -0.61,
+      "marketCap": 4900,
+      "sector": "IT서비스"
+    },
+    {
+      "id": "kt-alpha",
+      "groupId": "kt",
+      "name": "케이티알파",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통",
+      "stockCode": "160980",
+      "stockPrice": 7980,
+      "priceChange": 90,
+      "priceChangePercent": 1.14,
+      "marketCap": 3200,
+      "sector": "커머스"
+    },
+    {
+      "id": "kt-cs",
+      "groupId": "kt",
+      "name": "케이티씨에스",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "058850",
+      "stockPrice": 4350,
+      "priceChange": -30,
+      "priceChangePercent": -0.68,
+      "marketCap": 1800,
+      "sector": "고객서비스"
+    },
+    {
+      "id": "kt-bc-card",
+      "groupId": "kt",
+      "name": "비씨카드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "kt-studio-genie",
+      "groupId": "kt",
+      "name": "케이티스튜디오지니",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kt-sports",
+      "groupId": "kt",
+      "name": "케이티스포츠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kt-ds",
+      "groupId": "kt",
+      "name": "케이티디에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kt-estate",
+      "groupId": "kt",
+      "name": "케이티에스테이트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kt-engineering",
+      "groupId": "kt",
+      "name": "케이티엔지니어링",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "kt-sat",
+      "groupId": "kt",
+      "name": "케이티샛",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kt-mns",
+      "groupId": "kt",
+      "name": "케이티엠앤에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kt-telecop",
+      "groupId": "kt",
+      "name": "케이티텔레캅",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kt-linkus",
+      "groupId": "kt",
+      "name": "케이티링커스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kt-cloud",
+      "groupId": "kt",
+      "name": "케이티클라우드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "kt-service-north",
+      "groupId": "kt",
+      "name": "케이티서비스북부",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "kt-service-south",
+      "groupId": "kt",
+      "name": "케이티서비스남부",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-bc-card",
+      "ownershipPct": 69.5
+    },
+    {
+      "id": "rel-002",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-studio-genie",
+      "ownershipPct": 90.9
+    },
+    {
+      "id": "rel-003",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-skylife",
+      "ownershipPct": 50.3
+    },
+    {
+      "id": "rel-004",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-sports",
+      "ownershipPct": 52.6
+    },
+    {
+      "id": "rel-005",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-nas-media",
+      "ownershipPct": 43.1
+    },
+    {
+      "id": "rel-006",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-is",
+      "ownershipPct": 29.3
+    },
+    {
+      "id": "rel-007",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-alpha",
+      "ownershipPct": 70.5
+    },
+    {
+      "id": "rel-008",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-ds",
+      "ownershipPct": 91.1
+    },
+    {
+      "id": "rel-009",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-sat",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-010",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-mns",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-011",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-telecop",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-012",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-cs",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-013",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-cloud",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-014",
+      "groupId": "kt",
+      "fromCompanyId": "kt-ds",
+      "toCompanyId": "kt-estate",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-015",
+      "groupId": "kt",
+      "fromCompanyId": "kt-ds",
+      "toCompanyId": "kt-engineering",
+      "ownershipPct": 59.8
+    },
+    {
+      "id": "rel-016",
+      "groupId": "kt",
+      "fromCompanyId": "kt-studio-genie",
+      "toCompanyId": "kt-genie-music",
+      "ownershipPct": 60.4
+    },
+    {
+      "id": "rel-017",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-service-north",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-018",
+      "groupId": "kt",
+      "fromCompanyId": "kt-corp",
+      "toCompanyId": "kt-service-south",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "kt",
+      "companyId": "kt-corp",
+      "ownershipPct": 2.8
+    }
+  ]
+}

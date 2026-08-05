@@ -1,0 +1,406 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --color-stock-up: var(--stock-up);
+  --color-stock-down: var(--stock-down);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+
+/* Toss-inspired dark theme */
+:root {
+  --background: #191F28;
+  --foreground: #F2F4F6;
+  --card: #212830;
+  --card-foreground: #F2F4F6;
+  --muted: #2C3542;
+  --muted-foreground: #8B95A1;
+  --border: #2C3542;
+  --primary: #3182F6;
+  --primary-foreground: #FFFFFF;
+  --accent: #2C3542;
+  --accent-foreground: #F2F4F6;
+  --ring: #3182F6;
+  --stock-up: #F04452;
+  --stock-down: #3182F6;
+}
+
+.light {
+  --background: #F2F4F6;
+  --foreground: #191F28;
+  --card: #FFFFFF;
+  --card-foreground: #191F28;
+  --muted: #F2F4F6;
+  --muted-foreground: #6B7684;
+  --border: #E5E8EB;
+  --primary: #3182F6;
+  --primary-foreground: #FFFFFF;
+  --accent: #F2F4F6;
+  --accent-foreground: #191F28;
+  --ring: #3182F6;
+  --stock-up: #F04452;
+  --stock-down: #3182F6;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Toss-style smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+/* ==============================
+   React Flow — FTC 소유지분도 라이트 테마
+   ============================== */
+.react-flow__background {
+  background: #fff !important;
+}
+
+.react-flow__minimap {
+  border-radius: 4px !important;
+  overflow: hidden;
+  border: 1px solid #ddd !important;
+}
+
+.react-flow__controls {
+  border-radius: 4px !important;
+  overflow: hidden;
+  border: 1px solid #ccc !important;
+  background: #fff !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.react-flow__controls-button {
+  background: #fff !important;
+  border-bottom: 1px solid #eee !important;
+  fill: #333 !important;
+}
+
+.react-flow__controls-button:hover {
+  background: #f5f5f5 !important;
+}
+
+/* ==============================
+   FTC 소유지분도 — 동일인(총수) 노드
+   ============================== */
+.ftc-ctrl {
+  width: 130px;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 6px 10px;
+  border: 2px solid #333;
+  border-radius: 50px;
+  background: #fff;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.ftc-ctrl:hover {
+  background: #f9f9f9;
+}
+
+.ftc-ctrl-sub {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #666;
+  line-height: 1.2;
+}
+
+.ftc-ctrl-name {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.3;
+}
+
+/* ==============================
+   FTC 소유지분도 — 회사 노드
+   ============================== */
+.ftc-box {
+  width: 130px;
+  box-sizing: border-box;
+  padding: 5px 6px;
+  border: 1px solid #333;
+  background: #fff;
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ftc-box:hover {
+  background: #f0f0f0;
+}
+
+/* 지주회사 음영 */
+.ftc-shaded {
+  background: #d9d9d9;
+}
+
+.ftc-shaded:hover {
+  background: #ccc;
+}
+
+.ftc-txt {
+  font-size: 11px;
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-height: 1.4;
+}
+
+/* ─── 핸들 (투명) ─── */
+.ftc-h {
+  width: 4px !important;
+  height: 4px !important;
+  background: transparent !important;
+  border: none !important;
+  opacity: 0;
+}
+
+/* ==============================
+   FTC 소유지분도 — 엣지 라벨
+   ============================== */
+.ftc-pct {
+  font-size: 9px;
+  font-weight: 600;
+  color: #333;
+  background: #fff;
+  padding: 0 2px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==============================
+   FTC 소유지분도 — 도구 모음 & 범례
+   ============================== */
+.ftc-toolbar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.ftc-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ftc-toolbar-btn {
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ftc-toolbar-btn:hover {
+  color: #333;
+  background: #f0f0f0;
+}
+
+.ftc-toolbar-btn-active {
+  color: #000;
+  background: #eee;
+  border-color: #ccc;
+}
+
+.ftc-toolbar-sep {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: #ddd;
+}
+
+.ftc-toolbar-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+}
+
+.ftc-toolbar-slider {
+  width: 80px;
+  accent-color: #333;
+  cursor: pointer;
+}
+
+.ftc-toolbar-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: #333;
+  min-width: 30px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── 범례 ─── */
+.ftc-legend {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  font-size: 11px;
+  color: #333;
+}
+
+.ftc-legend-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.ftc-legend-sep {
+  height: 1px;
+  background: #ddd;
+  margin: 2px 0;
+}
+
+.ftc-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ftc-legend-oval {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border: 1.5px solid #333;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.ftc-legend-star {
+  font-size: 11px;
+  color: #000;
+  margin-right: 1px;
+}
+
+.ftc-legend-shade {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border: 1px solid #333;
+  background: #d9d9d9;
+}
+
+/* 범례 엣지 스타일 표시 */
+.ftc-legend-line {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  border-top-width: 2px;
+}
+
+.ftc-legend-line-ctrl {
+  border-top: 2px dashed #16A34A;
+}
+
+.ftc-legend-line-tree {
+  border-top: 2px solid #333;
+}
+
+.ftc-legend-line-cross {
+  border-top: 2px dashed #9CA3AF;
+}
+
+/* ─── 동일인 주식보유현황 (FTC 원본 스타일) ─── */
+.ftc-ctrl-holdings {
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  z-index: 10;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  max-width: 220px;
+}
+
+.ftc-ctrl-holdings-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #16A34A;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+.ftc-ctrl-holdings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ftc-ctrl-holdings-name {
+  font-size: 11px;
+  color: #333;
+  padding: 1px 6px 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.ftc-ctrl-holdings-pct {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16A34A;
+  text-align: right;
+  padding: 1px 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}

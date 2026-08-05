@@ -1,0 +1,480 @@
+{
+  "group": {
+    "id": "hanwha",
+    "name": "한화",
+    "slug": "hanwha",
+    "controllerName": "김승연",
+    "description": "한화그룹은 방산, 에너지, 금융을 3대 축으로 하는 대한민국 대표 재벌그룹이다. 태양광·수소 등 친환경 에너지와 항공우주·방산 분야에서 글로벌 사업을 확장하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 25,
+    "listedCompanies": 7
+  },
+  "companies": [
+    {
+      "id": "hanwha-corp",
+      "groupId": "hanwha",
+      "name": "(주)한화",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "000880",
+      "stockPrice": 42000,
+      "priceChange": 500,
+      "priceChangePercent": 1.2,
+      "marketCap": 126000,
+      "sector": "화학·방산"
+    },
+    {
+      "id": "hanwha-solutions",
+      "groupId": "hanwha",
+      "name": "한화솔루션",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "009830",
+      "stockPrice": 7500,
+      "priceChange": 120,
+      "priceChangePercent": 1.63,
+      "marketCap": 14000,
+      "sector": "태양광·화학"
+    },
+    {
+      "id": "hanwha-aerospace",
+      "groupId": "hanwha",
+      "name": "한화에어로스페이스",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "012450",
+      "stockPrice": 1185000,
+      "priceChange": -27000,
+      "priceChangePercent": -2.23,
+      "marketCap": 611000,
+      "sector": "항공우주·방산"
+    },
+    {
+      "id": "hanwha-ocean",
+      "groupId": "hanwha",
+      "name": "한화오션",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타",
+      "stockCode": "042660",
+      "stockPrice": 48700,
+      "priceChange": 1200,
+      "priceChangePercent": 2.53,
+      "marketCap": 93500000000000,
+      "sector": "조선"
+    },
+    {
+      "id": "hanwha-systems",
+      "groupId": "hanwha",
+      "name": "한화시스템",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "272210",
+      "stockPrice": 18250,
+      "priceChange": 350,
+      "priceChangePercent": 1.95,
+      "marketCap": 36500000000000,
+      "sector": "방산전자·ICT"
+    },
+    {
+      "id": "hanwha-life",
+      "groupId": "hanwha",
+      "name": "한화생명보험",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험",
+      "stockCode": "088350",
+      "stockPrice": 3250,
+      "priceChange": 35,
+      "priceChangePercent": 1.09,
+      "marketCap": 28100000000000,
+      "sector": "생명보험"
+    },
+    {
+      "id": "hanwha-galleria",
+      "groupId": "hanwha",
+      "name": "한화갤러리아",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통",
+      "stockCode": "027390",
+      "stockPrice": 5120,
+      "priceChange": -80,
+      "priceChangePercent": -1.54,
+      "marketCap": 2600000000000,
+      "sector": "백화점·유통"
+    },
+    {
+      "id": "hanwha-hotel",
+      "groupId": "hanwha",
+      "name": "한화호텔앤드리조트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanwha-vision",
+      "groupId": "hanwha",
+      "name": "한화비전",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "hanwha-energy",
+      "groupId": "hanwha",
+      "name": "(주)한화에너지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hanwha-connect",
+      "groupId": "hanwha",
+      "name": "한화커넥트(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanwha-eagles",
+      "groupId": "hanwha",
+      "name": "(주)한화이글스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanwha-general-chemical",
+      "groupId": "hanwha",
+      "name": "한화종합화학",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hanwha-advanced-materials",
+      "groupId": "hanwha",
+      "name": "한화첨단소재",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "hanwha-defense",
+      "groupId": "hanwha",
+      "name": "한화디펜스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "hanwha-power-systems",
+      "groupId": "hanwha",
+      "name": "한화파워시스템",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "hanwha-investment-securities",
+      "groupId": "hanwha",
+      "name": "한화투자증권",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "hanwha-asset-management",
+      "groupId": "hanwha",
+      "name": "한화자산운용",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "hanwha-general-insurance",
+      "groupId": "hanwha",
+      "name": "한화손해보험",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "hanwha-impact",
+      "groupId": "hanwha",
+      "name": "한화임팩트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hanwha-land",
+      "groupId": "hanwha",
+      "name": "한화63시티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "hanwha-convergence",
+      "groupId": "hanwha",
+      "name": "한화컨버전스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "hanwha-qcells",
+      "groupId": "hanwha",
+      "name": "한화큐셀",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "hanwha-cimarron",
+      "groupId": "hanwha",
+      "name": "한화정밀기계",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "hanwha-moment",
+      "groupId": "hanwha",
+      "name": "한화모멘트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    }
+  ],
+  "relations": [
+    {
+      "id": "hanwha-rel-001",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-solutions",
+      "ownershipPct": 36.2
+    },
+    {
+      "id": "hanwha-rel-002",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-hotel",
+      "ownershipPct": 49.6
+    },
+    {
+      "id": "hanwha-rel-003",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-vision",
+      "ownershipPct": 33.9
+    },
+    {
+      "id": "hanwha-rel-004",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-aerospace",
+      "ownershipPct": 32.7
+    },
+    {
+      "id": "hanwha-rel-005",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-ocean",
+      "ownershipPct": 30.4
+    },
+    {
+      "id": "hanwha-rel-006",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-systems",
+      "ownershipPct": 46.7
+    },
+    {
+      "id": "hanwha-rel-007",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-galleria",
+      "ownershipPct": 36.1
+    },
+    {
+      "id": "hanwha-rel-008",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-general-chemical",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-009",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-defense",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-010",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-power-systems",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-011",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-land",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-012",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-impact",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-013",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-cimarron",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-014",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-moment",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-015",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-solutions",
+      "toCompanyId": "hanwha-qcells",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-016",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-solutions",
+      "toCompanyId": "hanwha-advanced-materials",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-017",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-solutions",
+      "toCompanyId": "hanwha-convergence",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-018",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-energy",
+      "toCompanyId": "hanwha-corp",
+      "ownershipPct": 29.3
+    },
+    {
+      "id": "hanwha-rel-019",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-life",
+      "ownershipPct": 21.8
+    },
+    {
+      "id": "hanwha-rel-020",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-life",
+      "toCompanyId": "hanwha-investment-securities",
+      "ownershipPct": 80.9
+    },
+    {
+      "id": "hanwha-rel-021",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-life",
+      "toCompanyId": "hanwha-asset-management",
+      "ownershipPct": 100
+    },
+    {
+      "id": "hanwha-rel-022",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-life",
+      "toCompanyId": "hanwha-general-insurance",
+      "ownershipPct": 51
+    },
+    {
+      "id": "hanwha-rel-023",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-aerospace",
+      "toCompanyId": "hanwha-systems",
+      "ownershipPct": 10.2
+    },
+    {
+      "id": "hanwha-rel-024",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-aerospace",
+      "toCompanyId": "hanwha-ocean",
+      "ownershipPct": 4.7
+    },
+    {
+      "id": "hanwha-rel-025",
+      "groupId": "hanwha",
+      "fromCompanyId": "hanwha-corp",
+      "toCompanyId": "hanwha-connect",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "hanwha",
+      "companyId": "hanwha-corp",
+      "ownershipPct": 10.53
+    },
+    {
+      "groupId": "hanwha",
+      "companyId": "hanwha-eagles",
+      "ownershipPct": 10
+    },
+    {
+      "groupId": "hanwha",
+      "companyId": "hanwha-connect",
+      "ownershipPct": 0.7
+    },
+    {
+      "groupId": "hanwha",
+      "companyId": "hanwha-energy",
+      "ownershipPct": 100
+    }
+  ]
+}

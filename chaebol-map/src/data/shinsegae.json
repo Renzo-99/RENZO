@@ -1,0 +1,364 @@
+{
+  "group": {
+    "id": "shinsegae",
+    "name": "신세계",
+    "slug": "shinsegae",
+    "controllerName": "이명희",
+    "description": "신세계그룹은 유통업을 중심으로 백화점, 대형마트, 면세점, 호텔 등 다양한 사업을 영위하는 대한민국의 대표 유통 재벌 그룹이다. 신세계와 이마트를 양대 축으로 하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 5
+  },
+  "companies": [
+    {
+      "id": "shinsegae-inc",
+      "groupId": "shinsegae",
+      "name": "신세계",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "유통",
+      "stockCode": "004170",
+      "stockPrice": 192000,
+      "priceChange": 2000,
+      "priceChangePercent": 1.05,
+      "marketCap": 18900,
+      "sector": "백화점"
+    },
+    {
+      "id": "shinsegae-emart",
+      "groupId": "shinsegae",
+      "name": "이마트",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통",
+      "stockCode": "139480",
+      "stockPrice": 153000,
+      "priceChange": 1000,
+      "priceChangePercent": 0.66,
+      "marketCap": 43400,
+      "sector": "대형마트"
+    },
+    {
+      "id": "shinsegae-international",
+      "groupId": "shinsegae",
+      "name": "신세계인터내셔날",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통",
+      "stockCode": "031430",
+      "stockPrice": 16800,
+      "priceChange": 150,
+      "priceChangePercent": 0.9,
+      "marketCap": 4200,
+      "sector": "패션·리테일"
+    },
+    {
+      "id": "shinsegae-food",
+      "groupId": "shinsegae",
+      "name": "신세계푸드",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료",
+      "stockCode": "031440",
+      "stockPrice": 235000,
+      "priceChange": 2000,
+      "priceChangePercent": 0.86,
+      "marketCap": 23100,
+      "sector": "식품·급식"
+    },
+    {
+      "id": "shinsegae-chosunhotel",
+      "groupId": "shinsegae",
+      "name": "조선호텔앤리조트",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "014190",
+      "stockPrice": 73800,
+      "priceChange": 800,
+      "priceChangePercent": 1.1,
+      "marketCap": 5600,
+      "sector": "호텔·리조트"
+    },
+    {
+      "id": "shinsegae-centralcity",
+      "groupId": "shinsegae",
+      "name": "신세계센트럴시티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "shinsegae-incheon",
+      "groupId": "shinsegae",
+      "name": "인천신세계",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "shinsegae-simon",
+      "groupId": "shinsegae",
+      "name": "신세계사이먼",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "shinsegae-df",
+      "groupId": "shinsegae",
+      "name": "신세계디에프",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "shinsegae-mindmark",
+      "groupId": "shinsegae",
+      "name": "마인드마크",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "shinsegae-casa",
+      "groupId": "shinsegae",
+      "name": "신세계까사",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "shinsegae-uijeongbu",
+      "groupId": "shinsegae",
+      "name": "신세계의정부역사",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "shinsegae-emart24",
+      "groupId": "shinsegae",
+      "name": "이마트24",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "shinsegae-sck",
+      "groupId": "shinsegae",
+      "name": "에스씨케이컴퍼니",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "shinsegae-property",
+      "groupId": "shinsegae",
+      "name": "신세계프라퍼티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "shinsegae-liveshopping",
+      "groupId": "shinsegae",
+      "name": "신세계라이브쇼핑",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "shinsegae-iandcorp",
+      "groupId": "shinsegae",
+      "name": "신세계아이앤씨",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "shinsegae-starbucks",
+      "groupId": "shinsegae",
+      "name": "에스씨케이스타벅스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "식품/음료"
+    },
+    {
+      "id": "shinsegae-construction",
+      "groupId": "shinsegae",
+      "name": "신세계건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "shinsegae-tommy",
+      "groupId": "shinsegae",
+      "name": "신세계톰보이",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-centralcity",
+      "ownershipPct": 60
+    },
+    {
+      "id": "rel-002",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-incheon",
+      "ownershipPct": 94.6
+    },
+    {
+      "id": "rel-003",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-simon",
+      "ownershipPct": 39.3
+    },
+    {
+      "id": "rel-004",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-df",
+      "ownershipPct": 25
+    },
+    {
+      "id": "rel-005",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-mindmark",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-006",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-casa",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-007",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-uijeongbu",
+      "ownershipPct": 97.9
+    },
+    {
+      "id": "rel-008",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-liveshopping",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-009",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-iandcorp",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-010",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-construction",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-011",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-emart",
+      "ownershipPct": 24.5
+    },
+    {
+      "id": "rel-012",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-emart",
+      "toCompanyId": "shinsegae-emart24",
+      "ownershipPct": 67.5
+    },
+    {
+      "id": "rel-013",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-emart",
+      "toCompanyId": "shinsegae-sck",
+      "ownershipPct": 45.6
+    },
+    {
+      "id": "rel-014",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-emart",
+      "toCompanyId": "shinsegae-property",
+      "ownershipPct": 24.4
+    },
+    {
+      "id": "rel-015",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-emart",
+      "toCompanyId": "shinsegae-starbucks",
+      "ownershipPct": 67.5
+    },
+    {
+      "id": "rel-016",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-food",
+      "ownershipPct": 35.4
+    },
+    {
+      "id": "rel-017",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-international",
+      "ownershipPct": 34.6
+    },
+    {
+      "id": "rel-018",
+      "groupId": "shinsegae",
+      "fromCompanyId": "shinsegae-inc",
+      "toCompanyId": "shinsegae-tommy",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "shinsegae",
+      "companyId": "shinsegae-inc",
+      "ownershipPct": 10.2
+    },
+    {
+      "groupId": "shinsegae",
+      "companyId": "shinsegae-emart",
+      "ownershipPct": 28.8
+    }
+  ]
+}

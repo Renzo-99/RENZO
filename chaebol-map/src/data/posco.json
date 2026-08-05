@@ -1,0 +1,741 @@
+{
+  "group": {
+    "id": "posco",
+    "name": "포스코",
+    "slug": "posco",
+    "controllerName": "포스코홀딩스(주)",
+    "description": "포스코그룹은 글로벌 철강 기업 포스코를 중심으로 에너지, 소재, 건설, ICT 등 다양한 사업을 영위하는 대한민국 대표 소재·에너지 그룹이다. 동일인은 포스코홀딩스(주) 법인 자체이다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 43,
+    "listedCompanies": 6
+  },
+  "companies": [
+    {
+      "id": "posco-holdings",
+      "groupId": "posco",
+      "name": "포스코홀딩스",
+      "isListed": true,
+      "isHolding": true,
+      "isController": true,
+      "category": "철강/소재",
+      "stockCode": "005490",
+      "stockPrice": 408500,
+      "priceChange": 2000,
+      "priceChangePercent": 0.49,
+      "marketCap": 345000,
+      "sector": "지주회사"
+    },
+    {
+      "id": "posco-future-m",
+      "groupId": "posco",
+      "name": "포스코퓨처엠",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "003670",
+      "stockPrice": 178200,
+      "priceChange": -4800,
+      "priceChangePercent": -2.62,
+      "marketCap": 138000000000000,
+      "sector": "2차전지소재"
+    },
+    {
+      "id": "posco-dx",
+      "groupId": "posco",
+      "name": "포스코DX",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT",
+      "stockCode": "022100",
+      "stockPrice": 27850,
+      "priceChange": 650,
+      "priceChangePercent": 2.39,
+      "marketCap": 37200000000000,
+      "sector": "IT서비스"
+    },
+    {
+      "id": "posco-international",
+      "groupId": "posco",
+      "name": "포스코인터내셔널",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스",
+      "stockCode": "047050",
+      "stockPrice": 46300,
+      "priceChange": 800,
+      "priceChangePercent": 1.76,
+      "marketCap": 57100000000000,
+      "sector": "종합상사"
+    },
+    {
+      "id": "posco-m-tech",
+      "groupId": "posco",
+      "name": "포스코엠텍",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재",
+      "stockCode": "009520",
+      "stockPrice": 8230,
+      "priceChange": -170,
+      "priceChangePercent": -2.02,
+      "marketCap": 5200000000000,
+      "sector": "철강·금속"
+    },
+    {
+      "id": "posco-steelion",
+      "groupId": "posco",
+      "name": "포스코스틸리온",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재",
+      "stockCode": "058430",
+      "stockPrice": 68000,
+      "priceChange": 1500,
+      "priceChangePercent": 2.26,
+      "marketCap": 59000,
+      "sector": "철강가공"
+    },
+    {
+      "id": "posco-steel",
+      "groupId": "posco",
+      "name": "(주)포스코",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "posco-enc",
+      "groupId": "posco",
+      "name": "(주)포스코이앤씨",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "posco-gs-eco",
+      "groupId": "posco",
+      "name": "포스코지에스에코머티리얼즈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "posco-cngr-nickel",
+      "groupId": "posco",
+      "name": "포스코씨앤지알니켈솔루션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "qs-win",
+      "groupId": "posco",
+      "name": "(주)큐에스윈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "posco-wide",
+      "groupId": "posco",
+      "name": "(주)포스코와이드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "posco-flow",
+      "groupId": "posco",
+      "name": "(주)포스코플로우",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "posco-lithium",
+      "groupId": "posco",
+      "name": "포스코리튬솔루션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "posco-snnc",
+      "groupId": "posco",
+      "name": "(주)에스엔엔씨",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "posco-ict-h",
+      "groupId": "posco",
+      "name": "포스코아이씨이치",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "posco-pilbara",
+      "groupId": "posco",
+      "name": "포스코필바라리튬솔루션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "busan-ene",
+      "groupId": "posco",
+      "name": "(주)부산이앤이",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "posco-research",
+      "groupId": "posco",
+      "name": "(주)포스코경영연구원",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "posco-hr",
+      "groupId": "posco",
+      "name": "(주)포스코인재창조원",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "posco-air",
+      "groupId": "posco",
+      "name": "포스코에어솔루션(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "posco-zhongtai-air",
+      "groupId": "posco",
+      "name": "포스코중타이에어솔루션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "posco-tech-invest",
+      "groupId": "posco",
+      "name": "포스코기술투자(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/보험"
+    },
+    {
+      "id": "posco-hy-clean",
+      "groupId": "posco",
+      "name": "포스코에이치와이클린메탈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "posco-mc-materials",
+      "groupId": "posco",
+      "name": "(주)포스코엠씨머티리얼즈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "gale-intl-korea",
+      "groupId": "posco",
+      "name": "게일인터내셔널코리아(유)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "songdo-pmc",
+      "groupId": "posco",
+      "name": "송도개발피엠씨(유)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "posco-anc",
+      "groupId": "posco",
+      "name": "(주)포스코에이앤씨건축사사무소",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "rnr-logistics",
+      "groupId": "posco",
+      "name": "(주)알엔알물류",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "ui-sinseol-lrt",
+      "groupId": "posco",
+      "name": "우이신설경전철(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "samcheok-blue-power",
+      "groupId": "posco",
+      "name": "삼척블루파워(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "nei",
+      "groupId": "posco",
+      "name": "엔이아이(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "pohang-srd",
+      "groupId": "posco",
+      "name": "(주)포항에스알디",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기타"
+    },
+    {
+      "id": "dancheon-ene",
+      "groupId": "posco",
+      "name": "(주)단천이엔이",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "korea-fuelcell",
+      "groupId": "posco",
+      "name": "한국퓨얼셀(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "shinan-green",
+      "groupId": "posco",
+      "name": "(주)신안그린에너지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "e-steel-for-you",
+      "groupId": "posco",
+      "name": "(주)이스틸포유",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "eco-energy-solution",
+      "groupId": "posco",
+      "name": "에코에너지솔루션(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "posco-mobility",
+      "groupId": "posco",
+      "name": "(주)포스코모빌리티솔루션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "자동차"
+    },
+    {
+      "id": "ntobe",
+      "groupId": "posco",
+      "name": "(주)엔투비",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "pnr",
+      "groupId": "posco",
+      "name": "(주)피엔알",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "pohang-welding",
+      "groupId": "posco",
+      "name": "포항특수용접봉(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강/소재"
+    },
+    {
+      "id": "hc-solar",
+      "groupId": "posco",
+      "name": "에이치씨태양광발전(주)",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    }
+  ],
+  "relations": [
+    {
+      "id": "posco-rel-001",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-gs-eco",
+      "ownershipPct": 51
+    },
+    {
+      "id": "posco-rel-002",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-cngr-nickel",
+      "ownershipPct": 60
+    },
+    {
+      "id": "posco-rel-003",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-future-m",
+      "ownershipPct": 59.7
+    },
+    {
+      "id": "posco-rel-004",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "qs-win",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-005",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-wide",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-006",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-flow",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-007",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-lithium",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-008",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-enc",
+      "ownershipPct": 52.8
+    },
+    {
+      "id": "posco-rel-009",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-steel",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-010",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-dx",
+      "ownershipPct": 65.4
+    },
+    {
+      "id": "posco-rel-011",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-international",
+      "ownershipPct": 70.7
+    },
+    {
+      "id": "posco-rel-012",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-snnc",
+      "ownershipPct": 49
+    },
+    {
+      "id": "posco-rel-013",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-ict-h",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-014",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-pilbara",
+      "ownershipPct": 82
+    },
+    {
+      "id": "posco-rel-015",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "busan-ene",
+      "ownershipPct": 70
+    },
+    {
+      "id": "posco-rel-016",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-research",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-017",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-hr",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-018",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-air",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-019",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-zhongtai-air",
+      "ownershipPct": 75.1
+    },
+    {
+      "id": "posco-rel-020",
+      "groupId": "posco",
+      "fromCompanyId": "posco-holdings",
+      "toCompanyId": "posco-tech-invest",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-021",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "posco-hy-clean",
+      "ownershipPct": 75
+    },
+    {
+      "id": "posco-rel-022",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "posco-mc-materials",
+      "ownershipPct": 60
+    },
+    {
+      "id": "posco-rel-023",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "gale-intl-korea",
+      "ownershipPct": 29.9
+    },
+    {
+      "id": "posco-rel-024",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "songdo-pmc",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-025",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "posco-anc",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-026",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "rnr-logistics",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-027",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "ui-sinseol-lrt",
+      "ownershipPct": 27.3
+    },
+    {
+      "id": "posco-rel-028",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "samcheok-blue-power",
+      "ownershipPct": 34
+    },
+    {
+      "id": "posco-rel-029",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "nei",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-030",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "pohang-srd",
+      "ownershipPct": 51
+    },
+    {
+      "id": "posco-rel-031",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "dancheon-ene",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-032",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "korea-fuelcell",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-033",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "shinan-green",
+      "ownershipPct": 54.5
+    },
+    {
+      "id": "posco-rel-034",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "e-steel-for-you",
+      "ownershipPct": 61.1
+    },
+    {
+      "id": "posco-rel-035",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "eco-energy-solution",
+      "ownershipPct": 50
+    },
+    {
+      "id": "posco-rel-036",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "posco-mobility",
+      "ownershipPct": 100
+    },
+    {
+      "id": "posco-rel-037",
+      "groupId": "posco",
+      "fromCompanyId": "posco-mc-materials",
+      "toCompanyId": "ntobe",
+      "ownershipPct": 69.3
+    },
+    {
+      "id": "posco-rel-038",
+      "groupId": "posco",
+      "fromCompanyId": "posco-mc-materials",
+      "toCompanyId": "posco-m-tech",
+      "ownershipPct": 48.9
+    },
+    {
+      "id": "posco-rel-039",
+      "groupId": "posco",
+      "fromCompanyId": "posco-enc",
+      "toCompanyId": "posco-steelion",
+      "ownershipPct": 56.9
+    },
+    {
+      "id": "posco-rel-040",
+      "groupId": "posco",
+      "fromCompanyId": "posco-enc",
+      "toCompanyId": "pnr",
+      "ownershipPct": 70
+    },
+    {
+      "id": "posco-rel-041",
+      "groupId": "posco",
+      "fromCompanyId": "posco-enc",
+      "toCompanyId": "pohang-welding",
+      "ownershipPct": 50
+    },
+    {
+      "id": "posco-rel-042",
+      "groupId": "posco",
+      "fromCompanyId": "posco-steel",
+      "toCompanyId": "posco-steel",
+      "ownershipPct": 10.9
+    },
+    {
+      "id": "posco-rel-043",
+      "groupId": "posco",
+      "fromCompanyId": "posco-dx",
+      "toCompanyId": "hc-solar",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": []
+}

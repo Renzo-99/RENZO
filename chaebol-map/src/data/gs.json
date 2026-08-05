@@ -1,0 +1,359 @@
+{
+  "group": {
+    "id": "gs",
+    "name": "지에스",
+    "slug": "gs",
+    "controllerName": "허창수",
+    "description": "GS그룹은 에너지, 유통, 건설 등을 주력으로 하는 대한민국의 대표 재벌 그룹이다. 지주회사 (주)GS를 정점으로 GS칼텍스, GS리테일, GS건설 등 핵심 계열사를 보유하고 있다.",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 20,
+    "listedCompanies": 5
+  },
+  "companies": [
+    {
+      "id": "gs-holdings",
+      "groupId": "gs",
+      "name": "(주)지에스",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "078930",
+      "stockPrice": 55000,
+      "priceChange": 500,
+      "priceChangePercent": 0.92,
+      "marketCap": 52000,
+      "sector": "지주회사"
+    },
+    {
+      "id": "gs-caltex",
+      "groupId": "gs",
+      "name": "GS칼텍스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "gs-retail",
+      "groupId": "gs",
+      "name": "GS리테일",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통",
+      "stockCode": "007070",
+      "stockPrice": 22500,
+      "priceChange": -250,
+      "priceChangePercent": -1.1,
+      "marketCap": 17300,
+      "sector": "유통·편의점"
+    },
+    {
+      "id": "gs-construction",
+      "groupId": "gs",
+      "name": "GS건설",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설",
+      "stockCode": "006360",
+      "stockPrice": 46000,
+      "priceChange": 800,
+      "priceChangePercent": 1.77,
+      "marketCap": 35000,
+      "sector": "건설"
+    },
+    {
+      "id": "gs-global",
+      "groupId": "gs",
+      "name": "GS글로벌",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "상사",
+      "stockCode": "001250",
+      "stockPrice": 3185,
+      "priceChange": -35,
+      "priceChangePercent": -1.09,
+      "marketCap": 2400,
+      "sector": "종합상사"
+    },
+    {
+      "id": "gs-pnm",
+      "groupId": "gs",
+      "name": "GS피앤엠",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학",
+      "stockCode": "024720",
+      "stockPrice": 5120,
+      "priceChange": 60,
+      "priceChangePercent": 1.19,
+      "marketCap": 1850,
+      "sector": "석유·가스"
+    },
+    {
+      "id": "gs-energy",
+      "groupId": "gs",
+      "name": "GS에너지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "gs-sports",
+      "groupId": "gs",
+      "name": "GS스포츠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "gs-ventures",
+      "groupId": "gs",
+      "name": "GS벤처스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융/투자"
+    },
+    {
+      "id": "gs-eps",
+      "groupId": "gs",
+      "name": "GS이피에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "gs-neotek",
+      "groupId": "gs",
+      "name": "GS네오텍",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "gs-entec",
+      "groupId": "gs",
+      "name": "GS엔텍",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "gs-parktwentyfour",
+      "groupId": "gs",
+      "name": "GS파크이십사",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "gs-futurefit",
+      "groupId": "gs",
+      "name": "GS퓨처핏",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "전자/IT"
+    },
+    {
+      "id": "gs-retail-services",
+      "groupId": "gs",
+      "name": "GS리테일서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "parnas-hotel",
+      "groupId": "gs",
+      "name": "파르나스호텔",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "gs-home-shopping",
+      "groupId": "gs",
+      "name": "GS홈쇼핑",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "gs-charge",
+      "groupId": "gs",
+      "name": "GS차지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "gs-powergen",
+      "groupId": "gs",
+      "name": "GS파워",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    },
+    {
+      "id": "gs-ecomet",
+      "groupId": "gs",
+      "name": "GS에코메탈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-001",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-caltex",
+      "ownershipPct": 50
+    },
+    {
+      "id": "rel-002",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-retail",
+      "ownershipPct": 58.6
+    },
+    {
+      "id": "rel-003",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-sports",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-004",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-energy",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-005",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-ventures",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-006",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-global",
+      "ownershipPct": 89.7
+    },
+    {
+      "id": "rel-007",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-construction",
+      "ownershipPct": 8.22
+    },
+    {
+      "id": "rel-008",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-neotek",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-009",
+      "groupId": "gs",
+      "fromCompanyId": "gs-holdings",
+      "toCompanyId": "gs-futurefit",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-010",
+      "groupId": "gs",
+      "fromCompanyId": "gs-energy",
+      "toCompanyId": "gs-eps",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-011",
+      "groupId": "gs",
+      "fromCompanyId": "gs-energy",
+      "toCompanyId": "gs-powergen",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-012",
+      "groupId": "gs",
+      "fromCompanyId": "gs-energy",
+      "toCompanyId": "gs-charge",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-013",
+      "groupId": "gs",
+      "fromCompanyId": "gs-energy",
+      "toCompanyId": "gs-ecomet",
+      "ownershipPct": 65
+    },
+    {
+      "id": "rel-014",
+      "groupId": "gs",
+      "fromCompanyId": "gs-caltex",
+      "toCompanyId": "gs-pnm",
+      "ownershipPct": 51
+    },
+    {
+      "id": "rel-015",
+      "groupId": "gs",
+      "fromCompanyId": "gs-retail",
+      "toCompanyId": "gs-home-shopping",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-016",
+      "groupId": "gs",
+      "fromCompanyId": "gs-retail",
+      "toCompanyId": "gs-retail-services",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-017",
+      "groupId": "gs",
+      "fromCompanyId": "gs-retail",
+      "toCompanyId": "parnas-hotel",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-018",
+      "groupId": "gs",
+      "fromCompanyId": "gs-construction",
+      "toCompanyId": "gs-entec",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "gs",
+      "companyId": "gs-holdings",
+      "ownershipPct": 4.6
+    }
+  ]
+}

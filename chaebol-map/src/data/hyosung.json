@@ -1,0 +1,183 @@
+{
+  "group": {
+    "id": "hyosung",
+    "name": "효성",
+    "slug": "hyosung",
+    "controllerName": "조현준",
+    "description": "효성그룹은 섬유, 중공업, 화학, 첨단소재 등 4개 사업회사 체제로 운영되는 그룹",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 50,
+    "listedCompanies": 5
+  },
+  "companies": [
+    {
+      "id": "hs-controller",
+      "groupId": "hyosung",
+      "name": "조현준",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "hyosung-corp",
+      "groupId": "hyosung",
+      "name": "효성",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "004800",
+      "stockPrice": 68000,
+      "priceChange": 1200,
+      "priceChangePercent": 1.8,
+      "marketCap": 15200,
+      "sector": "지주회사"
+    },
+    {
+      "id": "hyosung-tnc",
+      "groupId": "hyosung",
+      "name": "효성티앤씨",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "섬유",
+      "stockCode": "298020",
+      "stockPrice": 340000,
+      "priceChange": -5000,
+      "priceChangePercent": -1.45,
+      "marketCap": 34200,
+      "sector": "섬유·화학"
+    },
+    {
+      "id": "hyosung-heavy",
+      "groupId": "hyosung",
+      "name": "효성중공업",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "중공업",
+      "stockCode": "298040",
+      "stockPrice": 280000,
+      "priceChange": 8000,
+      "priceChangePercent": 2.94,
+      "marketCap": 35700,
+      "sector": "전력기기·건설"
+    },
+    {
+      "id": "hyosung-advanced",
+      "groupId": "hyosung",
+      "name": "효성첨단소재",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "첨단소재",
+      "stockCode": "298050",
+      "stockPrice": 420000,
+      "priceChange": -3000,
+      "priceChangePercent": -0.71,
+      "marketCap": 22800,
+      "sector": "탄소섬유·타이어코드"
+    },
+    {
+      "id": "hyosung-chemical",
+      "groupId": "hyosung",
+      "name": "효성화학",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "화학",
+      "stockCode": "298000",
+      "stockPrice": 135000,
+      "priceChange": 2500,
+      "priceChangePercent": 1.89,
+      "marketCap": 7200,
+      "sector": "화학"
+    },
+    {
+      "id": "hyosung-toyota",
+      "groupId": "hyosung",
+      "name": "효성도요타",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "기계"
+    },
+    {
+      "id": "hyosung-its",
+      "groupId": "hyosung",
+      "name": "효성아이티엑스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "hyosung-tns",
+      "groupId": "hyosung",
+      "name": "효성티엔에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융기기"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-hs-1",
+      "groupId": "hyosung",
+      "fromCompanyId": "hyosung-corp",
+      "toCompanyId": "hyosung-tnc",
+      "ownershipPct": 46
+    },
+    {
+      "id": "rel-hs-2",
+      "groupId": "hyosung",
+      "fromCompanyId": "hyosung-corp",
+      "toCompanyId": "hyosung-heavy",
+      "ownershipPct": 40.7
+    },
+    {
+      "id": "rel-hs-3",
+      "groupId": "hyosung",
+      "fromCompanyId": "hyosung-corp",
+      "toCompanyId": "hyosung-advanced",
+      "ownershipPct": 46
+    },
+    {
+      "id": "rel-hs-4",
+      "groupId": "hyosung",
+      "fromCompanyId": "hyosung-corp",
+      "toCompanyId": "hyosung-chemical",
+      "ownershipPct": 40
+    },
+    {
+      "id": "rel-hs-5",
+      "groupId": "hyosung",
+      "fromCompanyId": "hyosung-corp",
+      "toCompanyId": "hyosung-toyota",
+      "ownershipPct": 60
+    },
+    {
+      "id": "rel-hs-6",
+      "groupId": "hyosung",
+      "fromCompanyId": "hyosung-corp",
+      "toCompanyId": "hyosung-its",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-hs-7",
+      "groupId": "hyosung",
+      "fromCompanyId": "hyosung-heavy",
+      "toCompanyId": "hyosung-tns",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "hyosung",
+      "companyId": "hyosung-corp",
+      "ownershipPct": 18
+    }
+  ]
+}

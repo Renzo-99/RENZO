@@ -1,0 +1,415 @@
+{
+  "group": {
+    "id": "coupang",
+    "name": "쿠팡",
+    "slug": "coupang",
+    "controllerName": "김범석",
+    "description": "쿠팡그룹은 대한민국 최대 이커머스 기업으로 물류, 배달, OTT, 핀테크 등 다양한 분야로 사업을 다각화",
+    "dataDate": "2025-05-01",
+    "totalCompanies": 25,
+    "listedCompanies": 1
+  },
+  "companies": [
+    {
+      "id": "coupang-controller",
+      "groupId": "coupang",
+      "name": "김범석",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "coupang-inc",
+      "groupId": "coupang",
+      "name": "쿠팡",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "이커머스",
+      "stockCode": "CPNG",
+      "stockPrice": 26400,
+      "priceChange": -200,
+      "priceChangePercent": -0.75,
+      "marketCap": 480000,
+      "sector": "이커머스"
+    },
+    {
+      "id": "coupang-logistics",
+      "groupId": "coupang",
+      "name": "쿠팡로지스틱스서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "coupang-fulfillment",
+      "groupId": "coupang",
+      "name": "쿠팡풀필먼트서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "coupang-eats",
+      "groupId": "coupang",
+      "name": "쿠팡이츠",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "배달서비스"
+    },
+    {
+      "id": "coupang-pay",
+      "groupId": "coupang",
+      "name": "쿠팡페이",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "핀테크"
+    },
+    {
+      "id": "coupang-play",
+      "groupId": "coupang",
+      "name": "쿠팡플레이",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "OTT"
+    },
+    {
+      "id": "coupang-finance",
+      "groupId": "coupang",
+      "name": "쿠팡파이낸스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "금융"
+    },
+    {
+      "id": "coupang-global-llc",
+      "groupId": "coupang",
+      "name": "쿠팡글로벌LLC",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "지주"
+    },
+    {
+      "id": "coupang-media",
+      "groupId": "coupang",
+      "name": "쿠팡미디어",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "미디어"
+    },
+    {
+      "id": "coupang-rls",
+      "groupId": "coupang",
+      "name": "쿠팡알엘에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "coupang-fresh",
+      "groupId": "coupang",
+      "name": "쿠팡프레시",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "유통"
+    },
+    {
+      "id": "coupang-ad",
+      "groupId": "coupang",
+      "name": "쿠팡애드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "광고"
+    },
+    {
+      "id": "coupang-merchant-support",
+      "groupId": "coupang",
+      "name": "쿠팡머천트서포트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "coupang-eats-service",
+      "groupId": "coupang",
+      "name": "쿠팡이츠서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "배달서비스"
+    },
+    {
+      "id": "coupang-security",
+      "groupId": "coupang",
+      "name": "쿠팡시큐리티서비스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "보안"
+    },
+    {
+      "id": "farfetch-korea",
+      "groupId": "coupang",
+      "name": "파페치코리아",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "이커머스"
+    },
+    {
+      "id": "coupang-tech",
+      "groupId": "coupang",
+      "name": "쿠팡테크",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "coupang-data",
+      "groupId": "coupang",
+      "name": "쿠팡데이터",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "IT서비스"
+    },
+    {
+      "id": "coupang-japan",
+      "groupId": "coupang",
+      "name": "쿠팡재팬",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "이커머스"
+    },
+    {
+      "id": "coupang-taiwan",
+      "groupId": "coupang",
+      "name": "쿠팡타이완",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "이커머스"
+    },
+    {
+      "id": "coupang-singapore",
+      "groupId": "coupang",
+      "name": "쿠팡싱가포르",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "이커머스"
+    },
+    {
+      "id": "coupang-flex",
+      "groupId": "coupang",
+      "name": "쿠팡플렉스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "rocket-delivery",
+      "groupId": "coupang",
+      "name": "로켓딜리버리",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "coupang-investment",
+      "groupId": "coupang",
+      "name": "쿠팡인베스트먼트",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "투자"
+    }
+  ],
+  "relations": [
+    {
+      "id": "cp-rel-001",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-logistics",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-002",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-fulfillment",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-003",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-eats",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-004",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-pay",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-005",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-play",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-006",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-finance",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-007",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-global-llc",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-008",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-media",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-009",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-rls",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-010",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-fresh",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-011",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-ad",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-012",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-merchant-support",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-013",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-eats",
+      "toCompanyId": "coupang-eats-service",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-014",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-security",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-015",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "farfetch-korea",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-016",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-tech",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-017",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-data",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-018",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-global-llc",
+      "toCompanyId": "coupang-japan",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-019",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-global-llc",
+      "toCompanyId": "coupang-taiwan",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-020",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-global-llc",
+      "toCompanyId": "coupang-singapore",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-021",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-logistics",
+      "toCompanyId": "coupang-flex",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-022",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-logistics",
+      "toCompanyId": "rocket-delivery",
+      "ownershipPct": 100.0
+    },
+    {
+      "id": "cp-rel-023",
+      "groupId": "coupang",
+      "fromCompanyId": "coupang-inc",
+      "toCompanyId": "coupang-investment",
+      "ownershipPct": 100.0
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "coupang",
+      "companyId": "coupang-inc",
+      "ownershipPct": 10.2
+    }
+  ]
+}

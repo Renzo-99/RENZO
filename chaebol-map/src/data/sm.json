@@ -1,0 +1,142 @@
+{
+  "group": {
+    "id": "sm",
+    "name": "SM",
+    "slug": "sm",
+    "controllerName": "우오현",
+    "description": "SM그룹(삼라마이다스)은 해운, 철강, 건설 등을 영위하는 그룹",
+    "dataDate": "2026-02-27",
+    "totalCompanies": 40,
+    "listedCompanies": 2
+  },
+  "companies": [
+    {
+      "id": "sm-controller",
+      "groupId": "sm",
+      "name": "우오현",
+      "isListed": false,
+      "isHolding": false,
+      "isController": true,
+      "category": "동일인"
+    },
+    {
+      "id": "samra-midas",
+      "groupId": "sm",
+      "name": "삼라마이다스",
+      "isListed": true,
+      "isHolding": true,
+      "isController": false,
+      "category": "지주회사",
+      "stockCode": "222810",
+      "stockPrice": 3800,
+      "priceChange": 50,
+      "priceChangePercent": 1.33,
+      "marketCap": 4500,
+      "sector": "지주회사"
+    },
+    {
+      "id": "sm-merchant",
+      "groupId": "sm",
+      "name": "SM상선",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "해운",
+      "stockCode": "005450",
+      "stockPrice": 9500,
+      "priceChange": -200,
+      "priceChangePercent": -2.06,
+      "marketCap": 3200,
+      "sector": "해운"
+    },
+    {
+      "id": "sm-steel",
+      "groupId": "sm",
+      "name": "영흥철강",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "철강"
+    },
+    {
+      "id": "samhwan",
+      "groupId": "sm",
+      "name": "삼환기업",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "sm-culture",
+      "groupId": "sm",
+      "name": "SM문화재단",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "문화"
+    },
+    {
+      "id": "sm-logistics",
+      "groupId": "sm",
+      "name": "SM로지스틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "물류"
+    },
+    {
+      "id": "sm-energy",
+      "groupId": "sm",
+      "name": "SM에너지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지"
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-sm-1",
+      "groupId": "sm",
+      "fromCompanyId": "samra-midas",
+      "toCompanyId": "sm-merchant",
+      "ownershipPct": 24.5
+    },
+    {
+      "id": "rel-sm-2",
+      "groupId": "sm",
+      "fromCompanyId": "samra-midas",
+      "toCompanyId": "sm-steel",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-sm-3",
+      "groupId": "sm",
+      "fromCompanyId": "samra-midas",
+      "toCompanyId": "samhwan",
+      "ownershipPct": 56.3
+    },
+    {
+      "id": "rel-sm-4",
+      "groupId": "sm",
+      "fromCompanyId": "samra-midas",
+      "toCompanyId": "sm-logistics",
+      "ownershipPct": 100
+    },
+    {
+      "id": "rel-sm-5",
+      "groupId": "sm",
+      "fromCompanyId": "samra-midas",
+      "toCompanyId": "sm-energy",
+      "ownershipPct": 100
+    }
+  ],
+  "controllerHoldings": [
+    {
+      "groupId": "sm",
+      "companyId": "samra-midas",
+      "ownershipPct": 42.8
+    }
+  ]
+}

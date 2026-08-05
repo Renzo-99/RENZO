@@ -1,0 +1,283 @@
+{
+  "group": {
+    "id": "booyoung",
+    "name": "부영",
+    "slug": "booyoung",
+    "controllerName": "이중근",
+    "description": "부영그룹은 주택건설을 중심으로 한 대한민국의 주요 재벌 그룹이다. 부영, 부영주택 등 건설 관련 계열사와 상장사 한라를 보유하고 있다.",
+    "dataDate": "2025-05-01",
+    "totalCompanies": 25,
+    "listedCompanies": 2
+  },
+  "companies": [
+    {"id": "booyoung-controller", "groupId": "booyoung", "name": "이중근", "isListed": false, "isHolding": false, "isController": true, "category": "동일인"},
+    {
+      "id": "booyoung-corp",
+      "groupId": "booyoung",
+      "name": "부영",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-housing",
+      "groupId": "booyoung",
+      "name": "부영주택",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-halla",
+      "groupId": "booyoung",
+      "name": "한라",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설",
+      "stockCode": "014790",
+      "stockPrice": 5990,
+      "priceChange": 70,
+      "priceChangePercent": 1.18,
+      "marketCap": 5900,
+      "sector": "건설"
+    },
+    {
+      "id": "booyoung-dsme",
+      "groupId": "booyoung",
+      "name": "한화오션",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "제조"
+    },
+    {
+      "id": "booyoung-apt",
+      "groupId": "booyoung",
+      "name": "부영에이피티",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-construction",
+      "groupId": "booyoung",
+      "name": "부영건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-techwin",
+      "groupId": "booyoung",
+      "name": "부영테크윈",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "제조"
+    },
+    {
+      "id": "booyoung-hotel",
+      "groupId": "booyoung",
+      "name": "부영호텔",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "booyoung-land",
+      "groupId": "booyoung",
+      "name": "부영랜드",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "booyoung-life",
+      "groupId": "booyoung",
+      "name": "부영생활",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "booyoung-management",
+      "groupId": "booyoung",
+      "name": "부영관리",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "booyoung-development",
+      "groupId": "booyoung",
+      "name": "부영개발",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-cs",
+      "groupId": "booyoung",
+      "name": "부영씨에스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "booyoung-sindo",
+      "groupId": "booyoung",
+      "name": "신도종합건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-saemaeul",
+      "groupId": "booyoung",
+      "name": "새마을레저",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "서비스"
+    },
+    {
+      "id": "booyoung-dongjak",
+      "groupId": "booyoung",
+      "name": "동작산업",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-taejeon",
+      "groupId": "booyoung",
+      "name": "대전도시개발",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-muak",
+      "groupId": "booyoung",
+      "name": "무악주택",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-saehan",
+      "groupId": "booyoung",
+      "name": "새한종합건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-youngdong",
+      "groupId": "booyoung",
+      "name": "영동건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-woonsan",
+      "groupId": "booyoung",
+      "name": "운산개발",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-daesung",
+      "groupId": "booyoung",
+      "name": "대성건설",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "건설"
+    },
+    {
+      "id": "booyoung-halla-encom",
+      "groupId": "booyoung",
+      "name": "한라엔컴",
+      "isListed": true,
+      "isHolding": false,
+      "isController": false,
+      "category": "제조",
+      "stockCode": "014990",
+      "stockPrice": 6100,
+      "priceChange": -50,
+      "priceChangePercent": -0.81,
+      "marketCap": 1400,
+      "sector": "공조냉열"
+    },
+    {
+      "id": "booyoung-logistics",
+      "groupId": "booyoung",
+      "name": "부영로지스틱스",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "운수"
+    },
+    {
+      "id": "booyoung-energy",
+      "groupId": "booyoung",
+      "name": "부영에너지",
+      "isListed": false,
+      "isHolding": false,
+      "isController": false,
+      "category": "에너지/화학"
+    }
+  ],
+  "relations": [
+    { "id": "rel-001", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-housing", "ownershipPct": 100.00 },
+    { "id": "rel-002", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-halla", "ownershipPct": 32.55 },
+    { "id": "rel-003", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-apt", "ownershipPct": 100.00 },
+    { "id": "rel-004", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-construction", "ownershipPct": 100.00 },
+    { "id": "rel-005", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-hotel", "ownershipPct": 100.00 },
+    { "id": "rel-006", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-land", "ownershipPct": 100.00 },
+    { "id": "rel-007", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-life", "ownershipPct": 100.00 },
+    { "id": "rel-008", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-management", "ownershipPct": 100.00 },
+    { "id": "rel-009", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-development", "ownershipPct": 100.00 },
+    { "id": "rel-010", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-cs", "ownershipPct": 100.00 },
+    { "id": "rel-011", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-sindo", "ownershipPct": 100.00 },
+    { "id": "rel-012", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-saemaeul", "ownershipPct": 100.00 },
+    { "id": "rel-013", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-dongjak", "ownershipPct": 100.00 },
+    { "id": "rel-014", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-taejeon", "ownershipPct": 100.00 },
+    { "id": "rel-015", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-muak", "ownershipPct": 100.00 },
+    { "id": "rel-016", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-saehan", "ownershipPct": 100.00 },
+    { "id": "rel-017", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-youngdong", "ownershipPct": 100.00 },
+    { "id": "rel-018", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-woonsan", "ownershipPct": 100.00 },
+    { "id": "rel-019", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-daesung", "ownershipPct": 100.00 },
+    { "id": "rel-020", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-techwin", "ownershipPct": 100.00 },
+    { "id": "rel-021", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-logistics", "ownershipPct": 100.00 },
+    { "id": "rel-022", "groupId": "booyoung", "fromCompanyId": "booyoung-corp", "toCompanyId": "booyoung-energy", "ownershipPct": 100.00 },
+    { "id": "rel-023", "groupId": "booyoung", "fromCompanyId": "booyoung-halla", "toCompanyId": "booyoung-halla-encom", "ownershipPct": 44.83 },
+    { "id": "rel-024", "groupId": "booyoung", "fromCompanyId": "booyoung-housing", "toCompanyId": "booyoung-halla", "ownershipPct": 10.12 }
+  ],
+  "controllerHoldings": [
+    { "groupId": "booyoung", "companyId": "booyoung-corp", "ownershipPct": 60.29 },
+    { "groupId": "booyoung", "companyId": "booyoung-housing", "ownershipPct": 0.00 },
+    { "groupId": "booyoung", "companyId": "booyoung-halla", "ownershipPct": 1.22 }
+  ]
+}
