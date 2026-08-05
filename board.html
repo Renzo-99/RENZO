@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>투자 참고자료 보드</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sans-serif;background:#111318;color:#d1d5db;font-size:14px;line-height:1.5;min-height:100vh;display:flex}
+a{color:inherit;text-decoration:none}
+.side{width:250px;flex-shrink:0;background:#181b21;border-right:1px solid rgba(255,255,255,.06);padding:16px;height:100vh;position:sticky;top:0;overflow-y:auto}
+.side h2{font-size:13px;font-weight:600;color:#9ca3af;margin:4px 8px 12px}
+.side button{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;padding:8px 12px;border:none;background:none;color:#9ca3af;font-size:13px;border-radius:8px;cursor:pointer;font-family:inherit}
+.side button:hover{background:rgba(255,255,255,.05);color:#e5e7eb}
+.side button.on{background:rgba(255,255,255,.1);color:#fff;font-weight:500}
+.side .cnt{font-size:11px;color:#6b7280}
+.side .note{font-size:11px;color:#6b7280;margin:20px 8px 0;line-height:1.6}
+.main{flex:1;min-width:0;padding:28px;max-width:900px}
+h1{font-size:20px;font-weight:700;color:#fff}
+.sub{font-size:13px;color:#9ca3af;margin:4px 0 18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{padding:6px 13px;border-radius:99px;font-size:12px;border:none;cursor:pointer;background:rgba(255,255,255,.05);color:#d1d5db;font-family:inherit}
+.chip:hover{background:rgba(255,255,255,.1)}
+.chip.on{background:#fff;color:#111318;font-weight:600}
+.item{display:block;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:12px 16px;margin-bottom:8px;transition:background .15s}
+.item:hover{background:rgba(255,255,255,.06)}
+.item .top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:11px;color:#6b7280;margin-bottom:4px}
+.item .src{background:rgba(255,255,255,.05);border-radius:4px;padding:1px 6px}
+.item .tt{font-size:14px;color:#f3f4f6;line-height:1.4}
+.badge{border-radius:4px;padding:1px 6px}
+.b-semiconductor{background:rgba(59,130,246,.15);color:#93c5fd}
+.b-trade{background:rgba(16,185,129,.15);color:#6ee7b7}
+.b-security{background:rgba(239,68,68,.15);color:#fca5a5}
+.b-energy{background:rgba(245,158,11,.15);color:#fcd34d}
+.b-finance{background:rgba(139,92,246,.15);color:#c4b5fd}
+.msg{text-align:center;color:#6b7280;padding:50px 0;font-size:13px}
+.err{background:rgba(239,68,68,.1);color:#fca5a5;border-radius:12px;padding:16px;font-size:13px}
+@media(max-width:760px){body{flex-direction:column}.side{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;gap:4px;align-items:center}.side h2{width:100%}.side button{width:auto}.side .note{width:100%;margin-top:8px}.main{padding:16px}}
+</style></head><body>
+
+<aside class="side">
+  <h2>국회입법조사처 자료</h2>
+  <div id="srcNav"></div>
+  <p class="note" id="sideNote">매일 1회 자동 갱신</p>
+</aside>
+
+<main class="main">
+  <h1>투자 참고자료 보드</h1>
+  <p class="sub">국회입법조사처 발간물·연구보고서를 투자 트랙별로 분류해 보여줍니다</p>
+  <div class="chips" id="trackChips"></div>
+  <div id="list"><p class="msg">불러오는 중...</p></div>
+</main>
+
+<script>
+// 데이터: GitHub Actions가 매일 06:23(KST)에 갱신하는 JSON
+const DATA_URL='https://raw.githubusercontent.com/Renzo-99/RENZO/claude/stock1-bundle/chaebol-ownership/public/publications.json';
+const TRACKS={
+  semiconductor:{label:'반도체·공급망'},
+  trade:{label:'통상·무역'},
+  security:{label:'안보·지정학'},
+  energy:{label:'에너지·원자재'},
+  finance:{label:'금융·지배구조'},
+};
+let feed=null,srcFilter='all',trackFilter='all';
+
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function renderNav(){
+  let h='<button class="'+(srcFilter==='all'?'on':'')+'" onclick="srcFilter=\'all\';render()">전체 보기</button>';
+  (feed?.statuses||[]).forEach(s=>{
+    h+='<button class="'+(srcFilter===s.id?'on':'')+'" onclick="srcFilter=\''+s.id+'\';render()">';
+    h+='<span>'+esc(s.name)+'</span>'+(s.ok?'<span class="cnt">'+s.count+'</span>':'<span>⚠️</span>')+'</button>';
+  });
+  document.getElementById('srcNav').innerHTML=h;
+  if(feed){
+    const d=new Date(feed.updatedAt);
+    document.getElementById('sideNote').innerHTML='매일 1회 자동 갱신<br>최근 수집: '+
+      d.toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
+}
+
+function renderChips(){
+  let h='<button class="chip '+(trackFilter==='all'?'on':'')+'" onclick="trackFilter=\'all\';render()">전체</button>';
+  Object.entries(TRACKS).forEach(([id,t])=>{
+    h+='<button class="chip '+(trackFilter===id?'on':'')+'" onclick="trackFilter=\''+id+'\';render()">'+t.label+'</button>';
+  });
+  document.getElementById('trackChips').innerHTML=h;
+}
+
+function render(){
+  renderNav();renderChips();
+  const items=(feed?.items||[]).filter(it=>{
+    if(srcFilter!=='all'&&it.sourceId!==srcFilter)return false;
+    if(trackFilter!=='all'&&!(it.tracks||[]).includes(trackFilter))return false;
+    return true;
+  });
+  if(!items.length){document.getElementById('list').innerHTML='<p class="msg">조건에 맞는 자료가 없습니다</p>';return;}
+  document.getElementById('list').innerHTML=items.map(it=>{
+    let h='<a class="item" href="'+esc(it.link)+'" target="_blank" rel="noreferrer noopener"><div class="top">';
+    h+='<span class="src">'+esc(it.sourceName)+'</span>';
+    if(it.date)h+='<span>'+esc(it.date)+'</span>';
+    if(it.meta)h+='<span>'+esc(it.meta)+'</span>';
+    (it.tracks||[]).forEach(t=>{if(TRACKS[t])h+='<span class="badge b-'+t+'">'+TRACKS[t].label+'</span>';});
+    h+='</div><div class="tt">'+esc(it.title)+'</div></a>';
+    return h;
+  }).join('');
+}
+
+renderChips();renderNav();
+(async()=>{
+  try{
+    // 캐시 우회용 일 단위 버전 파라미터
+    const v=new Date().toISOString().slice(0,10);
+    const res=await fetch(DATA_URL+'?v='+v,{cache:'no-cache'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    feed=await res.json();
+    render();
+  }catch(e){
+    document.getElementById('list').innerHTML=
+      '<div class="err">자료를 불러올 수 없습니다: '+esc(e.message)+'<br>인터넷 연결을 확인한 뒤 새로고침(F5) 해주세요.</div>';
+  }
+})();
+</script>
+</body></html>
