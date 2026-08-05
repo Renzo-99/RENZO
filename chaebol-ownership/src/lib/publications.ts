@@ -49,6 +49,8 @@ export interface Publication {
   sourceName: string;
   title: string;
   date: string; // YYYY-MM-DD (파싱 실패 시 원문 유지)
+  /** 호수·저자 등 부가 정보 (정적 수집 데이터에만 존재) */
+  meta?: string;
   link: string;
   tracks: TrackId[];
 }

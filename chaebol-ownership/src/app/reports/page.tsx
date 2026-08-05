@@ -27,12 +27,17 @@ export default function ReportsPage() {
   const [trackFilter, setTrackFilter] = useState<TrackId | "all">("all");
 
   useEffect(() => {
-    fetch("/api/publications")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data: PublicationFeed) => setFeed(data))
+    // 1순위: GitHub Actions가 매일 갱신하는 정적 publications.json
+    // 2순위: 서버 API(/api/publications, 열린국회정보·공공데이터포털 직접 호출)
+    const load = async (): Promise<PublicationFeed> => {
+      const staticRes = await fetch("/publications.json").catch(() => null);
+      if (staticRes?.ok) return staticRes.json();
+      const apiRes = await fetch("/api/publications");
+      if (!apiRes.ok) throw new Error(`HTTP ${apiRes.status}`);
+      return apiRes.json();
+    };
+    load()
+      .then(setFeed)
       .catch((e: Error) => setLoadError(e.message));
   }, []);
 
@@ -216,6 +221,7 @@ function PublicationRow({ item }: { item: Publication }) {
       <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1">
         <span className="bg-white/5 rounded px-1.5 py-0.5">{item.sourceName}</span>
         {item.date && <span>{item.date}</span>}
+        {item.meta && <span className="truncate">{item.meta}</span>}
         {item.tracks.map((t) => (
           <span key={t} className={`rounded px-1.5 py-0.5 ${TRACK_COLORS[t]}`}>
             {TRACKS[t].label}
