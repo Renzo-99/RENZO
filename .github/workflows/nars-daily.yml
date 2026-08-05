@@ -7,6 +7,8 @@ on:
         description: "정찰 모드 (수집 없이 페이지 구조만 로그로 확인)"
         required: false
         default: "false"
+  push:
+    branches: [claude/nars-pipeline]
   schedule:
     # 매일 06:23 KST (21:23 UTC)
     - cron: "23 21 * * *"
@@ -33,13 +35,14 @@ jobs:
 
       - name: 수집 실행
         env:
-          RECON: ${{ inputs.recon }}
+          # 수동 실행 입력 또는 커밋 메시지의 [recon] 표시로 정찰 모드 진입
+          RECON: ${{ (inputs.recon == 'true' || contains(github.event.head_commit.message, '[recon]')) && 'true' || 'false' }}
         run: |
           mkdir -p bundle/chaebol-ownership/public
           node .github/scripts/collect-nars.mjs bundle/chaebol-ownership/public/publications.json
 
       - name: 데이터 커밋
-        if: ${{ inputs.recon != 'true' }}
+        if: ${{ inputs.recon != 'true' && !contains(github.event.head_commit.message, '[recon]') }}
         run: |
           cd bundle
           git config user.name "nars-collector[bot]"
