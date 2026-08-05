@@ -19,15 +19,16 @@ const TRACKS = {
 };
 
 /**
- * 수집 대상 카테고리.
- * cmsCode는 정찰 모드 로그로 확인 후 확정한다 (RECON 결과 반영).
+ * 수집 대상 카테고리 (cmsCode는 정찰 모드로 실측 확정, 2026-08-05).
+ * CM0043(분류전체)은 나머지 4종의 상위집합이므로 수집 시 중복을 제거해
+ * '발간물'에는 4종 외 기타 자료만 남긴다.
  */
 const CATEGORIES = [
-  { sourceId: "publication", sourceName: "국회입법조사처_발간물", cmsCode: null },
-  { sourceId: "nars-analysis", sourceName: "연구보고서(NARS 현안분석)", cmsCode: null },
-  { sourceId: "issue-point", sourceName: "연구보고서(이슈와 논점)", cmsCode: null },
-  { sourceId: "policy-report", sourceName: "연구보고서(입법·정책보고서)", cmsCode: null },
-  { sourceId: "impact-analysis", sourceName: "연구보고서(입법영향분석보고서)", cmsCode: null },
+  { sourceId: "nars-analysis", sourceName: "연구보고서(NARS 현안분석)", cmsCode: "CM0155" },
+  { sourceId: "issue-point", sourceName: "연구보고서(이슈와 논점)", cmsCode: "CM0018" },
+  { sourceId: "policy-report", sourceName: "연구보고서(입법·정책보고서)", cmsCode: "CM0156" },
+  { sourceId: "impact-analysis", sourceName: "연구보고서(입법영향분석보고서)", cmsCode: "CM0152" },
+  { sourceId: "publication", sourceName: "국회입법조사처_발간물", cmsCode: "CM0043" },
 ];
 
 const BASE = "https://www.nars.go.kr";
@@ -158,54 +159,78 @@ async function recon() {
 
 /* ---------------- 수집 모드 ---------------- */
 
-/** 목록 페이지 HTML에서 게시물(제목/링크/날짜) 추출 — 구조 확정 전 범용 파서 */
-function parseList(html) {
+/** HTML 엔티티 정리 */
+function decodeEntities(s) {
+  return s
+    .replace(/&#x([0-9A-Fa-f]+);/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCharCode(parseInt(d, 10)))
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&nbsp;/g, " ");
+}
+
+/**
+ * 목록 페이지 HTML에서 게시물 추출 (2026-08-05 실측 마크업 기준)
+ * <div class="tt"><a href="javascript:view('49495');">제목</a></div>
+ * <div class="zl"><span> 호수 </span>|<span>저자</span>|<span>2026.07.27</span>|<span>조회수</span></div>
+ */
+function parseList(html, cmsCode) {
   const items = [];
-  // 상세보기 링크 패턴: view.do 류 링크 주변에서 제목/날짜 추출
-  const blockRe = /<a[^>]+href="([^"]*(?:view|View)[^"]*)"[^>]*>([\s\S]*?)<\/a>([\s\S]{0,400}?)(?=<a[^>]+href="[^"]*(?:view|View)|$)/g;
+  const re =
+    /javascript:view\('(\d+)'\);?"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<div class="zl">([\s\S]*?)<\/div>/g;
   let m;
-  while ((m = blockRe.exec(html)) !== null) {
-    const link = m[1].startsWith("http") ? m[1] : BASE + (m[1].startsWith("/") ? "" : "/") + m[1];
-    const title = m[2].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
-    const dateM = (m[2] + m[3]).match(/(\d{4})[.\-/]\s?(\d{1,2})[.\-/]\s?(\d{1,2})/);
-    if (!title || title.length < 4) continue;
-    const date = dateM
-      ? `${dateM[1]}-${dateM[2].padStart(2, "0")}-${dateM[3].padStart(2, "0")}`
-      : "";
-    items.push({ title, link: link.replace(/&amp;/g, "&"), date });
+  while ((m = re.exec(html)) !== null) {
+    const brdSeq = m[1];
+    const title = decodeEntities(m[2].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim());
+    if (!title) continue;
+    const spans = [...m[3].matchAll(/<span>([\s\S]*?)<\/span>/g)].map((s) =>
+      decodeEntities(s[1].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim())
+    );
+    const dateRaw = spans.find((s) => /^\d{4}\.\d{1,2}\.\d{1,2}$/.test(s)) ?? "";
+    const dm = dateRaw.match(/(\d{4})\.(\d{1,2})\.(\d{1,2})/);
+    const date = dm ? `${dm[1]}-${dm[2].padStart(2, "0")}-${dm[3].padStart(2, "0")}` : "";
+    const meta = spans.filter((s) => s && !/^\d{4}\./.test(s) && !s.startsWith("조회수")).join(" · ");
+    items.push({
+      brdSeq,
+      title,
+      date,
+      meta,
+      link: `${BASE}/report/view.do?cmsCode=${cmsCode}&brdSeq=${brdSeq}`,
+    });
   }
-  // 중복 제거
-  const seen = new Set();
-  return items.filter((it) => {
-    const k = it.title + it.date;
-    if (seen.has(k)) return false;
-    seen.add(k);
-    return true;
-  });
+  return items;
 }
 
 async function collect(outPath) {
   const { writeFile } = await import("node:fs/promises");
   const allItems = [];
   const statuses = [];
+  const seenBrdSeq = new Set();
+  const PAGES = 2; // 카테고리당 2페이지(약 20건)씩 수집
 
   for (const cat of CATEGORIES) {
-    if (!cat.cmsCode) {
-      statuses.push({ id: cat.sourceId, name: cat.sourceName, ok: false, count: 0, error: "cmsCode 미확정 (정찰 결과 반영 필요)" });
-      continue;
-    }
     try {
-      const url = `${BASE}/report/list.do?cmsCode=${cat.cmsCode}`;
-      const { status, text } = await get(url);
-      if (status !== 200) throw new Error(`HTTP ${status}`);
-      const parsed = parseList(text).slice(0, 20);
-      parsed.forEach((it, i) =>
+      let parsed = [];
+      for (let page = 1; page <= PAGES; page++) {
+        const url = `${BASE}/report/list.do?page=${page}&cmsCode=${cat.cmsCode}`;
+        const { status, text } = await get(url);
+        if (status !== 200) throw new Error(`HTTP ${status}`);
+        parsed.push(...parseList(text, cat.cmsCode));
+      }
+      // CM0043(전체)은 이미 수집된 세부 카테고리 항목을 제외해 '기타 발간물'만 남긴다
+      parsed = parsed.filter((it) => !seenBrdSeq.has(it.brdSeq));
+      parsed.forEach((it) => seenBrdSeq.add(it.brdSeq));
+
+      parsed.forEach((it) =>
         allItems.push({
-          id: `${cat.sourceId}-${it.date}-${i}`,
+          id: `${cat.sourceId}-${it.brdSeq}`,
           sourceId: cat.sourceId,
           sourceName: cat.sourceName,
           title: it.title,
           date: it.date,
+          meta: it.meta,
           link: it.link,
           tracks: classifyTracks(it.title),
         })
@@ -226,6 +251,10 @@ async function collect(outPath) {
   }
   const okCount = statuses.filter((s) => s.ok).length;
   console.log(`소스 ${okCount}/${statuses.length} 정상`);
+  // 트랙 분류 통계
+  const trackCount = {};
+  allItems.forEach((it) => it.tracks.forEach((t) => (trackCount[t] = (trackCount[t] ?? 0) + 1)));
+  console.log("트랙 분류:", JSON.stringify(trackCount));
   // 정상 소스가 하나도 없으면 실패로 처리해 빈 데이터 커밋을 막는다
   if (okCount === 0) process.exit(1);
 }
