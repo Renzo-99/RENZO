@@ -1,27 +1,23 @@
 /**
- * 정찰: 연준 보도자료 상세 페이지의 본문 마크업 구조 확인.
- * RSS description이 제목과 동일해서 본문을 페이지에서 직접 추출해야 한다.
+ * 배포 확인 + 수집 트리거: 개발 컨테이너에서 vercel.app 접근이 막혀 있어
+ * Actions 러너가 대신 크론 엔드포인트를 호출한다.
  */
 
-const UA = { "user-agent": "Mozilla/5.0 (compatible; stock-dashboard/1.0)" };
+const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 
-async function inspect(name, url) {
+async function hit(name, url, timeoutMs = 90_000, quiet = false) {
   console.log(`\n===== ${name} =====\n${url}`);
   try {
-    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(20_000) });
+    const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
     console.log("status:", res.status);
-    const html = await res.text();
-    console.log("html length:", html.length);
-    // 본문 후보 컨테이너들을 찾아 앞부분을 보여준다
-    for (const marker of ['id="article"', 'class="col-xs-12 col-sm-8 col-md-8"', "For release at", "<p>"]) {
-      const i = html.indexOf(marker);
-      console.log(`\n--- marker ${JSON.stringify(marker)} @ ${i} ---`);
-      if (i >= 0) console.log(html.slice(i, i + 2500).replace(/\s+/g, " "));
-    }
+    const text = await res.text();
+    if (!quiet) console.log(text.slice(0, 4000));
+    return res.status;
   } catch (e) {
     console.log("FETCH ERROR:", e.message);
+    return 0;
   }
 }
 
-await inspect("FOMC 성명 페이지", "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm");
-await inspect("FOMC 의사록 보도자료 페이지", "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260708a.htm");
+await hit("수집+번역 (크론 수동 실행)", `${BASE}/api/cron/us-docs`);
+await hit("피드 확인 (연준 항목의 abstract_ko)", `${BASE}/api/us-docs`, 30_000);
