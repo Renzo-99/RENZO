@@ -1,43 +1,51 @@
 /**
- * 정찰: 컨설팅·회계법인 12곳의 RSS 후보 + 구글뉴스 RSS(site: 검색) 가용성 확인.
- * 각 URL의 상태/타입/아이템 수/첫 아이템만 요약 출력해 로그를 짧게 유지한다.
+ * 정찰 2차: 한국 기관 피드 가용성 — korea.kr 부처별 보도자료 RSS +
+ * 구글뉴스 한국판 site: 검색 + Big4 코리아 경로 검색.
  */
 
 const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" };
 
-const gnews = (domain) =>
-  `https://news.google.com/rss/search?q=site:${domain}&hl=en-US&gl=US&ceid=US:en`;
+const gko = (d) =>
+  "https://news.google.com/rss/search?q=" + encodeURIComponent(`site:${d} when:30d`) + "&hl=ko&gl=KR&ceid=KR:ko";
 
-const CANDIDATES = [
-  ["mckinsey official", "https://www.mckinsey.com/insights/rss"],
-  ["mckinsey gnews", gnews("mckinsey.com")],
-  ["bcg official", "https://www.bcg.com/rss"],
-  ["bcg gnews", gnews("bcg.com")],
-  ["bain insights feed", "https://www.bain.com/insights/feed/"],
-  ["bain gnews", gnews("bain.com")],
-  ["kearney gnews", gnews("kearney.com")],
-  ["adlittle gnews", gnews("adlittle.com")],
-  ["rolandberger gnews", gnews("rolandberger.com")],
-  ["iqvia gnews", gnews("iqvia.com")],
-  ["accenture newsroom rss", "https://newsroom.accenture.com/rss/news-releases.xml"],
-  ["accenture gnews", gnews("accenture.com")],
-  ["deloitte gnews", gnews("deloitte.com")],
-  ["pwc gnews", gnews("pwc.com")],
-  ["ey gnews", gnews("ey.com")],
-  ["kpmg gnews", gnews("kpmg.com")],
+const LIST = [
+  // 정책브리핑 부처별 보도자료 RSS
+  ["korea.kr 기재부", "https://www.korea.kr/rss/dept_moef.xml"],
+  ["korea.kr 산업부", "https://www.korea.kr/rss/dept_motie.xml"],
+  ["korea.kr 외교부", "https://www.korea.kr/rss/dept_mofa.xml"],
+  ["korea.kr 국토부", "https://www.korea.kr/rss/dept_molit.xml"],
+  ["korea.kr 환경부", "https://www.korea.kr/rss/dept_me.xml"],
+  // 한국은행 공식 RSS 후보
+  ["BOK 보도자료 RSS", "https://www.bok.or.kr/portal/bbs/B0000338/news.rss?menuNo=200761"],
+  // 금융·연구기관 — 구글뉴스 한국판
+  ["gko bok.or.kr", gko("bok.or.kr")],
+  ["gko fsc.go.kr", gko("fsc.go.kr")],
+  ["gko fss.or.kr", gko("fss.or.kr")],
+  ["gko ftc.go.kr", gko("ftc.go.kr")],
+  ["gko kcif.or.kr", gko("kcif.or.kr")],
+  ["gko kdi.re.kr", gko("kdi.re.kr")],
+  ["gko kiep.go.kr", gko("kiep.go.kr")],
+  ["gko asaninst.org", gko("asaninst.org")],
+  ["gko kotra.or.kr", gko("kotra.or.kr")],
+  ["gko kita.net", gko("kita.net")],
+  ["gko inss.re.kr", gko("inss.re.kr")],
+  ["gko nabo.go.kr", gko("nabo.go.kr")],
+  // Big4 코리아 (경로 포함 site: 검색)
+  ["gko deloitte.com/kr", gko("deloitte.com/kr")],
+  ["gko ey.com/ko_kr", gko("ey.com/ko_kr")],
+  ["gko kpmg.com/kr", gko("kpmg.com/kr")],
+  ["gko pwc.com/kr", gko("pwc.com/kr")],
 ];
 
-for (const [name, url] of CANDIDATES) {
+for (const [name, url] of LIST) {
   try {
     const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(15_000), redirect: "follow" });
     const text = await res.text();
     const items = [...text.matchAll(/<item[\s>]/g)].length;
-    const title = text.match(/<item[\s>][\s\S]*?<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/)?.[1]?.slice(0, 90);
-    const pub = text.match(/<item[\s>][\s\S]*?<pubDate>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/pubDate>/)?.[1]?.slice(0, 40);
-    const link = text.match(/<item[\s>][\s\S]*?<link>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/)?.[1]?.slice(0, 120);
-    console.log(`${name} | ${res.status} | ${res.headers.get("content-type")?.slice(0, 30)} | items=${items}`);
-    if (items > 0) console.log(`   1st: ${title} | ${pub}\n   link: ${link}`);
+    const t = text.match(/<item[\s>][\s\S]*?<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/)?.[1]?.slice(0, 70);
+    const p = text.match(/<item[\s>][\s\S]*?<pubDate>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/pubDate>/)?.[1]?.slice(0, 32);
+    console.log(`${name} | ${res.status} | items=${items}${items ? ` | ${t} | ${p}` : ""}`);
   } catch (e) {
-    console.log(`${name} | ERROR ${e.message}`);
+    console.log(`${name} | ERROR ${e.message.slice(0, 60)}`);
   }
 }
