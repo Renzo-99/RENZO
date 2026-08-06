@@ -1,0 +1,18 @@
+name: 미국 문서 소스 정찰
+
+on:
+  push:
+    branches: [claude/nars-pipeline]
+
+jobs:
+  recon:
+    # 커밋 메시지에 [us-recon]이 있을 때만 실행
+    if: contains(github.event.head_commit.message, '[us-recon]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 정찰 실행
+        run: node .github/scripts/recon-us-docs.mjs
