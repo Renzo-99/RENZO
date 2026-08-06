@@ -1,51 +1,36 @@
 /**
- * 정찰 2차: 한국 기관 피드 가용성 — korea.kr 부처별 보도자료 RSS +
- * 구글뉴스 한국판 site: 검색 + Big4 코리아 경로 검색.
+ * 배포 확인 + 수집 트리거: 개발 컨테이너에서 vercel.app 접근이 막혀 있어
+ * Actions 러너가 대신 크론 엔드포인트를 호출한다.
+ * 인사이트 허브(38개 소스)는 첫 실행에서 영문 번역이 많아 두 번 호출한다.
  */
 
-const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" };
+const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 
-const gko = (d) =>
-  "https://news.google.com/rss/search?q=" + encodeURIComponent(`site:${d} when:30d`) + "&hl=ko&gl=KR&ceid=KR:ko";
-
-const LIST = [
-  // 정책브리핑 부처별 보도자료 RSS
-  ["korea.kr 기재부", "https://www.korea.kr/rss/dept_moef.xml"],
-  ["korea.kr 산업부", "https://www.korea.kr/rss/dept_motie.xml"],
-  ["korea.kr 외교부", "https://www.korea.kr/rss/dept_mofa.xml"],
-  ["korea.kr 국토부", "https://www.korea.kr/rss/dept_molit.xml"],
-  ["korea.kr 환경부", "https://www.korea.kr/rss/dept_me.xml"],
-  // 한국은행 공식 RSS 후보
-  ["BOK 보도자료 RSS", "https://www.bok.or.kr/portal/bbs/B0000338/news.rss?menuNo=200761"],
-  // 금융·연구기관 — 구글뉴스 한국판
-  ["gko bok.or.kr", gko("bok.or.kr")],
-  ["gko fsc.go.kr", gko("fsc.go.kr")],
-  ["gko fss.or.kr", gko("fss.or.kr")],
-  ["gko ftc.go.kr", gko("ftc.go.kr")],
-  ["gko kcif.or.kr", gko("kcif.or.kr")],
-  ["gko kdi.re.kr", gko("kdi.re.kr")],
-  ["gko kiep.go.kr", gko("kiep.go.kr")],
-  ["gko asaninst.org", gko("asaninst.org")],
-  ["gko kotra.or.kr", gko("kotra.or.kr")],
-  ["gko kita.net", gko("kita.net")],
-  ["gko inss.re.kr", gko("inss.re.kr")],
-  ["gko nabo.go.kr", gko("nabo.go.kr")],
-  // Big4 코리아 (경로 포함 site: 검색)
-  ["gko deloitte.com/kr", gko("deloitte.com/kr")],
-  ["gko ey.com/ko_kr", gko("ey.com/ko_kr")],
-  ["gko kpmg.com/kr", gko("kpmg.com/kr")],
-  ["gko pwc.com/kr", gko("pwc.com/kr")],
-];
-
-for (const [name, url] of LIST) {
+async function hit(name, url, timeoutMs = 120_000, quiet = false) {
+  console.log(`\n===== ${name} =====\n${url}`);
   try {
-    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(15_000), redirect: "follow" });
+    const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+    console.log("status:", res.status);
     const text = await res.text();
-    const items = [...text.matchAll(/<item[\s>]/g)].length;
-    const t = text.match(/<item[\s>][\s\S]*?<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/)?.[1]?.slice(0, 70);
-    const p = text.match(/<item[\s>][\s\S]*?<pubDate>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/pubDate>/)?.[1]?.slice(0, 32);
-    console.log(`${name} | ${res.status} | items=${items}${items ? ` | ${t} | ${p}` : ""}`);
+    if (!quiet) console.log(text.slice(0, 3500));
+    return res.status;
   } catch (e) {
-    console.log(`${name} | ERROR ${e.message.slice(0, 60)}`);
+    console.log("FETCH ERROR:", e.message);
+    return 0;
   }
 }
+
+// 새 라우트 배포를 기다린다 (최대 ~4분)
+let deployed = false;
+for (let i = 0; i < 12; i++) {
+  const page = await hit(`insights-hub 배포 확인 (${i + 1}/12)`, `${BASE}/insights-hub`, 30_000, true);
+  if (page === 200) {
+    deployed = true;
+    break;
+  }
+  await new Promise((r) => setTimeout(r, 20_000));
+}
+if (!deployed) console.log("\n배포 확인 실패 — 크론 호출은 그래도 시도해 본다");
+
+await hit("허브 수집+번역 1차", `${BASE}/api/cron/firm-insights`);
+await hit("허브 수집+번역 2차 (미번역 잔여분)", `${BASE}/api/cron/firm-insights`);
