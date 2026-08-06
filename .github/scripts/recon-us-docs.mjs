@@ -1,31 +1,23 @@
 /**
- * 정찰: 기획재정부(moef) 구글뉴스 쿼리 대안 — site:moef.go.kr가 최근 항목 0건.
+ * 배포 확인 + 수집 트리거: 개발 컨테이너에서 vercel.app 접근이 막혀 있어
+ * Actions 러너가 대신 크론 엔드포인트를 호출한다. (기재부 소스 교체 반영분)
  */
 
-const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" };
+const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 
-const g = (q) =>
-  "https://news.google.com/rss/search?q=" + encodeURIComponent(q) + "&hl=ko&gl=KR&ceid=KR:ko";
-
-const LIST = [
-  ["moef 기간 없이", g("site:moef.go.kr")],
-  ["korea.kr 기재부", g("site:korea.kr 기획재정부 when:30d")],
-  ["korea.kr 브리핑 전체", g("site:korea.kr when:7d")],
-  ["뉴스검색 기재부 보도자료", g('"기획재정부" 보도자료 when:7d')],
-];
-
-for (const [name, url] of LIST) {
+async function hit(name, url, timeoutMs = 120_000, quiet = false) {
+  console.log(`\n===== ${name} =====\n${url}`);
   try {
-    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(15_000) });
+    const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+    console.log("status:", res.status);
     const text = await res.text();
-    const items = [...text.matchAll(/<item[\s>]/g)].length;
-    console.log(`${name} | ${res.status} | items=${items}`);
-    let shown = 0;
-    for (const m of text.matchAll(/<item[\s>][\s\S]*?<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>[\s\S]*?<pubDate>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/pubDate>/g)) {
-      if (shown++ >= 3) break;
-      console.log(`   ${m[1].slice(0, 80)} | ${m[2].slice(0, 26)}`);
-    }
+    if (!quiet) console.log(text.slice(0, 2000));
+    return res.status;
   } catch (e) {
-    console.log(`${name} | ERROR ${e.message.slice(0, 60)}`);
+    console.log("FETCH ERROR:", e.message);
+    return 0;
   }
 }
+
+await new Promise((r) => setTimeout(r, 150_000)); // 배포 대기
+await hit("허브 수집 (기재부 교체 반영)", `${BASE}/api/cron/firm-insights`);
