@@ -1,34 +1,27 @@
 /**
- * 배포 확인 + 첫 수집 트리거: 개발 컨테이너에서 vercel.app 접근이 막혀 있어
- * Actions 러너가 대신 크론 엔드포인트를 호출한다.
+ * 정찰: 연준 보도자료 상세 페이지의 본문 마크업 구조 확인.
+ * RSS description이 제목과 동일해서 본문을 페이지에서 직접 추출해야 한다.
  */
 
-const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
+const UA = { "user-agent": "Mozilla/5.0 (compatible; stock-dashboard/1.0)" };
 
-async function hit(name, url, timeoutMs = 90_000, quiet = false) {
+async function inspect(name, url) {
   console.log(`\n===== ${name} =====\n${url}`);
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(20_000) });
     console.log("status:", res.status);
-    const text = await res.text();
-    if (!quiet) console.log(text.slice(0, 3000));
-    return res.status;
+    const html = await res.text();
+    console.log("html length:", html.length);
+    // 본문 후보 컨테이너들을 찾아 앞부분을 보여준다
+    for (const marker of ['id="article"', 'class="col-xs-12 col-sm-8 col-md-8"', "For release at", "<p>"]) {
+      const i = html.indexOf(marker);
+      console.log(`\n--- marker ${JSON.stringify(marker)} @ ${i} ---`);
+      if (i >= 0) console.log(html.slice(i, i + 2500).replace(/\s+/g, " "));
+    }
   } catch (e) {
     console.log("FETCH ERROR:", e.message);
-    return 0;
   }
 }
 
-// 새 라우트 배포를 기다린다 (최대 ~4분) — 러너에서 폴링해야 배포 직후를 잡을 수 있다
-let deployed = false;
-for (let i = 0; i < 12; i++) {
-  const page = await hit(`us-docs 배포 확인 (${i + 1}/12)`, `${BASE}/us-docs`, 30_000, true);
-  if (page === 200) {
-    deployed = true;
-    break;
-  }
-  await new Promise((r) => setTimeout(r, 20_000));
-}
-if (!deployed) console.log("\n배포 확인 실패 — 크론 호출은 그래도 시도해 본다");
-await hit("첫 수집+번역 (크론 수동 실행)", `${BASE}/api/cron/us-docs`);
-await hit("피드 확인", `${BASE}/api/us-docs`, 30_000);
+await inspect("FOMC 성명 페이지", "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm");
+await inspect("FOMC 의사록 보도자료 페이지", "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260708a.htm");
