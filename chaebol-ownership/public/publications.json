@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-08-05T22:32:41.835Z",
+ "updatedAt": "2026-08-07T22:02:14.319Z",
  "items": [
+  {
+   "id": "publication-49511",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "K-스틸법, 어떻게 작동시킬 것인가? 실효성 확보를 위한 후속 과제",
+   "date": "2026-08-06",
+   "meta": "NARS 브리프 176호 · 최정윤",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49511",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "publication-49509",
    "sourceId": "publication",
@@ -225,17 +236,6 @@
    "keywords": [
     "AI"
    ]
-  },
-  {
-   "id": "publication-49434",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "가습기살균제 참사 국가배상체계 전환의 의미와 과제",
-   "date": "2026-07-13",
-   "meta": "NARS 브리프 169호 · 이동영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49434",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "issue-point-49432",
