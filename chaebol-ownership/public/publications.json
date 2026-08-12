@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-08-10T22:03:56.923Z",
+ "updatedAt": "2026-08-12T22:07:45.172Z",
  "items": [
+  {
+   "id": "nars-analysis-49518",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "한국 민주주의, 지수로 읽는 성과와 한계 주요 민주주의 지수 비교를 통한 다차원적 진단",
+   "date": "2026-08-11",
+   "meta": "NARS 현안분석 426호 · 유지영,김현아",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49518",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "publication-49511",
    "sourceId": "publication",
@@ -631,17 +642,6 @@
    "date": "2026-04-02",
    "meta": "NARS 현안분석 407호 · 한진옥,허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49045",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "nars-analysis-49042",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "EU 「1회용 플라스틱 지침」 이행결정과 국내 재생원료 의무사용 제도의 정비 과제",
-   "date": "2026-04-01",
-   "meta": "NARS 현안분석 406호 · 김경민",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49042",
    "tracks": [],
    "keywords": []
   },
