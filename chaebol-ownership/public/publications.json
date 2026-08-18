@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-08-16T21:40:10.070Z",
+ "updatedAt": "2026-08-18T21:43:27.348Z",
  "items": [
+  {
+   "id": "issue-point-49525",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "단일종목 레버리지 ETF 도입 이후, 무엇을 보완해야 하는가?",
+   "date": "2026-08-18",
+   "meta": "이슈와논점 2518호 · 편은비",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49525",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "publication-49524",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "영남권 대형산불 1년, 무엇이 바뀌었나? -2025년 대형산불 후속조치 점검 보고서 -",
+   "date": "2026-08-18",
+   "meta": "특별보고서 · 노세현 외 10인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49524",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "nars-analysis-49518",
    "sourceId": "nars-analysis",
@@ -499,17 +521,6 @@
    "date": "2026-05-26",
    "meta": "NARS 입법·정책 181호 · 허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49241",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49234",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "「집시법」 헌법불합치 결정, 개선입법 어떻게? 미신고 집회·시위에 대한 형사처벌 규정 개정 방안",
-   "date": "2026-05-24",
-   "meta": "이슈와논점 2498호 · 정재하,고지원",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49234",
    "tracks": [],
    "keywords": []
   },
@@ -1071,7 +1082,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 8
+   "count": 9
   }
  ]
 }
