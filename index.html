@@ -1162,17 +1162,18 @@ function fillRandom(){
   // 전체 풀을 1회만 섞어(Fisher-Yates) 순차 배분 → 한 작업이 여러 날짜에 중복 X
   const avail=pool.filter(p=>!existingDescs.has(p.desc));
   for(let a=avail.length-1;a>0;a--){const j=Math.floor(Math.random()*(a+1));const t=avail[a];avail[a]=avail[j];avail[j]=t;}
+  const MAX_PER_DAY=6; // 날짜별 최대 6개 (기존 작업 포함), 초과 금지
   let idx=0,placed=0;
   for(let di=0;di<5&&idx<avail.length;di++){
-    for(let s=0;s<5&&idx<avail.length;s++){
+    const canAdd=MAX_PER_DAY-days[di].tasks.length; // 이미 있는 작업만큼 차감
+    for(let s=0;s<canAdd&&idx<avail.length;s++){
       const p=avail[idx++];
       days[di].tasks.push({id:nextId++,desc:p.desc,building:p.building,note:'',editing:false,mats:[]});
       placed++;
     }
   }
   saveWeek();renderReport();
-  if(placed<25)toast('중복 없이 '+placed+'개 배분됨 (고유 작업이 부족해 5×5 미만)');
-  else toast('랜덤 작업이 채워졌습니다 (일 5개 × 5일, 날짜 간 중복 없음)');
+  toast('랜덤 작업 '+placed+'개 배분됨 (날짜별 최대 6개, 날짜 간 중복 없음)');
 }
 
 // === 작업 관리 ===
