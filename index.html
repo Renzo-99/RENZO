@@ -1156,14 +1156,23 @@ function fillRandom(){
   if(pool.length<5){toast('겹치지 않는 작업 데이터가 부족합니다 (최소 5개 필요, 현재 '+pool.length+'개)');return;}
   const hasTasks=days.some(d=>d.tasks.length>0);
   if(hasTasks&&!confirm('현재 주차에 이미 작업이 있습니다.\n기존 작업을 유지하고 랜덤 작업을 추가할까요?'))return;
-  for(let di=0;di<5;di++){
-    const shuffled=[...pool].sort(()=>Math.random()-0.5);
-    shuffled.slice(0,5).forEach(p=>{
+  // 현재 주에 이미 있는 작업과도 중복되지 않도록 제외
+  const existingDescs=new Set();
+  days.forEach(d=>d.tasks.forEach(t=>{if(t.desc&&t.desc.trim())existingDescs.add(t.desc.trim());}));
+  // 전체 풀을 1회만 섞어(Fisher-Yates) 순차 배분 → 한 작업이 여러 날짜에 중복 X
+  const avail=pool.filter(p=>!existingDescs.has(p.desc));
+  for(let a=avail.length-1;a>0;a--){const j=Math.floor(Math.random()*(a+1));const t=avail[a];avail[a]=avail[j];avail[j]=t;}
+  let idx=0,placed=0;
+  for(let di=0;di<5&&idx<avail.length;di++){
+    for(let s=0;s<5&&idx<avail.length;s++){
+      const p=avail[idx++];
       days[di].tasks.push({id:nextId++,desc:p.desc,building:p.building,note:'',editing:false,mats:[]});
-    });
+      placed++;
+    }
   }
   saveWeek();renderReport();
-  toast('랜덤 작업이 채워졌습니다 (일 5개 × 5일, 최근 2주 제외)');
+  if(placed<25)toast('중복 없이 '+placed+'개 배분됨 (고유 작업이 부족해 5×5 미만)');
+  else toast('랜덤 작업이 채워졌습니다 (일 5개 × 5일, 날짜 간 중복 없음)');
 }
 
 // === 작업 관리 ===
