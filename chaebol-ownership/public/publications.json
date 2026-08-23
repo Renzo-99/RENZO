@@ -1,6 +1,42 @@
 {
- "updatedAt": "2026-08-19T21:46:32.171Z",
+ "updatedAt": "2026-08-23T21:42:01.070Z",
  "items": [
+  {
+   "id": "issue-point-49538",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "「자살예방법」은 자살위험 대응에서 무엇을 놓치고 있는가",
+   "date": "2026-08-21",
+   "meta": "이슈와논점 2521호 · 한진옥",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49538",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49537",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "개정 「형사소송법」의 변화와 필요 조치들",
+   "date": "2026-08-20",
+   "meta": "이슈와논점 2520호 · 김광현",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49537",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49532",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "「인공지능 및 데이터 기반 행정 활성화에 관한 법률」시행, 실효성 확보를 위해 무엇이 더 필요한가?",
+   "date": "2026-08-20",
+   "meta": "이슈와논점 2519호 · 김인태",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49532",
+   "tracks": [],
+   "keywords": [
+    "인공지능",
+    "데이터"
+   ]
+  },
   {
    "id": "issue-point-49525",
    "sourceId": "issue-point",
@@ -220,17 +256,6 @@
    "keywords": []
   },
   {
-   "id": "publication-49447",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "학생 신체 활동·건강 실태 및 개선과제",
-   "date": "2026-07-15",
-   "meta": "NARS 브리프 170호 · 조종오",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49447",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "issue-point-49446",
    "sourceId": "issue-point",
    "sourceName": "연구보고서(이슈와 논점)",
@@ -442,28 +467,6 @@
    ]
   },
   {
-   "id": "issue-point-49302",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "개성공단 중단 10년, 현황과 과제",
-   "date": "2026-06-10",
-   "meta": "이슈와논점 2501호 · 김현정",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49302",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49288",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "헝가리 총선과 오르반 정부의 퇴장 득표 연동형 비례대표제의 효과",
-   "date": "2026-06-07",
-   "meta": "이슈와논점 2500호 · 허석재",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49288",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "nars-analysis-49263",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -501,17 +504,6 @@
    "keywords": [
     "중국"
    ]
-  },
-  {
-   "id": "issue-point-49238",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "공장 화재 왜 커지나 -고위험 공정의 구조적 위험과 안전관리의 사각지대",
-   "date": "2026-05-27",
-   "meta": "이슈와논점 2499호 · 노세현",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49238",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "policy-report-49241",
@@ -1082,7 +1074,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 9
+   "count": 8
   }
  ]
 }
