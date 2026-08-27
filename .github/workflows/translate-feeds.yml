@@ -37,7 +37,15 @@ jobs:
           git config user.name "translate-worker[bot]"
           git config user.email "actions@users.noreply.github.com"
           git add -A
-          git diff --cached --quiet || { git commit -m "data: 피드 번역 워커 ($(date -u +%F))"; git push; }
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -m "data: 피드 번역 워커 ($(date -u +%F))"
+          # nars-daily 등 다른 워크플로가 같은 브랜치에 먼저 커밋했을 수 있다 — rebase 후 재시도
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin claude/stock1-bundle
+            sleep 3
+          done
+          git push
 
       - name: 사이트 반영 (크론 호출로 병합)
         run: |
