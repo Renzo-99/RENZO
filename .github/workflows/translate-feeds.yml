@@ -1,0 +1,45 @@
+name: 피드 번역 워커
+
+# 구글 무료 번역이 Vercel IP를 차단해 번역을 러너로 이관 (2026-08-27).
+# 매일 사이트 수집 크론(20:10·20:40 UTC) 뒤에 돌고, 끝나면 사이트 크론을
+# 호출해 번역 결과를 즉시 피드에 병합시킨다.
+on:
+  schedule:
+    - cron: "10 21 * * *" # 매일 06:10 KST
+  push:
+    branches: [claude/translate-now] # 수동 실행: 이 브랜치에 push
+
+permissions:
+  contents: write
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 번역 결과를 쌓는 브랜치 (stock1 번들 — 사이트가 raw로 읽는다)
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/stock1-bundle
+          path: bundle
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 번역 실행
+        run: node .github/scripts/translate-feeds.mjs bundle/chaebol-ownership/public
+
+      - name: 결과 커밋
+        run: |
+          cd bundle
+          git config user.name "translate-worker[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || { git commit -m "data: 피드 번역 워커 ($(date -u +%F))"; git push; }
+
+      - name: 사이트 반영 (크론 호출로 병합)
+        run: |
+          echo "us-docs:" && curl -s --max-time 110 "https://stock-dashboard-jaeyeon.vercel.app/api/cron/us-docs" | head -c 400; echo
+          echo "firm-insights:" && curl -s --max-time 110 "https://stock-dashboard-jaeyeon.vercel.app/api/cron/firm-insights" | head -c 300; echo
