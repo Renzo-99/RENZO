@@ -45,7 +45,8 @@ const MAX_PER_FEED = 200; // 러너 실행 시간 상한 (200×2콜×~0.5초 ≈
 
 for (const feed of FEEDS) {
   console.log(`\n===== ${feed.file} =====`);
-  const res = await fetch(feed.api, { signal: AbortSignal.timeout(60_000) });
+  // CDN 캐시(s-maxage) 우회 — 방금 크론이 갱신한 최신 피드를 읽어야 누락 없이 번역된다
+  const res = await fetch(`${feed.api}?nocache=${Date.now()}`, { signal: AbortSignal.timeout(60_000) });
   if (!res.ok) {
     console.log(`피드 조회 실패 HTTP ${res.status} — 건너뜀`);
     continue;
