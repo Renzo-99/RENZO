@@ -1,6 +1,39 @@
 {
- "updatedAt": "2026-08-24T21:49:59.815Z",
+ "updatedAt": "2026-08-27T01:04:51.881Z",
  "items": [
+  {
+   "id": "nars-analysis-49551",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "해외 의사조력사 제도 유형과 국내 입법의 방향성 검토",
+   "date": "2026-08-26",
+   "meta": "NARS 현안분석 429호 · 김은정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49551",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "nars-analysis-49546",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "「지방의회법안」의 주요 쟁점과 고려사항",
+   "date": "2026-08-25",
+   "meta": "NARS 현안분석 428호 · 하혜영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49546",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "nars-analysis-49544",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "소년보호처분, ‘처벌의 시간’이 아닌 ‘변화의 시간’이 되려면 ① 결국 사회로 돌아올 소년범들을 위한 교화체계 내실화",
+   "date": "2026-08-24",
+   "meta": "NARS 현안분석 427호 · 이상은,김혜미",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49544",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49538",
    "sourceId": "issue-point",
@@ -230,17 +263,6 @@
    "date": "2026-07-16",
    "meta": "이슈와논점 2512호 · 정주완",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49464",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "publication-49468",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "베트남 공무국외출장 보고서",
-   "date": "2026-07-16",
-   "meta": "기타자료 · 이정진 외 2인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49468",
    "tracks": [],
    "keywords": []
   },
@@ -617,45 +639,6 @@
    "date": "2026-04-12",
    "meta": "NARS 현안분석 410호 · 하혜영",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49067",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "nars-analysis-49055",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "FACT CHECK: 용인 반도체 클러스터 조성을 둘러싼 논란과 현실",
-   "date": "2026-04-06",
-   "meta": "NARS 현안분석 409호 · 유재국 외 2인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49055",
-   "tracks": [
-    "semiconductor"
-   ],
-   "keywords": [
-    "반도체"
-   ]
-  },
-  {
-   "id": "nars-analysis-49053",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "기후위기 대응을 위한 보험의 역할과 정책과제",
-   "date": "2026-04-06",
-   "meta": "NARS 현안분석 408호 · 장영진",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49053",
-   "tracks": [],
-   "keywords": [
-    "기후"
-   ]
-  },
-  {
-   "id": "nars-analysis-49045",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "기본권으로 보장받아야 할 보편적 월경권",
-   "date": "2026-04-02",
-   "meta": "NARS 현안분석 407호 · 한진옥,허민숙",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49045",
    "tracks": [],
    "keywords": []
   },
@@ -1074,7 +1057,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 8
+   "count": 7
   }
  ]
 }
