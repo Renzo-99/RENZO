@@ -1,6 +1,50 @@
 {
- "updatedAt": "2026-08-27T02:31:17.526Z",
+ "updatedAt": "2026-08-27T07:23:16.595Z",
  "items": [
+  {
+   "id": "publication-49558",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "2026 국정감사 이슈 분석 Ⅳ (사회ㆍ문화 분야)",
+   "date": "2026-08-27",
+   "meta": "국정감사관련(보고서) · 김혜미 외 33인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49558",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "publication-49557",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "2026 국정감사 이슈 분석 Ⅲ (경제ㆍ산업 분야)",
+   "date": "2026-08-27",
+   "meta": "국정감사관련(보고서) · 이수진 외 31인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49557",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "publication-49556",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "2026 국정감사 이슈 분석 Ⅱ (정치ㆍ행정 분야)",
+   "date": "2026-08-27",
+   "meta": "국정감사관련(보고서) · 송진미 외 24인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49556",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "publication-49555",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "2026 국정감사 이슈 분석 Ⅰ (56개의 결정적 질문)",
+   "date": "2026-08-27",
+   "meta": "국정감사관련(보고서) · 이형진 외 66인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49555",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "nars-analysis-49551",
    "sourceId": "nars-analysis",
@@ -208,17 +252,6 @@
    "keywords": [
     "선거"
    ]
-  },
-  {
-   "id": "publication-49473",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "미래 의학교육과 연구·산업·지역혁신 생태계 진단 및 제도개선 방향 모색",
-   "date": "2026-07-21",
-   "meta": "NARS 브리프 171호 · 한진옥",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49473",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "issue-point-49467",
@@ -1057,7 +1090,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 7
+   "count": 10
   }
  ]
 }
