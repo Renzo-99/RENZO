@@ -1,50 +1,39 @@
 /**
- * 진단: 라이브 피드의 번역 누락 실태 + 크론 실행의 번역 동작 관찰.
+ * 정찰: 트렌드 데이터 소스 후보들의 접근성·응답 형식 확인.
+ * (트렌드 레이더 기능 설계용 — 2026-08-27)
  */
 
-const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
+const UA = {
+  "user-agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+};
 
-async function getJson(url, timeoutMs = 120_000) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
-  const text = await res.text();
+async function probe(label, url, headers = {}) {
   try {
-    return { status: res.status, body: JSON.parse(text) };
-  } catch {
-    return { status: res.status, body: text.slice(0, 500) };
+    const res = await fetch(url, { headers: { ...UA, ...headers }, signal: AbortSignal.timeout(15_000), redirect: "follow" });
+    const text = await res.text();
+    console.log(`\n===== ${label} =====`);
+    console.log(`HTTP ${res.status} · ${text.length}B · content-type=${res.headers.get("content-type")}`);
+    console.log(text.slice(0, 700).replace(/\n{2,}/g, "\n"));
+  } catch (e) {
+    console.log(`\n===== ${label} =====`);
+    console.log(`오류: ${e.message}`);
   }
 }
 
-function summarizeUsDocs(feed, label) {
-  const items = feed.items ?? [];
-  const missing = items.filter((i) => !i.title_ko);
-  const fedMissingBody = items.filter((i) => i.source === "federal-reserve" && !i.abstract_ko);
-  console.log(`\n[${label}] updatedAt=${feed.updatedAt} items=${items.length} 번역누락=${missing.length} 연준본문누락=${fedMissingBody.length}`);
-  for (const i of missing.slice(0, 8)) console.log(`  누락: ${i.id} ${i.date} ${i.title_en?.slice(0, 60)}`);
-}
+const yesterday = new Date(Date.now() - 86_400_000 * 2);
+const y = yesterday.getUTCFullYear();
+const m = String(yesterday.getUTCMonth() + 1).padStart(2, "0");
+const d = String(yesterday.getUTCDate()).padStart(2, "0");
 
-console.log("===== 1) 현재 us-docs 피드 =====");
-const before = await getJson(`${BASE}/api/us-docs`, 30_000);
-if (before.body.items) summarizeUsDocs(before.body, "before");
-else console.log(before.status, before.body);
-
-console.log("\n===== 2) us-docs 크론 실행 =====");
-const cron = await getJson(`${BASE}/api/cron/us-docs`);
-console.log(JSON.stringify(cron.body).slice(0, 600));
-
-console.log("\n===== 3) 실행 후 피드 =====");
-const after = await getJson(`${BASE}/api/us-docs`, 30_000);
-if (after.body.items) summarizeUsDocs(after.body, "after");
-
-console.log("\n===== 4) 인사이트 허브 피드 =====");
-const hub = await getJson(`${BASE}/api/firm-insights`, 30_000);
-if (hub.body.items) {
-  const items = hub.body.items;
-  const missing = items.filter((i) => i.lang === "en" && !i.title_ko);
-  console.log(`updatedAt=${hub.body.updatedAt} items=${items.length} 영문번역누락=${missing.length}`);
-  for (const i of missing.slice(0, 6)) console.log(`  누락: ${i.firmId} ${i.date} ${i.title_en?.slice(0, 60)}`);
-}
-
-console.log("\n===== 5) 허브 크론 실행 =====");
-const hubCron = await getJson(`${BASE}/api/cron/firm-insights`);
-const hb = hubCron.body;
-console.log(JSON.stringify({ ok: hb.ok, collected: hb.collected, added: hb.added, translated: hb.translated, translateFailed: hb.translateFailed, items: hb.items }).slice(0, 400));
+await probe("1) 구글트렌드 일일 RSS (신) KR", "https://trends.google.com/trending/rss?geo=KR");
+await probe("2) 구글트렌드 일일 RSS (구) KR", "https://trends.google.co.kr/trends/trendingsearches/daily/rss?geo=KR");
+await probe("3) 구글트렌드 일일 RSS US", "https://trends.google.com/trending/rss?geo=US");
+await probe("4) 구글트렌드 dailytrends JSON KR", "https://trends.google.com/trends/api/dailytrends?hl=ko&geo=KR&ns=15");
+await probe("5) Stocktwits 트렌딩 심볼", "https://api.stocktwits.com/api/2/trending/symbols.json");
+await probe("6) 위키피디아(한) 일일 조회수 톱", `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/ko.wikipedia/all-access/${y}/${m}/${d}`);
+await probe("7) CoinGecko 트렌딩", "https://api.coingecko.com/api/v3/search/trending");
+await probe("8) HN 프런트페이지", "https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10");
+await probe("9) signal.bz 실시간 검색어", "https://api.signal.bz/news/realtime");
+await probe("10) 레딧 wallstreetbets hot", "https://www.reddit.com/r/wallstreetbets/hot.json?limit=5");
+await probe("11) 네이버 급상승(비공식 zum)", "https://news.zum.com/api/issue/keyword");
