@@ -155,7 +155,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 
 /* 탭 */
 .inv-tabs{display:flex;border-bottom:1px solid var(--gray-200)}
-.inv-tabs button{flex:1;padding:10px;border:none;background:none;font-size:12px;font-weight:500;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
+.inv-tabs button{flex:1;padding:10px 2px;border:none;background:none;font-size:11px;font-weight:500;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap;letter-spacing:-0.4px}
 .inv-tabs button.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
 
 /* 출고 내역 */
@@ -2606,10 +2606,7 @@ let repairFilter='all'; // all | pending | requested | done
 const RP_STATUS={pending:{label:'대기',cls:'pending'},requested:{label:'의뢰함',cls:'requested'},done:{label:'완료',cls:'done'}};
 const RP_ORDER=['pending','requested','done'];
 
-function renderRepairList(){
-  const v=document.getElementById('repairView');if(!v)return;
-  const counts={all:repairs.length,pending:0,requested:0,done:0};
-  repairs.forEach(r=>{counts[r.status]=(counts[r.status]||0)+1;});
+function getFilteredSortedRepairs(){
   let list=repairs.slice();
   if(repairFilter!=='all')list=list.filter(r=>r.status===repairFilter);
   list.sort((a,b)=>{
@@ -2617,9 +2614,20 @@ function renderRepairList(){
     if(ad!==bd)return ad-bd;
     return (b.foundAt||'').localeCompare(a.foundAt||'');
   });
+  return list;
+}
+function renderRepairList(){
+  const v=document.getElementById('repairView');if(!v)return;
+  const counts={all:repairs.length,pending:0,requested:0,done:0};
+  repairs.forEach(r=>{counts[r.status]=(counts[r.status]||0)+1;});
+  const list=getFilteredSortedRepairs();
   let h='<div class="rp-header">';
   h+='<span style="font-size:14px;font-weight:700">🚧 공사 의뢰 <span style="font-size:12px;color:var(--gray-500);font-weight:500">('+(counts.pending||0)+' 대기)</span></span>';
-  h+='<button class="btn btn-blue btn-sm" onclick="openRepairForm(null)">＋ 의뢰 추가</button>';
+  h+='<div style="display:flex;gap:5px">';
+  h+='<button class="btn btn-outline btn-sm" onclick="exportRepairsCSV()" title="엑셀(CSV)로 저장">📊 엑셀</button>';
+  h+='<button class="btn btn-outline btn-sm" onclick="printRepairs()" title="목록 인쇄">🖨 인쇄</button>';
+  h+='<button class="btn btn-blue btn-sm" onclick="openRepairForm(null)">＋ 의뢰</button>';
+  h+='</div>';
   h+='</div>';
   h+='<div class="rp-filter">';
   [['all','전체'],['pending','대기'],['requested','의뢰함'],['done','완료']].forEach(x=>{
@@ -2719,6 +2727,63 @@ function deleteRepair(rid){
   repairs=repairs.filter(x=>Number(x.id)!==Number(rid));
   saveRepairs();closeModal();renderRepairList();
   toast('삭제되었습니다');
+}
+
+// 공사 의뢰 목록 → 엑셀(CSV) 내보내기 (현재 필터 기준)
+function exportRepairsCSV(){
+  const list=getFilteredSortedRepairs();
+  if(!list.length){toast('내보낼 공사 의뢰가 없습니다');return;}
+  const head=['번호','상태','발견일시','장소','세부위치','내용','비고','등록일'];
+  const rows=[head];
+  list.forEach((r,i)=>{
+    rows.push([
+      i+1,
+      (RP_STATUS[r.status]||{}).label||r.status||'',
+      r.foundAt||'',
+      r.location||'',
+      r.detail||'',
+      (r.content||'').replace(/\r?\n/g,' '),
+      (r.note||'').replace(/\r?\n/g,' '),
+      (r.createdAt||'').slice(0,10)
+    ]);
+  });
+  const csv='\uFEFF'+rows.map(row=>row.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='공사의뢰목록_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),100);
+  toast('엑셀(CSV) 파일이 저장되었습니다 ('+list.length+'건)');
+}
+
+// 공사 의뢰 목록 인쇄 (현재 필터 기준)
+function printRepairs(){
+  const list=getFilteredSortedRepairs();
+  if(!list.length){toast('인쇄할 공사 의뢰가 없습니다');return;}
+  let rows='';
+  list.forEach((r,i)=>{
+    const st=(RP_STATUS[r.status]||{}).label||'';
+    const loc=esc((r.location||'')+(r.detail?' '+r.detail:''))||'-';
+    rows+='<tr><td>'+(i+1)+'</td><td>'+esc(st)+'</td><td>'+esc(r.foundAt||'')+'</td><td>'+loc+'</td><td class="l">'+(esc(r.content||'').replace(/\r?\n/g,'<br>')||'-')+'</td><td class="l">'+(esc(r.note||'')||'')+'</td></tr>';
+  });
+  const filterLabel=repairFilter==='all'?'전체':(RP_STATUS[repairFilter]||{}).label||'';
+  const html='<!doctype html><html><head><meta charset="utf-8"><title>공사 의뢰 목록</title>'+
+    '<style>body{font-family:"맑은 고딕","Malgun Gothic",sans-serif;padding:24px;color:#222}'+
+    'h1{font-size:19px;margin:0 0 4px}.meta{font-size:12px;color:#666;margin-bottom:14px}'+
+    'table{width:100%;border-collapse:collapse;font-size:12px}'+
+    'th,td{border:1px solid #999;padding:6px 8px;text-align:center;vertical-align:top}'+
+    'th{background:#eee}td.l{text-align:left}'+
+    '@media print{@page{margin:14mm}}</style></head><body>'+
+    '<h1>🚧 공사 의뢰 목록</h1>'+
+    '<div class="meta">출력일: '+new Date().toLocaleString('ko-KR')+' · 구분: '+filterLabel+' · 총 '+list.length+'건</div>'+
+    '<table><thead><tr><th>No</th><th>상태</th><th>발견일시</th><th>장소</th><th>내용</th><th>비고</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table></body></html>';
+  const w=window.open('','_blank');
+  if(!w){toast('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요');return;}
+  w.document.open();w.document.write(html);w.document.close();
+  w.focus();
+  setTimeout(()=>{try{w.print();}catch(e){}},350);
 }
 
 // === 작업 예정 알림 (전 주 금요일 + 당일 팝업, 확인 기능) ===
@@ -3378,7 +3443,7 @@ function renderCalendar(){
   const prevLast=new Date(calYear,calMonth-1,0);
   const prevDays=prevLast.getDate();
 
-  let h='<div class="cal-overlay" onclick="if(event.target===this)closeCalendar()">';
+  let h='<div class="cal-overlay" onclick="if(event.target===this&&!window._calDragging)closeCalendar()">';
   h+='<div class="cal-container">';
   // 헤더
   h+='<div class="cal-header">';
