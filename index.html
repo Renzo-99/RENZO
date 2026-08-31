@@ -377,6 +377,29 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .rmd-note{font-size:11px;color:var(--gray-500);margin-top:2px}
 .rmd-actions{display:flex;gap:4px;flex-shrink:0}
 .rmd-actions .btn-sm{padding:4px 10px;font-size:12px}
+/* 공사 의뢰 관리 */
+.rp-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--gray-200)}
+.rp-filter{display:flex;gap:4px;padding:8px 14px 0}
+.rp-filter button{padding:4px 11px;border-radius:99px;border:none;font-size:11px;font-weight:500;cursor:pointer;background:var(--gray-100);color:var(--gray-600);transition:.15s}
+.rp-filter button.active{background:var(--blue);color:#fff}
+.rp-list{flex:1;overflow-y:auto;padding:10px 14px}
+.rp-item{border:1px solid var(--gray-200);border-radius:10px;padding:11px 12px;margin-bottom:8px;cursor:pointer;transition:.12s;background:#fff}
+.rp-item:hover{box-shadow:var(--shadow-md)}
+.rp-item.st-done{opacity:.62}
+.rp-item.st-done .rp-content{text-decoration:line-through}
+.rp-top{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.rp-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;cursor:pointer;user-select:none}
+.rp-badge.pending{background:#fef3c7;color:#b45309}
+.rp-badge.requested{background:#dbeafe;color:#1d4ed8}
+.rp-badge.done{background:#dcfce7;color:#15803d}
+.rp-loc{font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:2px 8px;border-radius:99px}
+.rp-found{font-size:11px;color:var(--gray-500);margin-left:auto}
+.rp-content{font-size:13px;color:var(--gray-800);font-weight:500;white-space:pre-wrap;word-break:break-word}
+.rp-note{font-size:11px;color:var(--gray-500);margin-top:3px}
+.rp-actions{display:flex;gap:4px;margin-top:7px}
+.rp-actions button{border:1px solid var(--gray-200);background:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;color:var(--gray-500)}
+.rp-actions .rp-del:hover{color:var(--red);border-color:var(--red)}
+.rp-empty{text-align:center;color:var(--gray-400);padding:40px 12px;font-size:13px;line-height:1.6}
 .plan-info{flex:1;min-width:0}
 .plan-bld{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:99px;display:inline-block;margin-bottom:2px}
 .plan-desc{font-size:12px;font-weight:500;color:var(--gray-800)}
@@ -485,6 +508,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
       <button id="tabHistory" onclick="switchTab('history')">입출고 내역</button>
       <button id="tabTasks" onclick="switchTab('tasks')">작업 이력</button>
       <button id="tabPlan" onclick="switchTab('plan')">작업 예정</button>
+      <button id="tabRepair" onclick="switchTab('repair')">공사 의뢰</button>
     </div>
     <div id="stockView">
       <div class="inv-search">
@@ -504,6 +528,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <div id="historyView" style="display:none;flex:1;overflow-y:auto;padding:14px"></div>
     <div id="tasksView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
     <div id="planView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
+    <div id="repairView" style="display:none;flex-direction:column;flex:1;overflow:hidden"></div>
   </div>
 </div>
 
@@ -556,7 +581,7 @@ const DAY_NAMES=['월요일','화요일','수요일','목요일','금요일'];
 const DOW_SHORT=['일','월','화','수','목','금','토'];
 
 // === 상태 ===
-let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[], leaves=[],
+let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[], leaves=[], repairs=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock', currentRoomBld='';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
@@ -651,13 +676,13 @@ function checkLocalStorage(){
 // === 초기화 ===
 async function init(){
   if(!checkLocalStorage()){
-    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
     recalcNextId();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     setupPlanReminderWatch();
     return;
   }
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
   recalcNextId();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
@@ -702,6 +727,7 @@ function recalcNextId(){
   }
   plans.forEach(p=>{if(p.id>mx)mx=p.id;});
   rooms.forEach(r=>{if(r.id>mx)mx=r.id;});
+  repairs.forEach(r=>{if(r.id>mx)mx=r.id;});
   nextId=mx+1;
 }
 
@@ -727,6 +753,8 @@ function savePlans(){safeSave('ws3_plans',plans);}
 function loadRooms(){const s=localStorage.getItem('ws3_rooms');rooms=s?JSON.parse(s):ROOMS_SEED.slice();}
 function saveRooms(){safeSave('ws3_rooms',rooms);}
 function loadLeaves(){const s=localStorage.getItem('ws3_leaves');leaves=s?JSON.parse(s):[];}
+function loadRepairs(){const s=localStorage.getItem('ws3_repairs');repairs=s?JSON.parse(s):[];}
+function saveRepairs(){safeSave('ws3_repairs',repairs);}
 function saveLeaves(){safeSave('ws3_leaves',leaves);}
 // === Undo 스택 ===
 const undoStack=[];
@@ -748,7 +776,7 @@ function performUndo(){
     else localStorage.setItem(key,data);
   }
   // 메모리 변수 재로드
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
   recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
@@ -1717,13 +1745,16 @@ function switchTab(tab){
   document.getElementById('tabHistory').className=tab==='history'?'active':'';
   document.getElementById('tabTasks').className=tab==='tasks'?'active':'';
   document.getElementById('tabPlan').className=tab==='plan'?'active':'';
+  document.getElementById('tabRepair').className=tab==='repair'?'active':'';
   document.getElementById('stockView').style.display=tab==='stock'?'flex':'none';
   document.getElementById('historyView').style.display=tab==='history'?'block':'none';
   document.getElementById('tasksView').style.display=tab==='tasks'?'flex':'none';
   document.getElementById('planView').style.display=tab==='plan'?'flex':'none';
+  document.getElementById('repairView').style.display=tab==='repair'?'flex':'none';
   if(tab==='history')renderHistory();
   if(tab==='tasks')renderTaskHistory();
   if(tab==='plan')renderPlanList();
+  if(tab==='repair')renderRepairList();
 }
 
 function renderHistory(){
@@ -1884,7 +1915,7 @@ function createSnapshot(reason){
     id:Date.now(),
     reason:reason||'수동 백업',
     date:new Date().toISOString(),
-    data:{products,history,holidays,buildings,plans:plansLight,rooms,leaves,weeks:allWeeks}
+    data:{products,history,holidays,buildings,plans:plansLight,rooms,leaves,repairs,weeks:allWeeks}
   };
   const backups=getBackups();
   backups.unshift(snapshot);
@@ -1915,6 +1946,7 @@ function restoreBackup(id){
   plans=d.plans||[];savePlans();
   rooms=d.rooms||[];saveRooms();
   leaves=d.leaves||[];saveLeaves();
+  repairs=d.repairs||[];saveRepairs();
   if(d.weeks){Object.entries(d.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
   recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
   toast('✅ 백업이 복원되었습니다');
@@ -1973,7 +2005,7 @@ function exportData(){
     const k=localStorage.key(i);
     if(k.startsWith('ws3_week_'))allWeeks[k]=JSON.parse(localStorage.getItem(k));
   }
-  const data={version:8,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans,rooms,leaves,weeks:allWeeks};
+  const data={version:9,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans,rooms,leaves,repairs,weeks:allWeeks};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -2004,6 +2036,7 @@ function importData(event){
       if(data.plans){plans=data.plans;savePlans();}
       if(data.rooms){rooms=data.rooms;saveRooms();}
       if(data.leaves){leaves=data.leaves;saveLeaves();}
+      if(data.repairs){repairs=data.repairs;saveRepairs();}
       if(data.weeks){Object.entries(data.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
       recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
       toast('데이터를 불러왔습니다');
@@ -2069,7 +2102,7 @@ function toast(msg){
 
 // === 새로고침 (로컬 데이터만 다시 로드) ===
 async function refreshAll(){
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadRepairs();
   recalcNextId();loadWeek();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
@@ -2082,7 +2115,7 @@ async function pullFromCloud(){
   updateSyncStatus('syncing');
   const ok=await loadFromCloud();
   if(ok){
-    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();
+    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadRepairs();
     recalcNextId();loadWeek();renderFilterBar();renderInventory();renderAlerts();
     if(currentTab==='history')renderHistory();
     if(currentTab==='tasks')renderTaskHistory();
@@ -2568,6 +2601,126 @@ function togglePlan(pid){
   if(p){p.done=!p.done;savePlans();renderPlanList();}
 }
 
+// === 공사 의뢰 관리 ===
+let repairFilter='all'; // all | pending | requested | done
+const RP_STATUS={pending:{label:'대기',cls:'pending'},requested:{label:'의뢰함',cls:'requested'},done:{label:'완료',cls:'done'}};
+const RP_ORDER=['pending','requested','done'];
+
+function renderRepairList(){
+  const v=document.getElementById('repairView');if(!v)return;
+  const counts={all:repairs.length,pending:0,requested:0,done:0};
+  repairs.forEach(r=>{counts[r.status]=(counts[r.status]||0)+1;});
+  let list=repairs.slice();
+  if(repairFilter!=='all')list=list.filter(r=>r.status===repairFilter);
+  list.sort((a,b)=>{
+    const ad=a.status==='done'?1:0,bd=b.status==='done'?1:0;
+    if(ad!==bd)return ad-bd;
+    return (b.foundAt||'').localeCompare(a.foundAt||'');
+  });
+  let h='<div class="rp-header">';
+  h+='<span style="font-size:14px;font-weight:700">🚧 공사 의뢰 <span style="font-size:12px;color:var(--gray-500);font-weight:500">('+(counts.pending||0)+' 대기)</span></span>';
+  h+='<button class="btn btn-blue btn-sm" onclick="openRepairForm(null)">＋ 의뢰 추가</button>';
+  h+='</div>';
+  h+='<div class="rp-filter">';
+  [['all','전체'],['pending','대기'],['requested','의뢰함'],['done','완료']].forEach(x=>{
+    h+='<button class="'+(repairFilter===x[0]?'active':'')+'" onclick="repairFilter=\''+x[0]+'\';renderRepairList()">'+x[1]+' '+(counts[x[0]]||0)+'</button>';
+  });
+  h+='</div>';
+  h+='<div class="rp-list">';
+  if(!list.length){
+    h+='<div class="rp-empty">'+(repairFilter==='all'?'등록된 공사 의뢰가 없습니다.<br>작업 중 공사가 필요한 상황을 발견하면<br>＋ 버튼으로 기록하세요.':'해당 상태의 의뢰가 없습니다')+'</div>';
+  }else{
+    list.forEach(r=>{
+      const st=RP_STATUS[r.status]||RP_STATUS.pending;
+      h+='<div class="rp-item st-'+r.status+'" onclick="openRepairForm('+r.id+')">';
+      h+='<div class="rp-top">';
+      h+='<span class="rp-badge '+st.cls+'" onclick="event.stopPropagation();cycleRepairStatus('+r.id+')" title="클릭하여 상태 변경">'+st.label+'</span>';
+      if(r.location)h+='<span class="rp-loc">'+esc(r.location)+(r.detail?' '+esc(r.detail):'')+'</span>';
+      if(r.foundAt)h+='<span class="rp-found">발견 '+esc(r.foundAt)+'</span>';
+      h+='</div>';
+      h+='<div class="rp-content">'+(esc(r.content)||'(내용 없음)')+'</div>';
+      if(r.note)h+='<div class="rp-note">📝 '+esc(r.note)+'</div>';
+      h+='<div class="rp-actions">';
+      h+='<button onclick="event.stopPropagation();cycleRepairStatus('+r.id+')">상태 변경 →</button>';
+      h+='<button class="rp-del" onclick="event.stopPropagation();deleteRepair('+r.id+')">삭제</button>';
+      h+='</div></div>';
+    });
+  }
+  h+='</div>';
+  v.innerHTML=h;
+}
+
+function cycleRepairStatus(rid){
+  const r=repairs.find(x=>Number(x.id)===Number(rid));if(!r)return;
+  const i=RP_ORDER.indexOf(r.status);
+  r.status=RP_ORDER[(i+1)%RP_ORDER.length];
+  saveRepairs();renderRepairList();
+  toast('상태: '+RP_STATUS[r.status].label);
+}
+
+function openRepairForm(rid){
+  const r=rid?repairs.find(x=>Number(x.id)===Number(rid)):null;
+  const isEdit=!!r;
+  const today=new Date().toISOString().slice(0,10);
+  const etcVal=(r&&r.location&&!buildings.includes(r.location))?r.location:'';
+  let h='<div class="modal"><h2>'+(isEdit?'✏️ 공사 의뢰 수정':'🚧 공사 의뢰 추가')+'</h2>';
+  h+='<label>발견 일시</label>';
+  h+='<input type="date" id="rpFound" value="'+esc((r&&r.foundAt)||today)+'">';
+  h+='<label>장소 (건물/구역)</label>';
+  h+='<select id="rpLocation" onchange="document.getElementById(\'rpLocationEtc\').style.display=this.value===\'__etc__\'?\'block\':\'none\'"><option value="">건물/구역 선택...</option>';
+  buildings.forEach(b=>{h+='<option value="'+esc(b)+'"'+(r&&r.location===b?' selected':'')+'>'+esc(b)+'</option>';});
+  h+='<option value="__etc__"'+(etcVal?' selected':'')+'>기타 (직접 입력)</option>';
+  h+='</select>';
+  h+='<input id="rpLocationEtc" placeholder="기타 장소 직접 입력" value="'+esc(etcVal)+'" style="display:'+(etcVal?'block':'none')+';margin-top:5px">';
+  h+='<label>세부 위치</label>';
+  h+='<input id="rpDetail" value="'+esc((r&&r.detail)||'')+'" placeholder="예: 9층 여자화장실, 지하 주차장 B2">';
+  h+='<label>내용 (필요 공사)</label>';
+  h+='<textarea id="rpContent" rows="3" placeholder="발견한 상황과 필요한 공사 내용을 적어주세요" style="width:100%;box-sizing:border-box;resize:vertical;border:1px solid var(--gray-300);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit">'+esc((r&&r.content)||'')+'</textarea>';
+  h+='<label>비고</label>';
+  h+='<input id="rpNote" value="'+esc((r&&r.note)||'')+'" placeholder="비고 (선택)">';
+  h+='<label>상태</label>';
+  h+='<select id="rpStatus">';
+  RP_ORDER.forEach(k=>{h+='<option value="'+k+'"'+(((r&&r.status)||'pending')===k?' selected':'')+'>'+RP_STATUS[k].label+'</option>';});
+  h+='</select>';
+  h+='<div class="modal-btns">';
+  h+='<button class="btn btn-outline" onclick="closeModal()">취소</button>';
+  if(isEdit)h+='<button class="btn btn-danger btn-sm" style="background:none;border:1px solid var(--gray-200)" onclick="deleteRepair('+rid+')">🗑 삭제</button>';
+  h+='<button class="btn btn-blue" onclick="saveRepair('+(rid||'null')+')">'+(isEdit?'저장':'추가')+'</button>';
+  h+='</div></div>';
+  showModal(h);
+  setTimeout(()=>document.getElementById('rpContent')?.focus(),50);
+}
+
+function saveRepair(rid){
+  let location=document.getElementById('rpLocation').value;
+  if(location==='__etc__')location=document.getElementById('rpLocationEtc').value.trim();
+  const detail=document.getElementById('rpDetail').value.trim();
+  const foundAt=document.getElementById('rpFound').value;
+  const content=document.getElementById('rpContent').value.trim();
+  const note=document.getElementById('rpNote').value.trim();
+  const status=document.getElementById('rpStatus').value;
+  if(!content){toast('내용을 입력하세요');return;}
+  if(!foundAt){toast('발견 일시를 선택하세요');return;}
+  if(rid){
+    const r=repairs.find(x=>Number(x.id)===Number(rid));
+    if(r){r.location=location;r.detail=detail;r.foundAt=foundAt;r.content=content;r.note=note;r.status=status;}
+    toast('공사 의뢰가 수정되었습니다');
+  }else{
+    const mx=repairs.reduce((m,x)=>Math.max(m,Number(x.id)||0),0);
+    const newId=Math.max(nextId,mx)+1;nextId=newId+1;
+    repairs.push({id:newId,location:location,detail:detail,foundAt:foundAt,content:content,note:note,status:status,createdAt:new Date().toISOString()});
+    toast('공사 의뢰가 추가되었습니다');
+  }
+  saveRepairs();closeModal();renderRepairList();
+}
+
+function deleteRepair(rid){
+  if(!confirm('이 공사 의뢰를 삭제하시겠습니까?'))return;
+  repairs=repairs.filter(x=>Number(x.id)!==Number(rid));
+  saveRepairs();closeModal();renderRepairList();
+  toast('삭제되었습니다');
+}
+
 // === 작업 예정 알림 (전 주 금요일 + 당일 팝업, 확인 기능) ===
 function _ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function _todayYMD(){return _ymd(new Date());}
@@ -2951,7 +3104,7 @@ async function autoSyncPoll(){
         try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
       });
       // 메모리 재로드
-      loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+      loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
       recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
       if(currentTab==='history')renderHistory();
       if(currentTab==='tasks')renderTaskHistory();
@@ -3020,7 +3173,7 @@ function friendlyKeyName(key){
   return key;
 }
 function reloadAllFromStorage(){
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
   recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
