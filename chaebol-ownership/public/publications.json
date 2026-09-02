@@ -1,6 +1,30 @@
 {
- "updatedAt": "2026-09-01T00:41:09.597Z",
+ "updatedAt": "2026-09-02T23:25:02.240Z",
  "items": [
+  {
+   "id": "issue-point-49570",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "'학생 1인당 교부금'만 늘면, 교육현안 해결할 수 있나? 지방교육재정교부금 개편안의 학생 수 기반 교육비 논리에 관한 검토",
+   "date": "2026-09-02",
+   "meta": "이슈와논점 2522호 · 김범주",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49570",
+   "tracks": [],
+   "keywords": [
+    "재정"
+   ]
+  },
+  {
+   "id": "publication-49571",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "미래를 위한 헌법, 그 진단과 해법",
+   "date": "2026-09-02",
+   "meta": "NARS 브리프 177호 · 김선화",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49571",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "publication-49558",
    "sourceId": "publication",
@@ -201,19 +225,6 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49503",
    "tracks": [],
    "keywords": []
-  },
-  {
-   "id": "publication-49496",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "한국 국익 재정립의 필요성과 의회외교의 방향",
-   "date": "2026-07-30",
-   "meta": "NARS 브리프 172호 · 김예경,유채영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49496",
-   "tracks": [],
-   "keywords": [
-    "재정"
-   ]
   },
   {
    "id": "issue-point-49491",
@@ -507,19 +518,6 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49329",
    "tracks": [],
    "keywords": []
-  },
-  {
-   "id": "issue-point-49309",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "쿠팡 사례를 통해 본 플랫폼 시장 거래질서의 쟁점과 과제",
-   "date": "2026-06-11",
-   "meta": "이슈와논점 2502호 · 최은진,박미영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49309",
-   "tracks": [],
-   "keywords": [
-    "플랫폼"
-   ]
   },
   {
    "id": "nars-analysis-49263",
