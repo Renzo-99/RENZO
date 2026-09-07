@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 
 const BASE = process.env.SITE ?? "https://stock-dashboard-jaeyeon.vercel.app";
 const PATHS = (process.env.PATHS ?? "/").split(",");
-const VIEWPORTS = (process.env.WIDTHS ?? "320,360,390,412")
+const VIEWPORTS = (process.env.WIDTHS ?? "356,360,364,375")
   .split(",")
   .map((w) => ({ name: `${w}px`, width: Number(w), height: 844 }));
 
@@ -59,7 +59,7 @@ for (const vp of VIEWPORTS) {
         const right = b.right + window.scrollX;
         if (right <= vw + 1) continue;
         let clipped = false;
-        for (let par = el.parentElement; par; par = par.parentElement) {
+        for (let par = el.parentElement; par && par !== document.body; par = par.parentElement) {
           const s = getComputedStyle(par);
           if (["auto", "scroll", "hidden", "clip"].includes(s.overflowX)) { clipped = true; break; }
         }
@@ -74,7 +74,7 @@ for (const vp of VIEWPORTS) {
         const b = el.getBoundingClientRect();
         if (b.width === 0 || b.height === 0) return false;
         if (b.right + window.scrollX <= vw + 1) return false;
-        for (let par = el.parentElement; par; par = par.parentElement) {
+        for (let par = el.parentElement; par && par !== document.body; par = par.parentElement) {
           const s2 = getComputedStyle(par);
           if (["auto", "scroll", "hidden", "clip"].includes(s2.overflowX)) return false;
         }
