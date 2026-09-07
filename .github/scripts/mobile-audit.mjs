@@ -6,10 +6,9 @@ import { chromium } from "playwright";
 
 const BASE = process.env.SITE ?? "https://stock-dashboard-jaeyeon.vercel.app";
 const PATHS = (process.env.PATHS ?? "/").split(",");
-const VIEWPORTS = [
-  { name: "iPhone 12/13", width: 390, height: 844 },
-  { name: "Galaxy S", width: 412, height: 915 },
-];
+const VIEWPORTS = (process.env.WIDTHS ?? "320,360,390,412")
+  .split(",")
+  .map((w) => ({ name: `${w}px`, width: Number(w), height: 844 }));
 
 const browser = await chromium.launch();
 
@@ -69,7 +68,34 @@ for (const vp of VIEWPORTS) {
       }
       const uncl = over.filter((o) => !o.clipped).sort((a, b) => b.right - a.right);
       const wide = [...over].sort((a, b) => b.w - a.w).slice(0, 6);
-      return { vw, docW, uncl: uncl.slice(0, 12), wide, uncCount: uncl.length };
+
+      // 넘침을 만든 '가장 안쪽' 요소 — 자식 중 넘치는 게 없는 리프만 남긴다
+      const overEls = [...document.querySelectorAll("body *")].filter((el) => {
+        const b = el.getBoundingClientRect();
+        if (b.width === 0 || b.height === 0) return false;
+        if (b.right + window.scrollX <= vw + 1) return false;
+        for (let par = el.parentElement; par; par = par.parentElement) {
+          const s2 = getComputedStyle(par);
+          if (["auto", "scroll", "hidden", "clip"].includes(s2.overflowX)) return false;
+        }
+        return true;
+      });
+      const leaves = overEls
+        .filter((el) => !overEls.some((o) => o !== el && el.contains(o)))
+        .map((el) => {
+          const b = el.getBoundingClientRect();
+          const cs = getComputedStyle(el);
+          return {
+            p: path(el),
+            w: Math.round(b.width),
+            right: Math.round(b.right + window.scrollX),
+            minW: cs.minWidth,
+            ws: cs.whiteSpace,
+            size: el.getAttribute("size") ?? "",
+            txt: (el.textContent || el.getAttribute("placeholder") || "").trim().replace(/\s+/g, " ").slice(0, 50),
+          };
+        });
+      return { vw, docW, uncl: uncl.slice(0, 8), wide, uncCount: uncl.length, leaves };
     });
 
     console.log(`\n### ${vp.name} (${vp.width}px) ${p}`);
@@ -80,8 +106,10 @@ for (const vp of VIEWPORTS) {
     } else {
       console.log("-- 컨테이너 밖 넘침 없음 --");
     }
-    console.log("-- 가장 넓은 요소(스크롤 컨테이너 내부 포함) --");
-    for (const o of r.wide) console.log(`  w=${o.w} right=${o.right} | ${o.p} | ${o.txt}`);
+    if (r.leaves?.length) {
+      console.log("-- 넘침의 실제 원인(최말단 요소) --");
+      for (const o of r.leaves) console.log(`  w=${o.w} right=${o.right} minW=${o.minW} ws=${o.ws} size=${o.size} | ${o.p} | ${o.txt}`);
+    }
     await page.close();
   }
   await ctx.close();
