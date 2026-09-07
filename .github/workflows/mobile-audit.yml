@@ -1,0 +1,21 @@
+name: 모바일 레이아웃 진단
+
+on:
+  push:
+    branches: [claude/nars-pipeline]
+
+jobs:
+  audit:
+    if: contains(github.event.head_commit.message, '[mobile-audit]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 플레이라이트 설치
+        run: npm i playwright@1.49.0 && npx playwright install --with-deps chromium
+      - name: 진단 실행
+        env:
+          PATHS: "/"
+        run: node .github/scripts/mobile-audit.mjs
