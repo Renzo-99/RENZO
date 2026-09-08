@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-09-07T23:36:40.121Z",
+ "updatedAt": "2026-09-08T23:28:10.637Z",
  "items": [
+  {
+   "id": "nars-analysis-49593",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "축제의 즐거움이쓰레기로 남지 않도록 -문화예술 축제·행사의 자원순환 관리체계 구축 과제",
+   "date": "2026-09-08",
+   "meta": "NARS 현안분석 430호 · 김경민,배성희",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49593",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "policy-report-49591",
+   "sourceId": "policy-report",
+   "sourceName": "연구보고서(입법·정책보고서)",
+   "title": "산업안전보건체계의 패러다임 전환 :사회적 대화에 기반한 영국의 위험관리형 규제방식 도입을 중심으로",
+   "date": "2026-09-08",
+   "meta": "NARS 입법·정책 185호 · 이동영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49591",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49570",
    "sourceId": "issue-point",
@@ -201,28 +223,6 @@
    "date": "2026-08-05",
    "meta": "NARS 브리프 175호 · 이승열",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49509",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "publication-49504",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "미국 유권자의 정서적 양극화와 한국정치에의 함의",
-   "date": "2026-08-03",
-   "meta": "NARS 브리프 174호 · 송진미",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49504",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "publication-49503",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "회생절차 폐지 결정 이후 절차와 쟁점",
-   "date": "2026-08-03",
-   "meta": "NARS 브리프 173호 · 이수진",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49503",
    "tracks": [],
    "keywords": []
   },
@@ -663,17 +663,6 @@
    "keywords": []
   },
   {
-   "id": "nars-analysis-49067",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "축소사회를 전제로 한 일본의 지방창생 2.0 특징과 시사점",
-   "date": "2026-04-12",
-   "meta": "NARS 현안분석 410호 · 하혜영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49067",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "policy-report-48959",
    "sourceId": "policy-report",
    "sourceName": "연구보고서(입법·정책보고서)",
@@ -848,21 +837,6 @@
    "tracks": [],
    "keywords": [
     "부동산"
-   ]
-  },
-  {
-   "id": "policy-report-47200",
-   "sourceId": "policy-report",
-   "sourceName": "연구보고서(입법·정책보고서)",
-   "title": "북한 엘리트 내 권력구조의 변화와 시사점 ： 최룡해 비공식조직의 공식조직 장악을 중심으로",
-   "date": "2025-04-10",
-   "meta": "NARS 입법·정책 165호 · 이승열",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=47200",
-   "tracks": [
-    "security"
-   ],
-   "keywords": [
-    "북한"
    ]
   },
   {
@@ -1088,7 +1062,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 10
+   "count": 8
   }
  ]
 }
