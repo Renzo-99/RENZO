@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 
 const BASE = process.env.SITE ?? "https://stock-dashboard-jaeyeon.vercel.app";
 const PATHS = (process.env.PATHS ?? "/").split(",");
-const VIEWPORTS = (process.env.WIDTHS ?? "320,360,390,412")
+const VIEWPORTS = (process.env.WIDTHS ?? "404,884")
   .split(",")
   .map((w) => ({ name: `${w}px`, width: Number(w), height: 844 }));
 
