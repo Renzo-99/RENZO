@@ -1,8 +1,9 @@
 /** 검증: 배포된 /api/rates 의 국고채(토스) 상태 */
-const url = "https://stock-dashboard-jaeyeon.vercel.app/api/rates";
+const url = `https://stock-dashboard-jaeyeon.vercel.app/api/rates?cb=${Date.now()}`; // CDN 캐시 우회
 const res = await fetch(url, { signal: AbortSignal.timeout(30000) });
 console.log(`HTTP ${res.status}`);
 const b = await res.json();
+console.log("수집 시각:", b.updatedAt);
 console.log("\n=== 소스 상태 ===");
 for (const s of b.statuses ?? []) console.log(`${s.ok ? "OK  " : "FAIL"} ${s.id.padEnd(6)} ${s.name} · ${s.count}`);
 console.log("\n=== 국고채 곡선 ===");
