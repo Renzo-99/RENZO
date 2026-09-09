@@ -1,19 +1,21 @@
-/** 검증: 배포된 /api/rates — 소스별 수집 + 채권 vs 주식 판정 */
-const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
-const res = await fetch(`${BASE}/api/rates?nocache=${Date.now()}`, { signal: AbortSignal.timeout(90_000) });
-const text = await res.text();
-let body;
-try { body = JSON.parse(text); } catch { console.log(`HTTP ${res.status} · JSON 아님(배포 중?):`, text.slice(0, 200)); process.exit(0); }
-console.log(`HTTP ${res.status} · updatedAt=${body.updatedAt} · 곡선기준일=${body.curveDate}`);
-if (body.error) { console.log("오류:", body.error); process.exit(0); }
-for (const s of body.statuses ?? []) console.log(`${s.ok ? "OK  " : "FAIL"} ${s.id.padEnd(7)} ${s.name} ${s.count}건`);
-const p = (a, f) => (a ?? []).slice(0, 6).map(f).join(" · ");
-console.log("미국 곡선:", p(body.curve, (c) => `${c.label} ${c.yield}%`));
-console.log("국고채:", p(body.krCurve, (c) => `${c.label} ${c.yield}%`) || "(없음)");
-console.log("스프레드:", p(body.spreads, (s) => `${s.label} ${s.value}%p${s.alert ? "(경고)" : ""}`));
-console.log("VIX:", p(body.vol, (v) => `${v.label} ${v.value}`), "| 구조:", body.options?.structure, "VVIX", body.options?.vvix);
-const v = body.verdict ?? {};
-console.log(`판정: ${v.side} 점수 ${v.score} | 어닝일드 ${v.equityYield}% vs 10년 ${v.bondYield}% → ERP ${v.erp}%p | 실질 ${v.realYield}% (기대물가 ${v.breakeven}%) | PER ${body.per}`);
-console.log("근거:", (v.factors ?? []).map((f) => `${f.label} ${f.points > 0 ? "+" : ""}${f.points}`).join(" · "));
-const lb = body.longBond;
-if (lb) console.log(`장기물: ${lb.label} YTM ${lb.ytm}% D ${lb.duration} · +1%p→가격 ${lb.dv01Pct}% · 손익분기 +${lb.breakevenRisePp}%p · 시나리오 ${lb.scenarios.map((s) => `${s.deltaPp}:${s.totalReturn}%`).join(" ")}`);
+/** 진단: ECOS 실패 원인 좁히기 — 러너(공개망)에서 sample 키가 아직 되는지 + 대체 소스 */
+const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" };
+async function probe(label, url, ms = 12000) {
+  const t0 = Date.now();
+  try {
+    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(ms) });
+    const text = await res.text();
+    console.log(`\n===== ${label} (${Date.now() - t0}ms) HTTP ${res.status} =====`);
+    console.log(text.slice(0, 320).replace(/\s+/g, " "));
+  } catch (e) {
+    console.log(`\n===== ${label} =====\n오류: ${e.message}`);
+  }
+}
+const end = new Date(), start = new Date(end.getTime() - 30 * 86400000);
+const f = (d) => d.toISOString().slice(0, 10).replace(/-/g, "");
+await probe("ECOS sample 국고채3년", `https://ecos.bok.or.kr/api/StatisticSearch/sample/json/kr/1/40/817Y002/D/${f(start)}/${f(end)}/010200000`);
+// 대체 후보들
+await probe("KOFIA 채권 시가평가", "https://www.kofiabond.or.kr/proxy/websquare/getBondYieldInfo.do");
+await probe("e-나라지표 국고채", "https://www.index.go.kr/unity/openApi/xml_stts.do?idntfcId=&statsCode=1073");
+await probe("네이버 금융 채권 페이지", "https://finance.naver.com/marketindex/bondList.naver");
+await probe("investing 대체(코스콤 fnguide류)", "https://api.stock.naver.com/marketindex/exchange/FX_USDKRW");
