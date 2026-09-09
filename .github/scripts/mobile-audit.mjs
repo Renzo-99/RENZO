@@ -1,50 +1,43 @@
-/** 메인 대시보드 섹션별 상태 점검 — 어느 카드가 비어 있나 / XHR 상태 전부 */
+/** 4건 수정 검증 — 거래대금·한글명·미국 특징주·카드 정렬 */
 import { chromium } from "playwright";
-
 const APP = "https://stock-dashboard-jaeyeon.vercel.app";
 const browser = await chromium.launch();
+const page = await (await browser.newContext({ locale: "ko-KR", viewport: { width: 1280, height: 900 } })).newPage();
 
-for (const [label, width] of [["모바일 412", 412], ["데스크탑 1280", 1280]]) {
-  const ctx = await browser.newContext({ locale: "ko-KR", viewport: { width, height: 900 } });
-  const page = await ctx.newPage();
-  const errs = [];
-  const xhr = [];
-  page.on("pageerror", (e) => errs.push(String(e).slice(0, 300)));
-  page.on("console", (m) => { if (m.type() === "error") errs.push("console: " + m.text().slice(0, 200)); });
-  page.on("response", (r) => {
-    const u = r.url();
-    if (u.includes("/api/")) xhr.push(`${r.status()} ${u.replace(APP, "").split("?")[0]}`);
-  });
-
-  await page.goto(`${APP}/?cb=${Date.now()}`, { waitUntil: "domcontentloaded", timeout: 90000 });
-  // 지연 로딩 섹션을 깨우려고 끝까지 스크롤
-  for (let i = 0; i < 12; i++) {
-    await page.mouse.wheel(0, 1200);
-    await page.waitForTimeout(500);
-  }
-  await page.waitForTimeout(8000);
-
-  console.log(`\n${"=".repeat(70)}\n### ${label}\n${"=".repeat(70)}`);
-  console.log("XHR:", [...new Set(xhr)].sort().join(" | ") || "없음");
-  console.log("에러:", errs.length ? [...new Set(errs)].join("\n  ") : "없음");
-
-  const sections = await page.evaluate(() => {
-    const out = [];
-    for (const sec of document.querySelectorAll("section")) {
-      const h = sec.querySelector("h1, h2, h3");
-      const title = (h?.textContent ?? sec.id ?? "?").trim().slice(0, 28);
-      const body = (sec.textContent ?? "").replace(/\s+/g, " ").trim();
-      // 카드가 살아 있나: 숫자가 있으면 데이터가 들어온 것
-      const hasNum = /\d/.test(body.replace(title, ""));
-      const placeholder = /불러오는 중|대기 중|없습니다|준비 중|—|―/.test(body);
-      out.push({ title, len: body.length, hasNum, placeholder, head: body.slice(0, 90) });
-    }
-    return out;
-  });
-  for (const s of sections) {
-    const mark = !s.hasNum ? "비었음 ⚠" : s.placeholder ? "일부 대기" : "정상";
-    console.log(`  ${mark.padEnd(10)} ${s.title.padEnd(30)} ${String(s.len).padStart(6)}자  ${s.head.slice(0, 60)}`);
-  }
-  await ctx.close();
+// 1) 업종 거래대금
+const sec = await (await fetch(`${APP}/api/sectors?cb=${Date.now()}`)).json();
+console.log("=== 1. 업종 거래대금 ===");
+for (const s of (sec.sectors ?? []).slice(0, 4)) {
+  const zero = s.stocks.filter((x) => !(x.tradeValue > 0)).length;
+  console.log(`  ${s.name.padEnd(16)} 합계 ${(s.tradeValue / 1e8).toFixed(0)}억  0원종목 ${zero}/${s.stocks.length}`);
+  for (const x of s.stocks.slice(0, 2)) console.log(`     ${x.name} 가격 ${x.price} 거래대금 ${(x.tradeValue / 1e8).toFixed(1)}억`);
 }
+
+// 2·3) 특징주 — 한글명 + 미국물
+const f = await (await fetch(`${APP}/api/features/today?cb=${Date.now()}`)).json();
+console.log("\n=== 2·3. 특징주 ===");
+console.log("  기준:", f.criteria, "· 환율", f.fxUsd);
+for (const r of f.rows ?? []) {
+  const han = /[가-힣]/.test(r.name);
+  console.log(`  [${r.market ?? "?"}] ${r.name.slice(0, 24).padEnd(26)} ${r.market === "US" ? "$" + r.price : r.price + "원"}  ${r.changeRate.toFixed(2)}%  ${(r.tradeValue / 1e8).toFixed(0)}억  ${r.market === "US" ? "" : han ? "한글✓" : "영문⚠"}`);
+}
+const krRows = (f.rows ?? []).filter((r) => r.market !== "US");
+const usRows = (f.rows ?? []).filter((r) => r.market === "US");
+console.log(`  국내 ${krRows.length}건(영문 잔존 ${krRows.filter((r) => !/[가-힣]/.test(r.name)).length}) · 미국 ${usRows.length}건`);
+
+// 4) 카드 높이 정렬
+await page.goto(`${APP}/?cb=${Date.now()}`, { waitUntil: "domcontentloaded", timeout: 90000 });
+for (let i = 0; i < 14; i++) { await page.mouse.wheel(0, 1200); await page.waitForTimeout(400); }
+await page.waitForTimeout(6000);
+const rows = await page.evaluate(() => {
+  const ul = [...document.querySelectorAll("ul")].find((u) => u.querySelectorAll("a[target=_blank]").length >= 4 && /입법|NARS|보고서/.test(u.textContent ?? ""));
+  if (!ul) return null;
+  const cards = [...ul.querySelectorAll("li > a")].map((a) => { const r = a.getBoundingClientRect(); return { top: Math.round(r.top), h: Math.round(r.height) }; });
+  const byRow = new Map();
+  for (const c of cards) { const k = c.top; byRow.set(k, [...(byRow.get(k) ?? []), c.h]); }
+  return [...byRow.values()].map((hs) => ({ heights: hs, aligned: new Set(hs).size === 1 }));
+});
+console.log("\n=== 4. 국회입법조사처 카드 행별 높이 ===");
+if (!rows) console.log("  (섹션을 못 찾음)");
+else { for (const r of rows) console.log(`  ${r.aligned ? "정렬됨 ✓" : "안맞음 ⚠"} 높이 ${r.heights.join(", ")}`); }
 await browser.close();
