@@ -1,6 +1,19 @@
 {
- "updatedAt": "2026-09-09T23:36:37.773Z",
+ "updatedAt": "2026-09-09T23:54:10.729Z",
  "items": [
+  {
+   "id": "issue-point-49600",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "국민연금 추후납부제도의 바람직한 개선방안: 편법적 수급권 확보 수단으로 악용되는 것을 어떻게 막을 것인가",
+   "date": "2026-09-10",
+   "meta": "이슈와논점 2523호 · 이윤경",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49600",
+   "tracks": [],
+   "keywords": [
+    "연금"
+   ]
+  },
   {
    "id": "nars-analysis-49593",
    "sourceId": "nars-analysis",
@@ -212,17 +225,6 @@
    "date": "2026-08-06",
    "meta": "NARS 브리프 176호 · 최정윤",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49511",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "publication-49509",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "글로벌 복합위기 시대 - 한반도 평화전략과 정책과제",
-   "date": "2026-08-05",
-   "meta": "NARS 브리프 175호 · 이승열",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49509",
    "tracks": [],
    "keywords": []
   },
@@ -505,17 +507,6 @@
    "date": "2026-06-15",
    "meta": "이슈와논점 2504호 · 한진옥",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49332",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49329",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "아프리카돼지열병(ASF) 대확산이 남긴 과제 돼지 혈장단백질 사료 등 발생 원인별 방역관리 강화 필요",
-   "date": "2026-06-14",
-   "meta": "이슈와논점 2503호 · 김현민",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49329",
    "tracks": [],
    "keywords": []
   },
@@ -1062,7 +1053,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 8
+   "count": 7
   }
  ]
 }
