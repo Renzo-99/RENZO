@@ -16,5 +16,4 @@ jobs:
       - name: 플레이라이트 설치
         run: npm i playwright@1.49.0 && npx playwright install --with-deps chromium
       - name: 진단 실행
-        env:
         run: node .github/scripts/mobile-audit.mjs
