@@ -1,23 +1,32 @@
 /**
- * 진단: 배포된 트렌드 레이더 API의 소스별 수집 성공 여부 확인.
- * (Vercel 서버 IP가 구글 번역을 차단당한 전례가 있어 실배포 검증 필수)
+ * 정찰: 채권·옵션 데이터 소스 가용성 (2026-09-09).
  */
+const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" };
 
-const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
-
-const res = await fetch(`${BASE}/api/trends?nocache=${Date.now()}`, { signal: AbortSignal.timeout(90_000) });
-const body = await res.json();
-console.log(`HTTP ${res.status} · updatedAt=${body.updatedAt}`);
-if (body.error) {
-  console.log("오류:", body.error);
-} else {
-  for (const s of body.statuses ?? []) {
-    console.log(`${s.ok ? "OK " : "FAIL"} ${s.id.padEnd(12)} ${s.count}건`);
+async function probe(label, url, headers = {}) {
+  try {
+    const res = await fetch(url, { headers: { ...UA, ...headers }, signal: AbortSignal.timeout(20_000) });
+    const text = await res.text();
+    console.log(`\n===== ${label} =====\nHTTP ${res.status} · ${text.length}B · ${res.headers.get("content-type")}`);
+    console.log(text.slice(0, 420).replace(/\n{2,}/g, "\n"));
+  } catch (e) {
+    console.log(`\n===== ${label} =====\n오류: ${e.message}`);
   }
-  const sample = (label, arr, fmt) => console.log(`${label}: ${(arr ?? []).slice(0, 3).map(fmt).join(" · ")}`);
-  sample("구글KR", body.googleKr, (t) => `${t.keyword}(${t.traffic ?? "?"})`);
-  sample("구글US", body.googleUs, (t) => t.keyword);
-  sample("실검", body.krRealtime, (t) => t.keyword);
-  sample("종목", body.stocks, (s) => `${s.symbol} ${s.score}`);
-  sample("코인", body.coins, (c) => `${c.symbol} ${c.change24h}%`);
 }
+
+// 1) 야후 — 국채 금리·변동성 심볼
+for (const s of ["%5ETNX", "%5EFVX", "%5ETYX", "%5EIRX", "%5EVIX3M", "%5EVIX9D", "%5EVVIX"]) {
+  await probe(`야후 ${decodeURIComponent(s)}`, `https://query1.finance.yahoo.com/v8/finance/chart/${s}?range=5d&interval=1d`);
+}
+// 2) FRED CSV (키 불필요) — 장단기 스프레드·하이일드·기대인플레
+for (const id of ["T10Y2Y", "T10Y3M", "BAMLH0A0HYM2", "T10YIE", "DFII10"]) {
+  await probe(`FRED ${id}`, `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${id}`);
+}
+// 3) CBOE 풋콜 비율
+await probe("CBOE 일별 통계", "https://www.cboe.com/us/options/market_statistics/daily/");
+await probe("CBOE 총 P/C CSV", "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv");
+// 4) 한국 — 국고채·VKOSPI
+await probe("KRX VKOSPI(지수 JSON)", "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd", {});
+await probe("네이버 채권 API", "https://api.stock.naver.com/marketindex/bond/KOR3Y");
+await probe("네이버 국고채 3년", "https://polling.finance.naver.com/api/realtime/marketindex/bond/KOR3Y");
+await probe("ECOS 키없이", "https://ecos.bok.or.kr/api/StatisticSearch/sample/json/kr/1/5/817Y002/D/20260901/20260908/010200000");
