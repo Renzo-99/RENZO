@@ -1,70 +1,110 @@
 /**
- * 확정: 상장폐지 여부를 '마지막 거래일'로 판정.
- * 야후 일봉은 상폐 종목도 과거 데이터를 주되 최근 봉이 끊긴다 —
- * 존재/부재가 아니라 '언제까지 거래됐나'로 보면 오탐이 없다.
- * 살아 있는 종목을 대조군으로 함께 돌려 판정 기준 자체를 검증한다.
+ * 미국 종목 시가총액 소스 전수 점검.
+ * (1) 앱이 쓰는 야후 crumb 경로가 데이터센터 IP에서 실제로 되는가
+ * (2) 후보 소스들이 서로 일치하는가 (한 소스만 믿지 않는다)
  */
 import { mkdirSync, writeFileSync } from "node:fs";
-const H = {
+const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" };
+const BROWSER = {
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
   accept: "application/json, text/plain, */*",
 };
+const TICKERS = ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AVGO", "INTC", "MU"];
+const T = (n) => (n ? `$${(n / 1e12).toFixed(3)}T` : "-");
 
-const SUSPECT = [
-  ["012510", "더존비즈온"], ["031440", "신세계푸드"], ["057050", "현대홈쇼핑"],
-  ["082640", "동양생명"], ["203690", "아크솔루션스"], ["222160", "NPX"],
-  ["299900", "위지윅스튜디오"], ["467930", "IBKS제23호스팩"],
-  ["469880", "하나30호스팩"], ["471050", "대신밸런스제17호스팩"],
-];
-const CONTROL = [
-  ["094800", "맵스리얼티(네이버상 거래중)"], ["005930", "삼성전자"],
-  ["001000", "신라섬유(거래정지)"], ["019680", "대교(거래정지)"],
-];
+// ── (1) 앱과 동일한 crumb 흐름
+console.log("=== 야후 crumb 흐름 (앱 코드와 동일) ===");
+let auth = null;
+try {
+  const r1 = await fetch("https://fc.yahoo.com", { headers: UA, redirect: "manual", signal: AbortSignal.timeout(8000) });
+  const cookie = r1.headers.get("set-cookie")?.split(";")[0] ?? "";
+  console.log(`fc.yahoo.com HTTP ${r1.status} · 쿠키 ${cookie ? "획득" : "없음"}`);
+  if (cookie) {
+    const r2 = await fetch("https://query1.finance.yahoo.com/v1/test/getcrumb", { headers: { ...UA, Cookie: cookie }, signal: AbortSignal.timeout(8000) });
+    const crumb = (await r2.text()).trim();
+    console.log(`getcrumb HTTP ${r2.status} · crumb "${crumb.slice(0, 20)}"`);
+    if (r2.ok && crumb && !crumb.includes("{")) auth = { cookie, crumb };
+  }
+} catch (e) { console.log("crumb 실패:", String(e).slice(0, 80)); }
+console.log(`→ crumb ${auth ? "사용 가능" : "사용 불가"}\n`);
 
-/** 야후에서 마지막 거래일·종가 — .KS(코스피)/.KQ(코스닥) 둘 다 시도 */
-async function lastTrade(code) {
-  for (const sfx of [".KS", ".KQ"]) {
+const yahoo = new Map();
+if (auth) {
+  for (const t of TICKERS) {
     try {
-      const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${code}${sfx}?range=3mo&interval=1d`, { headers: H, signal: AbortSignal.timeout(12000) });
-      if (!r.ok) continue;
+      const u = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${t}?modules=price,defaultKeyStatistics&crumb=${encodeURIComponent(auth.crumb)}`;
+      const r = await fetch(u, { headers: { ...UA, Cookie: auth.cookie }, signal: AbortSignal.timeout(8000) });
+      if (!r.ok) { console.log(`  ${t} quoteSummary HTTP ${r.status}`); continue; }
       const j = await r.json();
-      const res = j?.chart?.result?.[0];
-      const ts = res?.timestamp ?? [];
-      const close = res?.indicators?.quote?.[0]?.close ?? [];
-      if (ts.length === 0) continue;
-      // 마지막으로 종가가 있는 봉
-      let i = close.length - 1;
-      while (i >= 0 && (close[i] === null || close[i] === undefined)) i--;
-      if (i < 0) continue;
-      return { sfx, date: new Date(ts[i] * 1000).toISOString().slice(0, 10), close: close[i], bars: ts.length };
-    } catch { /* 다음 접미사 */ }
+      const p = j?.quoteSummary?.result?.[0]?.price;
+      const k = j?.quoteSummary?.result?.[0]?.defaultKeyStatistics;
+      yahoo.set(t, { cap: Number(p?.marketCap?.raw ?? 0), price: Number(p?.regularMarketPrice?.raw ?? 0), shares: Number(k?.sharesOutstanding?.raw ?? 0) });
+    } catch (e) { console.log(`  ${t} 실패 ${String(e).slice(0, 50)}`); }
+    await new Promise(r => setTimeout(r, 150));
   }
-  return null;
+}
+console.log(`야후 수집: ${yahoo.size}/${TICKERS.length}\n`);
+
+// ── (2) TradingView 미국 스캐너 (앱의 us-market.ts가 쓰는 것)
+console.log("=== TradingView 미국 스캐너 ===");
+const tv = new Map();
+try {
+  const r = await fetch("https://scanner.tradingview.com/america/scan", {
+    method: "POST", headers: { "Content-Type": "application/json", ...BROWSER },
+    body: JSON.stringify({
+      symbols: { tickers: TICKERS.map((t) => `NASDAQ:${t}`).concat(TICKERS.map((t) => `NYSE:${t}`)) },
+      columns: ["name", "close", "market_cap_basic", "total_shares_outstanding", "currency"],
+    }),
+    signal: AbortSignal.timeout(20000),
+  });
+  console.log(`HTTP ${r.status}`);
+  const j = await r.json();
+  for (const row of j.data ?? []) {
+    const [name, close, cap, shares, cur] = row.d;
+    if (!cap) continue;
+    tv.set(String(name), { cap: Number(cap), price: Number(close), shares: Number(shares), cur });
+  }
+} catch (e) { console.log("실패:", String(e).slice(0, 90)); }
+console.log(`TV 수집: ${tv.size}\n`);
+
+// ── (3) stockanalysis.com (독립 검증용)
+console.log("=== stockanalysis.com ===");
+const sa = new Map();
+for (const t of TICKERS) {
+  try {
+    const r = await fetch(`https://stockanalysis.com/api/symbol/s/${t.toLowerCase()}/overview`, { headers: BROWSER, signal: AbortSignal.timeout(10000) });
+    if (!r.ok) { if (t === "AAPL") console.log(`  HTTP ${r.status}`); continue; }
+    const j = await r.json();
+    const d = j?.data ?? j;
+    sa.set(t, { cap: Number(d?.marketCap ?? d?.info?.marketCap ?? 0), price: Number(d?.price ?? 0), shares: Number(d?.sharesOut ?? 0) });
+  } catch (e) { if (t === "AAPL") console.log("  실패:", String(e).slice(0, 70)); }
+  await new Promise(r => setTimeout(r, 150));
+}
+console.log(`stockanalysis 수집: ${sa.size}\n`);
+
+// ── (4) 토스가 미국 종목도 들고 있나
+console.log("=== 토스 미국 종목 탐색 ===");
+for (const path of [
+  "https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=US19801",
+  "https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=AAPL",
+  "https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=USAAPL",
+]) {
+  try {
+    const r = await fetch(path, { headers: { ...BROWSER, referer: "https://tossinvest.com/", origin: "https://tossinvest.com" }, signal: AbortSignal.timeout(10000) });
+    const txt = await r.text();
+    console.log(`  ${path.split("codes=")[1]} → HTTP ${r.status} ${txt.slice(0, 150)}`);
+  } catch (e) { console.log(`  실패 ${String(e).slice(0, 50)}`); }
 }
 
-const today = new Date().toISOString().slice(0, 10);
-console.log(`오늘(UTC) ${today}\n`);
-
-async function report(list, title) {
-  console.log(`\n${"=".repeat(64)}\n${title}\n${"=".repeat(64)}`);
-  const rows = [];
-  for (const [code, name] of list) {
-    const lt = await lastTrade(code);
-    let verdict;
-    if (!lt) verdict = "야후에도 없음";
-    else {
-      const days = Math.round((Date.parse(today) - Date.parse(lt.date)) / 86400000);
-      verdict = days <= 5 ? `거래중 (${days}일 전)` : `${days}일째 거래 없음`;
-    }
-    rows.push({ code, name, ...(lt ?? {}), verdict });
-    console.log(`${code} ${name.padEnd(22)} ${lt ? `${lt.sfx} 마지막 ${lt.date} 종가 ${lt.close?.toFixed?.(0) ?? lt.close} (봉 ${lt.bars})` : "데이터 없음"}  → ${verdict}`);
-    await new Promise((r) => setTimeout(r, 200));
-  }
-  return rows;
+// ── 대조
+console.log(`\n${"=".repeat(78)}\n티커     야후            TradingView      stockanalysis    최대괴리\n${"=".repeat(78)}`);
+const rows = [];
+for (const t of TICKERS) {
+  const y = yahoo.get(t)?.cap ?? 0, v = tv.get(t)?.cap ?? 0, s = sa.get(t)?.cap ?? 0;
+  const vals = [y, v, s].filter((x) => x > 0);
+  const gap = vals.length >= 2 ? (Math.max(...vals) - Math.min(...vals)) / Math.max(...vals) : null;
+  rows.push({ ticker: t, yahoo: y, tv: v, sa: s, gap });
+  console.log(`${t.padEnd(8)} ${T(y).padEnd(15)} ${T(v).padEnd(16)} ${T(s).padEnd(16)} ${gap === null ? "비교불가" : (gap * 100).toFixed(2) + "%"}`);
 }
-
-const suspect = await report(SUSPECT, "확인 대상 10개");
-const control = await report(CONTROL, "대조군 — 판정 기준이 옳은지 검증");
-
 mkdirSync("audit-out", { recursive: true });
-writeFileSync("audit-out/last-trade.json", JSON.stringify({ today, suspect, control }, null, 1));
+writeFileSync("audit-out/us-caps.json", JSON.stringify({ crumbOk: !!auth, rows, yahoo: [...yahoo], tv: [...tv], sa: [...sa] }, null, 1));
