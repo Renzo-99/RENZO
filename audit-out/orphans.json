@@ -1,0 +1,112 @@
+[
+ {
+  "code": "012510",
+  "oldName": "더존비즈온",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "031440",
+  "oldName": "신세계푸드",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "057050",
+  "oldName": "현대홈쇼핑",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "082640",
+  "oldName": "동양생명",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "094800",
+  "oldName": "맵스리얼티",
+  "naver": {
+   "name": "맵스리얼티",
+   "close": "7,140",
+   "exch": "KOSPI",
+   "tradable": "tradable",
+   "tradableCode": "ok",
+   "stopType": {
+    "code": "1",
+    "text": "운영.Trading",
+    "name": "TRADING"
+   },
+   "endType": "stock",
+   "at": "2026-09-09T16:10:19+09:00"
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "203690",
+  "oldName": "아크솔루션스",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "222160",
+  "oldName": "NPX",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "299900",
+  "oldName": "위지윅스튜디오",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "467930",
+  "oldName": "IBKS제23호스팩",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "469880",
+  "oldName": "하나30호스팩",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ },
+ {
+  "code": "471050",
+  "oldName": "대신밸런스제17호스팩",
+  "naver": {
+   "httpError": 409
+  },
+  "tossByCode": "빈 결과 (HTTP 200)",
+  "tossSearch": "HTTP 404"
+ }
+]
