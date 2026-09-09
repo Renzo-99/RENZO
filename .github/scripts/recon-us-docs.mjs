@@ -1,20 +1,13 @@
-/** 정찰: 토스 채권 지표 응답 원본 구조 (키 이름 확정) */
-const UA = {
-  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
-  accept: "application/json, text/plain, */*",
-  referer: "https://tossinvest.com/",
-  origin: "https://tossinvest.com",
-};
-const res = await fetch("https://wts-cert-api.tossinvest.com/api/v1/dashboard/wts/overview/indicator/bond", {
-  headers: UA, signal: AbortSignal.timeout(12000),
-});
-const text = await res.text();
-console.log(`HTTP ${res.status} · ${text.length}B`);
-const body = JSON.parse(text);
-console.log("result 키:", Object.keys(body.result ?? {}));
-const arrKey = Object.keys(body.result ?? {}).find((k) => Array.isArray(body.result[k]));
-console.log("배열 키:", arrKey, "길이:", body.result?.[arrKey]?.length);
-const first = body.result?.[arrKey]?.[0];
-console.log("\n=== 첫 항목 ===\n" + JSON.stringify(first, null, 1).slice(0, 1400));
-const kr10 = (body.result?.[arrKey] ?? []).find((i) => JSON.stringify(i).includes("10년") || i.code === "KR1BENCH0010");
-console.log("\n=== 한국 10년 ===\n" + JSON.stringify(kr10, null, 1).slice(0, 1400));
+/** 검증: 배포된 /api/rates 의 국고채(토스) 상태 */
+const url = "https://stock-dashboard-jaeyeon.vercel.app/api/rates";
+const res = await fetch(url, { signal: AbortSignal.timeout(30000) });
+console.log(`HTTP ${res.status}`);
+const b = await res.json();
+console.log("\n=== 소스 상태 ===");
+for (const s of b.statuses ?? []) console.log(`${s.ok ? "OK  " : "FAIL"} ${s.id.padEnd(6)} ${s.name} · ${s.count}`);
+console.log("\n=== 국고채 곡선 ===");
+for (const p of b.krCurve ?? []) console.log(`${p.label.padEnd(12)} ${p.yield}%  (${p.changePp > 0 ? "+" : ""}${p.changePp}%p)`);
+const l = (b.krCurve ?? []).find((p) => p.maturity === 10);
+const s2 = (b.krCurve ?? []).find((p) => p.maturity === 2);
+if (l && s2) console.log(`\n한국 장단기차 10년−2년: ${(l.yield - s2.yield).toFixed(2)}%p`);
+console.log("\n판정:", b.verdict?.side, b.verdict?.score, "·", b.verdict?.headline);
