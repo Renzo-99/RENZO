@@ -4,6 +4,9 @@ on:
   push:
     branches: [claude/nars-pipeline]
 
+permissions:
+  contents: write
+
 jobs:
   recon:
     # 커밋 메시지에 [us-recon]이 있을 때만 실행
@@ -16,3 +19,14 @@ jobs:
           node-version: 20
       - name: 정찰 실행
         run: node .github/scripts/recon-us-docs.mjs
+      - name: 결과 파일 되돌려주기 (audit-out/ 생겼을 때만)
+        if: always()
+        run: |
+          if [ -d audit-out ] && [ -n "$(ls -A audit-out 2>/dev/null)" ]; then
+            git config user.name "recon-bot"
+            git config user.email "recon@users.noreply.github.com"
+            git add -f audit-out
+            git commit -m "audit 결과 [skip ci]" || exit 0
+            git pull --rebase origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
