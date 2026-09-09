@@ -1,47 +1,41 @@
-/** 정찰: 토스증권 웹 공개 API에서 국고채(채권) 금리 경로 찾기 */
+/** 정찰: 토스 대시보드 지표 API 전체 응답에서 금리(국고채) 항목 찾기 */
 const UA = {
-  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
-  "accept": "application/json, text/plain, */*",
-  "referer": "https://tossinvest.com/",
-  "origin": "https://tossinvest.com",
+  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
+  accept: "application/json, text/plain, */*",
+  referer: "https://tossinvest.com/",
+  origin: "https://tossinvest.com",
 };
-async function probe(label, url, ms = 10000) {
+async function show(label, url) {
   try {
-    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(ms) });
-    const t = await res.text();
-    const head = t.slice(0, 300).replace(/\s+/g, " ");
-    console.log(`\n[${res.status}] ${label}\n  ${url}\n  ${head}`);
+    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(12000) });
+    const text = await res.text();
+    console.log(`\n===== ${label} [${res.status}] ${text.length}B =====`);
+    let body;
+    try { body = JSON.parse(text); } catch { console.log(text.slice(0, 300)); return; }
+    const items = body?.result?.indicators ?? body?.result?.majorIndicatorInfos ?? body?.result?.exchangeRates ?? [];
+    if (Array.isArray(items) && items.length) {
+      for (const it of items) {
+        const price = it.price ?? it;
+        console.log(`  code=${it.code} name=${it.displayName ?? it.name} nation=${it.nation ?? "-"} ` +
+          `latest=${price.latestPrice ?? price.close ?? price.base ?? "-"} type=${it.indicatorType ?? it.type ?? "-"}`);
+      }
+    } else {
+      console.log(JSON.stringify(body).slice(0, 900));
+    }
+    // 금리/채권 키워드 위치
+    const hit = text.match(/.{60}(국고채|금리|채권|bond|yield|treasury).{80}/gi);
+    if (hit) console.log("  ★키워드 주변:", hit.slice(0, 5).join("\n   "));
   } catch (e) {
-    console.log(`\n[ERR] ${label} — ${e.message}`);
+    console.log(`\n===== ${label} =====\n오류: ${e.message}`);
   }
 }
+const CERT = "https://wts-cert-api.tossinvest.com";
 const INFO = "https://wts-info-api.tossinvest.com";
-// 1) 기존에 쓰는 경로로 API 형태 확인
-await probe("TICS 랭킹(기존)", `${INFO}/api/v1/tics/rankings?tag=kr_normal&depths=0&depths=1`);
-// 2) 채권/금리 후보 경로
-for (const path of [
-  "/api/v1/bonds",
-  "/api/v2/bonds",
-  "/api/v1/bond/products",
-  "/api/v1/market-indicators",
-  "/api/v1/market-indicators/kr",
-  "/api/v2/market-indicators",
-  "/api/v1/indices",
-  "/api/v2/indices",
-  "/api/v1/interest-rates",
-  "/api/v1/rates",
-]) {
-  await probe(`후보 ${path}`, `${INFO}${path}`);
-}
-// 3) 토스 웹 채권 페이지 — 내부 API 힌트 찾기
-try {
-  const res = await fetch("https://tossinvest.com/bond", { headers: UA, signal: AbortSignal.timeout(12000) });
-  const html = await res.text();
-  console.log(`\n[${res.status}] tossinvest.com/bond · ${html.length}B`);
-  const apis = [...new Set((html.match(/https?:\/\/[a-z0-9.-]*tossinvest\.com[^"'\\ )]{0,60}/gi) || []))].slice(0, 25);
-  console.log("  발견된 도메인/경로:", apis.join("\n   "));
-  const kw = ["국고채", "채권", "bond", "yield"].map((k) => `${k}:${html.includes(k)}`).join(" ");
-  console.log("  키워드:", kw);
-} catch (e) {
-  console.log("[ERR] tossinvest.com/bond —", e.message);
+await show("v4 대시보드 지표(전체)", `${CERT}/api/v4/dashboard/wts/overview/indicator`);
+await show("v1 지수 kr", `${CERT}/api/v1/dashboard/wts/overview/indicator/index?market=kr`);
+await show("v1 지수 us", `${CERT}/api/v1/dashboard/wts/overview/indicator/index?market=us`);
+await show("환율/달러인덱스", `${INFO}/api/v1/dashboard/wts/overview/exchange-rates`);
+// 금리 전용 후보
+for (const p of ["/api/v1/dashboard/wts/overview/indicator/interest-rate", "/api/v4/dashboard/wts/overview/indicator?type=RATE", "/api/v1/dashboard/wts/overview/indicator/bond"]) {
+  await show(`후보 ${p}`, `${CERT}${p}`);
 }
