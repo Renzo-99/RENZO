@@ -1,141 +1,60 @@
-/**
- * 한국 상장 전 종목 전수 조사.
- * 코드 열거: TradingView 스캐너(키 불필요)
- * 권위 값:   토스 web /api/v2/stock-infos (키·IP 제한 없음) — 한글명·시장·상장주식수
- * 결과: audit-out/kr-master.json (교정된 마스터), audit-out/summary.txt
- */
+/** 전수 조사 검증: (1) 토스 상장주식수를 네이버 시총으로 교차검증 (2) 누락 코드 개별 재조회 */
 import { mkdirSync, writeFileSync } from "node:fs";
-
 const UA = {
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
   accept: "application/json, text/plain, */*",
-  referer: "https://tossinvest.com/",
-  origin: "https://tossinvest.com",
+  referer: "https://tossinvest.com/", origin: "https://tossinvest.com",
 };
+const num = (s) => Number(String(s ?? "").replace(/[^0-9.]/g, "")) || 0;
 
-// 1) 전 종목 코드 — TradingView 스캐너
-const scanRes = await fetch("https://scanner.tradingview.com/korea/scan", {
-  method: "POST",
-  headers: { "Content-Type": "application/json", "user-agent": UA["user-agent"] },
-  body: JSON.stringify({
-    filter: [{ left: "type", operation: "equal", right: "stock" }],
-    columns: ["name", "exchange", "market_cap_basic", "close", "total_shares_outstanding"],
-    range: [0, 5000],
-  }),
-  signal: AbortSignal.timeout(30000),
-});
-console.log(`TV 스캐너 HTTP ${scanRes.status}`);
-const scan = await scanRes.json();
-const tv = new Map();
-for (const r of scan.data ?? []) {
-  const code = String(r.d[0]);
-  if (!/^\d{6}$/.test(code)) continue;
-  tv.set(code, {
-    code,
-    tvMarket: r.d[1] === "KOSDAQ" ? "KOSDAQ" : "KOSPI",
-    tvCap: r.d[2] ?? null,
-    tvClose: r.d[3] ?? null,
-    tvShares: r.d[4] ?? null,
-  });
-}
-console.log(`TV 전 종목: ${tv.size}`);
-
-// 2) 토스 web 종목정보 — 100개씩 배치
-const codes = [...tv.keys()];
-const toss = new Map();
-let failed = 0;
-for (let i = 0; i < codes.length; i += 100) {
-  const batch = codes.slice(i, i + 100);
-  const url = `https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=${batch.map((c) => "A" + c).join(",")}`;
+// ── (1) 검증 대상: 시드 12 + 섹터 대표주
+const CHECK = "005930,000660,277810,454910,012450,047810,086520,373220,267260,034020,010140,042660,005380,035420,035720,051910,006400,105560,055550,000270,207940,068270,012330,009150,011070,010130,015760,096770,003670,247540".split(",");
+console.log("=== 토스 상장주식수 × 네이버 종가  vs  네이버 시가총액 ===");
+const infoRes = await fetch(`https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=${CHECK.map(c=>"A"+c).join(",")}`, { headers: UA, signal: AbortSignal.timeout(20000) });
+const info = new Map(((await infoRes.json()).result ?? []).map((r) => [String(r.symbol), r]));
+let okCount = 0, offCount = 0;
+for (const code of CHECK) {
+  const t = info.get(code);
+  if (!t) { console.log(`${code} 토스 없음`); continue; }
   try {
-    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(20000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    for (const r of (await res.json()).result ?? []) {
-      if (!r?.symbol) continue;
-      toss.set(String(r.symbol), r);
+    const n = await (await fetch(`https://m.stock.naver.com/api/stock/${code}/integration`, { headers: UA, signal: AbortSignal.timeout(12000) })).json();
+    const capRow = (n.totalInfos ?? []).find((x) => x.code === "marketValue" || x.key === "시가총액");
+    const close = num((n.totalInfos ?? []).find((x) => x.code === "closePrice" || x.key === "종가")?.value) || num(n.closePrice);
+    if (!capRow) { console.log(`${code} ${t.name} 네이버 시총 필드 없음 (키: ${(n.totalInfos??[]).map(x=>x.code).join("|")})`); continue; }
+    const naverCapText = String(capRow.value);
+    // "1,609조 1,234억" 같은 한글 단위 → 원
+    let cap = 0;
+    const jo = naverCapText.match(/([\d,\.]+)\s*조/); const eok = naverCapText.match(/([\d,\.]+)\s*억/);
+    if (jo || eok) cap = (jo ? num(jo[1]) * 1e12 : 0) + (eok ? num(eok[1]) * 1e8 : 0);
+    else cap = num(naverCapText) * 1e8; // 억원 단위 숫자만 오는 경우
+    const mine = Number(t.sharesOutstanding) * close;
+    const diff = cap > 0 ? Math.abs(mine - cap) / cap : null;
+    const verdict = diff === null ? "?" : diff < 0.01 ? "일치" : `괴리 ${(diff*100).toFixed(1)}%`;
+    if (diff !== null && diff < 0.01) okCount++; else offCount++;
+    console.log(`${code} ${String(t.name).padEnd(14)} 주식수 ${String(t.sharesOutstanding).padStart(13)} × 종가 ${String(close).padStart(9)} = ${(mine/1e12).toFixed(2)}조  네이버 "${naverCapText}" → ${(cap/1e12).toFixed(2)}조  ${verdict}`);
+  } catch (e) { console.log(`${code} 네이버 실패 ${String(e).slice(0,60)}`); }
+  await new Promise(r => setTimeout(r, 150));
+}
+console.log(`\n1% 이내 일치 ${okCount} / 불일치 ${offCount}`);
+
+// ── (2) 마스터에서 빠진 코드 개별 재조회
+const GONE = "001000,002785,002787,002880,006490,011000,012510,018470,019680,019685,031440,038530,057050,073190,082640,083640,087260,094800,099220,196450,203400,203690,214680,222160,285800,297570,299900,304840,332290,365590,467930,468760,469880,471050,498390,900110,900120".split(",").filter(Boolean);
+console.log(`\n=== 마스터에서 빠진 ${GONE.length}개 코드 개별 재조회 ===`);
+const revived = [];
+for (const code of GONE) {
+  try {
+    const r = await fetch(`https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=A${code}`, { headers: UA, signal: AbortSignal.timeout(10000) });
+    const j = await r.json();
+    const t = (j.result ?? [])[0];
+    if (t?.symbol) {
+      revived.push({ code, name: t.name, market: { KSP: "KOSPI", KSQ: "KOSDAQ", KNX: "KONEX" }[t.market?.code] ?? "KOSPI", shares: t.sharesOutstanding ?? null, delistDate: t.delistDate ?? null, suspended: t.tradingSuspended === true });
+      console.log(`  살아있음 ${code} ${t.name} ${t.market?.displayName} 주식수=${t.sharesOutstanding} 상폐일=${t.delistDate ?? "-"}`);
+    } else {
+      console.log(`  응답없음 ${code} (HTTP ${r.status})`);
     }
-  } catch (e) {
-    failed++;
-    console.log(`  배치 ${i / 100} 실패: ${String(e).slice(0, 80)}`);
-  }
-  if (i % 500 === 0) console.log(`  ...${i + batch.length}/${codes.length}`);
-  await new Promise((r) => setTimeout(r, 120));
+  } catch (e) { console.log(`  실패 ${code} ${String(e).slice(0,50)}`); }
+  await new Promise(r => setTimeout(r, 100));
 }
-console.log(`토스 응답: ${toss.size}개 (실패 배치 ${failed})`);
-
-// 3) 마스터 구성
-const MARKET = { KSP: "KOSPI", KSQ: "KOSDAQ", KNX: "KONEX" };
-const master = [];
-const noToss = [];
-for (const code of codes) {
-  const t = toss.get(code);
-  const v = tv.get(code);
-  if (!t) {
-    noToss.push(code);
-    continue;
-  }
-  master.push({
-    code,
-    name: String(t.name ?? "").trim(),
-    market: MARKET[t.market?.code] ?? v.tvMarket,
-    shares: Number.isFinite(Number(t.sharesOutstanding)) ? Number(t.sharesOutstanding) : null,
-    common: t.commonShare === true,
-    group: t.group?.displayName ?? null,
-    suspended: t.tradingSuspended === true,
-    delistDate: t.delistDate ?? null,
-    tvShares: v.tvShares,
-    tvCap: v.tvCap,
-    tvClose: v.tvClose,
-  });
-}
-master.sort((a, b) => a.code.localeCompare(b.code));
-
 mkdirSync("audit-out", { recursive: true });
-writeFileSync("audit-out/kr-master.json", JSON.stringify(master));
-
-// 4) 요약 + 교차검증(토스 상장주식수 × TV 종가 vs TV 시총)
-let capChecked = 0;
-let capOff = 0;
-const worst = [];
-for (const m of master) {
-  if (!m.shares || !m.tvClose || !m.tvCap) continue;
-  capChecked++;
-  const mine = m.shares * m.tvClose;
-  const diff = Math.abs(mine - m.tvCap) / m.tvCap;
-  if (diff > 0.02) {
-    capOff++;
-    worst.push({ ...m, diff });
-  }
-}
-worst.sort((a, b) => b.diff - a.diff);
-
-const lines = [
-  `전 종목 코드(TV): ${tv.size}`,
-  `토스 응답: ${toss.size}  / 응답 없음: ${noToss.length}`,
-  `마스터 산출: ${master.length}`,
-  `상장주식수 있음: ${master.filter((m) => m.shares).length}`,
-  `보통주: ${master.filter((m) => m.common).length}  / 우선주·기타: ${master.filter((m) => !m.common).length}`,
-  `거래정지: ${master.filter((m) => m.suspended).length}`,
-  ``,
-  `시총 교차검증(토스주식수 × TV종가 vs TV시총): 대상 ${capChecked}, 2% 초과 괴리 ${capOff}`,
-  ...worst.slice(0, 15).map((m) => `  ${m.code} ${m.name} 괴리 ${(m.diff * 100).toFixed(1)}% (토스주식수 ${m.shares} / TV주식수 ${m.tvShares})`),
-  ``,
-  `토스 응답 없는 코드 ${noToss.length}개: ${noToss.slice(0, 40).join(",")}`,
-];
-writeFileSync("audit-out/summary.txt", lines.join("\n"));
-console.log("\n" + lines.join("\n"));
-
-// 5) 시드 12종목 즉시 대조
-const SEED = {
-  "005930": 5969782550, "000660": 728002365, "277810": 19388433, "454910": 64819980,
-  "012450": 50630000, "047810": 97480817, "086520": 133129150, "373220": 234000000,
-  "267260": 36042805, "034020": 640561146, "010140": 882885800, "042660": 306980829,
-};
-console.log("\n=== 시드 stocks.json 상장주식수 대조 ===");
-for (const [code, seed] of Object.entries(SEED)) {
-  const m = master.find((x) => x.code === code);
-  if (!m) { console.log(`${code} 토스 응답 없음`); continue; }
-  const d = m.shares === null ? null : m.shares - seed;
-  const mark = d === null ? "?" : d === 0 ? "일치" : `틀림 ${d > 0 ? "+" : ""}${d} (${((d / seed) * 100).toFixed(2)}%)`;
-  console.log(`${code} ${m.name.padEnd(12)} 시드 ${String(seed).padStart(12)} → 실제 ${String(m.shares).padStart(12)}  ${mark}`);
-}
+writeFileSync("audit-out/revived.json", JSON.stringify(revived));
+console.log(`\n되살린 코드 ${revived.length}/${GONE.length}`);
