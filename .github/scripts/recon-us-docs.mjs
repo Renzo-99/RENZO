@@ -1,46 +1,28 @@
-/** 전수 감사 1단계: 한국 상장주식수·시가총액 권위 소스 탐색 + 시드 대조 */
-
-const SEED = [
-  { code: "005930", name: "삼성전자", shares: 5969782550 },
-  { code: "000660", name: "SK하이닉스", shares: 728002365 },
-  { code: "277810", name: "레인보우로보틱스", shares: 19388433 },
-  { code: "454910", name: "두산로보틱스", shares: 64819980 },
-  { code: "012450", name: "한화에어로스페이스", shares: 50630000 },
-  { code: "047810", name: "한국항공우주", shares: 97480817 },
-  { code: "086520", name: "에코프로", shares: 133129150 },
-  { code: "373220", name: "LG에너지솔루션", shares: 234000000 },
-  { code: "267260", name: "HD현대일렉트릭", shares: 36042805 },
-  { code: "034020", name: "두산에너빌리티", shares: 640561146 },
-  { code: "010140", name: "삼성중공업", shares: 882885800 },
-  { code: "042660", name: "한화오션", shares: 306980829 },
-];
-
+/** 전수 감사 2단계: 네이버·토스 응답의 상장주식수/시가총액 필드 확정 */
 const UA = {
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
   accept: "application/json, text/plain, */*",
 };
 
-async function tryFetch(label, url, headers = UA) {
-  try {
-    const res = await fetch(url, { headers, signal: AbortSignal.timeout(12000) });
-    const text = await res.text();
-    return { label, ok: res.ok, status: res.status, len: text.length, text };
-  } catch (e) {
-    return { label, ok: false, status: 0, len: 0, text: "", err: String(e).slice(0, 120) };
-  }
-}
+for (const code of ["005930", "277810"]) {
+  console.log(`\n${"=".repeat(60)}\n### ${code}\n${"=".repeat(60)}`);
 
-console.log("=== 후보 소스 탐색 (삼성전자 005930) ===");
-const candidates = [
-  ["네이버 integration", "https://m.stock.naver.com/api/stock/005930/integration"],
-  ["네이버 basic", "https://m.stock.naver.com/api/stock/005930/basic"],
-  ["토스 web v3 종목", "https://wts-info-api.tossinvest.com/api/v3/stock-infos/A005930"],
-  ["토스 web v2 종목", "https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=A005930"],
-  ["토스 web 요약", "https://wts-info-api.tossinvest.com/api/v2/stock-infos/A005930/summary"],
-  ["KRX 개별시세", "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"],
-];
-for (const [label, url] of candidates) {
-  const r = await tryFetch(label, url);
-  console.log(`${r.ok ? "OK  " : "FAIL"} ${label.padEnd(18)} HTTP ${r.status} ${r.len}B ${r.err ?? ""}`);
-  if (r.ok && r.len > 0) console.log(`     ${r.text.slice(0, 300).replace(/\s+/g, " ")}`);
+  const nRes = await fetch(`https://m.stock.naver.com/api/stock/${code}/integration`, { headers: UA, signal: AbortSignal.timeout(12000) });
+  const n = await nRes.json();
+  console.log(`\n[네이버 integration] 최상위 키:`, Object.keys(n).join(", "));
+  console.log("stockName:", n.stockName, "/ 시장:", n.stockExchangeType?.name ?? n.sosok);
+  console.log("totalInfos:");
+  for (const t of n.totalInfos ?? []) console.log(`   ${(t.code ?? "").padEnd(22)} ${(t.key ?? "").padEnd(12)} ${t.value}`);
+  if (n.dealTrendInfos?.[0]) console.log("dealTrend 키:", Object.keys(n.dealTrendInfos[0]).join(", "));
+
+  const nb = await (await fetch(`https://m.stock.naver.com/api/stock/${code}/basic`, { headers: UA, signal: AbortSignal.timeout(12000) })).json();
+  console.log(`\n[네이버 basic] 키:`, Object.keys(nb).join(", "));
+  for (const k of ["marketValue", "marketValueHangul", "listedStockCnt", "listedStockCount", "stockTotalCount", "sharesOutstanding", "closePrice", "industryCodeType", "stockExchangeType"]) {
+    if (k in nb) console.log(`   ${k} =`, typeof nb[k] === "object" ? JSON.stringify(nb[k]) : nb[k]);
+  }
+
+  const tRes = await fetch(`https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=A${code}`, { headers: { ...UA, referer: "https://tossinvest.com/", origin: "https://tossinvest.com" }, signal: AbortSignal.timeout(12000) });
+  const t = (await tRes.json()).result?.[0];
+  console.log(`\n[토스 v2 stock-infos] 키:`, Object.keys(t ?? {}).join(", "));
+  console.log(JSON.stringify(t, null, 1).slice(0, 1200));
 }
