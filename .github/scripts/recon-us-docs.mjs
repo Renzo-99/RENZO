@@ -1,20 +1,30 @@
-/** 정찰: 주식 기대수익률(어닝일드) 소스 — S&P500 PER 확보 경로 */
+/** 정찰: multpl 어닝일드/PER 값 추출 형태 + 재무부 실질수익률(TIPS) 곡선 */
 const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" };
-async function probe(label, url, ms = 12000) {
-  const t0 = Date.now();
+async function get(url, ms = 12000) {
+  const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(ms) });
+  return { status: res.status, text: await res.text() };
+}
+for (const [label, url] of [
+  ["multpl 어닝일드", "https://www.multpl.com/s-p-500-earnings-yield"],
+  ["multpl PER", "https://www.multpl.com/s-p-500-pe-ratio"],
+]) {
   try {
-    const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(ms) });
-    const text = await res.text();
-    console.log(`\n===== ${label} (${Date.now() - t0}ms) =====\nHTTP ${res.status} · ${text.length}B`);
-    console.log(text.slice(0, 600).replace(/\n{2,}/g, "\n"));
+    const { status, text } = await get(url);
+    const idx = text.indexOf("Current");
+    console.log(`\n===== ${label} HTTP ${status} =====`);
+    console.log("Current 주변:", text.slice(Math.max(0, idx - 120), idx + 420).replace(/\s+/g, " "));
+    const m = text.match(/id="current"[\s\S]{0,300}?</);
+    console.log("id=current 블록:", m ? m[0].replace(/\s+/g, " ").slice(0, 300) : "없음");
   } catch (e) {
     console.log(`\n===== ${label} =====\n오류: ${e.message}`);
   }
 }
-await probe("야후 quoteSummary SPY", "https://query1.finance.yahoo.com/v10/finance/quoteSummary/SPY?modules=summaryDetail,defaultKeyStatistics");
-await probe("야후 quoteSummary IVV", "https://query1.finance.yahoo.com/v10/finance/quoteSummary/IVV?modules=summaryDetail");
-await probe("야후 quote SPY", "https://query1.finance.yahoo.com/v7/finance/quote?symbols=SPY,TLT,IEF");
-await probe("multpl S&P PE", "https://www.multpl.com/s-p-500-pe-ratio");
-await probe("multpl 어닝일드", "https://www.multpl.com/s-p-500-earnings-yield");
-await probe("야후 chart SPY meta", "https://query1.finance.yahoo.com/v8/finance/chart/SPY?range=1d&interval=1d");
-await probe("TLT 듀레이션(iShares)", "https://www.ishares.com/us/products/239454/ishares-20-year-treasury-bond-etf/1467271812596.ajax?fileType=json");
+// 재무부 실질수익률(TIPS) 곡선 — 기대인플레(브레이크이븐) 계산용
+const yr = new Date().getUTCFullYear();
+try {
+  const { status, text } = await get(`https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/${yr}/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=${yr}&page&_format=csv`);
+  console.log(`\n===== 재무부 실질수익률 CSV HTTP ${status} =====`);
+  console.log(text.split("\n").slice(0, 3).join("\n"));
+} catch (e) {
+  console.log("\n===== 재무부 실질수익률 =====\n오류:", e.message);
+}
