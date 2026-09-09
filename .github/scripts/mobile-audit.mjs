@@ -1,44 +1,32 @@
-/** 정찰: 토스증권 웹이 실제로 호출하는 API를 브라우저로 캡처해 국고채/금리 경로를 찾는다 */
+/** 렌더된 화면에서 금액 표기를 읽는다 — 클라이언트 렌더 화면은 HTML만 봐선 알 수 없다 */
 import { chromium } from "playwright";
+const APP = "https://stock-dashboard-jaeyeon.vercel.app";
 
 const browser = await chromium.launch();
-const ctx = await browser.newContext({
-  viewport: { width: 1280, height: 900 },
-  locale: "ko-KR",
-  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
-});
+const ctx = await browser.newContext({ locale: "ko-KR", viewport: { width: 412, height: 915 } });
+const page = await ctx.newPage();
 
-const seen = new Map(); // url -> {status, snippet}
-ctx.on("response", async (res) => {
-  const url = res.url();
-  if (!/tossinvest\.com/.test(url)) return;
-  if (!/\/api\//.test(url)) return;
-  if (seen.has(url)) return;
-  let snippet = "";
-  try {
-    const ct = res.headers()["content-type"] ?? "";
-    if (ct.includes("json")) snippet = (await res.text()).slice(0, 260).replace(/\s+/g, " ");
-  } catch { /* 본문 못 읽는 응답은 URL만 */ }
-  seen.set(url, { status: res.status(), snippet });
-});
-
-for (const path of ["/", "/bond", "/bonds", "/market", "/invest/bond"]) {
-  try {
-    const page = await ctx.newPage();
-    await page.goto("https://tossinvest.com" + path, { waitUntil: "domcontentloaded", timeout: 45000 });
-    await page.waitForTimeout(6000);
-    const bodyText = (await page.evaluate(() => document.body.innerText)).slice(0, 400).replace(/\s+/g, " ");
-    console.log(`\n### ${path} — 화면 텍스트: ${bodyText}`);
-    await page.close();
-  } catch (e) {
-    console.log(`\n### ${path} — 이동 실패: ${e.message}`);
-  }
+async function textOf(path, waitFor) {
+  await page.goto(`${APP}${path}?cb=${Date.now()}`, { waitUntil: "networkidle", timeout: 60000 });
+  if (waitFor) await page.waitForSelector(waitFor, { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(2500);
+  return await page.evaluate(() => document.body.innerText);
 }
 
-console.log(`\n===== 캡처된 API ${seen.size}개 =====`);
-for (const [url, v] of seen) {
-  const hit = /국고|채권|bond|yield|rate/i.test(v.snippet) ? "  ★금리/채권 후보" : "";
-  console.log(`[${v.status}] ${url}${hit}`);
-  if (v.snippet) console.log(`      ${v.snippet.slice(0, 200)}`);
+// 1) 미국 섹터 보드 — 합산 시총 표기
+const sectors = await textOf("/sectors/us");
+const capLines = sectors.split("\n").filter((l) => l.includes("합산 시총")).slice(0, 6);
+console.log("=== /sectors/us 합산 시총 ===");
+capLines.forEach((l) => console.log("  " + l.trim()));
+const english = sectors.match(/\$[\d.,]+\s*[TBM]\b/g);
+console.log("영어 단위 잔존:", english ? english.slice(0, 5).join(", ") : "없음");
+
+// 2) 종목 상세 — 원화·달러 병기
+for (const t of ["AAPL", "NVDA"]) {
+  const txt = await textOf(`/stock/${t}`, '[data-testid="stock-metrics"]');
+  const i = txt.indexOf("현재가");
+  console.log(`\n=== /stock/${t} 지표 블록 ===`);
+  console.log(txt.slice(i, i + 220).split("\n").map((l) => "  " + l).join("\n"));
 }
+
 await browser.close();

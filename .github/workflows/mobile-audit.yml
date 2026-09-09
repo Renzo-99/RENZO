@@ -17,5 +17,4 @@ jobs:
         run: npm i playwright@1.49.0 && npx playwright install --with-deps chromium
       - name: 진단 실행
         env:
-          PATHS: "/"
         run: node .github/scripts/mobile-audit.mjs
