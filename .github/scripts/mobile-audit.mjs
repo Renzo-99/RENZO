@@ -20,6 +20,9 @@ for (const [w, h, name, touch] of [[1280, 900, "desktop", false], [390, 844, "ph
   await page.waitForSelector('[data-testid="kospi-hero"] ol li, [data-testid="kospi-hero"] p', { timeout: 60_000 }).catch(() => null);
   await sleep(1500);
   const bubble = page.locator("svg g.cursor-pointer").filter({ hasText: "반도체" }).first();
+  // 실제 사용자처럼 먼저 지도를 화면에 올려놓고(스크롤이 끝난 뒤) 탭한다 — 스크롤 직후 탭은 touchcancel이 난다
+  await bubble.scrollIntoViewIfNeeded();
+  await sleep(1000);
   const b1 = await bubble.boundingBox();
   if (touch) await bubble.tap(); else await bubble.hover();
   await sleep(600);
