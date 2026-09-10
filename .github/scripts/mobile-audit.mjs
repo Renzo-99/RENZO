@@ -5,7 +5,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ready = false;
 for (let i = 0; i < 40 && !ready; i++) {
   const b = await (await fetch(`${B}/api/market/hero`).catch(() => null))?.json().catch(() => null);
-  if (b?.global?.groups?.some((g) => g.title === "채권")) ready = true; else { process.stdout.write("."); await sleep(10_000); }
+  if (b?.global?.groups?.some((g) => g.title === "채권" && g.items.length === 5)) ready = true; else { process.stdout.write("."); await sleep(10_000); }
 }
 console.log("\n배포 준비:", ready);
 const h = await (await fetch(`${B}/api/market/hero`)).json();
