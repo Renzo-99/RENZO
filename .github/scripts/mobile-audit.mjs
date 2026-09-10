@@ -5,11 +5,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ready = false;
 for (let i = 0; i < 40 && !ready; i++) {
   const b = await (await fetch(`${B}/api/market/hero`).catch(() => null))?.json().catch(() => null);
-  if (b?.global?.groups) ready = true; else { process.stdout.write("."); await sleep(10_000); }
+  if (b?.global?.groups?.some((g) => g.title === "채권")) ready = true; else { process.stdout.write("."); await sleep(10_000); }
 }
 console.log("\n배포 준비:", ready);
 const h = await (await fetch(`${B}/api/market/hero`)).json();
-for (const g of h.global?.groups ?? []) console.log(`  ${g.title}:`, g.items.map((q) => `${q.label} ${q.price} ${q.changeRate}%`).join(" · "));
+for (const g of h.global?.groups ?? []) console.log(`  ${g.title}:`, g.items.map((q) => `${q.label} ${q.price}${q.unit ?? ""} ${q.changeAbs !== undefined ? q.changeAbs + "%p" : q.changeRate.toFixed(2) + "%"} 스파크 ${q.spark.length}`).join(" · "));
 console.log("글로벌 시각:", h.global?.at);
 
 const browser = await chromium.launch();
@@ -24,11 +24,11 @@ for (const [w, hh, name] of [[1280, 900, "desktop"], [390, 844, "phone"]]) {
     const firstChild = el?.querySelector("[class*=CardContent], div > div")?.textContent?.slice(0, 20);
     const tabTop = el?.querySelector('[role="tablist"]')?.getBoundingClientRect().top ?? 0;
     const cardTop = el?.getBoundingClientRect().top ?? 0;
-    const groups = Array.from(el?.querySelectorAll('[data-testid="hero-global-groups"] > div') ?? []).map((g) => `${g.querySelector("span")?.textContent}(${g.querySelectorAll("span.rounded-full").length})`);
+    const groups = Array.from(el?.querySelectorAll('[data-testid="hero-global-groups"] > div') ?? []).map((g) => `${g.querySelector("p")?.textContent?.slice(0, 4)}(타일 ${g.querySelectorAll(".rounded-lg").length}, 선 ${g.querySelectorAll("svg path").length})`);
     return { market: el?.getAttribute("data-market"), tabs, tabOffsetFromCardTop: Math.round(tabTop - cardTop), grid: el?.querySelectorAll('[data-testid="hero-global-grid"] > div').length, groups, overflow: document.documentElement.scrollWidth > window.innerWidth, firstChild };
   });
   console.log(`  [${name}] 기본 탭:`, JSON.stringify(st));
-  const sample = await page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="hero-global-groups"] span.rounded-full')).slice(0, 4).map((s) => s.textContent?.replace(/\s+/g, " ")));
+  const sample = await page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="hero-global-groups"] .rounded-lg')).filter((_, i) => i % 6 === 0).slice(0, 6).map((s) => s.textContent?.replace(/\s+/g, " ")));
   console.log(`  [${name}] 칩 예:`, JSON.stringify(sample));
   console.log(`  [${name}] pageerrors:`, JSON.stringify([...errs.entries()]));
   await page.close();
