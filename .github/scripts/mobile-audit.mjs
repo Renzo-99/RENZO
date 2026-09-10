@@ -1,13 +1,14 @@
 /** 검증 9: 히어로 카드·세부 테마·해시태그·검색 — 배포(새 라우트 /api/industry/subthemes) 대기 후 API + DOM */
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
+const DEPLOY_SHA_HINT = "sub:hbm 200"; // 이번 배포 판별: /api/industry/stocks?id=sub:hbm 이 200이면 새 코드
 const short = (t, n = 300) => String(t).replace(/\s+/g, " ").slice(0, n);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // 배포 대기 — 새 라우트가 404가 아닐 때까지 최대 7분
 let ready = false;
 for (let i = 0; i < 42 && !ready; i++) {
-  const r = await fetch(`${B}/api/industry/subthemes?industry=169`).catch(() => null);
+  const r = await fetch(`${B}/api/industry/stocks?id=sub:hbm`).catch(() => null);
   if (r?.status === 200) ready = true; else { process.stdout.write(`.${r?.status ?? "x"}`); await sleep(10_000); }
 }
 console.log("\n배포 준비:", ready);
@@ -30,7 +31,9 @@ console.log(`themes ${th.themes?.length} · subThemes ${th.subThemes?.length} ·
 for (const s of (th.subThemes ?? []).slice(0, 8)) console.log(`  ${s.title.padEnd(14)} 종목 ${s.count} 시총 ${(s.cap / 1e12).toFixed(1)}조 등락 ${s.change}% 1M ${s.perf1M}% 3M ${s.perf3M}% RS ${s.longRs}/${s.shortRs} ${s.quadrant} · ${s.summary?.slice(0, 20)}`);
 const zeroPerf = (th.subThemes ?? []).filter((s) => s.perf1M === 0 && s.perf3M === 0).map((s) => s.title);
 console.log("수익률 0인 세부 테마:", zeroPerf.length, zeroPerf.join(","));
-const hbm = await (await fetch(`${B}/api/industry/stocks?id=sub:hbm`)).json();
+const hbmRes = await fetch(`${B}/api/industry/stocks?id=sub:hbm`);
+console.log("stocks?id=sub:hbm →", hbmRes.status);
+const hbm = await hbmRes.json();
 console.log("sub:hbm:", hbm.node?.title, "editable", hbm.editable, "parent", hbm.node?.parentTitle, "종목", hbm.stocks?.length, "시총합", (hbm.totalCap / 1e12).toFixed(1) + "조");
 for (const s of (hbm.stocks ?? []).slice(0, 5)) console.log(`  ${s.name} ${s.price} ${s.change}% 시총 ${(s.cap / 1e12).toFixed(2)}조 거래대금 ${(s.tradeValue / 1e8).toFixed(0)}억`);
 
@@ -45,8 +48,8 @@ console.log("  lookup HBM → 종목", lk.candidates?.length, "테마", (lk.them
 console.log("\n=== (5) DOM ===");
 const browser = await chromium.launch();
 for (const [w, h, name] of [[390, 844, "phone"], [1280, 900, "desktop"]]) {
-  const page = await browser.newPage({ viewport: { width: w, height: h } });
-  page.on("pageerror", (e) => console.log(`  [${name}] pageerror:`, e.message));
+  const page = await browser.newPage({ viewport: { width: w, height: h }, locale: "ko-KR" });
+  const errs = new Map(); page.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
   await page.goto(`${B}/`, { waitUntil: "networkidle", timeout: 90_000 });
   await page.waitForSelector('[data-testid="kospi-hero"] svg path, [data-testid="kospi-hero"] p', { timeout: 60_000 }).catch(() => null);
   const heroInfo = await page.evaluate(() => {
@@ -81,11 +84,12 @@ for (const [w, h, name] of [[390, 844, "phone"], [1280, 900, "desktop"]]) {
 
   if (name === "desktop") {
     await page.goto(`${B}/`, { waitUntil: "domcontentloaded", timeout: 90_000 });
-    await page.getByLabel("검색").fill("HBM");
+    await page.getByPlaceholder("종목명·코드·테마 (삼성전자, 005930, 로봇)").fill("HBM");
     await sleep(1500);
     const dd = await page.evaluate(() => Array.from(document.querySelectorAll("form ul li button")).map((b) => b.textContent?.replace(/\s+/g, " ").trim()));
     console.log("  [desktop] 검색 HBM 드롭다운:", JSON.stringify(dd));
   }
+  console.log(`  [${name}] pageerrors:`, JSON.stringify([...errs.entries()]));
   await page.close();
 }
 await browser.close();
