@@ -1,36 +1,29 @@
-/** 검증 14: 글로벌 탭 맨 앞·기본, 아시아/유럽/원자재/환율/코인 칩, 탭 줄이 카드 맨 위 */
+/** 검증 15: 산업 칩 띠 — 오른쪽→왼쪽 이동, 칩 클릭 후에도 계속, 동작 줄이기 설정에서도 이동 */
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-let ready = false;
-for (let i = 0; i < 40 && !ready; i++) {
-  const b = await (await fetch(`${B}/api/market/hero`).catch(() => null))?.json().catch(() => null);
-  if (b?.global?.groups?.some((g) => g.title === "채권" && g.items.length === 5)) ready = true; else { process.stdout.write("."); await sleep(10_000); }
-}
-console.log("\n배포 준비:", ready);
-const h = await (await fetch(`${B}/api/market/hero`)).json();
-for (const g of h.global?.groups ?? []) console.log(`  ${g.title}:`, g.items.map((q) => `${q.label} ${q.price}${q.unit ?? ""} ${q.changeAbs !== undefined ? q.changeAbs + "%p" : q.changeRate.toFixed(2) + "%"} 스파크 ${q.spark.length}`).join(" · "));
-console.log("글로벌 시각:", h.global?.at);
-
+for (let i = 0; i < 24; i++) { await sleep(10_000); process.stdout.write("."); }
 const browser = await chromium.launch();
-for (const [w, hh, name] of [[1280, 900, "desktop"], [390, 844, "phone"]]) {
-  const page = await browser.newPage({ viewport: { width: w, height: hh }, locale: "ko-KR" });
-  const errs = new Map(); page.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
+for (const [name, reduced] of [["desktop", "no-preference"], ["desktop-reduced-motion", "reduce"], ["phone", "no-preference"]]) {
+  const phone = name === "phone";
+  const ctx = await browser.newContext({ viewport: phone ? { width: 390, height: 844 } : { width: 1280, height: 900 }, locale: "ko-KR", reducedMotion: reduced, hasTouch: phone, isMobile: phone });
+  const page = await ctx.newPage();
   await page.goto(`${B}/`, { waitUntil: "networkidle", timeout: 90_000 });
-  await page.waitForSelector('[data-testid="kospi-hero"] [role="tab"]', { timeout: 60_000 });
-  const st = await page.evaluate(() => {
-    const el = document.querySelector('[data-testid="kospi-hero"]');
-    const tabs = Array.from(el?.querySelectorAll('[role="tab"]') ?? []).map((t) => `${t.textContent}${t.getAttribute("aria-selected") === "true" ? "*" : ""}`);
-    const firstChild = el?.querySelector("[class*=CardContent], div > div")?.textContent?.slice(0, 20);
-    const tabTop = el?.querySelector('[role="tablist"]')?.getBoundingClientRect().top ?? 0;
-    const cardTop = el?.getBoundingClientRect().top ?? 0;
-    const groups = Array.from(el?.querySelectorAll('[data-testid="hero-global-groups"] > div') ?? []).map((g) => `${g.querySelector("p")?.textContent?.slice(0, 4)}(타일 ${g.querySelectorAll(".rounded-lg").length}, 선 ${g.querySelectorAll("svg path").length})`);
-    return { market: el?.getAttribute("data-market"), tabs, tabOffsetFromCardTop: Math.round(tabTop - cardTop), grid: el?.querySelectorAll('[data-testid="hero-global-grid"] > div').length, groups, overflow: document.documentElement.scrollWidth > window.innerWidth, firstChild };
-  });
-  console.log(`  [${name}] 기본 탭:`, JSON.stringify(st));
-  const sample = await page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="hero-global-groups"] .rounded-lg')).filter((_, i) => i % 6 === 0).slice(0, 6).map((s) => s.textContent?.replace(/\s+/g, " ")));
-  console.log(`  [${name}] 칩 예:`, JSON.stringify(sample));
-  console.log(`  [${name}] pageerrors:`, JSON.stringify([...errs.entries()]));
-  await page.close();
+  await page.waitForSelector('[data-testid="chip-marquee"] .chip-marquee button', { timeout: 60_000 });
+  await page.mouse.move(5, 5);
+  const left = () => page.evaluate(() => Math.round(document.querySelector('[data-testid="chip-marquee"] .chip-marquee')?.getBoundingClientRect().left ?? 0));
+  const cs = await page.evaluate(() => { const m = document.querySelector('[data-testid="chip-marquee"] .chip-marquee'); const c = getComputedStyle(m); return { anim: c.animationName, dur: c.animationDuration, state: c.animationPlayState }; });
+  const a = await left(); await sleep(1500); const b = await left();
+  console.log(`  [${name}] 스타일:`, JSON.stringify(cs), `left ${a} → ${b} (왼쪽으로 흐르면 줄어든다: ${b < a ? "OK" : "안 움직임"})`);
+  // 칩을 누른 뒤에도 계속 흐르는지 — 첫 칩 클릭(테마 층위로) 후 마우스를 치우고 측정
+  const chip = page.locator('[data-testid="chip-marquee"] .chip-marquee button').first();
+  const chipName = await chip.textContent();
+  if (phone) await chip.tap(); else await chip.click();
+  await page.mouse.move(5, 5);
+  await sleep(3500); // 터치 정지 2.5초 포함
+  const c1 = await left(); await sleep(1500); const c2 = await left();
+  const focused = await page.evaluate(() => document.activeElement?.tagName + ":" + (document.activeElement?.textContent ?? "").slice(0, 10));
+  console.log(`  [${name}] '${chipName}' 클릭 후 left ${c1} → ${c2} (${c2 < c1 ? "계속 흐름 OK" : "멈춤"}) · 포커스 ${focused} · 상태 ${await page.evaluate(() => getComputedStyle(document.querySelector('[data-testid="chip-marquee"] .chip-marquee')).animationPlayState)}`);
+  await ctx.close();
 }
 await browser.close();
