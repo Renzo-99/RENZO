@@ -16,7 +16,11 @@ for (const [name, reduced] of [["desktop", "no-preference"], ["desktop-reduced-m
   const a = await left(); await sleep(1500); const b = await left();
   console.log(`  [${name}] 스타일:`, JSON.stringify(cs), `left ${a} → ${b} (왼쪽으로 흐르면 줄어든다: ${b < a ? "OK" : "안 움직임"})`);
   // 칩을 누른 뒤에도 계속 흐르는지 — 첫 칩 클릭(테마 층위로) 후 마우스를 치우고 측정
-  const chip = page.locator('[data-testid="chip-marquee"] .chip-marquee button').first();
+  // 띠가 흘러 첫 칩은 왼쪽 밖으로 잘려 있다 — 지금 화면 안에 보이는 칩을 고른다
+  const wrap = await page.locator('[data-testid="chip-marquee"]').boundingBox();
+  const all = page.locator('[data-testid="chip-marquee"] .chip-marquee button');
+  let chip = all.nth(3);
+  for (let i = 0; i < 40; i++) { const bb = await all.nth(i).boundingBox(); if (bb && wrap && bb.x > wrap.x + 20 && bb.x + bb.width < wrap.x + wrap.width - 40) { chip = all.nth(i); break; } }
   const chipName = await chip.textContent();
   // 흐르는 요소는 플레이라이트가 '불안정'하다고 기다린다 — 사람처럼 먼저 올려서(멈춤) 누른다
   const box = await chip.boundingBox();
