@@ -16,9 +16,15 @@ for (const [w, h, name, touch] of [[1280, 900, "desktop", false], [390, 844, "ph
   const errs = new Map(); page.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
   await page.goto(`${B}/sectors`, { waitUntil: "networkidle", timeout: 90_000 });
   await page.waitForSelector('svg[aria-label="상대강도 지도"] circle[fill="transparent"]', { timeout: 60_000 });
+  // 히어로 카드가 다 뜬 뒤(레이아웃이 더 안 밀릴 때) 탭한다 — 카드가 늦게 자라면 탭 좌표가 빗나간다
+  await page.waitForSelector('[data-testid="kospi-hero"] ol li, [data-testid="kospi-hero"] p', { timeout: 60_000 }).catch(() => null);
+  await sleep(1500);
   const bubble = page.locator("svg g.cursor-pointer").filter({ hasText: "반도체" }).first();
+  const b1 = await bubble.boundingBox();
   if (touch) await bubble.tap(); else await bubble.hover();
-  await sleep(500);
+  await sleep(600);
+  const b2 = await bubble.boundingBox();
+  console.log(`  [${name}] bbox 전/후:`, JSON.stringify(b1), JSON.stringify(b2));
   const st = await page.evaluate(() => {
     const card = document.querySelector('[data-testid="rrg-card"]');
     const svg = document.querySelector('svg[aria-label="상대강도 지도"]');
