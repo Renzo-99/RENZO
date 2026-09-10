@@ -2,11 +2,12 @@
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// 새 배포가 뜰 시간을 준다(푸시 후 약 3분) — 감지 영역 circle(fill=transparent)이 보이면 새 코드
 let ready = false;
-for (let i = 0; i < 42 && !ready; i++) {
-  const b = await (await fetch(`${B}/api/industry`).catch(() => null))?.json().catch(() => null);
-  const t = b?.industries?.[0]?.trail;
-  if (t && t[t.length - 1]?.label === "현재" && i >= 12) ready = true; // 새 배포가 뜰 시간(2분)을 준다 else { process.stdout.write("."); await sleep(10_000); }
+for (let i = 0; i < 30 && !ready; i++) {
+  await sleep(10_000);
+  const html = await (await fetch(`${B}/sectors`).catch(() => null))?.text().catch(() => "");
+  if (html && html.includes('fill="transparent"')) ready = true; else process.stdout.write(".");
 }
 console.log("\n배포 준비:", ready);
 const ind = await (await fetch(`${B}/api/industry`)).json();
@@ -18,7 +19,7 @@ for (const [w, h, name, touch] of [[1280, 900, "desktop", false], [390, 844, "ph
   const page = await ctx.newPage();
   const errs = new Map(); page.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
   await page.goto(`${B}/sectors`, { waitUntil: "networkidle", timeout: 90_000 });
-  await page.waitForSelector("svg circle", { timeout: 60_000 });
+  await page.waitForSelector('svg[aria-label="상대강도 지도"] circle[fill="transparent"]', { timeout: 60_000 });
   const bubble = page.locator("svg g.cursor-pointer").filter({ hasText: "반도체" }).first();
   if (touch) await bubble.tap(); else await bubble.hover();
   await sleep(500);
