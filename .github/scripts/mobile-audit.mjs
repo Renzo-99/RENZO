@@ -2,7 +2,7 @@
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-for (let i = 0; i < 24; i++) { await sleep(10_000); process.stdout.write("."); }
+// 배포는 이미 떠 있다(직전 실행에서 방향 확인) — 바로 진행
 const browser = await chromium.launch();
 for (const [name, reduced] of [["desktop", "no-preference"], ["desktop-reduced-motion", "reduce"], ["phone", "no-preference"]]) {
   const phone = name === "phone";
@@ -18,7 +18,11 @@ for (const [name, reduced] of [["desktop", "no-preference"], ["desktop-reduced-m
   // 칩을 누른 뒤에도 계속 흐르는지 — 첫 칩 클릭(테마 층위로) 후 마우스를 치우고 측정
   const chip = page.locator('[data-testid="chip-marquee"] .chip-marquee button').first();
   const chipName = await chip.textContent();
-  if (phone) await chip.tap(); else await chip.click();
+  // 흐르는 요소는 플레이라이트가 '불안정'하다고 기다린다 — 사람처럼 먼저 올려서(멈춤) 누른다
+  const box = await chip.boundingBox();
+  if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await sleep(300);
+  if (phone) await chip.tap({ force: true }); else await chip.click({ force: true });
   await page.mouse.move(5, 5);
   await sleep(3500); // 터치 정지 2.5초 포함
   const c1 = await left(); await sleep(1500); const c2 = await left();
