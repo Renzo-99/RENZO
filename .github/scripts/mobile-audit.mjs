@@ -1,3 +1,4 @@
+// 재검증 12: 탭 고정(mouseleave 무시) 배포 확인
 /** 검증 11: RRG 지도 — 올리면 주황 꼬리·시점 라벨·팝업 카드, 나머지 회색. 폰은 탭 */
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
