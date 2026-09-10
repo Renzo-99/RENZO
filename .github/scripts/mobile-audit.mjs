@@ -4,11 +4,7 @@ const B = "https://stock-dashboard-jaeyeon.vercel.app";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // 새 배포가 뜰 시간을 준다(푸시 후 약 3분) — 감지 영역 circle(fill=transparent)이 보이면 새 코드
 let ready = false;
-for (let i = 0; i < 30 && !ready; i++) {
-  await sleep(10_000);
-  const html = await (await fetch(`${B}/sectors`).catch(() => null))?.text().catch(() => "");
-  if (html && html.includes('fill="transparent"')) ready = true; else process.stdout.write(".");
-}
+for (let i = 0; i < 24 && !ready; i++) { await sleep(10_000); process.stdout.write("."); if (i >= 20) ready = true; } // 3.5분 대기
 console.log("\n배포 준비:", ready);
 const ind = await (await fetch(`${B}/api/industry`)).json();
 console.log("반도체 꼬리:", JSON.stringify(ind.industries.find((n) => n.title === "반도체")?.trail));
@@ -31,7 +27,8 @@ for (const [w, h, name, touch] of [[1280, 900, "desktop", false], [390, 844, "ph
     const dimmed = svg ? Array.from(svg.querySelectorAll("circle")).filter((c) => c.getAttribute("opacity") === "0.1").length : 0;
     return { card: card?.textContent?.replace(/\s+/g, " ").slice(0, 200), orange, labels, dimmed, url: location.pathname + location.search };
   });
-  console.log(`  [${name}] 반도체 ${touch ? "탭" : "호버"}:`, JSON.stringify(st));
+  const lvl0 = await page.evaluate(() => ({ subthemes: !!document.querySelector('[data-testid="subthemes"]'), card: !!document.querySelector('[data-testid="rrg-card"]') }));
+  console.log(`  [${name}] 반도체 ${touch ? "첫 탭" : "호버"}:`, JSON.stringify({ ...st, ...lvl0 }));
   await page.screenshot({ path: `rrg-${name}.png`, fullPage: false }).catch(() => null);
   if (touch) {
     await bubble.tap(); await sleep(2500);
