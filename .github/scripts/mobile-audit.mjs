@@ -1,64 +1,38 @@
-/** 정찰 6: 토스 '테마'(TICS와 별개) · 종목 랭킹(주인공) · 지수 분봉 · 야간선물 · 종목 일봉 */
-import { chromium } from "playwright";
+/** 정찰 7: 지수 대시보드 전체 항목(코스닥·야간선물?) · overview/ranking POST(급등?) · 종목 일봉 파라미터 */
 const H = {
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
   accept: "application/json, text/plain, */*", referer: "https://tossinvest.com/", origin: "https://tossinvest.com", "content-type": "application/json",
 };
-const short = (t, n = 380) => String(t).replace(/\s+/g, " ").slice(0, n);
-async function hit(label, url, method = "GET", body) {
-  try {
-    const r = await fetch(url, { method, headers: H, body, signal: AbortSignal.timeout(12000) });
-    const t = await r.text();
-    console.log(`${method} ${r.status} ${label}\n   ${short(t)}\n`);
-  } catch (e) { console.log(`${label} 실패 ${String(e).slice(0, 60)}\n`); }
+const short = (t, n = 300) => String(t).replace(/\s+/g, " ").slice(0, n);
+const C = "https://wts-cert-api.tossinvest.com", I = "https://wts-info-api.tossinvest.com";
+
+console.log("=== (1) 지수 indicator 전체 ===");
+const idx = await (await fetch(`${C}/api/v1/dashboard/wts/overview/indicator/index`, { headers: H })).json();
+for (const it of idx.result?.majorIndicatorInfos ?? []) {
+  const c = it.miniChart?.candles ?? [];
+  console.log(`  ${it.code.padEnd(12)} ${it.displayName.padEnd(14)} ${it.nation} 현재 ${it.price?.latestPrice} 기준 ${it.price?.basePrice} 캔들 ${c.length}개 ${c[0]?.startDate ?? ""}~${c[c.length - 1]?.endDate ?? ""} 거래 ${it.miniChart?.tradingStart}~${it.miniChart?.tradingEnd}`);
 }
-const I = "https://wts-info-api.tossinvest.com";
-console.log("=== (1) 토스 테마 후보 ===");
-for (const [l, u, m, b] of [
-  ["themes v1", `${I}/api/v1/themes`],
-  ["themes v2", `${I}/api/v2/themes`],
-  ["theme rankings", `${I}/api/v1/themes/rankings`],
-  ["theme all", `${I}/api/v1/themes/all`],
-  ["stock-themes 005930", `${I}/api/v1/stock-infos/A005930/themes`],
-  ["stock tics 005930", `${I}/api/v1/stock-infos/A005930/tics`],
-  ["product themes", `${I}/api/v2/products/A005930/themes`],
-  ["search theme HBM", `${I}/api/v2/search/wts-auto-complete?query=HBM`],
-  ["search v3 HBM", `${I}/api/v3/search-all/wts-auto-complete?query=HBM&sections=THEME`],
-]) await hit(l, u, m, b);
-
-console.log("=== (2) 종목 랭킹(주인공) 후보 ===");
-for (const [l, u] of [
-  ["rankings stock", `${I}/api/v1/rankings/stock?tag=kr_normal`],
-  ["ranking fluctuation", `${I}/api/v2/rankings?name=fluctuation&tag=kr`],
-  ["screener top", `${I}/api/v1/screener/rankings?tag=kr_fluctuation`],
-  ["realtime rankings", `${I}/api/v3/rankings/realtime?tag=kr_normal`],
-]) await hit(l, u);
-
-console.log("=== (3) 지수 분봉·야간선물 후보 ===");
-for (const [l, u] of [
-  ["kospi 1m chart", `${I}/api/v1/c-chart/kr-s/KOSPI/min:1?count=400`],
-  ["kospi day", `${I}/api/v1/c-chart/kr-s/KOSPI/day?count=5`],
-  ["index list", `${I}/api/v1/indices?tag=kr`],
-  ["dashboard index", `https://wts-cert-api.tossinvest.com/api/v1/dashboard/wts/overview/indicator/index`],
-  ["dashboard futures", `https://wts-cert-api.tossinvest.com/api/v1/dashboard/wts/overview/indicator/futures`],
-  ["samsung day chart", `${I}/api/v1/c-chart/kr-s/A005930/day?count=70`],
-  ["samsung 1m chart", `${I}/api/v1/c-chart/kr-s/A005930/min:5?count=100`],
-  ["stock-prices v3", `${I}/api/v3/stock-prices?meta=true&productCodes=A005930%2CA000660`],
-]) await hit(l, u);
-
-console.log("=== (4) 브라우저 XHR — 테마·지수 페이지 ===");
-const browser = await chromium.launch();
-const page = await (await browser.newContext({ locale: "ko-KR", viewport: { width: 1280, height: 900 } })).newPage();
-const seen = new Map();
-page.on("response", async (r) => {
-  const u = r.url();
-  if (!/tossinvest\.com\/api/.test(u) || seen.has(u)) return;
-  if (!/theme|index|chart|rank|indic|futur|kospi/i.test(u)) return;
-  let body = ""; try { body = short(await r.text(), 300); } catch {}
-  seen.set(u, { status: r.status(), method: r.request().method(), post: short(r.request().postData() ?? "", 100), body });
-});
-for (const url of ["https://www.tossinvest.com/themes", "https://www.tossinvest.com/theme", "https://www.tossinvest.com/", "https://www.tossinvest.com/stocks/KOSPI", "https://www.tossinvest.com/indices/KOSPI"]) {
-  try { await page.goto(url, { waitUntil: "networkidle", timeout: 30000 }); await page.waitForTimeout(2000); console.log(`  열림: ${url} → ${page.url()}`); } catch (e) { console.log(`  ${url} → ${String(e).slice(0, 40)}`); }
+console.log("첫 캔들 형태:", JSON.stringify((idx.result?.majorIndicatorInfos?.[0]?.miniChart?.candles ?? [])[0]));
+for (const kind of ["futures", "future", "night", "index-futures", "kr-futures"]) {
+  const r = await fetch(`${C}/api/v1/dashboard/wts/overview/indicator/${kind}`, { headers: H }); console.log(`  indicator/${kind} → ${r.status}`);
 }
-for (const [u, v] of seen) console.log(`${v.method} ${v.status} ${u.replace("https://", "")}${v.post ? `\n   POST ${v.post}` : ""}\n   ${v.body}\n`);
-await browser.close();
+const v4 = await fetch(`${C}/api/v4/dashboard/wts/overview/indicator`, { headers: H });
+console.log(`v4 indicator → ${v4.status} ${short(await v4.text(), 500)}`);
+
+console.log("\n=== (2) overview/ranking POST 변형 ===");
+for (const body of [{}, { rankingType: "FLUCTUATION" }, { type: "rise" }, { tag: "kr_normal" }, { name: "kr_fluctuation" }, { rankingId: "fluctuation" }]) {
+  const r = await fetch(`${C}/api/v2/dashboard/wts/overview/ranking`, { method: "POST", headers: H, body: JSON.stringify(body) });
+  console.log(`  ${JSON.stringify(body).padEnd(30)} → ${r.status} ${short(await r.text(), 260)}`);
+}
+console.log("\n=== (3) 실시간 랭킹 ===");
+const rk = await (await fetch(`${I}/api/v1/rankings/realtime/stock?size=10`, { headers: H })).json();
+console.log("dateTime:", rk.result?.dateTime, "· 항목:", (rk.result?.data ?? []).map((d) => `${d.name}(${d.symbol ?? d.code})`).join(", "));
+for (const u of [`${I}/api/v1/rankings/realtime/stock?size=10&tag=kr`, `${I}/api/v1/rankings/fluctuation/stock?size=10`, `${I}/api/v2/rankings/realtime/stock?size=10&nation=kr`]) {
+  const r = await fetch(u, { headers: H }); console.log(`  ${u.replace(I, "")} → ${r.status} ${short(await r.text(), 160)}`);
+}
+
+console.log("\n=== (4) 종목 일봉 파라미터 ===");
+for (const u of [`${I}/api/v1/c-chart/kr-s/A005930/day:1?count=70`, `${I}/api/v1/c-chart/kr-s/A005930/day?count=70&useAdjustedRate=true`, `${I}/api/v1/c-chart/kr-s/A005930/day:1`, `${I}/api/v1/c-chart/kr-s/A005930/week:1?count=20`, `${I}/api/v1/c-chart/kr-s/A005930/min:5?count=3`]) {
+  const r = await fetch(u, { headers: H }); const t = await r.text(); let n = "-"; try { n = JSON.parse(t).result?.candles?.length; } catch {}
+  console.log(`  ${u.replace(I, "")} → ${r.status} 캔들 ${n} ${r.status !== 200 ? short(t, 120) : short(t, 200)}`);
+}
