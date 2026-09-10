@@ -1,6 +1,19 @@
 {
- "updatedAt": "2026-09-10T01:20:16.792Z",
+ "updatedAt": "2026-09-10T01:41:27.221Z",
  "items": [
+  {
+   "id": "issue-point-49604",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "반복되는 낙동강 가뭄, 어떻게 대응할 것인가?: 기후위기 시대 유역 물관리 개선과제",
+   "date": "2026-09-10",
+   "meta": "이슈와논점 2524호 · 김경민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49604",
+   "tracks": [],
+   "keywords": [
+    "기후"
+   ]
+  },
   {
    "id": "issue-point-49600",
    "sourceId": "issue-point",
@@ -214,17 +227,6 @@
    "date": "2026-08-11",
    "meta": "NARS 입법·정책 184호 · 이윤경",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49521",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "publication-49511",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "K-스틸법, 어떻게 작동시킬 것인가? 실효성 확보를 위한 후속 과제",
-   "date": "2026-08-06",
-   "meta": "NARS 브리프 176호 · 최정윤",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49511",
    "tracks": [],
    "keywords": []
   },
@@ -496,17 +498,6 @@
    "date": "2026-06-18",
    "meta": "NARS 현안분석 420호 · 백지연,김혜미",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49345",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49332",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "섬 주민을 찾아가는 병원선(Hospital Ship), 법·제도 공백 언제까지 방치할 것인가",
-   "date": "2026-06-15",
-   "meta": "이슈와논점 2504호 · 한진옥",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49332",
    "tracks": [],
    "keywords": []
   },
@@ -1053,7 +1044,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 7
+   "count": 6
   }
  ]
 }
