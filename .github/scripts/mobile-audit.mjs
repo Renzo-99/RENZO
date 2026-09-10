@@ -1,18 +1,16 @@
-/** 검증 13: 히어로 탭(국내·미국·글로벌)·미국 장중선 ET 눈금·주인공 US·문구 탭별·산업 칩 마퀴 */
+/** 검증 14: 글로벌 탭 맨 앞·기본, 아시아/유럽/원자재/환율/코인 칩, 탭 줄이 카드 맨 위 */
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ready = false;
 for (let i = 0; i < 40 && !ready; i++) {
   const b = await (await fetch(`${B}/api/market/hero`).catch(() => null))?.json().catch(() => null);
-  if (b?.mottos?.us) ready = true; else { process.stdout.write("."); await sleep(10_000); }
+  if (b?.global?.groups) ready = true; else { process.stdout.write("."); await sleep(10_000); }
 }
 console.log("\n배포 준비:", ready);
 const h = await (await fetch(`${B}/api/market/hero`)).json();
-console.log("지수:", (h.indices ?? []).map((i) => `${i.name}(${i.nation}) ${i.price} ${i.changeRate}% 캔들 ${i.candles.length} ${i.tradingStart}~${i.tradingEnd}`).join("\n     "));
-console.log("문구:", JSON.stringify(h.mottos));
-console.log("주인공 KR:", (h.heroes?.kr ?? []).map((s) => `${s.name} ${s.change}%`).join(", "));
-console.log("주인공 US:", (h.heroes?.us ?? []).map((s) => `${s.name}(${s.code}) ${s.change}% · ${s.themeTitle}`).join(", "));
+for (const g of h.global?.groups ?? []) console.log(`  ${g.title}:`, g.items.map((q) => `${q.label} ${q.price} ${q.changeRate}%`).join(" · "));
+console.log("글로벌 시각:", h.global?.at);
 
 const browser = await chromium.launch();
 for (const [w, hh, name] of [[1280, 900, "desktop"], [390, 844, "phone"]]) {
@@ -20,28 +18,18 @@ for (const [w, hh, name] of [[1280, 900, "desktop"], [390, 844, "phone"]]) {
   const errs = new Map(); page.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
   await page.goto(`${B}/`, { waitUntil: "networkidle", timeout: 90_000 });
   await page.waitForSelector('[data-testid="kospi-hero"] [role="tab"]', { timeout: 60_000 });
-  for (const tab of ["미국", "글로벌", "국내"]) {
-    await page.getByRole("tab", { name: tab }).click();
-    await sleep(600);
-    const st = await page.evaluate(() => {
-      const el = document.querySelector('[data-testid="kospi-hero"]');
-      const txt = el?.textContent ?? "";
-      const svgTexts = Array.from(el?.querySelectorAll("svg text") ?? []).map((t) => t.textContent);
-      return { market: el?.getAttribute("data-market"), paths: el?.querySelectorAll("svg path").length, grid: el?.querySelectorAll('[data-testid="hero-global-grid"] > div').length ?? 0,
-        ticks: svgTexts.filter((t) => /장 개장|장 마감/.test(t ?? "")), head: txt.slice(0, 120).replace(/\s+/g, " "), 주인공: (txt.match(/오늘의 주인공[^오]*?오늘 많이/)?.[0] ?? "").slice(0, 160), overflow: document.documentElement.scrollWidth > window.innerWidth };
-    });
-    console.log(`  [${name}] ${tab}:`, JSON.stringify(st));
-  }
-  const mq = await page.evaluate(() => {
-    const m = document.querySelector('[data-testid="chip-marquee"] .chip-marquee');
-    if (!m) return null;
-    const cs = getComputedStyle(m);
-    const a = m.getBoundingClientRect().left;
-    return { anim: cs.animationName, dur: cs.animationDuration, state: cs.animationPlayState, chips: m.querySelectorAll("button").length, left0: Math.round(a) };
+  const st = await page.evaluate(() => {
+    const el = document.querySelector('[data-testid="kospi-hero"]');
+    const tabs = Array.from(el?.querySelectorAll('[role="tab"]') ?? []).map((t) => `${t.textContent}${t.getAttribute("aria-selected") === "true" ? "*" : ""}`);
+    const firstChild = el?.querySelector("[class*=CardContent], div > div")?.textContent?.slice(0, 20);
+    const tabTop = el?.querySelector('[role="tablist"]')?.getBoundingClientRect().top ?? 0;
+    const cardTop = el?.getBoundingClientRect().top ?? 0;
+    const groups = Array.from(el?.querySelectorAll('[data-testid="hero-global-groups"] > div') ?? []).map((g) => `${g.querySelector("span")?.textContent}(${g.querySelectorAll("span.rounded-full").length})`);
+    return { market: el?.getAttribute("data-market"), tabs, tabOffsetFromCardTop: Math.round(tabTop - cardTop), grid: el?.querySelectorAll('[data-testid="hero-global-grid"] > div').length, groups, overflow: document.documentElement.scrollWidth > window.innerWidth, firstChild };
   });
-  await sleep(1500);
-  const left1 = await page.evaluate(() => Math.round(document.querySelector('[data-testid="chip-marquee"] .chip-marquee')?.getBoundingClientRect().left ?? 0));
-  console.log(`  [${name}] 마퀴:`, JSON.stringify(mq), "1.5초 뒤 left:", left1, "(오른쪽으로 이동하면 커진다)");
+  console.log(`  [${name}] 기본 탭:`, JSON.stringify(st));
+  const sample = await page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="hero-global-groups"] span.rounded-full')).slice(0, 4).map((s) => s.textContent?.replace(/\s+/g, " ")));
+  console.log(`  [${name}] 칩 예:`, JSON.stringify(sample));
   console.log(`  [${name}] pageerrors:`, JSON.stringify([...errs.entries()]));
   await page.close();
 }
