@@ -1,48 +1,64 @@
-/** 검증: 지도가 화면에 들어오나·버블이 테두리 안에 있나·새 기능들이 렌더되나 */
+/** 정찰 6: 토스 '테마'(TICS와 별개) · 종목 랭킹(주인공) · 지수 분봉 · 야간선물 · 종목 일봉 */
 import { chromium } from "playwright";
-const APP = "https://stock-dashboard-jaeyeon.vercel.app";
-const browser = await chromium.launch();
-for (const [label, w, h] of [["데스크탑 1280×800", 1280, 800], ["폴드 펼침 900×1000", 900, 1000], ["모바일 412×915", 412, 915]]) {
-  const page = await (await browser.newContext({ locale: "ko-KR", viewport: { width: w, height: h } })).newPage();
-  const errs = [];
-  page.on("pageerror", (e) => errs.push(String(e).slice(0, 160)));
-  await page.goto(`${APP}/?cb=${Date.now()}`, { waitUntil: "domcontentloaded", timeout: 90000 });
-  await page.locator("#sectors").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(12000);
-  // 반도체로 드릴다운 (칩 클릭)
-  await page.locator("#sectors button", { hasText: "반도체" }).first().click().catch(() => null);
-  await page.waitForTimeout(8000);
-  const r = await page.evaluate(() => {
-    const sec = document.querySelector("#sectors");
-    const svg = sec?.querySelector("svg[aria-label='상대강도 지도']");
-    const sb = svg?.getBoundingClientRect();
-    const circles = [...(svg?.querySelectorAll("circle") ?? [])].filter((c) => Number(c.getAttribute("r")) >= 5);
-    let out = 0;
-    for (const c of circles) { const b = c.getBoundingClientRect(); if (b.left < sb.left || b.right > sb.right || b.top < sb.top || b.bottom > sb.bottom) out++; }
-    const txt = (sec?.textContent ?? "").replace(/\s+/g, " ");
-    return {
-      svgH: Math.round(sb?.height ?? 0), svgW: Math.round(sb?.width ?? 0), circles: circles.length, outside: out,
-      header: txt.slice(0, 160),
-      hasChain: /설계|파운드리|전공정/.test(txt) && /→/.test(txt),
-      hasEdit: txt.includes("✏️"), hasHelp: txt.includes("RS란?"), hasBig: txt.includes("크게 보기"),
-      sortHeads: [...(sec?.querySelectorAll("thead button") ?? [])].length,
-    };
-  });
-  console.log(`\n=== ${label} ===`);
-  console.log(`지도 ${r.svgW}×${r.svgH}px (뷰포트 높이 ${h}) → ${r.svgH <= h * 0.6 ? "한 화면 OK" : "너무 큼 ⚠"} · 버블 ${r.circles}개 중 테두리 밖 ${r.outside}개${r.outside ? " ⚠" : " ✓"}`);
-  console.log(`밸류체인 칩 ${r.hasChain ? "✓" : "✗"} · ✏️ 편집 ${r.hasEdit ? "✓" : "✗"} · RS 설명 ${r.hasHelp ? "✓" : "✗"} · 크게보기 ${r.hasBig ? "✓" : "✗"} · 정렬 머리글 ${r.sortHeads}개`);
-  console.log(`헤더: ${r.header}`);
-  console.log(`예외: ${errs.length ? errs.join(" | ") : "없음"}`);
-  // 히트맵 토글 → 산업 층위 테마 타일 수
-  await page.locator("#sectors button", { hasText: "산업" }).first().click().catch(() => null);
-  await page.waitForTimeout(3000);
-  await page.locator("#sectors button", { hasText: "히트맵" }).first().click().catch(() => null);
-  await page.waitForTimeout(1500);
-  const heat = await page.evaluate(() => {
-    const svg = document.querySelector("#sectors svg[aria-label='산업 히트맵']");
-    return { rects: svg?.querySelectorAll("rect").length ?? 0, h: Math.round(svg?.getBoundingClientRect().height ?? 0) };
-  });
-  console.log(`히트맵: rect ${heat.rects}개(산업+테마 타일), 높이 ${heat.h}px`);
-  await page.context().close();
+const H = {
+  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
+  accept: "application/json, text/plain, */*", referer: "https://tossinvest.com/", origin: "https://tossinvest.com", "content-type": "application/json",
+};
+const short = (t, n = 380) => String(t).replace(/\s+/g, " ").slice(0, n);
+async function hit(label, url, method = "GET", body) {
+  try {
+    const r = await fetch(url, { method, headers: H, body, signal: AbortSignal.timeout(12000) });
+    const t = await r.text();
+    console.log(`${method} ${r.status} ${label}\n   ${short(t)}\n`);
+  } catch (e) { console.log(`${label} 실패 ${String(e).slice(0, 60)}\n`); }
 }
+const I = "https://wts-info-api.tossinvest.com";
+console.log("=== (1) 토스 테마 후보 ===");
+for (const [l, u, m, b] of [
+  ["themes v1", `${I}/api/v1/themes`],
+  ["themes v2", `${I}/api/v2/themes`],
+  ["theme rankings", `${I}/api/v1/themes/rankings`],
+  ["theme all", `${I}/api/v1/themes/all`],
+  ["stock-themes 005930", `${I}/api/v1/stock-infos/A005930/themes`],
+  ["stock tics 005930", `${I}/api/v1/stock-infos/A005930/tics`],
+  ["product themes", `${I}/api/v2/products/A005930/themes`],
+  ["search theme HBM", `${I}/api/v2/search/wts-auto-complete?query=HBM`],
+  ["search v3 HBM", `${I}/api/v3/search-all/wts-auto-complete?query=HBM&sections=THEME`],
+]) await hit(l, u, m, b);
+
+console.log("=== (2) 종목 랭킹(주인공) 후보 ===");
+for (const [l, u] of [
+  ["rankings stock", `${I}/api/v1/rankings/stock?tag=kr_normal`],
+  ["ranking fluctuation", `${I}/api/v2/rankings?name=fluctuation&tag=kr`],
+  ["screener top", `${I}/api/v1/screener/rankings?tag=kr_fluctuation`],
+  ["realtime rankings", `${I}/api/v3/rankings/realtime?tag=kr_normal`],
+]) await hit(l, u);
+
+console.log("=== (3) 지수 분봉·야간선물 후보 ===");
+for (const [l, u] of [
+  ["kospi 1m chart", `${I}/api/v1/c-chart/kr-s/KOSPI/min:1?count=400`],
+  ["kospi day", `${I}/api/v1/c-chart/kr-s/KOSPI/day?count=5`],
+  ["index list", `${I}/api/v1/indices?tag=kr`],
+  ["dashboard index", `https://wts-cert-api.tossinvest.com/api/v1/dashboard/wts/overview/indicator/index`],
+  ["dashboard futures", `https://wts-cert-api.tossinvest.com/api/v1/dashboard/wts/overview/indicator/futures`],
+  ["samsung day chart", `${I}/api/v1/c-chart/kr-s/A005930/day?count=70`],
+  ["samsung 1m chart", `${I}/api/v1/c-chart/kr-s/A005930/min:5?count=100`],
+  ["stock-prices v3", `${I}/api/v3/stock-prices?meta=true&productCodes=A005930%2CA000660`],
+]) await hit(l, u);
+
+console.log("=== (4) 브라우저 XHR — 테마·지수 페이지 ===");
+const browser = await chromium.launch();
+const page = await (await browser.newContext({ locale: "ko-KR", viewport: { width: 1280, height: 900 } })).newPage();
+const seen = new Map();
+page.on("response", async (r) => {
+  const u = r.url();
+  if (!/tossinvest\.com\/api/.test(u) || seen.has(u)) return;
+  if (!/theme|index|chart|rank|indic|futur|kospi/i.test(u)) return;
+  let body = ""; try { body = short(await r.text(), 300); } catch {}
+  seen.set(u, { status: r.status(), method: r.request().method(), post: short(r.request().postData() ?? "", 100), body });
+});
+for (const url of ["https://www.tossinvest.com/themes", "https://www.tossinvest.com/theme", "https://www.tossinvest.com/", "https://www.tossinvest.com/stocks/KOSPI", "https://www.tossinvest.com/indices/KOSPI"]) {
+  try { await page.goto(url, { waitUntil: "networkidle", timeout: 30000 }); await page.waitForTimeout(2000); console.log(`  열림: ${url} → ${page.url()}`); } catch (e) { console.log(`  ${url} → ${String(e).slice(0, 40)}`); }
+}
+for (const [u, v] of seen) console.log(`${v.method} ${v.status} ${u.replace("https://", "")}${v.post ? `\n   POST ${v.post}` : ""}\n   ${v.body}\n`);
 await browser.close();
