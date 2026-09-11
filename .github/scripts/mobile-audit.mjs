@@ -5,7 +5,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ready = false;
 for (let i = 0; i < 40 && !ready; i++) {
   const b = await (await fetch(`${B}/api/calendar`).catch(() => null))?.json().catch(() => null);
-  if (b?.events?.[0]?.why) ready = true; else { process.stdout.write("."); await sleep(10_000); }
+  if (b?.events?.some((e) => /전월 대비는|예상치 제공 없음|예상이 이전과|예상치가 이전보다/.test(e.why ?? ""))) ready = true; else { process.stdout.write("."); await sleep(10_000); }
 }
 console.log("\n배포 준비:", ready);
 const c = await (await fetch(`${B}/api/calendar`)).json();
