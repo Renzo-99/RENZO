@@ -5,12 +5,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ready = false;
 for (let i = 0; i < 40 && !ready; i++) {
   const b = await (await fetch(`${B}/api/calendar`).catch(() => null))?.json().catch(() => null);
-  if (b?.events?.[0]?.stars) ready = true; else { process.stdout.write("."); await sleep(10_000); }
+  if (b?.events?.[0]?.why) ready = true; else { process.stdout.write("."); await sleep(10_000); }
 }
 console.log("\n배포 준비:", ready);
 const c = await (await fetch(`${B}/api/calendar`)).json();
 console.log("요약:", c.summary);
-for (const e of c.events) console.log(`  ${e.date} ${e.time ?? "--:--"} ${"★".repeat(e.stars)} [${e.country}] ${e.title} · 예상 ${e.forecast ?? "―"} 이전 ${e.previous ?? "―"} 결과 ${e.actual ?? "―"} (${e.source ?? "토스만"})`);
+for (const e of c.events) console.log(`  ${e.date} ${e.time ?? "--:--"} ${"★".repeat(e.stars)} [${e.country}] ${e.title} · 예상 ${e.forecast ?? "―"} 이전 ${e.previous ?? "―"} 결과 ${e.actual ?? "―"} (${e.source ?? "토스만"})\n      왜: ${e.why}`);
 const browser = await chromium.launch();
 for (const [name, w, h] of [["phone", 390, 844], ["desktop", 1280, 900]]) {
   const page = await browser.newPage({ viewport: { width: w, height: h }, locale: "ko-KR" });
