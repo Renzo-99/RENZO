@@ -1,23 +1,29 @@
-/** 정찰 20: 실제치(결과값) 소스 — 인베스팅(헤더 변형·POST)·야후 캘린더·트레이딩이코노믹스 게스트·FF 다음주 */
-const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
-const short = (t, n = 500) => String(t).replace(/\s+/g, " ").slice(0, n);
-const tryFetch = async (label, url, init = {}) => {
-  try { const r = await fetch(url, { ...init, headers: { "user-agent": UA, ...(init.headers ?? {}) } }); const t = await r.text(); console.log(`  ${label} → ${r.status} len ${t.length} :: ${short(t, 260)}`); return t; }
-  catch (e) { console.log(`  ${label} → ERR ${e.message}`); return ""; }
-};
-console.log("=== 인베스팅 ===");
-await tryFetch("위젯(referer 위젯)", "https://sslecal2.investing.com/?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=1,2,3&countries=5,37&calType=week&timeZone=88&lang=18", { headers: { referer: "https://sslecal2.investing.com/", accept: "text/html,*/*", "accept-language": "ko-KR,ko;q=0.9" } });
-await tryFetch("위젯(referer 없음)", "https://sslecal2.investing.com/?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=1,2,3&countries=5,37&calType=week&timeZone=88&lang=18", { headers: { accept: "text/html,*/*" } });
-await tryFetch("kr.investing 캘린더", "https://kr.investing.com/economic-calendar/", { headers: { accept: "text/html,*/*", "accept-language": "ko-KR,ko;q=0.9" } });
-await tryFetch("getCalendarFilteredData", "https://kr.investing.com/economic-calendar/Service/getCalendarFilteredData", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", "x-requested-with": "XMLHttpRequest", referer: "https://kr.investing.com/economic-calendar/", accept: "*/*" }, body: "country%5B%5D=5&country%5B%5D=37&importance%5B%5D=2&importance%5B%5D=3&timeZone=88&timeFilter=timeRemain&currentTab=thisWeek&submitFilters=1&limit_from=0" });
-console.log("=== 야후 ===");
-const y = await tryFetch("yahoo calendar html", "https://finance.yahoo.com/calendar/economic?day=2026-09-11", { headers: { accept: "text/html,*/*" } });
-console.log("   Actual 포함:", y.includes("Actual"), "CPI 포함:", y.includes("CPI"), short(y.match(/Consumer Price Index[\s\S]{0,300}/)?.[0] ?? "", 300));
-console.log("=== 트레이딩이코노믹스 게스트 ===");
-await tryFetch("TE calendar guest", "https://api.tradingeconomics.com/calendar?c=guest:guest&f=json", { headers: { accept: "application/json" } });
-await tryFetch("TE US CPI guest", "https://api.tradingeconomics.com/calendar/country/united%20states?c=guest:guest&f=json", { headers: { accept: "application/json" } });
-console.log("=== FF 다음주 ===");
-const ff = await tryFetch("ff nextweek", "https://nfs.faireconomy.media/ff_calendar_nextweek.json");
-try { const j = JSON.parse(ff); console.log("   items", j.length, "KRW 이벤트:", j.filter((e) => e.country === "KRW").length, "국가:", [...new Set(j.map((e) => e.country))].join(",")); } catch {}
-console.log("=== BLS 공개 API(키 없음) ===");
-await tryFetch("BLS CPI-U SA", "https://api.bls.gov/publicAPI/v2/timeseries/data/CUSR0000SA0?latest=true", { headers: { accept: "application/json" } });
+/** 검증 21: /api/calendar 보강 값(별·예상·이전·결과) + 메인 압축 카드·브리핑 전체 화면 DOM */
+import { chromium } from "playwright";
+const B = "https://stock-dashboard-jaeyeon.vercel.app";
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let ready = false;
+for (let i = 0; i < 40 && !ready; i++) {
+  const b = await (await fetch(`${B}/api/calendar`).catch(() => null))?.json().catch(() => null);
+  if (b?.events?.[0]?.stars) ready = true; else { process.stdout.write("."); await sleep(10_000); }
+}
+console.log("\n배포 준비:", ready);
+const c = await (await fetch(`${B}/api/calendar`)).json();
+console.log("요약:", c.summary);
+for (const e of c.events) console.log(`  ${e.date} ${e.time ?? "--:--"} ${"★".repeat(e.stars)} [${e.country}] ${e.title} · 예상 ${e.forecast ?? "―"} 이전 ${e.previous ?? "―"} 결과 ${e.actual ?? "―"} (${e.source ?? "토스만"})`);
+const browser = await chromium.launch();
+for (const [name, w, h] of [["phone", 390, 844], ["desktop", 1280, 900]]) {
+  const page = await browser.newPage({ viewport: { width: w, height: h }, locale: "ko-KR" });
+  const errs = new Map(); page.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
+  await page.goto(`${B}/`, { waitUntil: "networkidle", timeout: 90_000 });
+  await page.waitForSelector('[data-testid="calendar-compact"] li', { timeout: 60_000 }).catch(() => null);
+  const rows = await page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="calendar-compact"] li')).map((li) => li.textContent?.replace(/\s+/g, " ").trim()));
+  console.log(`  [${name}] 메인 압축(${rows.length}):`, JSON.stringify(rows.slice(0, 4)), "overflow", await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth));
+  await page.goto(`${B}/briefing`, { waitUntil: "networkidle", timeout: 90_000 });
+  await page.waitForSelector('[data-testid="calendar-full"] > div', { timeout: 60_000 }).catch(() => null);
+  const full = await page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="calendar-full"] > div')).map((d) => d.textContent?.replace(/\s+/g, " ").trim()));
+  console.log(`  [${name}] 브리핑 전체(${full.length}):`, JSON.stringify(full.slice(0, 3)), "overflow", await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth));
+  console.log(`  [${name}] pageerrors:`, JSON.stringify([...errs.entries()]));
+  await page.close();
+}
+await browser.close();
