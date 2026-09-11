@@ -1,35 +1,45 @@
-/** 정찰 25: 월별 캘린더 POST 바디 변형 + key-events 전체 구조(예상·실제·이전이 여기 있다) */
-const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
-const A = { "user-agent": UA, accept: "application/json, text/plain, */*", "content-type": "application/json", origin: "https://www.tossinvest.com", referer: "https://www.tossinvest.com/calendar" };
-const short = (t, n = 300) => String(t).replace(/\s+/g, " ").slice(0, n);
-const C = "https://wts-cert-api.tossinvest.com";
-console.log("=== monthly POST ===");
-const bodies = [{}, { countries: ["KR", "US"] }, { types: ["ECONOMIC", "EARNINGS", "HOLIDAY"] }, { nation: "ALL" }, { filter: { nation: "ALL", category: "ALL" } }, { calendarTypes: ["ECONOMIC"] }, { eventTypes: ["ECONOMIC", "EARNING", "HOLIDAY"], nations: ["KR", "US"] }, []];
-for (const b of bodies) {
-  const r = await fetch(`${C}/api/v4/calendar/monthly/2026-09`, { method: "POST", headers: A, body: JSON.stringify(b) }).catch(() => null);
-  const t = await r?.text().catch(() => "") ?? "";
-  console.log(`  ${JSON.stringify(b).slice(0, 60).padEnd(62)} → ${r?.status} len ${t.length} :: ${short(t, 240)}`);
-  if (r?.status === 200 && t.length > 100) {
-    try {
-      const j = JSON.parse(t); const res = j.result ?? j;
-      console.log("   top keys:", Object.keys(res).join(","));
-      const arr = Array.isArray(res) ? res : Object.values(res).find((v) => Array.isArray(v));
-      if (arr) { console.log("   배열", arr.length, "keys:", Object.keys(arr[0] ?? {}).join(",")); for (const e of arr.slice(0, 4)) console.log("   ", short(JSON.stringify(e), 500)); const flat = arr.flatMap((d) => Array.isArray(d.events) ? d.events : Array.isArray(d.items) ? d.items : [d]); const g = {}; for (const e of flat) { const k = e.group ?? e.type ?? e.category ?? e.eventType ?? e.id?.group ?? "?"; g[k] = (g[k] ?? 0) + 1; } console.log("   분포:", JSON.stringify(g), "키합집합:", [...new Set(flat.flatMap((e) => Object.keys(e)))].join(",")); for (const k of ["EARN", "HOLIDAY", "실적", "휴장"]) { const s = flat.find((e) => JSON.stringify(e).toUpperCase().includes(k)); if (s) console.log("   예", k, short(JSON.stringify(s), 500)); } }
-    } catch {}
-    break;
-  }
+/** 검증 26: 증시캘린더 — /api/calendar/month 값, 격자(데스크톱)·목록(폰), 필터·주별·더보기·상세, 주요 일정 카드의 토스 값 */
+import { chromium } from "playwright";
+const B = "https://stock-dashboard-jaeyeon.vercel.app";
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let ready = false;
+for (let i = 0; i < 40 && !ready; i++) {
+  const r = await fetch(`${B}/api/calendar/month?ym=2026-09`).catch(() => null);
+  if (r?.status === 200) ready = true; else { process.stdout.write(`.${r?.status ?? "x"}`); await sleep(10_000); }
 }
-console.log("\n=== key-events 전체 ===");
-const k = await (await fetch(`${C}/api/v1/calendar/ai-summary/key-events`, { headers: A })).json();
-const res = k.result ?? {};
-console.log("top keys:", Object.keys(res).join(","));
-for (const key of Object.keys(res)) {
-  const v = res[key];
-  console.log(` ${key}:`, typeof v === "object" && v ? Object.keys(v).join(",") : v);
-  const arr = Array.isArray(v) ? v : v?.indicators ?? v?.items ?? v?.events;
-  if (Array.isArray(arr)) { console.log("  n=", arr.length, "keys:", Object.keys(arr[0] ?? {}).join(",")); for (const e of arr) console.log("   ", short(JSON.stringify(e), 330)); }
-}
-for (const u of [`${C}/api/v1/calendar/ai-summary/key-events?date=2026-09-16`, `${C}/api/v1/calendar/ai-summary/key-events?startDate=2026-09-01&endDate=2026-09-30`, `${C}/api/v1/calendar/ai-summary/key-events?yearMonth=2026-09`]) {
-  const r = await fetch(u, { headers: A }).catch(() => null); const t = await r?.text().catch(() => "") ?? "";
-  const n = (t.match(/"ric"/g) ?? []).length; console.log("  ", u.slice(C.length), "→", r?.status, "ric 수", n);
-}
+console.log("\n배포 준비:", ready);
+const m = await (await fetch(`${B}/api/calendar/month?ym=2026-09`)).json();
+const g = {}; for (const e of m.events) g[e.group] = (g[e.group] ?? 0) + 1;
+console.log("9월 이벤트:", m.events.length, JSON.stringify(g));
+for (const e of m.events.filter((e) => e.group === "economic" && e.actual).slice(0, 5)) console.log(`  ${e.date} ${e.time} ${"★".repeat(e.stars)} [${e.country}] ${e.title} · 예상 ${e.forecast ?? "―"} 이전 ${e.previous ?? "―"} 결과 ${e.actual}\n      ${e.why?.slice(0, 120)}`);
+for (const e of m.events.filter((e) => e.group !== "economic").slice(0, 4)) console.log(`  ${e.date} [${e.group}] ${e.title} · ${e.country} · ${e.stockPath ?? ""}`);
+const c = await (await fetch(`${B}/api/calendar`)).json();
+console.log("주요 일정 카드 출처:", c.events.slice(0, 6).map((e) => `${e.title.slice(0, 14)}=${e.source}`).join(" | "));
+
+const browser = await chromium.launch();
+const d = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: "ko-KR" });
+const errs = new Map(); d.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
+await d.goto(`${B}/`, { waitUntil: "networkidle", timeout: 90_000 });
+await d.waitForSelector('[data-testid="market-calendar"] .grid button', { timeout: 60_000 });
+const cal = d.locator('[data-testid="market-calendar"]');
+const probe = () => d.evaluate(() => { const el = document.querySelector('[data-testid="market-calendar"]'); const grid = el.querySelector(".hidden.sm\\:block") ?? el; return { rows: grid.querySelectorAll(".grid.grid-cols-6").length - 1, pills: grid.querySelectorAll("button[title]").length, more: Array.from(grid.querySelectorAll("button")).filter((b) => /더보기/.test(b.textContent)).length, today: grid.textContent.includes("오늘"), label: el.querySelector(".tnum.min-w-\\[7\\.5rem\\]")?.textContent, overflow: document.documentElement.scrollWidth > window.innerWidth }; });
+console.log("  [desktop] 월별:", JSON.stringify(await probe()));
+await cal.getByRole("button", { name: "실적", exact: true }).click(); await sleep(300);
+console.log("  [desktop] 실적 필터:", JSON.stringify(await probe()));
+await cal.getByRole("button", { name: "전체", exact: true }).first().click();
+await cal.getByRole("button", { name: "주별", exact: true }).click(); await sleep(300);
+console.log("  [desktop] 주별:", JSON.stringify(await probe()));
+await cal.getByRole("button", { name: "월별", exact: true }).click(); await sleep(300);
+const more = cal.locator("button", { hasText: "더보기" }).first();
+if (await more.count()) { await more.click(); await sleep(200); console.log("  [desktop] 더보기 후:", JSON.stringify(await probe())); }
+await cal.locator("button[title]").filter({ hasText: "소비자물가" }).first().click(); await sleep(300);
+console.log("  [desktop] 상세:", await d.evaluate(() => document.querySelector('[data-testid="calendar-detail"]')?.textContent?.replace(/\s+/g, " ").slice(0, 260)));
+await d.getByRole("button", { name: "다음" }).click(); await sleep(1500);
+console.log("  [desktop] 다음 달:", JSON.stringify(await probe()));
+console.log("  [desktop] pageerrors:", JSON.stringify([...errs.entries()]));
+const p = await browser.newPage({ viewport: { width: 390, height: 844 }, locale: "ko-KR" });
+await p.goto(`${B}/`, { waitUntil: "networkidle", timeout: 90_000 });
+await p.waitForSelector('[data-testid="market-calendar"]', { timeout: 60_000 });
+await sleep(1500);
+console.log("  [phone] 목록:", JSON.stringify(await p.evaluate(() => { const el = document.querySelector('[data-testid="market-calendar"]'); const list = el.querySelector(".sm\\:hidden"); return { gridVisible: getComputedStyle(el.querySelector(".hidden.sm\\:block")).display, days: list.querySelectorAll(":scope > div").length, pills: list.querySelectorAll("button[title]").length, first: list.textContent.replace(/\s+/g, " ").slice(0, 100), overflow: document.documentElement.scrollWidth > window.innerWidth }; })));
+await browser.close();
