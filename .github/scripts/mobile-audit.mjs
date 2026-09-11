@@ -1,31 +1,23 @@
-/** 정찰 19: 경제 일정의 중요도·예상치·실제치 소스 — 인베스팅 위젯(한국어)·포렉스팩토리 JSON·토스 aiSummary */
+/** 정찰 20: 실제치(결과값) 소스 — 인베스팅(헤더 변형·POST)·야후 캘린더·트레이딩이코노믹스 게스트·FF 다음주 */
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
 const short = (t, n = 500) => String(t).replace(/\s+/g, " ").slice(0, n);
-
-console.log("=== (1) 인베스팅 경제 캘린더 위젯 (lang=18 한국어, 이번 주, 중요도 1~3) ===");
-const wu = "https://sslecal2.investing.com/?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=1,2,3&features=datepicker,timezone&countries=5,37,35,6,4,72,22,17,39,14,10,25,12,43,43,45,110&calType=week&timeZone=88&lang=18";
-const w = await fetch(wu, { headers: { "user-agent": UA, referer: "https://www.investing.com/" } }).catch((e) => ({ status: "ERR " + e.message, text: async () => "" }));
-const html = await w.text();
-console.log("status", w.status, "length", html.length);
-const rows = [...html.matchAll(/<tr[^>]*id="eventRowId_(\d+)"[^>]*>([\s\S]*?)<\/tr>/g)];
-console.log("rows:", rows.length);
-for (const r of rows.slice(0, 5)) {
-  const cells = [...r[2].matchAll(/<td[^>]*class="([^"]*)"[^>]*>([\s\S]*?)<\/td>/g)].map((m) => `${m[1].split(" ")[0]}=${short(m[2].replace(/<[^>]+>/g, "").trim(), 40)}`);
-  const bulls = (r[2].match(/grayFullBullishIcon/g) || []).length;
-  const attrs = r[0].match(/<tr[^>]*>/)[0];
-  console.log(`  ${r[1]} bulls=${bulls} ${short(attrs, 220)}`);
-  console.log("     ", cells.join(" | "));
-}
-// 실제치 채워진 행 찾기
-const withActual = rows.filter((r) => /class="[^"]*act[^"]*"[^>]*>\s*[-\d]/.test(r[2]));
-console.log("실제치 있는 행:", withActual.length, withActual[0] ? short(withActual[0][2].replace(/<[^>]+>/g, " "), 200) : "");
-
-console.log("\n=== (2) 포렉스팩토리 JSON ===");
-const ff = await fetch("https://nfs.faireconomy.media/ff_calendar_thisweek.json", { headers: { "user-agent": UA } }).catch((e) => ({ status: "ERR " + e.message, json: async () => null }));
-const fj = await ff.json?.().catch(() => null);
-console.log("status", ff.status, "items", Array.isArray(fj) ? fj.length : "x", "keys", Object.keys(fj?.[0] ?? {}).join(","));
-for (const e of (fj ?? []).filter((e) => e.country === "USD" && e.impact === "High").slice(0, 4)) console.log("  ", JSON.stringify(e));
-
-console.log("\n=== (3) 토스 aiSummary ===");
-const t = await (await fetch("https://wts-cert-api.tossinvest.com/api/v2/dashboard/wts/overview/calendar/economic-events", { headers: { "user-agent": UA, accept: "application/json", origin: "https://www.tossinvest.com", referer: "https://www.tossinvest.com/" } })).json();
-console.log(short(JSON.stringify(t.result?.aiSummary), 600));
+const tryFetch = async (label, url, init = {}) => {
+  try { const r = await fetch(url, { ...init, headers: { "user-agent": UA, ...(init.headers ?? {}) } }); const t = await r.text(); console.log(`  ${label} → ${r.status} len ${t.length} :: ${short(t, 260)}`); return t; }
+  catch (e) { console.log(`  ${label} → ERR ${e.message}`); return ""; }
+};
+console.log("=== 인베스팅 ===");
+await tryFetch("위젯(referer 위젯)", "https://sslecal2.investing.com/?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=1,2,3&countries=5,37&calType=week&timeZone=88&lang=18", { headers: { referer: "https://sslecal2.investing.com/", accept: "text/html,*/*", "accept-language": "ko-KR,ko;q=0.9" } });
+await tryFetch("위젯(referer 없음)", "https://sslecal2.investing.com/?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=1,2,3&countries=5,37&calType=week&timeZone=88&lang=18", { headers: { accept: "text/html,*/*" } });
+await tryFetch("kr.investing 캘린더", "https://kr.investing.com/economic-calendar/", { headers: { accept: "text/html,*/*", "accept-language": "ko-KR,ko;q=0.9" } });
+await tryFetch("getCalendarFilteredData", "https://kr.investing.com/economic-calendar/Service/getCalendarFilteredData", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", "x-requested-with": "XMLHttpRequest", referer: "https://kr.investing.com/economic-calendar/", accept: "*/*" }, body: "country%5B%5D=5&country%5B%5D=37&importance%5B%5D=2&importance%5B%5D=3&timeZone=88&timeFilter=timeRemain&currentTab=thisWeek&submitFilters=1&limit_from=0" });
+console.log("=== 야후 ===");
+const y = await tryFetch("yahoo calendar html", "https://finance.yahoo.com/calendar/economic?day=2026-09-11", { headers: { accept: "text/html,*/*" } });
+console.log("   Actual 포함:", y.includes("Actual"), "CPI 포함:", y.includes("CPI"), short(y.match(/Consumer Price Index[\s\S]{0,300}/)?.[0] ?? "", 300));
+console.log("=== 트레이딩이코노믹스 게스트 ===");
+await tryFetch("TE calendar guest", "https://api.tradingeconomics.com/calendar?c=guest:guest&f=json", { headers: { accept: "application/json" } });
+await tryFetch("TE US CPI guest", "https://api.tradingeconomics.com/calendar/country/united%20states?c=guest:guest&f=json", { headers: { accept: "application/json" } });
+console.log("=== FF 다음주 ===");
+const ff = await tryFetch("ff nextweek", "https://nfs.faireconomy.media/ff_calendar_nextweek.json");
+try { const j = JSON.parse(ff); console.log("   items", j.length, "KRW 이벤트:", j.filter((e) => e.country === "KRW").length, "국가:", [...new Set(j.map((e) => e.country))].join(",")); } catch {}
+console.log("=== BLS 공개 API(키 없음) ===");
+await tryFetch("BLS CPI-U SA", "https://api.bls.gov/publicAPI/v2/timeseries/data/CUSR0000SA0?latest=true", { headers: { accept: "application/json" } });
