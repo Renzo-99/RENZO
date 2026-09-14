@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-09-11T09:07:28.484Z",
+ "updatedAt": "2026-09-14T23:54:34.487Z",
  "items": [
+  {
+   "id": "issue-point-49619",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "병역기피자는 생존권이 박탈되어도 되는가? -병역기피자 해직제도 헌법불합치 결정과 입법개선방안",
+   "date": "2026-09-15",
+   "meta": "이슈와논점 2526호 · 김선화",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49619",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49610",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "가정폭력 이혼 고위험 피해자의 주소 보호와 안전한 송달체계 구축 방안",
+   "date": "2026-09-14",
+   "meta": "이슈와논점 2525호 · 허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49610",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49604",
    "sourceId": "issue-point",
@@ -31,7 +53,7 @@
    "id": "nars-analysis-49593",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "축제의 즐거움이쓰레기로 남지 않도록 -문화예술 축제·행사의 자원순환 관리체계 구축 과제",
+   "title": "축제의 즐거움이 쓰레기로 남지 않도록 -문화예술 축제·행사의 자원순환 관리체계 구축 과제",
    "date": "2026-09-08",
    "meta": "NARS 현안분석 430호 · 김경민,배성희",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49593",
@@ -401,19 +423,6 @@
    "keywords": []
   },
   {
-   "id": "issue-point-49418",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "재활용품 처리시설에서 발견된 인체 조직물: 조직물류폐기물 관리책임과 의료기관 안전관리의 입법적 검토",
-   "date": "2026-07-07",
-   "meta": "이슈와논점 2506호 · 김경민,김은정",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49418",
-   "tracks": [],
-   "keywords": [
-    "의료"
-   ]
-  },
-  {
    "id": "nars-analysis-49397",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -448,17 +457,6 @@
     "AI",
     "인공지능"
    ]
-  },
-  {
-   "id": "issue-point-49376",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "전남광주통합특별시 출범, 성공을 위한 과제는 무엇인가",
-   "date": "2026-06-24",
-   "meta": "이슈와논점 2505호 · 하혜영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49376",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "policy-report-49361",
