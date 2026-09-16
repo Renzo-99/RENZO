@@ -1,6 +1,21 @@
 {
- "updatedAt": "2026-09-15T23:33:43.927Z",
+ "updatedAt": "2026-09-16T23:41:34.228Z",
  "items": [
+  {
+   "id": "issue-point-49627",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "FACT CHECK: 호남 반도체 클러스터 용수 공급(안) 타당성 검토",
+   "date": "2026-09-16",
+   "meta": "이슈와논점 2527호 · 김진수",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49627",
+   "tracks": [
+    "semiconductor"
+   ],
+   "keywords": [
+    "반도체"
+   ]
+  },
   {
    "id": "issue-point-49619",
    "sourceId": "issue-point",
@@ -396,19 +411,6 @@
    "tracks": [],
    "keywords": [
     "AI"
-   ]
-  },
-  {
-   "id": "issue-point-49432",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "구멍난 선거관리, 어떻게 할 것인가",
-   "date": "2026-07-12",
-   "meta": "이슈와논점 2507호 · 허석재,김현아",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49432",
-   "tracks": [],
-   "keywords": [
-    "선거"
    ]
   },
   {
