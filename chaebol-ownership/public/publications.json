@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-09-16T23:41:34.228Z",
+ "updatedAt": "2026-09-17T23:35:04.179Z",
  "items": [
+  {
+   "id": "issue-point-49629",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "특별자치 20년, 선도모델 제주의 성과와 향후 과제",
+   "date": "2026-09-17",
+   "meta": "이슈와논점 2528호 · 하혜영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49629",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49627",
    "sourceId": "issue-point",
@@ -235,17 +246,6 @@
    "keywords": []
   },
   {
-   "id": "publication-49524",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "영남권 대형산불 1년, 무엇이 바뀌었나? -2025년 대형산불 후속조치 점검 보고서 -",
-   "date": "2026-08-18",
-   "meta": "특별보고서 · 노세현 외 10인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49524",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "nars-analysis-49518",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -398,19 +398,6 @@
    "tracks": [],
    "keywords": [
     "노동"
-   ]
-  },
-  {
-   "id": "issue-point-49439",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "재점검 필요한 학교 AI 교육의 방향과 방식 OECD·EU 공동 AILit 프레임워크와 국내 교육정책 비교를 중심으로",
-   "date": "2026-07-13",
-   "meta": "이슈와논점 2508호 · 김범주",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49439",
-   "tracks": [],
-   "keywords": [
-    "AI"
    ]
   },
   {
@@ -1044,7 +1031,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 6
+   "count": 5
   }
  ]
 }
