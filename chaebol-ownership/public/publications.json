@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-09-17T23:35:04.179Z",
+ "updatedAt": "2026-09-19T23:16:04.756Z",
  "items": [
+  {
+   "id": "nars-analysis-49632",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "학교 안 혐오·차별 대응의 ‘빈틈’ - 교육부 가이드북의 ‘성소수자’ 관련 내용 삭제에 대한 검토와 개선방안",
+   "date": "2026-09-18",
+   "meta": "NARS 현안분석 431호 · 김범주,허민숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49632",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49631",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "미프진 허용의 쟁점과 과제 - 임신중지 제도화 위한 입법 방안",
+   "date": "2026-09-18",
+   "meta": "이슈와논점 2529호 · 전윤정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49631",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49629",
    "sourceId": "issue-point",
@@ -377,17 +399,6 @@
    ]
   },
   {
-   "id": "issue-point-49443",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "사생활 훔쳐보는 로봇청소기를 그대로 둘 것인가? 사물인터넷(IoT) 보안 강화를 위한 입법 및 정책 과제",
-   "date": "2026-07-14",
-   "meta": "이슈와논점 2509호 · 강은수",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49443",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "nars-analysis-49437",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -617,17 +628,6 @@
    "date": "2026-04-13",
    "meta": "NARS 현안분석 412호 · 김은정",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49071",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "nars-analysis-49069",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "잠자는 페이·머니는 누구의 것인가?",
-   "date": "2026-04-13",
-   "meta": "NARS 현안분석 411호 · 이수진",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49069",
    "tracks": [],
    "keywords": []
   },
