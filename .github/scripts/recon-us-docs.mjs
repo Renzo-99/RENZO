@@ -1,46 +1,44 @@
-// 토스 companies API — 기업 한 줄 설명(description) 커버리지 확인
+// tics/all 의 수익률이 국내만인지, 미국 포함인지 판정
 import fs from "node:fs";
 const H = {
   "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
   accept: "application/json", "content-type": "application/json",
   "accept-language": "ko-KR,ko;q=0.9", referer: "https://tossinvest.com/", origin: "https://tossinvest.com",
 };
-const OUT = [];
-const log = (...a) => { const s = a.join(" "); console.log(s); OUT.push(s); };
-const URL_ = "https://wts-info-api.tossinvest.com/api/v1/companies";
+const OUT = []; const log = (...a) => { const s = a.join(" "); console.log(s); OUT.push(s); };
+const INFO = "https://wts-info-api.tossinvest.com";
 
-async function batch(codes) {
-  const r = await fetch(URL_, { method: "POST", headers: H, body: JSON.stringify({ codes }) });
-  if (!r.ok) { log(`[${r.status}] ${codes.length}개 실패`); return []; }
-  const j = await r.json();
-  return j.result ?? [];
+async function j(url, init) { const r = await fetch(url, { headers: H, ...init }); return r.ok ? r.json() : { __status: r.status }; }
+
+// 1) tics/all — 태그 없이(현재 앱이 쓰는 방식)
+const all = await j(`${INFO}/api/v1/tics/all`);
+const items = all?.result?.ticsItems ?? [];
+log(`### tics/all 기준시각 ${all?.result?.baseDateTime} · 산업 ${items.length}개`);
+const pick = (id) => items.find((i) => String(i.id) === String(id));
+for (const id of [169, 77, 111]) {
+  const n = pick(id);
+  if (n) log(`  ${n.id} ${n.title}: 1일 ${n.fluctuations?.oneDayRate} · 1개월 ${n.fluctuations?.oneMonthRate} · 3개월 ${n.fluctuations?.threeMonthsRate} (기준 ${n.fluctuations?.baseDateTime})`);
 }
 
-// 1) 한국 대표 종목 + 중소형 + 해외
-const KR = ["005930","000660","042700","357780","058470","000990","036930","095340","240810","032500",
-  "005380","051910","068270","207940","035420","035720","105560","055550","000270","012450",
-  "196170","145020","278280","950140","900140","007700","014990","064350","011200","003230"];
-const FG = ["NAS00208X-E0"];
-
-const rows = [...(await batch(KR)), ...(await batch(FG))];
-log(`### 받은 회사 ${rows.length}개 / 요청 ${KR.length + FG.length}개`);
-let have = 0;
-for (const c of rows) {
-  const d = c.description;
-  if (d) have++;
-  log(`- ${c.code} ${c.name} | 산업:${c.industry?.displayName ?? c.wics?.displayName ?? "-"} | 설립:${c.establishYear ?? "-"} | 설명:${d ? `"${d}"` : "(없음)"}`);
+// 2) tics/all 에 tag를 붙이면 값이 달라지나
+for (const tag of ["kr_normal", "us_normal", "kr", "us"]) {
+  const t = await j(`${INFO}/api/v1/tics/all?tag=${tag}`);
+  const n = (t?.result?.ticsItems ?? []).find((i) => String(i.id) === "169");
+  log(`### tics/all?tag=${tag} → ${t.__status ? `HTTP ${t.__status}` : `반도체 1일 ${n?.fluctuations?.oneDayRate} · 3개월 ${n?.fluctuations?.threeMonthsRate}`}`);
 }
-log(`### description 있는 비율 ${have}/${rows.length}`);
-log(`### 첫 레코드 키: ${rows[0] ? Object.keys(rows[0]).join(",") : "-"}`);
 
-// 2) 배치 상한 — 200개 요청
-const BIG = Array.from({ length: 200 }, (_, i) => String(1 + i * 10).padStart(6, "0"));
-const big = await batch(BIG);
-log(`### 200개 배치 → ${big.length}개 반환`);
+// 3) 랭킹 API의 kr_normal / us_normal / 태그없음 과 비교
+for (const q of ["tag=kr_normal&depths=0&depths=1", "tag=us_normal&depths=0&depths=1", "depths=0&depths=1"]) {
+  const r = await j(`${INFO}/api/v2/dashboard/wts/overview/tics/ranking?${q}`);
+  const rows = r?.result?.data ?? [];
+  const n = rows.find((x) => String(x.ticsId) === "169");
+  log(`### ranking ${q} → ${r.__status ? `HTTP ${r.__status}` : `반도체 ${n?.preciseValue ?? n?.value} (총 ${rows.length}행, 기준 ${r?.result?.dateTime})`}`);
+}
 
-// 3) tics(테마) 붙어오는지 — 종목이 속한 테마 id 목록
-const one = rows.find((c) => c.code === "005930");
-log(`### 005930 tics ids: ${(one?.tics ?? []).map((t) => `${t.id}:${t.title}`).slice(0, 12).join(", ")}`);
+// 4) 구성 종목 국적 분포 — 반도체(169)
+const s = await j(`${INFO}/api/v2/tics/169/stocks`, { method: "POST", body: JSON.stringify({ ticsId: 169, page: 1 }) });
+const rows = s?.result?.stocks ?? [];
+log(`### 반도체 구성 종목 총 ${s?.result?.totalCount}개, 1페이지 국적: ${rows.map((x) => `${x.name}(${String(x.code).startsWith("A") ? "KR" : "해외"})`).join(", ")}`);
 
 fs.mkdirSync("audit-out", { recursive: true });
 fs.writeFileSync("audit-out/toss-company-recon.txt", OUT.join("\n"));
