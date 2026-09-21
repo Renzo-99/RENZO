@@ -3,8 +3,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const H = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", accept: "application/json, text/plain, */*", referer: "https://tossinvest.com/", origin: "https://tossinvest.com" };
 const r = await fetch("https://wts-info-api.tossinvest.com/api/v1/tics/all", { headers: H });
 const j = await r.json();
-const items = j.result ?? j;
-const arr = Array.isArray(items) ? items : items.items ?? items.data ?? [];
+const arr = j.result?.ticsItems ?? [];
 const out = [];
 const walk = (n, parent) => {
   if (!n || n.id == null) return;
