@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-09-20T23:19:37.406Z",
+ "updatedAt": "2026-09-21T00:16:09.300Z",
  "items": [
+  {
+   "id": "issue-point-49637",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "도심 하수처리시설 이전·복합개발의 검토 조건과 입법과제",
+   "date": "2026-09-21",
+   "meta": "이슈와논점 2530호 · 김경민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49637",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "nars-analysis-49632",
    "sourceId": "nars-analysis",
@@ -383,20 +394,6 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49449",
    "tracks": [],
    "keywords": []
-  },
-  {
-   "id": "issue-point-49446",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "미국 정부의 미토스(Mythos) 수출 통제가 남긴 것 고성능 AI 모델 전략자산화와 한국 소버린 AI의 과제",
-   "date": "2026-07-14",
-   "meta": "이슈와논점 2510호 · 정준화",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49446",
-   "tracks": [],
-   "keywords": [
-    "AI",
-    "수출"
-   ]
   },
   {
    "id": "nars-analysis-49437",
