@@ -1,6 +1,23 @@
 {
- "updatedAt": "2026-09-21T05:46:25.992Z",
+ "updatedAt": "2026-09-21T07:53:35.372Z",
  "items": [
+  {
+   "id": "nars-analysis-49641",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "호르무즈 위기가 드러낸 한국의 에너지 공급망 한계와 과제-수입선 다변화에서 공급망 회복탄력성으로",
+   "date": "2026-09-21",
+   "meta": "NARS 현안분석 432호 · 최정윤,유재국",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49641",
+   "tracks": [
+    "semiconductor",
+    "energy"
+   ],
+   "keywords": [
+    "공급망",
+    "에너지"
+   ]
+  },
   {
    "id": "issue-point-49637",
    "sourceId": "issue-point",
@@ -614,17 +631,6 @@
    "date": "2026-04-14",
    "meta": "NARS 현안분석 413호 · 정용제",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49072",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "nars-analysis-49071",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "지방에는 왜 의사가 없을까",
-   "date": "2026-04-13",
-   "meta": "NARS 현안분석 412호 · 김은정",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49071",
    "tracks": [],
    "keywords": []
   },
