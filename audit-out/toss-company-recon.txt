@@ -1,73 +1,102 @@
 
-### stock-infos v2 [200] https://wts-info-api.tossinvest.com/api/v2/stock-infos?codes=A005930,A000660,US19990122001
-{"result":[{"code":"A005930","guid":"KR7005930003","symbol":"005930","isinCode":"KR7005930003","status":"N","name":"삼성전자","englishName":"SamsungElec","detailName":"삼성전자","jpName":null,"market":{"code":"KSP","displayName":"코스피"},"group":{"code":"ST","displayName":"주권"},"companyCode":"005930","companyName":"삼성전자","logoImageUrl":"https://static.toss.im/png-icons/securities/icn-sec-fill-005930.png","currency":"KRW","tradingSuspended":false,"krxTradingSuspended":false,"nxtTradingSuspended":false,"commonShare":true,"spac":false,"spacMergerDate":null,"leverageFactor":0,"singleStockEtp":false,"clearance":false,"riskLevel":"1","purchasePrerequisite":"0","sharesOutstanding":5846278608,"prevListDate":null,"listDate":"1975-06-11","delistDate":null,"offeringPrice":null,"warrantsCode":null,"warrantsGroupCode":null,"etfTaxCode":null,"daytimePriceSupported":false,"optionSupported":false,"optionPennyPilotPriceSupported":false,"optionOvertimeSupported":false,"optionInstrument":null,"derivativeEtp":false,"poolingStock":false,"nxtSupported":true,"userTradingSuspended":false,"limitOnCompetitiveTradingVolume":false,"nxtOpenDate":"2025-03-24","nxtOpenDateRecent":"2025-03-24","derivativeEtf":false},{"code":"US19990122001","guid":"US19990122001","symbol":"NVDA","isinCode":"US67066G1040","status":"N","name":"엔비디아","englishName":"Nvidia","detailName":"엔비디아","jpName":null,"market":{"code":"NSQ","displayName":"NASDAQ"},"group":{"code":"ST","displayName":"주권"},"companyCode":"NAS00208X-E0","companyName":"엔비디아","logoImageUrl":"https://static.toss.im/png-icons/securities/icn-sec-fill-NAS00208X-E0.png","currency":"USD","tradingSuspended":false,"krxTradingSuspended":false,"nxtTradingSuspended":false,"commonShare":true,"spac":false,"spacMergerDate":null,"leverageFactor":0,"singleStockEtp":false,"clearance":false,"riskLevel":"1","purchasePrerequisite":"0","sharesOutstanding":24100000000,"prevListDate":null,"listDate":"1999-01-22","delistDate":null,"offeringPrice":null,"warrantsCode":null,"warrantsGroupCode":null,"etfTaxCode":null,"daytimePriceSupported":true,"optionSupported":true,"optionPennyPilotPriceSupported":true,"optionOvertimeSupported":false,"optionInstrument":null,"derivativeEtp":null,"poolingStock":false,"nxtSupported":false,"userTradingSuspended":false,"limitOnCompetitiveTradingVolume":false,"nxtOpenDate":null,"nxtOpenDateRecent":null,"derivativeEtf":false},{"code":"A000660","guid":"KR7000660001","symbol":"000660","isinCode":"KR7000660001","status":"N","name":"SK하이닉스","englishName"
+### companies/005930 [200] https://wts-info-api.tossinvest.com/api/v1/companies/005930
+{"result":{"code":"005930","name":"삼성전자","englishName":"SamsungElec","fullName":"삼성전자","fullEnglishName":"SamsungElectronics","wics":{"code":"G453010","displayName":"반도체와반도체장비"},"industry":{"code":"G453010","displayName":"반도체와반도체장비"},"tics":[{"id":77,"title":"스마트폰","imageUrl":"https://static.toss.im/ml-product/smartphone-area.png","imageBackgroundColor":"#64769A","imageBackground":{"dark":"#23386A","light":"#C9E2FF"},"depth":0,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":null,"companyCount":134,"subItems":null,"fluctuations":null},{"id":111,"title":"가전제품","imageUrl":"https://static.toss.im/ml-product/home-appliance-area.png","imageBackgroundColor":"#899DAF","imageBackground":{"dark":"#25478C","light":"#90C2FF"},"depth":0,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":null,"companyCount":167,"subItems":null,"fluctuations":null},{"id":113,"title":"생활가전","imageUrl":"https://static.toss.im/ml-product/washing-machine-area.png","imageBackgroundColor":"#899DAF","imageBackground":{"dark":"#25478C","light":"#90C2FF"},"depth":1,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":111,"companyCount":68,"subItems":null,"fluctuations":null},{"id":115,"title":"미세먼지가전","imageUrl":"https://static.toss.im/ml-product/air-purifier-area.png","imageBackgroundColor":"#AF9572","imageBackground":{"dark":"#135338","light":"#AEEFD5"},"depth":2,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":113,"companyCount":21,"subItems":null,"fluctuations":null},{"id":117,"title":"냉방가전","imageUrl":"https://static.toss.im/ml-product/fan-area.png","imageBackgroundColor":"#6CA1EA","imageBackground":{"dark":"#25478C","light":"#90C2FF"},"depth":2,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":113,"companyCount":19,"subItems":null,"fluctuations":null},{"id":119,"tit
 
-### companies [200] https://wts-info-api.tossinvest.com/api/v1/companies/A005930
-{"result":null}
-
-### company-detail [404] https://wts-info-api.tossinvest.com/api/v1/companies/A005930/detail
+### companies/005930/summary [404] https://wts-info-api.tossinvest.com/api/v1/companies/005930/summary
 {"error":{"statusCode":404,"code":null,"message":null}}
 
-### company-summary [404] https://wts-info-api.tossinvest.com/api/v1/companies/A005930/summary
+### companies/005930/overview [404] https://wts-info-api.tossinvest.com/api/v1/companies/005930/overview
 {"error":{"statusCode":404,"code":null,"message":null}}
 
-### company-info [404] https://wts-info-api.tossinvest.com/api/v1/company-info/A005930
-
-
-### stock-info v1 [200] https://wts-info-api.tossinvest.com/api/v1/stock-infos/A005930
-{"result":{"code":"A005930","guid":"KR7005930003","symbol":"005930","isinCode":"KR7005930003","status":"N","name":"삼성전자","englishName":"SamsungElec","detailName":"삼성전자","jpName":null,"market":{"code":"KSP","displayName":"코스피"},"group":{"code":"ST","displayName":"주권"},"companyCode":"005930","companyName":"삼성전자","logoImageUrl":"https://static.toss.im/png-icons/securities/icn-sec-fill-005930.png","currency":"KRW","tradingSuspended":false,"krxTradingSuspended":false,"nxtTradingSuspended":false,"commonShare":true,"spac":false,"spacMergerDate":null,"leverageFactor":0,"singleStockEtp":false,"clearance":false,"riskLevel":"1","purchasePrerequisite":"0","sharesOutstanding":5846278608,"prevListDate":null,"listDate":"1975-06-11","delistDate":null,"offeringPrice":null,"warrantsCode":null,"warrantsGroupCode":null,"etfTaxCode":null,"daytimePriceSupported":false,"optionSupported":false,"optionPennyPilotPriceSupported":false,"optionOvertimeSupported":false,"optionInstrument":null,"derivativeEtp":false,"poolingStock":false,"nxtSupported":true,"userTradingSuspended":false,"limitOnCompetitiveTradingVolume":false,"nxtOpenDate":"2025-03-24","nxtOpenDateRecent":"2025-03-24","derivativeEtf":false}}
-
-### stock-detail v3 [400] https://wts-info-api.tossinvest.com/api/v3/stock-infos/A005930
-{"error":{"statusCode":400,"code":"MissingPathVariableException","message":null}}
-
-### overview [404] https://wts-info-api.tossinvest.com/api/v1/stocks/A005930/overview
-
-
-### company v2 [404] https://wts-info-api.tossinvest.com/api/v2/companies/A005930
+### companies/005930/description [404] https://wts-info-api.tossinvest.com/api/v1/companies/005930/description
 {"error":{"statusCode":404,"code":null,"message":null}}
 
-### description [404] https://wts-info-api.tossinvest.com/api/v1/stocks/A005930/description
-
-
-### profile [404] https://wts-info-api.tossinvest.com/api/v1/stocks/A005930/profile
-
-
-### wiki [404] https://wts-info-api.tossinvest.com/api/v1/stocks/A005930/wiki
-
-
-### company-intro [404] https://wts-info-api.tossinvest.com/api/v1/company-introductions/A005930
-
-
-### stock-summary [404] https://wts-info-api.tossinvest.com/api/v1/stock-summaries?codes=A005930
-
-
-### stock-contents [404] https://wts-info-api.tossinvest.com/api/v1/stock-contents/A005930
-
-
-### kr-company [404] https://wts-info-api.tossinvest.com/api/v1/kr-companies/A005930
-
-
-### financial [404] https://wts-info-api.tossinvest.com/api/v1/companies/A005930/financials
+### companies/005930/introduction [404] https://wts-info-api.tossinvest.com/api/v1/companies/005930/introduction
 {"error":{"statusCode":404,"code":null,"message":null}}
 
-### tics of stock [404] https://wts-info-api.tossinvest.com/api/v1/tics/stocks/A005930
+### companies/005930/business [404] https://wts-info-api.tossinvest.com/api/v1/companies/005930/business
 {"error":{"statusCode":404,"code":null,"message":null}}
 
-### companies POST [200] https://wts-info-api.tossinvest.com/api/v1/companies
-{"result":[]}
-
-### company-summaries POST [404] https://wts-info-api.tossinvest.com/api/v1/company-summaries
-
-
-### stock-infos POST [404] https://wts-info-api.tossinvest.com/api/v3/stock-infos
+### companies/005930/profile [404] https://wts-info-api.tossinvest.com/api/v1/companies/005930/profile
 {"error":{"statusCode":404,"code":null,"message":null}}
 
-### page kr [200] len=22251
-  meta description: 더 큰 화면으로, 더 자세하게 거래해요 | 토스증권 | 주식 | PC
-  meta og:description: 더 큰 화면으로, 더 자세하게 거래해요.
-  title: 토스증권
+### companies/NAS00208X-E0 [200] https://wts-info-api.tossinvest.com/api/v1/companies/NAS00208X-E0
+{"result":{"code":"NAS00208X-E0","name":"엔비디아","englishName":"NVIDIA CORP","fullName":"엔비디아(NVDA)","fullEnglishName":"NVIDIA CORP","wics":null,"industry":{"code":"251010","displayName":"반도체제조,설비,관련서비스"},"tics":null,"description":"전 세계적으로 GPU, AI 및 클라우드 기반 가상화 컴퓨팅 솔루션을 제공하는 대표적인 반도체 회사","jpDescription":null,"establishDate":null,"establishYear":1993,"listDate":"1999-01-22","delistDate":null,"ceo":"Jen Hsun Huang","homepageUrl":"http://www.nvidia.com","logoImageUrl":"https://static.toss.im/png-icons/securities/icn-sec-fill-NAS00208X-E0.png","createdAt":"2021-07-07T03:00:59","updatedAt":"2024-05-29T16:33:38","sharesOutstanding":24100000000,"marketValue":5378879000000,"marketValueKrw":7443292760200000,"currency":"USD","comment":null}}
 
-### page us [200] len=22251
-  meta description: 더 큰 화면으로, 더 자세하게 거래해요 | 토스증권 | 주식 | PC
-  meta og:description: 더 큰 화면으로, 더 자세하게 거래해요.
-  title: 토스증권
+### v2 companies/005930 [404] https://wts-info-api.tossinvest.com/api/v2/companies/005930
+{"error":{"statusCode":404,"code":null,"message":null}}
+
+### company/005930 [404] https://wts-info-api.tossinvest.com/api/v1/company/005930
+
+
+### POST companies codes [200] https://wts-info-api.tossinvest.com/api/v1/companies
+{"result":[{"code":"005930","name":"삼성전자","englishName":"SamsungElec","fullName":"삼성전자","fullEnglishName":"SamsungElectronics","wics":{"code":"G453010","displayName":"반도체와반도체장비"},"industry":{"code":"G453010","displayName":"반도체와반도체장비"},"tics":[{"id":77,"title":"스마트폰","imageUrl":"https://static.toss.im/ml-product/smartphone-area.png","imageBackgroundColor":"#64769A","imageBackground":{"dark":"#23386A","light":"#C9E2FF"},"depth":0,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":null,"companyCount":134,"subItems":null,"fluctuations":null},{"id":111,"title":"가전제품","imageUrl":"https://static.toss.im/ml-product/home-appliance-area.png","imageBackgroundColor":"#899DAF","imageBackground":{"dark":"#25478C","light":"#90C2FF"},"depth":0,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":null,"companyCount":167,"subItems":null,"fluctuations":null},{"id":113,"title":"생활가전","imageUrl":"https://static.toss.im/ml-product/washing-machine-area.png","imageBackgroundColor":"#899DAF","imageBackground":{"dark":"#25478C","light":"#90C2FF"},"depth":1,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":111,"companyCount":68,"subItems":null,"fluctuations":null},{"id":115,"title":"미세먼지가전","imageUrl":"https://static.toss.im/ml-product/air-purifier-area.png","imageBackgroundColor":"#AF9572","imageBackground":{"dark":"#135338","light":"#AEEFD5"},"depth":2,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":113,"companyCount":21,"subItems":null,"fluctuations":null},{"id":117,"title":"냉방가전","imageUrl":"https://static.toss.im/ml-product/fan-area.png","imageBackgroundColor":"#6CA1EA","imageBackground":{"dark":"#25478C","light":"#90C2FF"},"depth":2,"summary":null,"description":null,"jpTitle":null,"jpSummary":null,"jpDescription":null,"parentId":113,"companyCount":19,"subItems":null,"fluctuations":null},{"id":119,"ti
+
+### POST companies companyCodes [500] https://wts-info-api.tossinvest.com/api/v1/companies
+{"error":{"statusCode":500,"code":null,"message":null}}
+
+### POST companies productCodes [500] https://wts-info-api.tossinvest.com/api/v1/companies
+{"error":{"statusCode":500,"code":null,"message":null}}
+
+### JS 번들 30개
+/api/v1/brief/market/summary
+/api/v1/dashboard/wts/overview/ai-signals/latest
+/api/v1/dashboard/wts/overview/ai-signals/personalized
+/api/v1/earning-call/major-companies
+/api/v1/lending/revenue/account/summary
+/api/v1/pension/frontend/report/summary
+/api/v1/transfer-income-payments/summary
+/api/v1/transfer-income/profit-loss/summary
+/api/v1/transfer-income/report/history/calculate-summary
+/api/v1/user-profiles
+/api/v1/user-profiles/active
+/api/v1/user-profiles/generate-nickname
+/api/v1/user-profiles/pinned-comments/recommend
+/api/v1/user-profiles/relation/alimy
+/api/v1/user-profiles/relation/alimy/shareholding/badge
+/api/v1/user-profiles/represent
+/api/v1/user-profiles/verify/nickname
+/api/v1/user-reactions/summaries
+/api/v2/dashboard/wts/overview/calendar/economic-events
+/api/v2/lending/revenue/account/summary
+/api/v2/user-profiles
+/api/v4/dashboard/wts/overview/indicator
+/api/v1/dashboard/wts/overview/margin
+/api/v1/user-profiles/badge/update
+/api/v1/user-profiles/block/permanently
+/api/v1/user-profiles/create
+/api/v1/user-profiles/friends
+/api/v1/user-profiles/update
+/api/v1/paper/education/summary
+/api/v1/search-all/auto-complete/company
+/api/v1/dashboard/wts/overview/ai-signals
+/api/v2/dashboard/wts/overview/tics/ranking
+/api/v1/my-assets/transfer-income/overseas/summary
+/api/v1/user-profiles/hidden-count
+/api/v1/profit/overview
+/api/v1/profit/type/overview
+/api/v1/community/profile/top-ranking
+/api/v1/dashboard/wts/overview/trading-info
+/api/v1/dashboard/wts/overview/ai-signals/detail
+/api/v1/user-profiles/details/common
+/api/v2/user-profiles/hidden
+/api/v1/my-assets/summaries/deposit-notice
+/api/v3/my-assets/summaries/markets/all/overview
+/api/v1/my-assets/summaries/markets/{market}/withdrawable-amount
+/api/v3/my-assets/transactions/markets/{market}/overview
+/api/v1/dashboard/wts/overview/signals
+/api/v2/dashboard/wts/overview/ranking
+/api/v1/trading/cashback/monthly-summary
+/api/v1/stock-infos/filings/companies/${t}/report/${e}
+
+### 위키 삼성전자 [200] https://ko.wikipedia.org/api/rest_v1/page/summary/%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90
+{"type":"standard","title":"삼성전자","displaytitle":"<span lang=\"ko\" dir=\"ltr\"><span class=\"mw-page-title-main\">삼성전자</span></span>","namespace":{"id":0,"text":""},"wikibase_item":"Q20718","titles":{"canonical":"삼성전자","normalized":"삼성전자","display":"<span lang=\"ko\" dir=\"ltr\"><span class=\"mw-page-title-main\">삼성전자</span></span>"},"pageid":30945,"thumbnail":{"source":"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Samsung_headquarters.jpg/330px-Samsung_headquarters.jpg?utm_source=ko.wikipedia.org&utm_campaign=api&utm_content=thumbnail","width":330,"height":262},"originalimage":{"source":"https://upload.wikimedia.org/wikipedia/commons/e/e2/Samsung_headquarters.jpg?utm_source=ko.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled","width":3594,"height":2848},"lang":"ko","dir":"ltr","revision":"42460859","tid":"305b7d97-acc6-11f1-bfb2-d74e6c41b224","timestamp":"2026-09-10T03:17:44Z","description":"대한민국의 다국적 전자기업","description_source":"central","content_urls":{"desktop":{"page":"https://ko.wikipedia.org/wiki/%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90","revisions":"https://ko.wikipedia.org/wiki/%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90?action=history","edit":"https://ko.wik
+
+### 위키 한미반도체 [200] https://ko.wikipedia.org/api/rest_v1/page/summary/%ED%95%9C%EB%AF%B8%EB%B0%98%EB%8F%84%EC%B2%B4
+{"type":"standard","title":"한미반도체","displaytitle":"<span lang=\"ko\" dir=\"ltr\"><span class=\"mw-page-title-main\">한미반도체</span></span>","namespace":{"id":0,"text":""},"wikibase_item":"Q131188043","titles":{"canonical":"한미반도체","normalized":"한미반도체","display":"<span lang=\"ko\" dir=\"ltr\"><span class=\"mw-page-title-main\">한미반도체</span></span>"},"pageid":3730792,"thumbnail":{"source":"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/HANMI_Semiconductor_Factory_1%282026%29.png/330px-HANMI_Semiconductor_Factory_1%282026%29.png?utm_source=ko.wikipedia.org&utm_campaign=api&utm_content=thumbnail","width":330,"height":178},"originalimage":{"source":"https://upload.wikimedia.org/wikipedia/commons/e/ea/HANMI_Semiconductor_Factory_1%282026%29.png?utm_source=ko.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled","width":2414,"height":1301},"lang":"ko","dir":"ltr","revision":"42505297","tid":"bd6a7da6-b256-11f1-9c6d-503953f4e117","timestamp":"2026-09-17T05:15:04Z","description":"대한민국의 반도체 기업","description_source":"central","content_urls":{"desktop":{"page":"https://ko.wikipedia.org/wiki/%ED%95%9C%EB%AF%B8%EB%B0%98%EB%8F%84%EC%B2%B4","revisions":"https://ko.wikipedia.org/wiki/
+
+### 위키 이오테크닉스 [200] https://ko.wikipedia.org/api/rest_v1/page/summary/%EC%9D%B4%EC%98%A4%ED%85%8C%ED%81%AC%EB%8B%89%EC%8A%A4
+{"type":"standard","title":"이오테크닉스","displaytitle":"<span lang=\"ko\" dir=\"ltr\"><span class=\"mw-page-title-main\">이오테크닉스</span></span>","namespace":{"id":0,"text":""},"wikibase_item":"Q131188089","titles":{"canonical":"이오테크닉스","normalized":"이오테크닉스","display":"<span lang=\"ko\" dir=\"ltr\"><span class=\"mw-page-title-main\">이오테크닉스</span></span>"},"pageid":3732980,"lang":"ko","dir":"ltr","revision":"41052265","tid":"409700f2-e200-11f0-9db5-b5b839184de0","timestamp":"2025-12-26T02:11:56Z","content_urls":{"desktop":{"page":"https://ko.wikipedia.org/wiki/%EC%9D%B4%EC%98%A4%ED%85%8C%ED%81%AC%EB%8B%89%EC%8A%A4","revisions":"https://ko.wikipedia.org/wiki/%EC%9D%B4%EC%98%A4%ED%85%8C%ED%81%AC%EB%8B%89%EC%8A%A4?action=history","edit":"https://ko.wikipedia.org/wiki/%EC%9D%B4%EC%98%A4%ED%85%8C%ED%81
+
+### 야후 assetProfile [429] https://query1.finance.yahoo.com/v10/finance/quoteSummary/NVDA?modules=assetProfile
+Too Many Requests
