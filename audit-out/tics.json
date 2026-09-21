@@ -1,1 +1,2702 @@
-[]
+[
+ {
+  "id": "1",
+  "title": "운송",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 440
+ },
+ {
+  "id": "3",
+  "title": "항공사",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": null,
+  "count": 39
+ },
+ {
+  "id": "85",
+  "title": "우주항공",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": "항공기∙발사체∙인공위성∙우주왕복선∙우주정거장 등을 제작하고 발사하는 데 관련된 회사",
+  "count": 139
+ },
+ {
+  "id": "239",
+  "title": "물류",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": null,
+  "count": 94
+ },
+ {
+  "id": "819",
+  "title": "택배",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": "",
+  "count": 9
+ },
+ {
+  "id": "265",
+  "title": "해상운송",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": null,
+  "count": 92
+ },
+ {
+  "id": "275",
+  "title": "철도",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": null,
+  "count": 24
+ },
+ {
+  "id": "279",
+  "title": "버스",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": null,
+  "count": 4
+ },
+ {
+  "id": "609",
+  "title": "드론",
+  "depth": 1,
+  "parentId": "1",
+  "parentTitle": "운송",
+  "summary": "에어택시, 군사용 드론, 산업용 드론 등을 제조하거나 관련 서비스를 제공하는 회사들",
+  "count": 28
+ },
+ {
+  "id": "5",
+  "title": "방위산업물자",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "국가를 방위하는 데 필요한 무기, 장비품, 기타 물자를 생산하는 기업",
+  "count": 137
+ },
+ {
+  "id": "7",
+  "title": "여행",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 118
+ },
+ {
+  "id": "9",
+  "title": "호텔과 리조트",
+  "depth": 1,
+  "parentId": "7",
+  "parentTitle": "여행",
+  "summary": null,
+  "count": 45
+ },
+ {
+  "id": "45",
+  "title": "렌터카",
+  "depth": 1,
+  "parentId": "7",
+  "parentTitle": "여행",
+  "summary": null,
+  "count": 8
+ },
+ {
+  "id": "353",
+  "title": "여행플랫폼",
+  "depth": 1,
+  "parentId": "7",
+  "parentTitle": "여행",
+  "summary": null,
+  "count": 30
+ },
+ {
+  "id": "369",
+  "title": "카지노",
+  "depth": 1,
+  "parentId": "7",
+  "parentTitle": "여행",
+  "summary": null,
+  "count": 28
+ },
+ {
+  "id": "11",
+  "title": "의류",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 179
+ },
+ {
+  "id": "13",
+  "title": "의류제조",
+  "depth": 1,
+  "parentId": "11",
+  "parentTitle": "의류",
+  "summary": null,
+  "count": 29
+ },
+ {
+  "id": "15",
+  "title": "의류브랜드",
+  "depth": 1,
+  "parentId": "11",
+  "parentTitle": "의류",
+  "summary": null,
+  "count": 102
+ },
+ {
+  "id": "271",
+  "title": "섬유",
+  "depth": 1,
+  "parentId": "11",
+  "parentTitle": "의류",
+  "summary": "원사, 원단을 만들거나 수입해서 의류 제조사에 납품하는 회사",
+  "count": 26
+ },
+ {
+  "id": "17",
+  "title": "전자부품",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 145
+ },
+ {
+  "id": "753",
+  "title": "가전부품",
+  "depth": 1,
+  "parentId": "17",
+  "parentTitle": "전자부품",
+  "summary": "",
+  "count": 27
+ },
+ {
+  "id": "23",
+  "title": "화장품",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 98
+ },
+ {
+  "id": "25",
+  "title": "화장품제조",
+  "depth": 1,
+  "parentId": "23",
+  "parentTitle": "화장품",
+  "summary": null,
+  "count": 46
+ },
+ {
+  "id": "27",
+  "title": "화장품브랜드",
+  "depth": 1,
+  "parentId": "23",
+  "parentTitle": "화장품",
+  "summary": null,
+  "count": 47
+ },
+ {
+  "id": "29",
+  "title": "생활용품",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 99
+ },
+ {
+  "id": "395",
+  "title": "그릇",
+  "depth": 1,
+  "parentId": "29",
+  "parentTitle": "생활용품",
+  "summary": null,
+  "count": 1
+ },
+ {
+  "id": "543",
+  "title": "마스크",
+  "depth": 1,
+  "parentId": "29",
+  "parentTitle": "생활용품",
+  "summary": null,
+  "count": 11
+ },
+ {
+  "id": "31",
+  "title": "의료",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "병원, 의료기기, 제약회사 등 사람의 건강 유지, 회복, 촉진을 위한 활동과 관련된 회사",
+  "count": 954
+ },
+ {
+  "id": "779",
+  "title": "제약",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "사람의 생명과 건강을 지키기 위해 합성신약이나 복제약, 원료를 연구하는 회사",
+  "count": 327
+ },
+ {
+  "id": "781",
+  "title": "동물용의약품",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "",
+  "count": 26
+ },
+ {
+  "id": "783",
+  "title": "건강기능식품",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "더 건강한 삶을 위한 건강기능식품과 기능성 원료를 연구하는 회사들",
+  "count": 67
+ },
+ {
+  "id": "785",
+  "title": "전문의약품",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "병원의 처방(처방전)을 통해 살 수 있는 의약품",
+  "count": 173
+ },
+ {
+  "id": "787",
+  "title": "일반의약품",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "처방전이 없이도 살 수 있는 의약품",
+  "count": 41
+ },
+ {
+  "id": "789",
+  "title": "의료기기",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "의료와 바이오, IT기술을 결합해 혁신적인 의료장비나 소재 및 서비스를 개발하는 회사들",
+  "count": 430
+ },
+ {
+  "id": "791",
+  "title": "진단기기",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "",
+  "count": 105
+ },
+ {
+  "id": "793",
+  "title": "치과의료기기",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "임플란트, 레진, 치아용 3D스캐너 등 치과 소모품과 장비 제조사들",
+  "count": 27
+ },
+ {
+  "id": "795",
+  "title": "보톡스와 필러",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": null,
+  "count": 14
+ },
+ {
+  "id": "797",
+  "title": "미용의료기기",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "",
+  "count": 21
+ },
+ {
+  "id": "799",
+  "title": "영상진단기기",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "X-ray, MRI, 내시경 등 의료용 영상 진단장비와 소프트웨어 제조사들",
+  "count": 34
+ },
+ {
+  "id": "801",
+  "title": "안과의료기기",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "안구, 안결, 렌즈, 시력보정 등 안과에서 사용",
+  "count": 14
+ },
+ {
+  "id": "803",
+  "title": "정형외과의료기기",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "척추, 인공관절, 인공연골 등 정형외과에서 사용",
+  "count": 30
+ },
+ {
+  "id": "925",
+  "title": "의료서비스",
+  "depth": 1,
+  "parentId": "31",
+  "parentTitle": "의료",
+  "summary": "원격의료 솔루션, 건강관리 프로그램, 의료인력 서비스, 의료 폐기물 등",
+  "count": 163
+ },
+ {
+  "id": "35",
+  "title": "바이오",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "유전자의 재조합이나 세포 융합, 핵 이식 등의 생명 공학을 이용하여 새로운 약품 및 품종을 개발하는 회사",
+  "count": 892
+ },
+ {
+  "id": "37",
+  "title": "바이오신약",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": "세포배양이나 유전자 재조합으로 세상에 없는 혁신신약을 개발하고 기술을 수출하는 회사들",
+  "count": 747
+ },
+ {
+  "id": "807",
+  "title": "항암바이오신약",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": "",
+  "count": 237
+ },
+ {
+  "id": "809",
+  "title": "치매바이오신약",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": "",
+  "count": 30
+ },
+ {
+  "id": "811",
+  "title": "줄기세포바이오신약",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": null,
+  "count": 63
+ },
+ {
+  "id": "311",
+  "title": "바이오시밀러",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": "오리지널 바이오 의약품을 복제하여, 저렴한 가격으로 글로벌 시장에 보급하기 위해 노력하는 회사들",
+  "count": 19
+ },
+ {
+  "id": "813",
+  "title": "바이오서비스",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": "(신설한 바이오서비스는 솔루션 제공, 바이오 장비 및 기기공급, 검체분석, 바이오 시약, 검체시험 등의 업무 수행하는 업체)",
+  "count": 89
+ },
+ {
+  "id": "815",
+  "title": "CMO",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": "제약업체의 주문을 받아 위탁생산(CMO) 또는 위탁개발 및 생산(CDMO) 서비스를 제공하는 회사들",
+  "count": 20
+ },
+ {
+  "id": "817",
+  "title": "CRO",
+  "depth": 1,
+  "parentId": "35",
+  "parentTitle": "바이오",
+  "summary": "제약업체의 주문을 받아 위탁연구, 임상수탁 등을 진행하는 회사",
+  "count": 19
+ },
+ {
+  "id": "39",
+  "title": "교육",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 97
+ },
+ {
+  "id": "41",
+  "title": "교육서비스",
+  "depth": 1,
+  "parentId": "39",
+  "parentTitle": "교육",
+  "summary": null,
+  "count": 79
+ },
+ {
+  "id": "43",
+  "title": "초중고학원",
+  "depth": 1,
+  "parentId": "39",
+  "parentTitle": "교육",
+  "summary": null,
+  "count": 8
+ },
+ {
+  "id": "299",
+  "title": "성인교육학원",
+  "depth": 1,
+  "parentId": "39",
+  "parentTitle": "교육",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "355",
+  "title": "영어학원",
+  "depth": 1,
+  "parentId": "39",
+  "parentTitle": "교육",
+  "summary": null,
+  "count": 9
+ },
+ {
+  "id": "301",
+  "title": "교육출판",
+  "depth": 1,
+  "parentId": "39",
+  "parentTitle": "교육",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "371",
+  "title": "교육장비",
+  "depth": 1,
+  "parentId": "39",
+  "parentTitle": "교육",
+  "summary": null,
+  "count": 11
+ },
+ {
+  "id": "47",
+  "title": "종이",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 36
+ },
+ {
+  "id": "373",
+  "title": "백판지",
+  "depth": 1,
+  "parentId": "47",
+  "parentTitle": "종이",
+  "summary": "주로 과자, 배달음식 등의 포장 상자에 사용되는 백판지를 만드는 회사 ",
+  "count": 5
+ },
+ {
+  "id": "379",
+  "title": "골판지",
+  "depth": 1,
+  "parentId": "47",
+  "parentTitle": "종이",
+  "summary": "주로 택배박스에 사용되는 골판지를 만드는 회사",
+  "count": 13
+ },
+ {
+  "id": "49",
+  "title": "음식료",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 455
+ },
+ {
+  "id": "51",
+  "title": "식품포장재",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 23
+ },
+ {
+  "id": "377",
+  "title": "우유팩",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 3
+ },
+ {
+  "id": "457",
+  "title": "라면포장지",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 2
+ },
+ {
+  "id": "127",
+  "title": "담배",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 17
+ },
+ {
+  "id": "151",
+  "title": "술",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 30
+ },
+ {
+  "id": "153",
+  "title": "알콜",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 5
+ },
+ {
+  "id": "159",
+  "title": "소주",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 4
+ },
+ {
+  "id": "429",
+  "title": "맥주",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 8
+ },
+ {
+  "id": "161",
+  "title": "음료",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 59
+ },
+ {
+  "id": "303",
+  "title": "탄산음료",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 14
+ },
+ {
+  "id": "347",
+  "title": "커피",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 19
+ },
+ {
+  "id": "449",
+  "title": "우유",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 5
+ },
+ {
+  "id": "197",
+  "title": "돼지고기",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 11
+ },
+ {
+  "id": "225",
+  "title": "식자재유통",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 34
+ },
+ {
+  "id": "227",
+  "title": "음식점브랜드",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 66
+ },
+ {
+  "id": "231",
+  "title": "간편식",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 29
+ },
+ {
+  "id": "441",
+  "title": "즉석밥",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 2
+ },
+ {
+  "id": "445",
+  "title": "라면",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 3
+ },
+ {
+  "id": "281",
+  "title": "사료",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 30
+ },
+ {
+  "id": "297",
+  "title": "빵",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 7
+ },
+ {
+  "id": "351",
+  "title": "수산물",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "393",
+  "title": "수산가공식품",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 10
+ },
+ {
+  "id": "451",
+  "title": "참치원양어선",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": "참치어획 사업을 하는 기업",
+  "count": 5
+ },
+ {
+  "id": "433",
+  "title": "과자",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 24
+ },
+ {
+  "id": "435",
+  "title": "설탕",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 5
+ },
+ {
+  "id": "437",
+  "title": "밀가루",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 10
+ },
+ {
+  "id": "439",
+  "title": "콩",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 19
+ },
+ {
+  "id": "443",
+  "title": "식품첨가물",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "447",
+  "title": "아이스크림",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 5
+ },
+ {
+  "id": "453",
+  "title": "닭고기",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 11
+ },
+ {
+  "id": "547",
+  "title": "음식배달플랫폼",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 8
+ },
+ {
+  "id": "613",
+  "title": "대마초",
+  "depth": 1,
+  "parentId": "49",
+  "parentTitle": "음식료",
+  "summary": null,
+  "count": 33
+ },
+ {
+  "id": "53",
+  "title": "자동차",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 520
+ },
+ {
+  "id": "55",
+  "title": "자동차부품",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 274
+ },
+ {
+  "id": "57",
+  "title": "자동차전자장치",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": "자율주행 등에 필요한 자동차 전장 부품을 만드는 회사 ",
+  "count": 76
+ },
+ {
+  "id": "71",
+  "title": "자동차공조시스템",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": "자동차 에어컨과 히터, 냉각기 등 차량 공기조절시스템 분야의 기술력을 보유한 회사들",
+  "count": 11
+ },
+ {
+  "id": "697",
+  "title": "자동차차체",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": "자동차의 외부 및 내부를 구성하는 바디 등의 부품을 만드는 회사들",
+  "count": 52
+ },
+ {
+  "id": "699",
+  "title": "자동차섀시",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": "자동차 차체를 제외한 엔진, 동력전달장치 등 부품을 만드는 회사들",
+  "count": 67
+ },
+ {
+  "id": "701",
+  "title": "타이어",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 13
+ },
+ {
+  "id": "59",
+  "title": "전기차부품",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 33
+ },
+ {
+  "id": "291",
+  "title": "자동차브랜드",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 55
+ },
+ {
+  "id": "295",
+  "title": "전기차",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 109
+ },
+ {
+  "id": "621",
+  "title": "전기차충전소",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 11
+ },
+ {
+  "id": "561",
+  "title": "자동차유통",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 40
+ },
+ {
+  "id": "607",
+  "title": "오토바이",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "623",
+  "title": "수소차",
+  "depth": 1,
+  "parentId": "53",
+  "parentTitle": "자동차",
+  "summary": null,
+  "count": 3
+ },
+ {
+  "id": "63",
+  "title": "디스플레이",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 168
+ },
+ {
+  "id": "65",
+  "title": "LED",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": "전류를 빛으로 변환시키는 반도체소자인 LED를 생산하는 회사",
+  "count": 31
+ },
+ {
+  "id": "105",
+  "title": "디스플레이부품소재",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": "디스플레이에 들어가는 부품 및 소재를 납품하는 회사",
+  "count": 66
+ },
+ {
+  "id": "133",
+  "title": "LCD부품소재",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": "LCD(액정표시장치)에 들어가는 부품 및 소재를 납품하는 회사",
+  "count": 38
+ },
+ {
+  "id": "135",
+  "title": "OLED부품소재",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": "전류가 흐르면 스스로 빛을 내는 OLED에 들어가는 부품 및 소재를 납품하는 회사",
+  "count": 35
+ },
+ {
+  "id": "207",
+  "title": "디스플레이패널",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": null,
+  "count": 9
+ },
+ {
+  "id": "305",
+  "title": "디스플레이장비",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": null,
+  "count": 63
+ },
+ {
+  "id": "307",
+  "title": "LCD장비",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": null,
+  "count": 27
+ },
+ {
+  "id": "323",
+  "title": "OLED장비",
+  "depth": 1,
+  "parentId": "63",
+  "parentTitle": "디스플레이",
+  "summary": null,
+  "count": 43
+ },
+ {
+  "id": "67",
+  "title": "기계",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 348
+ },
+ {
+  "id": "69",
+  "title": "산업용 기계",
+  "depth": 1,
+  "parentId": "67",
+  "parentTitle": "기계",
+  "summary": "자동화 설비, 물류장비 등을 포함한 산업용 기계 제조 업체",
+  "count": 247
+ },
+ {
+  "id": "263",
+  "title": "플랜트기자재",
+  "depth": 1,
+  "parentId": "67",
+  "parentTitle": "기계",
+  "summary": "터빈, 발전기, 파이프, 설비자재 등의 플랜트용 기계와 자재 회사",
+  "count": 44
+ },
+ {
+  "id": "73",
+  "title": "농업용 기계",
+  "depth": 1,
+  "parentId": "67",
+  "parentTitle": "기계",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "707",
+  "title": "로봇",
+  "depth": 1,
+  "parentId": "67",
+  "parentTitle": "기계",
+  "summary": "로봇, 스마트팩토리, 자동화 설비 등과 관련된 기업들",
+  "count": 80
+ },
+ {
+  "id": "77",
+  "title": "스마트폰",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 134
+ },
+ {
+  "id": "79",
+  "title": "스마트폰부품",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": null,
+  "count": 108
+ },
+ {
+  "id": "95",
+  "title": "스마트폰MLCC",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "스마트폰 내 전류가 일정하게 흐르도록 조절하는 부품인 MLCC 제조사들",
+  "count": 4
+ },
+ {
+  "id": "103",
+  "title": "스마트폰카메라",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": null,
+  "count": 26
+ },
+ {
+  "id": "175",
+  "title": "스마트폰FPCB",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "스마트폰의 메인보드로 주로 사용되는 기판(FPCB) 제조사들",
+  "count": 15
+ },
+ {
+  "id": "755",
+  "title": "스마트폰안테나",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "안테나, RF모듈 등",
+  "count": 6
+ },
+ {
+  "id": "757",
+  "title": "스마트폰충전",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "",
+  "count": 8
+ },
+ {
+  "id": "759",
+  "title": "스마트폰화면",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "필름, 패널, 터치스크린, 강화유리 등 관련 회사들",
+  "count": 16
+ },
+ {
+  "id": "761",
+  "title": "스마트폰폴더블",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "힌지 등 폴더블폰 관련 부품 제조사",
+  "count": 5
+ },
+ {
+  "id": "763",
+  "title": "스마트폰인증",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "",
+  "count": 2
+ },
+ {
+  "id": "765",
+  "title": "스마트폰액세서리",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": "스마트폰 액세서리 및 주변기기",
+  "count": 8
+ },
+ {
+  "id": "203",
+  "title": "스마트폰제조",
+  "depth": 1,
+  "parentId": "77",
+  "parentTitle": "스마트폰",
+  "summary": null,
+  "count": 23
+ },
+ {
+  "id": "81",
+  "title": "통신",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "이동통신사 혹은 통신장비를 판매하는 회사들",
+  "count": 261
+ },
+ {
+  "id": "83",
+  "title": "통신장비",
+  "depth": 1,
+  "parentId": "81",
+  "parentTitle": "통신",
+  "summary": null,
+  "count": 146
+ },
+ {
+  "id": "747",
+  "title": "유선장비",
+  "depth": 1,
+  "parentId": "81",
+  "parentTitle": "통신",
+  "summary": "유선 통신장비 관련 기업들",
+  "count": 62
+ },
+ {
+  "id": "749",
+  "title": "무선장비",
+  "depth": 1,
+  "parentId": "81",
+  "parentTitle": "통신",
+  "summary": "무선 통신장비 관련 기업들",
+  "count": 80
+ },
+ {
+  "id": "403",
+  "title": "이동통신사",
+  "depth": 1,
+  "parentId": "81",
+  "parentTitle": "통신",
+  "summary": null,
+  "count": 44
+ },
+ {
+  "id": "751",
+  "title": "알뜰폰",
+  "depth": 1,
+  "parentId": "81",
+  "parentTitle": "통신",
+  "summary": "알뜰폰(이동통신 재판매) 사업자",
+  "count": 4
+ },
+ {
+  "id": "87",
+  "title": "IT",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "정보화 시스템 구축에 필요한 기술과 수단을 제공하는 회사",
+  "count": 1297
+ },
+ {
+  "id": "89",
+  "title": "IT솔루션구축",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": "기업들의 IT 시스템을 구축해주는 솔루션 업체 ",
+  "count": 187
+ },
+ {
+  "id": "539",
+  "title": "컨택센터",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": "고객상담업무 스마트 솔루션을 지원하거나 직접 개발 운영하는 기업",
+  "count": 9
+ },
+ {
+  "id": "359",
+  "title": "인터넷",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": null,
+  "count": 159
+ },
+ {
+  "id": "389",
+  "title": "소프트웨어",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": null,
+  "count": 319
+ },
+ {
+  "id": "401",
+  "title": "보안",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": null,
+  "count": 157
+ },
+ {
+  "id": "533",
+  "title": "CCTV",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "475",
+  "title": "클라우드",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": "인터넷에 접속하기만 하면 언제 어디서든 데이터를 이용할 수 있도록 클라우드 서비스를 제공하는 기업",
+  "count": 156
+ },
+ {
+  "id": "823",
+  "title": "인공지능",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": "인공지능(AI) 분야와 관련된 기업들",
+  "count": 197
+ },
+ {
+  "id": "956",
+  "title": "양자컴퓨터",
+  "depth": 1,
+  "parentId": "87",
+  "parentTitle": "IT",
+  "summary": "양자컴퓨팅 하드웨어, 소프트웨어, 서비스를 개발하거나 제공하는 업체",
+  "count": 27
+ },
+ {
+  "id": "91",
+  "title": "전력에너지",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "다양한 수단을 통해 전기를 생산하는 회사 혹은 전기를 제어하는 회사",
+  "count": 463
+ },
+ {
+  "id": "93",
+  "title": "전기설비",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": "전기를 흐르게 하기 위한 전선, 차단기, 변압기 등 전기설비 제조사들",
+  "count": 86
+ },
+ {
+  "id": "107",
+  "title": "신재생에너지",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": null,
+  "count": 187
+ },
+ {
+  "id": "109",
+  "title": "태양광에너지",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": null,
+  "count": 61
+ },
+ {
+  "id": "335",
+  "title": "풍력에너지",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": null,
+  "count": 19
+ },
+ {
+  "id": "383",
+  "title": "ESS",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": "신재생에너지로 얻은 전력을 저장하여 필요 시마다 쓸 수 있는 에너지 저장장치(ESS) 제조사들",
+  "count": 23
+ },
+ {
+  "id": "611",
+  "title": "수소에너지",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": null,
+  "count": 19
+ },
+ {
+  "id": "625",
+  "title": "바이오디젤",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": null,
+  "count": 7
+ },
+ {
+  "id": "261",
+  "title": "화력발전",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": null,
+  "count": 34
+ },
+ {
+  "id": "333",
+  "title": "원자력발전",
+  "depth": 1,
+  "parentId": "91",
+  "parentTitle": "전력에너지",
+  "summary": null,
+  "count": 63
+ },
+ {
+  "id": "97",
+  "title": "금융",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 1361
+ },
+ {
+  "id": "99",
+  "title": "벤처캐피탈",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "잠재성 있는 스타트업이나 벤처기업에 주식투자 형식으로 투자하여 수익을 내는 회사들",
+  "count": 72
+ },
+ {
+  "id": "247",
+  "title": "결제서비스",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "온/오프라인 결제사업(PG,VAN)과 간편결제서비스를 제공하는 회사들",
+  "count": 76
+ },
+ {
+  "id": "273",
+  "title": "은행",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 358
+ },
+ {
+  "id": "719",
+  "title": "시중은행",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "",
+  "count": 68
+ },
+ {
+  "id": "721",
+  "title": "지역은행",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "특정 지역에 거점을 두고 주로 활동하는 은행",
+  "count": 230
+ },
+ {
+  "id": "363",
+  "title": "증권",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 109
+ },
+ {
+  "id": "459",
+  "title": "카드",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 14
+ },
+ {
+  "id": "461",
+  "title": "금융기기",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 17
+ },
+ {
+  "id": "463",
+  "title": "금융그룹",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "은행·보험·증권 등 2개 이상의 금융회사가 계열관계로 이어진 그룹사",
+  "count": 81
+ },
+ {
+  "id": "465",
+  "title": "신용평가",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "개인이나 기업의 신용정보를 관리하고 판매하는 회사",
+  "count": 10
+ },
+ {
+  "id": "467",
+  "title": "보험",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 174
+ },
+ {
+  "id": "723",
+  "title": "생명보험",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "",
+  "count": 41
+ },
+ {
+  "id": "725",
+  "title": "손해보험",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "",
+  "count": 69
+ },
+ {
+  "id": "473",
+  "title": "저축은행",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": "서민, 소규모기업 등의 저축성 예금 증대 및 대출을 위한 제2금융권 기관",
+  "count": 50
+ },
+ {
+  "id": "565",
+  "title": "금융상품거래소",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 24
+ },
+ {
+  "id": "605",
+  "title": "암호화폐",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 275
+ },
+ {
+  "id": "955",
+  "title": "비트코인",
+  "depth": 1,
+  "parentId": "97",
+  "parentTitle": "금융",
+  "summary": null,
+  "count": 97
+ },
+ {
+  "id": "101",
+  "title": "유통",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 302
+ },
+ {
+  "id": "211",
+  "title": "대형마트",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": null,
+  "count": 31
+ },
+ {
+  "id": "213",
+  "title": "백화점",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": null,
+  "count": 12
+ },
+ {
+  "id": "215",
+  "title": "온라인쇼핑",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": null,
+  "count": 121
+ },
+ {
+  "id": "241",
+  "title": "쇼핑몰구축",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": "온라인쇼핑몰 제작부터 운영에 필요한 인프라를 제공하는 회사",
+  "count": 13
+ },
+ {
+  "id": "221",
+  "title": "홈쇼핑",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": null,
+  "count": 3
+ },
+ {
+  "id": "223",
+  "title": "편의점",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": null,
+  "count": 11
+ },
+ {
+  "id": "235",
+  "title": "면세점",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": null,
+  "count": 6
+ },
+ {
+  "id": "253",
+  "title": "무역",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": null,
+  "count": 19
+ },
+ {
+  "id": "825",
+  "title": "전문점",
+  "depth": 1,
+  "parentId": "101",
+  "parentTitle": "유통",
+  "summary": "특정 상품군에 특화되어 이를 전문적으로 판매하는 기업들",
+  "count": 80
+ },
+ {
+  "id": "111",
+  "title": "가전제품",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 167
+ },
+ {
+  "id": "113",
+  "title": "생활가전",
+  "depth": 1,
+  "parentId": "111",
+  "parentTitle": "가전제품",
+  "summary": null,
+  "count": 68
+ },
+ {
+  "id": "115",
+  "title": "미세먼지가전",
+  "depth": 1,
+  "parentId": "111",
+  "parentTitle": "가전제품",
+  "summary": null,
+  "count": 21
+ },
+ {
+  "id": "117",
+  "title": "냉방가전",
+  "depth": 1,
+  "parentId": "111",
+  "parentTitle": "가전제품",
+  "summary": null,
+  "count": 19
+ },
+ {
+  "id": "119",
+  "title": "주방가전",
+  "depth": 1,
+  "parentId": "111",
+  "parentTitle": "가전제품",
+  "summary": null,
+  "count": 26
+ },
+ {
+  "id": "391",
+  "title": "난방가전",
+  "depth": 1,
+  "parentId": "111",
+  "parentTitle": "가전제품",
+  "summary": null,
+  "count": 7
+ },
+ {
+  "id": "209",
+  "title": "컴퓨터와 주변기기",
+  "depth": 1,
+  "parentId": "111",
+  "parentTitle": "가전제품",
+  "summary": "노트북, 컴퓨터와 그에 필요한 모니터, 키보드, 마우스 등 주변기기를 생산하는 회사들",
+  "count": 96
+ },
+ {
+  "id": "123",
+  "title": "게임",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 125
+ },
+ {
+  "id": "125",
+  "title": "게임개발",
+  "depth": 1,
+  "parentId": "123",
+  "parentTitle": "게임",
+  "summary": null,
+  "count": 49
+ },
+ {
+  "id": "361",
+  "title": "게임플랫폼",
+  "depth": 1,
+  "parentId": "123",
+  "parentTitle": "게임",
+  "summary": null,
+  "count": 60
+ },
+ {
+  "id": "129",
+  "title": "화학",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 217
+ },
+ {
+  "id": "131",
+  "title": "화학제품",
+  "depth": 1,
+  "parentId": "129",
+  "parentTitle": "화학",
+  "summary": null,
+  "count": 144
+ },
+ {
+  "id": "703",
+  "title": "합성수지",
+  "depth": 1,
+  "parentId": "129",
+  "parentTitle": "화학",
+  "summary": "플라스틱의 원료가 되는 고분자 화학 물질 및 합성고무 등 화학제품 제조사",
+  "count": 39
+ },
+ {
+  "id": "705",
+  "title": "정밀화학",
+  "depth": 1,
+  "parentId": "129",
+  "parentTitle": "화학",
+  "summary": "특수 화학 제품을 생산하는 기업들",
+  "count": 89
+ },
+ {
+  "id": "157",
+  "title": "산업용 가스",
+  "depth": 1,
+  "parentId": "129",
+  "parentTitle": "화학",
+  "summary": "탄산가스, 액화가스 등의 산업용 가스를 생산하여 철강, 반도체 공장 등에 판매하는 회사들",
+  "count": 9
+ },
+ {
+  "id": "317",
+  "title": "비료와 농약",
+  "depth": 1,
+  "parentId": "129",
+  "parentTitle": "화학",
+  "summary": null,
+  "count": 25
+ },
+ {
+  "id": "423",
+  "title": "화학원료",
+  "depth": 1,
+  "parentId": "129",
+  "parentTitle": "화학",
+  "summary": "석유화학 기초유분(에틸렌, 프로필렌, 부타디엔 등)과 중간원료를 만드는 회사",
+  "count": 25
+ },
+ {
+  "id": "137",
+  "title": "엔터테인먼트",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 343
+ },
+ {
+  "id": "139",
+  "title": "방송",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 94
+ },
+ {
+  "id": "141",
+  "title": "방송콘텐츠장비",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 12
+ },
+ {
+  "id": "337",
+  "title": "유료방송",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": "케이블TV, IPTV, 유선방송, 위성방송사부터 케이블 프로그램을 제작하는 방송채널사용사업자",
+  "count": 21
+ },
+ {
+  "id": "341",
+  "title": "방송콘텐츠제작",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 34
+ },
+ {
+  "id": "167",
+  "title": "캐릭터",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 18
+ },
+ {
+  "id": "193",
+  "title": "광고",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 108
+ },
+ {
+  "id": "217",
+  "title": "영화",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 21
+ },
+ {
+  "id": "219",
+  "title": "영화관",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 7
+ },
+ {
+  "id": "339",
+  "title": "영화제작",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 13
+ },
+ {
+  "id": "243",
+  "title": "출판",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 13
+ },
+ {
+  "id": "309",
+  "title": "연예기획사",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 21
+ },
+ {
+  "id": "343",
+  "title": "음원",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 17
+ },
+ {
+  "id": "357",
+  "title": "웹툰",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 7
+ },
+ {
+  "id": "545",
+  "title": "동영상플랫폼",
+  "depth": 1,
+  "parentId": "137",
+  "parentTitle": "엔터테인먼트",
+  "summary": null,
+  "count": 55
+ },
+ {
+  "id": "143",
+  "title": "건설",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 488
+ },
+ {
+  "id": "145",
+  "title": "건설자재",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 180
+ },
+ {
+  "id": "237",
+  "title": "가구",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 38
+ },
+ {
+  "id": "397",
+  "title": "시멘트",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 31
+ },
+ {
+  "id": "399",
+  "title": "페인트",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 10
+ },
+ {
+  "id": "603",
+  "title": "목재",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 21
+ },
+ {
+  "id": "741",
+  "title": "마루",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "",
+  "count": 16
+ },
+ {
+  "id": "743",
+  "title": "창호",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "창호, 창문, 창틀, 샤시 등을 생산/판매하는 회사들",
+  "count": 13
+ },
+ {
+  "id": "745",
+  "title": "욕실",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "",
+  "count": 7
+ },
+ {
+  "id": "155",
+  "title": "부동산임대개발",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "부지나 부동산을 찾아 개발사업을 추진하거나 임대운영하여 수익을 내는 회사들 ",
+  "count": 55
+ },
+ {
+  "id": "185",
+  "title": "건설사",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 137
+ },
+ {
+  "id": "187",
+  "title": "아파트건설",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 35
+ },
+ {
+  "id": "189",
+  "title": "인프라건설",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "도로, 철도, 교량, 항만, 터널 등 사회기반시설을 짓는 건설사",
+  "count": 47
+ },
+ {
+  "id": "269",
+  "title": "플랜트건설",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "발전소, 정유공장, 제철소 등 자원을 생산하는 공장이나 복합설비를 짓는 건설사",
+  "count": 33
+ },
+ {
+  "id": "191",
+  "title": "건설장비",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "건설중장비와 건설장비 부품을 제조하는 회사, 플랜트용 기자재 회사들",
+  "count": 55
+ },
+ {
+  "id": "381",
+  "title": "건설장비부품",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 15
+ },
+ {
+  "id": "387",
+  "title": "건설중장비",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "포크레인같은 건설중장비나 굴삭기, 지게차 같은 소형건설기계를 제조하는 회사들",
+  "count": 18
+ },
+ {
+  "id": "283",
+  "title": "폐기물처리",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": "건설폐기물이나 사업장 폐기물을 소각하고 매립하는 환경회사들",
+  "count": 26
+ },
+ {
+  "id": "469",
+  "title": "부동산신탁",
+  "depth": 1,
+  "parentId": "143",
+  "parentTitle": "건설",
+  "summary": null,
+  "count": 4
+ },
+ {
+  "id": "147",
+  "title": "금속",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 522
+ },
+ {
+  "id": "149",
+  "title": "아연",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": null,
+  "count": 10
+ },
+ {
+  "id": "245",
+  "title": "철강",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": null,
+  "count": 112
+ },
+ {
+  "id": "767",
+  "title": "스테인리스",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": "",
+  "count": 13
+ },
+ {
+  "id": "769",
+  "title": "강관",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": "내부에 빈 공간이 있는 봉 형태의 철강 제품",
+  "count": 13
+ },
+ {
+  "id": "771",
+  "title": "강판",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": "강철로 만든 판",
+  "count": 16
+ },
+ {
+  "id": "773",
+  "title": "선재",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": "코일 형태로 감겨있는 강철 제품",
+  "count": 8
+ },
+ {
+  "id": "775",
+  "title": "봉형강",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": "철근처럼 길쭉한 형태로 뽑아낸 철강 제품",
+  "count": 9
+ },
+ {
+  "id": "417",
+  "title": "구리",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": null,
+  "count": 47
+ },
+ {
+  "id": "419",
+  "title": "알루미늄",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": null,
+  "count": 17
+ },
+ {
+  "id": "777",
+  "title": "광산개발",
+  "depth": 1,
+  "parentId": "147",
+  "parentTitle": "금속",
+  "summary": "금광 등 광산 개발 및 탐사 기업",
+  "count": 180
+ },
+ {
+  "id": "163",
+  "title": "여가생활",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 68
+ },
+ {
+  "id": "165",
+  "title": "골프",
+  "depth": 1,
+  "parentId": "163",
+  "parentTitle": "여가생활",
+  "summary": null,
+  "count": 13
+ },
+ {
+  "id": "229",
+  "title": "테마파크",
+  "depth": 1,
+  "parentId": "163",
+  "parentTitle": "여가생활",
+  "summary": null,
+  "count": 8
+ },
+ {
+  "id": "289",
+  "title": "자전거",
+  "depth": 1,
+  "parentId": "163",
+  "parentTitle": "여가생활",
+  "summary": null,
+  "count": 8
+ },
+ {
+  "id": "169",
+  "title": "반도체",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "반도체 물질과 반도체를 사용한 제품을 설계, 제조, 조립하는 회사, 반도체 장비회사, 부품소재 회사들",
+  "count": 576
+ },
+ {
+  "id": "171",
+  "title": "반도체부품소재",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "반도체를 제조할 때 필요한 부품과 소재를 만드는 회사들",
+  "count": 93
+ },
+ {
+  "id": "715",
+  "title": "반도체 전공정 소재",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "웨이퍼에 회로를 인쇄하여 반도체를 생산하는 전공정에 필요한 소재, 부품",
+  "count": 59
+ },
+ {
+  "id": "717",
+  "title": "반도체 후공정 소재",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "반도체를 조립, 테스트하고 최종 제품화하는 후공정에 필요한 소재, 부품",
+  "count": 26
+ },
+ {
+  "id": "173",
+  "title": "반도체장비",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "반도체 제조공정에 투입되는 기계와 장비를 만드는 회사들",
+  "count": 134
+ },
+ {
+  "id": "711",
+  "title": "반도체 전공정 장비",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "웨이퍼에 회로를 인쇄하여 반도체를 생산하는 전공정에 필요한 장비 제조사",
+  "count": 73
+ },
+ {
+  "id": "713",
+  "title": "반도체 후공정 장비",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "반도체를 조립, 테스트하고 최종 제품화하는 후공정에 필요한 장비 제조사",
+  "count": 51
+ },
+ {
+  "id": "177",
+  "title": "반도체패키징",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "생산된 반도체 칩을 테스트하고 포장하는 후공정 전문 회사들",
+  "count": 21
+ },
+ {
+  "id": "179",
+  "title": "반도체팹리스",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "반도체 설계를 전문으로 하는 개발회사들",
+  "count": 130
+ },
+ {
+  "id": "205",
+  "title": "반도체파운드리",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "반도체 설계업체의 주문을 받아 대신 생산하는 제조회사들",
+  "count": 27
+ },
+ {
+  "id": "553",
+  "title": "종합반도체",
+  "depth": 1,
+  "parentId": "169",
+  "parentTitle": "반도체",
+  "summary": "설계부터 생산까지 모든 반도체 생산 공정을 갖춘 기업",
+  "count": 73
+ },
+ {
+  "id": "183",
+  "title": "지주사",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "여러 계열사나 자회사를 지배할 수 있는 구조를 가진 회사들(OO홀딩스, OO지주 등)",
+  "count": 150
+ },
+ {
+  "id": "249",
+  "title": "원유",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "원유를 시추하거나 수입하고 정제, 판매하는 회사들",
+  "count": 293
+ },
+ {
+  "id": "251",
+  "title": "주유소",
+  "depth": 1,
+  "parentId": "249",
+  "parentTitle": "원유",
+  "summary": null,
+  "count": 20
+ },
+ {
+  "id": "421",
+  "title": "원유정제",
+  "depth": 1,
+  "parentId": "249",
+  "parentTitle": "원유",
+  "summary": "석유를 수입한 후 증류시켜서 LPG, 휘발유, 나프타, 등유, 경유 등으로 바꿔 판매하는 회사",
+  "count": 32
+ },
+ {
+  "id": "425",
+  "title": "윤활유",
+  "depth": 1,
+  "parentId": "249",
+  "parentTitle": "원유",
+  "summary": null,
+  "count": 6
+ },
+ {
+  "id": "549",
+  "title": "원유개발",
+  "depth": 1,
+  "parentId": "249",
+  "parentTitle": "원유",
+  "summary": null,
+  "count": 138
+ },
+ {
+  "id": "255",
+  "title": "가스에너지",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 250
+ },
+ {
+  "id": "257",
+  "title": "가스판매",
+  "depth": 1,
+  "parentId": "255",
+  "parentTitle": "가스에너지",
+  "summary": null,
+  "count": 39
+ },
+ {
+  "id": "385",
+  "title": "가스수입",
+  "depth": 1,
+  "parentId": "255",
+  "parentTitle": "가스에너지",
+  "summary": null,
+  "count": 2
+ },
+ {
+  "id": "551",
+  "title": "천연가스개발",
+  "depth": 1,
+  "parentId": "255",
+  "parentTitle": "가스에너지",
+  "summary": null,
+  "count": 100
+ },
+ {
+  "id": "619",
+  "title": "지역난방",
+  "depth": 1,
+  "parentId": "255",
+  "parentTitle": "가스에너지",
+  "summary": null,
+  "count": 5
+ },
+ {
+  "id": "327",
+  "title": "조선",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 62
+ },
+ {
+  "id": "329",
+  "title": "조선기자재",
+  "depth": 1,
+  "parentId": "327",
+  "parentTitle": "조선",
+  "summary": "배를 만들기 위해 필요한 선박용 기계와 부품, 각종 자재 등을 생산하고 공급하는 회사들",
+  "count": 38
+ },
+ {
+  "id": "331",
+  "title": "조선사",
+  "depth": 1,
+  "parentId": "327",
+  "parentTitle": "조선",
+  "summary": null,
+  "count": 13
+ },
+ {
+  "id": "557",
+  "title": "리츠",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 314
+ },
+ {
+  "id": "727",
+  "title": "주거용 리츠",
+  "depth": 1,
+  "parentId": "557",
+  "parentTitle": "리츠",
+  "summary": "아파트나 조립식 주택 등 주거 공간에 투자하는 리츠",
+  "count": 47
+ },
+ {
+  "id": "729",
+  "title": "오피스 리츠",
+  "depth": 1,
+  "parentId": "557",
+  "parentTitle": "리츠",
+  "summary": "",
+  "count": 52
+ },
+ {
+  "id": "731",
+  "title": "인프라 리츠",
+  "depth": 1,
+  "parentId": "557",
+  "parentTitle": "리츠",
+  "summary": "데이터센터, 공항, 병원 등 인프라에 투자하는 리츠",
+  "count": 53
+ },
+ {
+  "id": "733",
+  "title": "상업용 리츠",
+  "depth": 1,
+  "parentId": "557",
+  "parentTitle": "리츠",
+  "summary": "",
+  "count": 103
+ },
+ {
+  "id": "735",
+  "title": "문화시설 리츠",
+  "depth": 1,
+  "parentId": "557",
+  "parentTitle": "리츠",
+  "summary": "백화점, 쇼핑센터, 극장, 레스토랑 등에 투자하는 리츠",
+  "count": 26
+ },
+ {
+  "id": "737",
+  "title": "숙박 리츠",
+  "depth": 1,
+  "parentId": "557",
+  "parentTitle": "리츠",
+  "summary": "호텔, 리조트 등 숙박 시설에 투자하는 리츠",
+  "count": 17
+ },
+ {
+  "id": "739",
+  "title": "물류 리츠",
+  "depth": 1,
+  "parentId": "557",
+  "parentTitle": "리츠",
+  "summary": "물류센터, 창고 등에 투자하는 리츠",
+  "count": 13
+ },
+ {
+  "id": "571",
+  "title": "수자원",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 44
+ },
+ {
+  "id": "615",
+  "title": "농업",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 41
+ },
+ {
+  "id": "427",
+  "title": "농산물종자",
+  "depth": 1,
+  "parentId": "615",
+  "parentTitle": "농업",
+  "summary": null,
+  "count": 6
+ },
+ {
+  "id": "679",
+  "title": "배터리",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": null,
+  "count": 187
+ },
+ {
+  "id": "681",
+  "title": "배터리부품",
+  "depth": 1,
+  "parentId": "679",
+  "parentTitle": "배터리",
+  "summary": null,
+  "count": 25
+ },
+ {
+  "id": "683",
+  "title": "배터리소재",
+  "depth": 1,
+  "parentId": "679",
+  "parentTitle": "배터리",
+  "summary": "양극재, 음극재 등 배터리 생산에 필요한 소재를 만드는 기업들",
+  "count": 51
+ },
+ {
+  "id": "685",
+  "title": "배터리제조",
+  "depth": 1,
+  "parentId": "679",
+  "parentTitle": "배터리",
+  "summary": null,
+  "count": 25
+ },
+ {
+  "id": "687",
+  "title": "폐배터리재활용",
+  "depth": 1,
+  "parentId": "679",
+  "parentTitle": "배터리",
+  "summary": null,
+  "count": 7
+ },
+ {
+  "id": "689",
+  "title": "배터리장비",
+  "depth": 1,
+  "parentId": "679",
+  "parentTitle": "배터리",
+  "summary": "배터리 생산을 위해 필요한 장비(기계장치)를 만드는 회사들",
+  "count": 42
+ },
+ {
+  "id": "947",
+  "title": "경영지원",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "컨설팅, 비지니스솔루션, 인적관리 등",
+  "count": 92
+ },
+ {
+  "id": "949",
+  "title": "구인구직",
+  "depth": 1,
+  "parentId": "947",
+  "parentTitle": "경영지원",
+  "summary": "채용, 헤드헌팅, 인력솔루션 등",
+  "count": 22
+ },
+ {
+  "id": "951",
+  "title": "탄소저감",
+  "depth": 0,
+  "parentId": null,
+  "parentTitle": null,
+  "summary": "유해가스 저감 등 탈탄소 관련 사업을 영위하는 기업들(+친환경 테마 ETF)",
+  "count": 63
+ },
+ {
+  "id": "953",
+  "title": "탄소배출권",
+  "depth": 1,
+  "parentId": "951",
+  "parentTitle": "탄소저감",
+  "summary": "탄소배출권 판매를 통해 수익을 창출하는 기업들(+탄소배출권 관련 원자재 ETF)",
+  "count": 12
+ }
+]
