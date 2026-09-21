@@ -1,33 +1,28 @@
-/** 검증 28: 폰(큰 글자 포함)에서 주요 일정 타일의 제목·설명이 잘리지 않고 전부 보이는지, 머리글이 한 줄인지 */
+/** 검증 29: 되채우기 실행 → 산업 꼬리가 4주 전~현재 6점인지, 지도에 라벨·추정 표시가 그려지는지 */
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-for (let i = 0; i < 21; i++) { await sleep(10_000); process.stdout.write("."); }
-console.log("\n대기 끝");
-const api = await (await fetch(`${B}/api/calendar`)).json();
-const full = api.events.filter((e) => e.date >= "2026-09-11").slice(0, 6).map((e) => ({ title: e.title, whyLen: e.why.length }));
-const browser = await chromium.launch();
-for (const [name, scale] of [["phone", 1], ["phone-big", 1.3]]) {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, locale: "ko-KR" });
-  await page.goto(`${B}/`, { waitUntil: "networkidle", timeout: 90_000 });
-  await page.waitForSelector('[data-testid="calendar-compact"] li', { timeout: 60_000 });
-  if (scale !== 1) { await page.evaluate((s) => { document.body.style.zoom = String(s); }, scale); await sleep(400); }
-  const r = await page.evaluate((full) => {
-    const lis = Array.from(document.querySelectorAll('[data-testid="calendar-compact"] li'));
-    const cut = [];
-    lis.forEach((li, i) => {
-      const txt = li.textContent ?? "";
-      const titleFull = txt.includes(full[i]?.title ?? "@@");
-      const why = li.querySelector("p:last-child");
-      const whyFull = why && (why.textContent?.length ?? 0) >= (full[i]?.whyLen ?? 0);
-      const clipped = Array.from(li.querySelectorAll("*")).some((el) => { const cs = getComputedStyle(el); return (cs.textOverflow === "ellipsis" && el.scrollWidth > el.clientWidth + 1) || cs.webkitLineClamp !== "none"; });
-      if (!titleFull || !whyFull || clipped) cut.push({ i, titleFull, whyFull, clipped });
-    });
-    const head = document.querySelector('[data-testid="calendar-compact"]').previousElementSibling;
-    const headRect = head.getBoundingClientRect();
-    return { tiles: lis.length, cut, headH: Math.round(headRect.height), headText: head.textContent.replace(/\s+/g, " ").slice(0, 60), overflow: document.documentElement.scrollWidth > window.innerWidth };
-  }, full);
-  console.log(`  [${name}]`, JSON.stringify(r));
-  await page.close();
+let ready = false;
+for (let i = 0; i < 40 && !ready; i++) {
+  const r = await fetch(`${B}/api/cron/rs-backfill`, { method: "HEAD" }).catch(() => null);
+  if (r && r.status !== 404) ready = true; else { process.stdout.write(`.${r?.status ?? "x"}`); await sleep(10_000); }
 }
+console.log("\n배포 준비:", ready);
+const t0 = Date.now();
+const bf = await fetch(`${B}/api/cron/rs-backfill`);
+const bj = await bf.json().catch(() => null);
+console.log(`되채우기 ${bf.status} ${Math.round((Date.now() - t0) / 1000)}s:`, JSON.stringify(bj).slice(0, 600));
+await sleep(3000);
+const ind = await (await fetch(`${B}/api/industry`)).json();
+const semi = ind.industries.find((n) => n.title === "반도체");
+console.log("반도체 꼬리:", JSON.stringify(semi?.trail));
+console.log("꼬리 점 수 분포:", JSON.stringify(ind.industries.reduce((a, n) => { a[n.trail.length] = (a[n.trail.length] ?? 0) + 1; return a; }, {})));
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: "ko-KR" });
+await page.goto(`${B}/sectors`, { waitUntil: "networkidle", timeout: 90_000 });
+await page.waitForSelector('svg[aria-label="상대강도 지도"] circle', { timeout: 60_000 });
+await page.locator("svg g.cursor-pointer").filter({ hasText: "반도체" }).first().hover();
+await sleep(500);
+console.log("호버 후:", JSON.stringify(await page.evaluate(() => { const svg = document.querySelector('svg[aria-label="상대강도 지도"]'); return { orange: Array.from(svg.querySelectorAll("path")).filter((p) => p.getAttribute("stroke") === "#f4762a").length, labels: Array.from(svg.querySelectorAll("text")).map((t) => t.textContent).filter((t) => /주 전|어제|현재$/.test(t ?? "")), dashed: svg.querySelectorAll("circle[stroke-dasharray]").length }; })));
+await page.screenshot({ path: "rrg-trail.png" }).catch(() => null);
 await browser.close();
