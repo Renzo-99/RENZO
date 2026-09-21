@@ -1,33 +1,42 @@
-/** 검증 31: 종목 층위에 미국·해외 종목 포함, 국가 탭, 현지 통화 표시, 미국 종목 해시태그(크론 재실행 후) */
+/** 검증 33: 탐색기 뒤로가기 — 주소 변화, 브라우저 뒤로, ‹뒤로 버튼, 폰 탭 이동 */
 import { chromium } from "playwright";
 const B = "https://stock-dashboard-jaeyeon.vercel.app";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ready = false;
 for (let i = 0; i < 40 && !ready; i++) {
-  const b = await (await fetch(`${B}/api/industry/stocks?id=169`).catch(() => null))?.json().catch(() => null);
-  if (b?.stocks?.some((s) => s.nation === "us" && /^[A-Z]{1,6}$/.test(s.code))) ready = true; else { process.stdout.write("."); await sleep(10_000); }
+  const html = await (await fetch(`${B}/sectors`).catch(() => null))?.text().catch(() => "") ?? "";
+  if (html.includes("explorer-back") || i >= 20) ready = true; else { process.stdout.write("."); await sleep(10_000); }
 }
-console.log("\n배포 준비:", ready);
-const st = await (await fetch(`${B}/api/industry/stocks?id=169`)).json();
-const cnt = st.stocks.reduce((a, s) => { a[s.nation] = (a[s.nation] ?? 0) + 1; return a; }, {});
-console.log("반도체 종목:", st.stocks.length, JSON.stringify(cnt), "전체 시총", (st.totalCap / 1e12).toFixed(0) + "조", "국내", (st.krCap / 1e12).toFixed(0) + "조");
-for (const s of st.stocks.filter((s) => s.nation !== "kr").slice(0, 4)) console.log(`  ${s.nation} ${s.name} (${s.code}) ${s.price} ≈${s.priceKrw}원 시총 ${(s.cap / 1e12).toFixed(0)}조 ${s.change}%`);
-console.log("크론(태그 색인 갱신):", (await fetch(`${B}/api/cron/industry-snapshot`)).status);
-for (const c of ["NVDA", "000660"]) { const t = await (await fetch(`${B}/api/industry/tags?code=${c}`)).json(); console.log(`  태그 ${c}:`, (t.tags ?? []).map((x) => "#" + x.title).join(" ")); }
+console.log("\n대기 끝");
 const browser = await chromium.launch();
-const d = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: "ko-KR" });
-await d.goto(`${B}/sectors?node=169&depth=1`, { waitUntil: "networkidle", timeout: 90_000 });
-await d.waitForSelector('[data-testid="nation-tabs"]', { timeout: 60_000 });
-const tabs = await d.evaluate(() => Array.from(document.querySelectorAll('[data-testid="nation-tabs"] button')).map((b) => b.textContent?.replace(/\s+/g, " ").trim()));
-console.log("  [desktop] 국가 탭:", JSON.stringify(tabs), "행", await d.locator("table tbody tr").count());
-await d.locator('[data-testid="nation-tabs"] button', { hasText: "미국" }).click(); await sleep(400);
-const usRows = await d.evaluate(() => Array.from(document.querySelectorAll("table tbody tr")).slice(0, 3).map((tr) => tr.textContent?.replace(/\s+/g, " ").trim()));
-console.log("  [desktop] 미국 탭 행", await d.locator("table tbody tr").count(), JSON.stringify(usRows));
-await d.goto(`${B}/stock/NVDA`, { waitUntil: "domcontentloaded", timeout: 90_000 });
-await d.waitForSelector('[data-testid="stock-tags"]', { timeout: 60_000 }).catch(() => null);
-console.log("  [desktop] NVDA 태그:", await d.evaluate(() => Array.from(document.querySelectorAll('[data-testid="stock-tags"] a')).map((a) => a.textContent).join(" ")));
-const p = await browser.newPage({ viewport: { width: 390, height: 844 }, locale: "ko-KR" });
-await p.goto(`${B}/sectors?node=169&depth=1`, { waitUntil: "networkidle", timeout: 90_000 });
-await p.waitForSelector('[data-testid="stocks-mobile"] li', { timeout: 60_000 });
-console.log("  [phone] 카드", await p.locator('[data-testid="stocks-mobile"] li').count(), "국기 🇺🇸", await p.evaluate(() => (document.querySelector('[data-testid="stocks-mobile"]').textContent.match(/🇺🇸/g) ?? []).length), "overflow", await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth));
+for (const [name, w, h, touch] of [["desktop", 1280, 900, false], ["phone", 390, 844, true]]) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, locale: "ko-KR", hasTouch: touch, isMobile: touch });
+  const page = await ctx.newPage();
+  const errs = new Map(); page.on("pageerror", (e) => errs.set(e.message, (errs.get(e.message) ?? 0) + 1));
+  await page.goto(`${B}/sectors`, { waitUntil: "networkidle", timeout: 90_000 });
+  const url = () => new URL(page.url()).search || "(없음)";
+  const state = () => page.evaluate(() => ({ back: !!document.querySelector('[data-testid="explorer-back"]'), crumb: document.querySelector('[data-testid="explorer-back"]')?.parentElement?.textContent?.replace(/\s+/g, " ").trim().slice(0, 40), rows: document.querySelectorAll("table tbody tr, [data-testid$='-mobile'] li").length }));
+  console.log(`  [${name}] 시작 ${url()}`, JSON.stringify(await state()));
+  // 산업 → 테마
+  const ind = page.locator("table tbody tr, [data-testid='nodes-mobile'] li").filter({ hasText: "반도체" }).first();
+  touch ? await ind.tap() : await ind.click();
+  await sleep(1200);
+  console.log(`  [${name}] 반도체 진입 ${url()}`, JSON.stringify(await state()));
+  // 테마 → 종목
+  const th = page.locator("table tbody tr, [data-testid='nodes-mobile'] li").first();
+  touch ? await th.tap() : await th.click();
+  await sleep(1500);
+  console.log(`  [${name}] 테마 진입 ${url()}`, JSON.stringify(await state()));
+  // 브라우저 뒤로 2번
+  await page.goBack(); await sleep(900);
+  console.log(`  [${name}] 뒤로1 ${url()}`, JSON.stringify(await state()));
+  await page.goBack(); await sleep(900);
+  console.log(`  [${name}] 뒤로2 ${url()}`, JSON.stringify(await state()));
+  // 앞으로 → ‹뒤로 버튼
+  await page.goForward(); await sleep(900);
+  const back = page.locator('[data-testid="explorer-back"]');
+  if (await back.count()) { touch ? await back.tap() : await back.click(); await sleep(900); console.log(`  [${name}] ‹뒤로 버튼 ${url()}`, JSON.stringify(await state())); }
+  console.log(`  [${name}] pageerrors:`, JSON.stringify([...errs.entries()]));
+  await ctx.close();
+}
 await browser.close();
