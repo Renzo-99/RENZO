@@ -1,47 +1,63 @@
-// 구성 종목 명부를 만들고 → RS 꼬리를 새 기준으로 되채운 뒤 → 꼬리가 범위별로 다른지 확인
+// 와치리스트 — 배치·따로 스크롤·그룹/종목 담기·중복 제거 검증
 import { chromium } from "playwright";
 const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 for (let i = 0; i < 19; i++) { process.stdout.write("."); await wait(10_000); }
 console.log("\n배포 대기 끝");
 
-const hit = async (path, label) => {
-  const t0 = Date.now();
-  try {
-    const r = await fetch(`${BASE}${path}`, { signal: AbortSignal.timeout(320_000) });
-    const t = await r.text();
-    console.log(`[${label}] HTTP ${r.status} ${Math.round((Date.now()-t0)/1000)}초 :: ${t.slice(0, 500)}`);
-    return r.ok;
-  } catch (e) { console.log(`[${label}] 실패 ${Math.round((Date.now()-t0)/1000)}초 :: ${e}`); return false; }
-};
-
-await hit("/api/cron/industry-snapshot", "명부·수익률 만들기");
-await hit("/api/cron/rs-backfill", "꼬리 되채우기");
-
-for (const scope of ["all", "kr"]) {
-  const r = await fetch(`${BASE}/api/industry?scope=${scope}`, { signal: AbortSignal.timeout(90_000) });
-  const j = await r.json();
-  const inds = j.industries ?? [];
-  const withTrail = inds.filter((n) => (n.trail ?? []).length > 0);
-  const semi = inds.find((n) => n.title === "반도체");
-  console.log(`\n[scope=${scope}] 산업 ${inds.length}개 · 꼬리 있는 노드 ${withTrail.length}개`);
-  console.log(`  반도체 지금 (장기 ${semi?.longRs}, 단기 ${semi?.shortRs})`);
-  console.log(`  반도체 꼬리: ${(semi?.trail ?? []).map((p) => `${p.label}(${p.longRs},${p.shortRs})${p.approx ? "*" : ""}`).join(" → ") || "(없음)"}`);
-}
-
 const browser = await chromium.launch();
-for (const [label, vp] of [["phone", { width: 390, height: 844 }], ["desktop", { width: 1280, height: 900 }]]) {
+
+for (const [label, vp] of [["desktop", { width: 1440, height: 900 }], ["phone", { width: 390, height: 844 }]]) {
   const ctx = await browser.newContext({ viewport: vp });
   const page = await ctx.newPage();
   const errs = []; page.on("pageerror", (e) => errs.push(String(e)));
-  await page.goto(`${BASE}/sectors`, { waitUntil: "networkidle", timeout: 90_000 });
-  await wait(3000);
-  const count = () => page.evaluate(() => document.querySelectorAll("svg path[stroke]").length);
-  console.log(`\n[${label}] 글로벌 지도 선 ${await count()}개`);
-  await page.locator('[data-testid="scope-tabs"] button', { hasText: "국내" }).click();
-  await wait(5000);
-  console.log(`[${label}] 국내   지도 선 ${await count()}개`);
-  console.log(`[${label}] pageerrors: ${JSON.stringify(errs)}`);
+  await page.goto(`${BASE}/`, { waitUntil: "networkidle", timeout: 120_000 });
+  await wait(4000);
+
+  if (vp.width < 640) {
+    const t = page.getByTestId("watchlist-toggle");
+    console.log(`[${label}] 여닫기 줄 ${await t.count()}개`);
+    if (await t.count()) { await t.click(); await wait(3000); }
+  }
+
+  const panel = page.getByTestId("watchlist-panel");
+  console.log(`[${label}] 패널 ${await panel.count()}개`);
+  if (await panel.count() === 0) { console.log(`[${label}] pageerrors: ${JSON.stringify(errs.slice(0,3))}`); await ctx.close(); continue; }
+
+  // 그룹·종목 수
+  const info = await page.evaluate(() => {
+    const p = document.querySelector('[data-testid="watchlist-panel"]');
+    const groups = [...p.querySelectorAll('[data-testid^="watch-group-"]')].map((b) => b.textContent.replace(/\s+/g, " ").trim());
+    const rows = p.querySelectorAll("ul > li").length;
+    const chips = p.querySelectorAll('[data-testid="watch-events"] > a').length;
+    const sparks = p.querySelectorAll("svg path").length;
+    const rates = [...p.querySelectorAll("li")].slice(0, 3).map((li) => li.textContent.replace(/\s+/g, " ").trim().slice(0, 60));
+    return { groups, rows, chips, sparks, rates };
+  });
+  console.log(`[${label}] 그룹 ${JSON.stringify(info.groups)}`);
+  console.log(`[${label}] 행 ${info.rows}개 · 일정칩 ${info.chips}개 · 그래프 ${info.sparks}개`);
+  console.log(`[${label}] 앞 3행: ${JSON.stringify(info.rates)}`);
+
+  // 따로 스크롤 — 패널 안쪽만 움직이는지
+  const scroll = await page.evaluate(() => {
+    const el = document.querySelector('[data-testid="watchlist-scroll"]');
+    if (!el) return null;
+    const before = { panel: el.scrollTop, page: window.scrollY };
+    el.scrollTop = 300;
+    return { before, after: { panel: el.scrollTop, page: window.scrollY }, scrollable: el.scrollHeight > el.clientHeight + 10 };
+  });
+  console.log(`[${label}] 따로 스크롤: ${JSON.stringify(scroll)}`);
+
+  // 중복 제거 — 옛 '내 종목' 카드가 사라졌는지
+  const dup = await page.evaluate(() => {
+    const t = document.body.innerText;
+    return { 내종목: (t.match(/내 종목/g) ?? []).length, 관심종목카드: (t.match(/관심종목/g) ?? []).length, 와치리스트: (t.match(/와치리스트/g) ?? []).length };
+  });
+  console.log(`[${label}] 문구 등장 횟수: ${JSON.stringify(dup)}`);
+
+  // 그룹 만들기 버튼 존재
+  console.log(`[${label}] 그룹 만들기 ${await page.getByTestId("watch-add-group").count()}개 · 정렬 고르기 ${await page.getByTestId("watch-sort").count()}개`);
+  console.log(`[${label}] pageerrors: ${JSON.stringify(errs.slice(0, 3))}`);
   await ctx.close();
 }
 await browser.close();
