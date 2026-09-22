@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-09-22T00:11:43.629Z",
+ "updatedAt": "2026-09-22T06:51:22.854Z",
  "items": [
+  {
+   "id": "issue-point-49648",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "교원 등의 아동학대 신고 사건 처리 절차 개선 방안-형사절차의 종결 방식과 피해아동 보호절차의 분리를 중심으로",
+   "date": "2026-09-22",
+   "meta": "이슈와논점 2533호 · 김범주,김혜미",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49648",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49646",
    "sourceId": "issue-point",
@@ -227,17 +238,6 @@
    "keywords": []
   },
   {
-   "id": "publication-49555",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "2026 국정감사 이슈 분석 Ⅰ (56개의 결정적 질문)",
-   "date": "2026-08-27",
-   "meta": "국정감사관련(보고서) · 이형진 외 66인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49555",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "nars-analysis-49551",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -398,17 +398,6 @@
    "date": "2026-07-20",
    "meta": "이슈와논점 2514호 · 김현아",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49463",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49455",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "대한민국 헌법제정, 그 현재적 의미와 발전적 계승 -제헌절에 다시 돌아보는 대한민국 헌법의 제정",
-   "date": "2026-07-16",
-   "meta": "이슈와논점 2513호 · 김선화",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49455",
    "tracks": [],
    "keywords": []
   },
@@ -1034,7 +1023,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 5
+   "count": 4
   }
  ]
 }
