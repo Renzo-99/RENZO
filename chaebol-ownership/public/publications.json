@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-09-21T08:50:27.254Z",
+ "updatedAt": "2026-09-22T00:11:43.629Z",
  "items": [
+  {
+   "id": "issue-point-49646",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "디지털 민주주의를 위한 인터넷 규제모델 전환 : 7.7.정보통신망법 이후 온라인 공론장의 명암과 온라인 안전법 제정 필요성",
+   "date": "2026-09-22",
+   "meta": "이슈와논점 2532호 · 최진응",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49646",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49644",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "저작권자 보호에 취약한 저작권신탁관리업 재허가제 ―「저작권법」 하위법령 개정안의 쟁점과 보완과제",
+   "date": "2026-09-22",
+   "meta": "이슈와논점 2531호 · 백지연",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49644",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "nars-analysis-49641",
    "sourceId": "nars-analysis",
@@ -387,28 +409,6 @@
    "date": "2026-07-16",
    "meta": "이슈와논점 2513호 · 김선화",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49455",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49464",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "고령운전자 사고예방, 운전면허 자진반납으로 충분한가? 조건부 면허제도 도입을 중심으로",
-   "date": "2026-07-16",
-   "meta": "이슈와논점 2512호 · 정주완",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49464",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49449",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "한국예술종합학교는 어떤 학교여야 하는가? 법적 지위 정비와 캠퍼스 이전·입지의 쟁점",
-   "date": "2026-07-15",
-   "meta": "이슈와논점 2511호 · 배성희",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49449",
    "tracks": [],
    "keywords": []
   },
