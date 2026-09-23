@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-09-22T23:39:43.339Z",
+ "updatedAt": "2026-09-23T01:27:22.417Z",
  "items": [
+  {
+   "id": "issue-point-49651",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "평화경제특별구역 조성 성공하려면?",
+   "date": "2026-09-23",
+   "meta": "이슈와논점 2534호 · 김현정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49651",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "publication-49653",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "정치 양극화 완화를 위한 국민 제안과 정책적 과제",
+   "date": "2026-09-23",
+   "meta": "NARS 브리프 178호 · 유지영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49653",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49648",
    "sourceId": "issue-point",
@@ -216,28 +238,6 @@
    "keywords": []
   },
   {
-   "id": "publication-49557",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "2026 국정감사 이슈 분석 Ⅲ (경제ㆍ산업 분야)",
-   "date": "2026-08-27",
-   "meta": "국정감사관련(보고서) · 이수진 외 31인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49557",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "publication-49556",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "2026 국정감사 이슈 분석 Ⅱ (정치ㆍ행정 분야)",
-   "date": "2026-08-27",
-   "meta": "국정감사관련(보고서) · 송진미 외 24인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49556",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "nars-analysis-49551",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -389,17 +389,6 @@
    "keywords": [
     "AI"
    ]
-  },
-  {
-   "id": "issue-point-49463",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "청소년 대의기구, 형식에 머물지 않으려면 : 유럽 3개국 청소년의회 사례 비교와 제도개선 방향",
-   "date": "2026-07-20",
-   "meta": "이슈와논점 2514호 · 김현아",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49463",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "nars-analysis-49437",
@@ -1023,7 +1012,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 4
+   "count": 3
   }
  ]
 }
