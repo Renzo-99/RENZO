@@ -1,4 +1,4 @@
-// 폴드 접힘/펼침 — 티커·이름이 안 깨지는지, 펼치면 2단이 되는지 (읽기 전용)
+// 폴드 펼침 = 데스크톱 배치인지 확인 (읽기 전용 — 데이터 변경 없음)
 import { chromium } from "playwright";
 const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -7,56 +7,50 @@ console.log("\n배포 대기 끝");
 
 const browser = await chromium.launch();
 const VIEWS = [
-  ["폴드 접음(좁게)", 300, 900, true],
   ["폴드 접음", 374, 980, true],
-  ["폴드 펼침", 728, 950, true],
-  ["폴드 펼침(가로)", 950, 728, true],
-  ["일반 폰", 390, 844, true],
+  ["폴드 펼침(세로)", 728, 656, true],
+  ["폴드 펼침(가로)", 656, 728, true],
+  ["일반 폰", 393, 852, true],
+  ["아이패드 미니", 744, 1133, true],
   ["데스크톱", 1600, 950, false],
 ];
 
 for (const [label, w, h, touch] of VIEWS) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch });
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch, screen: { width: w, height: h } });
   const page = await ctx.newPage();
   const errs = []; page.on("pageerror", (e) => errs.push(String(e.message ?? e)));
   await page.goto(`${BASE}/`, { waitUntil: "networkidle", timeout: 120_000 });
   await wait(4500);
-  const toggle = page.getByTestId("watchlist-toggle");
-  const drawer = await toggle.isVisible().catch(() => false);
-  if (drawer) { await toggle.click(); await wait(2500); }
 
   const m = await page.evaluate(() => {
-    const panel = document.querySelector('[data-testid="watchlist-panel"]');
-    const aside = document.querySelector('aside[aria-label="와치리스트"]');
-    if (!panel || !aside) return { error: "패널 없음" };
-    const rows = [...panel.querySelectorAll("li")].filter((li) => li.querySelector("a[href^='/stock/']"));
-    const info = rows.slice(0, 6).map((li) => {
-      const a = li.querySelector("a");
-      const [t, n] = a.querySelectorAll("div");
-      return {
-        티커: t?.textContent ?? "", 티커잘림: t ? t.scrollWidth > t.clientWidth + 1 : false,
-        이름칸: Math.round(a.getBoundingClientRect().width),
-      };
-    });
-    const rate = rows[0] ? [...rows[0].querySelectorAll("div")].find((d) => /%$/.test(d.textContent?.trim() ?? "")) : null;
-    let 가려짐 = null;
-    if (rate) {
-      const r = rate.getBoundingClientRect();
-      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-      가려짐 = top && !rate.contains(top) && top !== rate ? top.tagName : null;
-    }
+    const vw = (sel) => document.querySelector(sel);
+    const box = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width) }; };
+    const visible = (el) => !!el && el.getBoundingClientRect().width > 0 && getComputedStyle(el).display !== "none";
+    const cols = (el) => (el ? getComputedStyle(el).gridTemplateColumns.split(" ").filter(Boolean).length : 0);
+
+    const metas = [...document.querySelectorAll('meta[name="viewport"]')].map((m) => m.getAttribute("content"));
+    const nav = [...document.querySelectorAll("header nav")].map((n) => ({ 보임: visible(n), 글자: (n.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 60) }));
+    const aside = vw('aside[aria-label="와치리스트"]');
+    const main = aside?.parentElement ? [...aside.parentElement.children].find((c) => c !== aside) : null;
+    const cal = vw('[data-testid="calendar-compact"]');
+    const hero = vw('[data-testid="hero-global-grid"]');
+
     return {
-      "2단": getComputedStyle(aside.parentElement).display === "grid",
-      칸폭: Math.round(aside.getBoundingClientRect().width),
-      그래프: panel.querySelectorAll("svg").length,
-      티커잘린행: info.filter((x) => x.티커잘림).length,
-      이름칸: [...new Set(info.map((x) => x.이름칸))],
-      티커들: info.map((x) => x.티커).slice(0, 4),
-      등락률가려짐: 가려짐,
+      innerWidth: window.innerWidth,
+      screen: `${screen.width}x${screen.height}`,
+      viewportMeta: metas,
+      헤더메뉴: nav,
+      햄버거보임: visible([...document.querySelectorAll("header button")].find((b) => b.getAttribute("aria-label") === "메뉴")),
+      와치리스트: box(aside),
+      본문: box(main),
+      좌우2단: !!(aside && main) && box(aside).y === box(main).y && box(aside).x !== box(main).x,
+      브리핑열수: cols(cal),
+      지수타일열수: cols(hero),
     };
   });
-  console.log(`\n[${label} ${w}x${h}] 서랍:${drawer} ${JSON.stringify(m, null, 0)}`);
-  console.log(`[${label}] 에러 ${errs.length}건`);
+  console.log(`\n=== ${label} (${w}x${h}) ===`);
+  console.log(JSON.stringify(m, null, 1));
+  if (errs.length) console.log("페이지 에러:", errs.slice(0, 3));
   await ctx.close();
 }
 await browser.close();
