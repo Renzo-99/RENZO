@@ -43,7 +43,7 @@ for (const [label, vp, isPhone] of VIEWS) {
       if (mid && !rate.contains(mid) && mid !== rate) covered.push(`${li.querySelector("a")?.textContent?.slice(0, 6)}→${mid.tagName}.${(mid.className || "").toString().slice(0, 20)}`);
     }
     return {
-      2단: getComputedStyle(aside.parentElement).display === "grid",
+      "2단": getComputedStyle(aside.parentElement).display === "grid",
       칸너비: Math.round(aside.getBoundingClientRect().width),
       행수: rows.length,
       등락률가려짐: covered,
