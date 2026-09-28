@@ -1,0 +1,328 @@
+{
+ "at": "2026-09-28T08:25:39.602Z",
+ "tossKr": {
+  "status": 200,
+  "body": {
+   "result": [
+    {
+     "exchange": "integrated",
+     "productCode": "A005930",
+     "currency": "KRW",
+     "base": 285500,
+     "close": 271000,
+     "changeType": "DOWN",
+     "volume": 33256102,
+     "tradingEnd": "2026-09-28T11:00:00Z",
+     "nextTradingStart": "2026-09-28T23:00:00Z"
+    },
+    {
+     "exchange": "integrated",
+     "productCode": "A000660",
+     "currency": "KRW",
+     "base": 1862000,
+     "close": 1767000,
+     "changeType": "DOWN",
+     "volume": 4452671,
+     "tradingEnd": "2026-09-28T11:00:00Z",
+     "nextTradingStart": "2026-09-28T23:00:00Z"
+    }
+   ]
+  }
+ },
+ "tossUs": {
+  "status": 200,
+  "body": {
+   "result": [
+    {
+     "productCode": "US19801212001",
+     "currency": "USD",
+     "base": 341.07,
+     "baseKrw": 461126,
+     "close": 340.4,
+     "closeKrw": 460220,
+     "changeType": "DOWN",
+     "volume": 22787,
+     "tradingEnd": "2026-09-25T20:00:00Z",
+     "nextTradingStart": "2026-09-28T13:30:00Z",
+     "afterMarketClose": 0,
+     "afterMarketCloseKrw": 0,
+     "meta": {
+      "baseKrwDecimal": 461126.64,
+      "closeKrwDecimal": 460220.8,
+      "afterMarketCloseKrwDecimal": 0
+     }
+    },
+    {
+     "productCode": "US19990122001",
+     "currency": "USD",
+     "base": 225.07,
+     "baseKrw": 304294,
+     "close": 223.09,
+     "closeKrw": 301617,
+     "changeType": "DOWN",
+     "volume": 147148,
+     "tradingEnd": "2026-09-25T20:00:00Z",
+     "nextTradingStart": "2026-09-28T13:30:00Z",
+     "afterMarketClose": 0,
+     "afterMarketCloseKrw": 0,
+     "meta": {
+      "baseKrwDecimal": 304294.64,
+      "closeKrwDecimal": 301617.68,
+      "afterMarketCloseKrwDecimal": 0
+     }
+    }
+   ]
+  }
+ },
+ "tossUsNoMeta": {
+  "status": 200,
+  "body": {
+   "result": [
+    {
+     "productCode": "US19990122001",
+     "currency": "USD",
+     "base": 225.07,
+     "baseKrw": 304294,
+     "close": 223.09,
+     "closeKrw": 301617,
+     "changeType": "DOWN",
+     "volume": 147148,
+     "tradingEnd": "2026-09-25T20:00:00Z",
+     "nextTradingStart": "2026-09-28T13:30:00Z",
+     "afterMarketClose": 0,
+     "afterMarketCloseKrw": 0
+    }
+   ]
+  }
+ },
+ "tossKrMin": {
+  "status": 200,
+  "body": {
+   "result": {
+    "code": "A005930",
+    "nextDateTime": "2026-09-28T17:23:00+09:00",
+    "exchangeRate": 1,
+    "exchange": "integrated",
+    "candles": [
+     {
+      "dt": "2026-09-28T17:26:00+09:00",
+      "base": 285500,
+      "open": 271000,
+      "high": 271000,
+      "low": 270500,
+      "close": 271000,
+      "volume": 3492,
+      "amount": 0
+     },
+     {
+      "dt": "2026-09-28T17:25:00+09:00",
+      "base": 285500,
+      "open": 271000,
+      "high": 271000,
+      "low": 270500,
+      "close": 271000,
+      "volume": 5192,
+      "amount": 0
+     },
+     {
+      "dt": "2026-09-28T17:24:00+09:00",
+      "base": 285500,
+      "open": 271000,
+      "high": 271000,
+      "low": 270500,
+      "close": 271000,
+      "volume": 8340,
+      "amount": 0
+     }
+    ]
+   }
+  }
+ },
+ "tossUsMin": {
+  "status": 200,
+  "body": {
+   "result": {
+    "code": "US19990122001",
+    "nextDateTime": "2026-09-28T04:23:00-04:00",
+    "exchangeRate": 1352,
+    "candles": [
+     {
+      "dt": "2026-09-28T04:26:00-04:00",
+      "sessionType": "pre",
+      "base": 225.07,
+      "open": 223,
+      "high": 223.11,
+      "low": 223,
+      "close": 223,
+      "volume": 2141,
+      "amount": 0
+     },
+     {
+      "dt": "2026-09-28T04:25:00-04:00",
+      "sessionType": "pre",
+      "base": 225.07,
+      "open": 223.1,
+      "high": 223.1,
+      "low": 223,
+      "close": 223.07,
+      "volume": 1838,
+      "amount": 0
+     },
+     {
+      "dt": "2026-09-28T04:24:00-04:00",
+      "sessionType": "pre",
+      "base": 225.07,
+      "open": 223.2,
+      "high": 223.2,
+      "low": 223,
+      "close": 223,
+      "volume": 640,
+      "amount": 0
+     }
+    ]
+   }
+  }
+ },
+ "yahoo1m": {
+  "status": 200,
+  "meta": {
+   "currency": "USD",
+   "symbol": "NVDA",
+   "exchangeName": "NMS",
+   "fullExchangeName": "NasdaqGS",
+   "instrumentType": "EQUITY",
+   "firstTradeDate": 917015400,
+   "regularMarketTime": 1790366400,
+   "hasPrePostMarketData": true,
+   "gmtoffset": -14400,
+   "timezone": "EDT",
+   "exchangeTimezoneName": "America/New_York",
+   "regularMarketPrice": 225.07,
+   "regularMarketChangePercent": 0.218,
+   "fulldayPrice": 223.098,
+   "fulldayChange": -2.07,
+   "fulldayChangePercent": -0.92,
+   "fiftyTwoWeekHigh": 236.54,
+   "fiftyTwoWeekLow": 164.27,
+   "regularMarketDayHigh": 226.94,
+   "regularMarketDayLow": 223.133,
+   "regularMarketVolume": 89947712,
+   "longName": "NVIDIA Corporation",
+   "shortName": "NVIDIA Corporation",
+   "chartPreviousClose": 224.58,
+   "previousClose": 224.58,
+   "scale": 3,
+   "priceHint": 2,
+   "currentTradingPeriod": {
+    "pre": {
+     "timezone": "EDT",
+     "start": 1790582400,
+     "end": 1790602200,
+     "gmtoffset": -14400
+    },
+    "regular": {
+     "timezone": "EDT",
+     "start": 1790602200,
+     "end": 1790625600,
+     "gmtoffset": -14400
+    },
+    "post": {
+     "timezone": "EDT",
+     "start": 1790625600,
+     "end": 1790640000,
+     "gmtoffset": -14400
+    }
+   },
+   "tradingPeriods": {
+    "pre": [
+     [
+      {
+       "timezone": "EDT",
+       "start": 1790582400,
+       "end": 1790602200,
+       "gmtoffset": -14400
+      }
+     ]
+    ],
+    "post": [
+     [
+      {
+       "timezone": "EDT",
+       "start": 1790625600,
+       "end": 1790640000,
+       "gmtoffset": -14400
+      }
+     ]
+    ],
+    "regular": [
+     [
+      {
+       "timezone": "EDT",
+       "start": 1790602200,
+       "end": 1790625600,
+       "gmtoffset": -14400
+      }
+     ]
+    ]
+   },
+   "dataGranularity": "1m",
+   "range": "1d",
+   "validRanges": [
+    "1d",
+    "5d",
+    "1mo",
+    "3mo",
+    "6mo",
+    "1y",
+    "2y",
+    "5y",
+    "10y",
+    "ytd",
+    "max"
+   ]
+  },
+  "bars": 26,
+  "tail": [
+   [
+    "2026-09-28T08:23:00.000Z",
+    223.1072
+   ],
+   [
+    "2026-09-28T08:24:00.000Z",
+    223.1072
+   ],
+   [
+    "2026-09-28T08:25:41.000Z",
+    223.0975
+   ]
+  ]
+ },
+ "yahoo5d": {
+  "meta": {
+   "currentTradingPeriod": {
+    "pre": {
+     "timezone": "EDT",
+     "start": 1790582400,
+     "end": 1790602200,
+     "gmtoffset": -14400
+    },
+    "regular": {
+     "timezone": "EDT",
+     "start": 1790602200,
+     "end": 1790625600,
+     "gmtoffset": -14400
+    },
+    "post": {
+     "timezone": "EDT",
+     "start": 1790625600,
+     "end": 1790640000,
+     "gmtoffset": -14400
+    }
+   },
+   "regularMarketPrice": 225.07,
+   "chartPreviousClose": 227.38,
+   "previousClose": 224.58
+  },
+  "bars": 774
+ }
+}
