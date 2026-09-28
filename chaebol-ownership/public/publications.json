@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-09-27T23:51:18.495Z",
+ "updatedAt": "2026-09-28T04:12:06.122Z",
  "items": [
+  {
+   "id": "publication-49667",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "산업안전보건체계의 패러다임 대전환-사회적 대화를 통한 영국의 위험관리형 규제방식 도입 세미나 개최",
+   "date": "2026-09-28",
+   "meta": "NARS 브리프 179호 · 이동영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49667",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49651",
    "sourceId": "issue-point",
@@ -223,17 +234,6 @@
    "date": "2026-09-02",
    "meta": "NARS 브리프 177호 · 김선화",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49571",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "publication-49558",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "2026 국정감사 이슈 분석 Ⅳ (사회ㆍ문화 분야)",
-   "date": "2026-08-27",
-   "meta": "국정감사관련(보고서) · 김혜미 외 33인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49558",
    "tracks": [],
    "keywords": []
   },
