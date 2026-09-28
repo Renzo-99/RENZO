@@ -1,6 +1,23 @@
 {
- "updatedAt": "2026-09-28T04:35:53.801Z",
+ "updatedAt": "2026-09-28T08:25:17.525Z",
  "items": [
+  {
+   "id": "issue-point-49669",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "미국 관세정책의 판단 대상 확대와 국내 법제의 통상리스크 - ‘강제노동 301조’ 측면에서 본 한국의 대응 과제",
+   "date": "2026-09-28",
+   "meta": "이슈와논점 2535호 · 최정윤",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49669",
+   "tracks": [
+    "trade"
+   ],
+   "keywords": [
+    "통상",
+    "관세",
+    "노동"
+   ]
+  },
   {
    "id": "publication-49667",
    "sourceId": "publication",
@@ -227,17 +244,6 @@
    ]
   },
   {
-   "id": "publication-49571",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "미래를 위한 헌법, 그 진단과 해법",
-   "date": "2026-09-02",
-   "meta": "NARS 브리프 177호 · 김선화",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49571",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "nars-analysis-49551",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -375,19 +381,6 @@
    "tracks": [],
    "keywords": [
     "선거"
-   ]
-  },
-  {
-   "id": "issue-point-49467",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "AI 챗봇의 위험에 노출된 아동·청소년 사전예방 중심 규제체제 도입의 필요성과 방향성",
-   "date": "2026-07-20",
-   "meta": "이슈와논점 2515호 · 김나정",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49467",
-   "tracks": [],
-   "keywords": [
-    "AI"
    ]
   },
   {
@@ -1012,7 +1005,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 3
+   "count": 2
   }
  ]
 }
