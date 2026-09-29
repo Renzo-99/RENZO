@@ -111,10 +111,11 @@ body.embedded .standalone-only{display:none}
   #printRoot{display:block}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-@page{size:A4 landscape;margin:10mm 10mm 12mm}
+/* 인쇄 여백 0 → 브라우저가 날짜·제목·주소·쪽번호(머리글/바닥글)를 찍지 않음. 여백은 문서 안쪽 padding으로 */
+@page{size:A4 landscape;margin:0}
 
 /* B-Spec 한 장 */
-.bs-page{width:277mm;height:186mm;position:relative;page-break-after:always;break-after:page;font-family:'맑은 고딕','Malgun Gothic','Pretendard Variable',sans-serif;color:#000;overflow:hidden}
+.bs-page{width:297mm;height:209mm;box-sizing:border-box;padding:10mm 10mm 12mm;position:relative;page-break-after:always;break-after:page;font-family:'맑은 고딕','Malgun Gothic','Pretendard Variable',sans-serif;color:#000;overflow:hidden}
 .bs-page:last-child{page-break-after:auto;break-after:auto}
 .bs-title{text-align:center;font-size:21pt;font-weight:800;margin:2mm 0 4mm}
 .bs-title span{border-bottom:2px solid #000;padding:0 2mm}
@@ -139,7 +140,12 @@ table.bs td.rmk .common{font-size:12.5pt}
 .bs-foot{font-size:10pt;margin-top:1.5mm}
 
 /* A-Spec 인쇄 */
-.as-sheet{font-family:'돋움','Dotum','맑은 고딕',sans-serif;color:#000}
+.as-sheet{font-family:'돋움','Dotum','맑은 고딕',sans-serif;color:#000;padding:0 10mm}
+/* 여러 장일 때도 매 장 위·아래 여백: 반복되는 머리/꼬리 빈 줄 */
+table.as tr.pgsp td,table.as tr.pgsp th{border:none!important;background:none!important;padding:0!important}
+table.as thead tr.pgsp th{height:10mm}
+table.as tfoot tr.pgsp td{height:12mm}
+table.as tfoot{display:table-footer-group}
 table.as{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.5pt}
 table.as th,table.as td{border:1px solid #000;padding:.8mm .6mm;text-align:center;vertical-align:middle;word-break:keep-all;overflow-wrap:anywhere;white-space:pre-line}
 table.as th{background:#c6d9f1;font-family:'맑은 고딕','Malgun Gothic',sans-serif;font-size:7.5pt;font-weight:700;height:14mm}
@@ -625,7 +631,8 @@ function buildASpecPrint(items){
   const heads=['연번','단과대학','학과명','품명','제조사 및 모델명(규격)','수량','단위','예정단가\n(부가세·설치비 포함)','예정금액\n(부가세·설치비 포함)','신청자명\n(전화번호)','추천업체명\n(전화번호)','설치장소','비고'];
   let sq=0,sa=0;
   let h='<div class="as-sheet"><table class="as"><colgroup>'+w.map(x=>'<col style="width:'+(x/tw*100).toFixed(2)+'%">').join('')+'</colgroup>';
-  h+='<thead><tr>'+heads.map(x=>'<th>'+esc(x)+'</th>').join('')+'</tr></thead><tbody>';
+  h+='<thead><tr class="pgsp"><th colspan="13"></th></tr><tr>'+heads.map(x=>'<th>'+esc(x)+'</th>').join('')+'</tr></thead>';
+  h+='<tfoot><tr class="pgsp"><td colspan="13"></td></tr></tfoot><tbody>';
   items.forEach((it,i)=>{const q=num(it.qty),p=num(it.price);sq+=q;sa+=q*p;
     h+='<tr><td>'+(i+1)+'</td><td>'+esc(s.college)+'</td><td>'+esc(s.dept)+'</td><td>'+esc(it.name)+'</td><td class="red">'+esc(aModel(it))+'</td>'+
       '<td class="r">'+(it.qty===''?'':won(q))+'</td><td>'+esc(it.unit)+'</td><td class="r">'+(it.price===''?'':won(p))+'</td><td class="r">'+(q*p?won(q*p):'-')+'</td>'+
@@ -634,6 +641,7 @@ function buildASpecPrint(items){
   h+='</tbody></table></div>';
   return h;
 }
+function normNote(s){return String(s||'').replace(/[\s※.]/g,'');} // 품목 비고=공통 비고면 한 번만 출력
 function buildBSpecPrint(items){
   const s=state.settings;
   const stamp=stampData?'<img src="'+stampData+'" alt="인">':'';
@@ -654,7 +662,7 @@ function buildBSpecPrint(items){
         '<tr><th>No.</th><th>품명</th><th>규 격 (Specification)</th><th>수량<br>(단위)</th><th>비고</th></tr>'+
         '<tr class="body"><td class="c">'+(i+1)+'</td><td class="c">'+esc(it.name)+'</td><td class="spec"><ol>'+li+'</ol></td>'+
         '<td class="c">'+qty+'<br>('+esc(it.unit)+')</td>'+
-        '<td class="rmk">'+(it.bnote?'<div class="item">'+esc(it.bnote)+'</div>':'')+(s.bnote?'<div class="common">'+esc(s.bnote)+'</div>':'')+'</td></tr>'+
+        '<td class="rmk">'+(it.bnote&&normNote(it.bnote)!==normNote(s.bnote)?'<div class="item">'+esc(it.bnote)+'</div>':'')+(s.bnote?'<div class="common">'+esc(s.bnote)+'</div>':'')+'</td></tr>'+
       '</table>'+
       '<div class="bs-foot">※ No.는 물품구입신청서의 번호 또는 물품구입리스트(A-Spec)의 번호와 일치해야 함.</div>'+
       '</div>';

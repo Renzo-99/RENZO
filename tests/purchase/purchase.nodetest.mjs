@@ -151,6 +151,10 @@ describe('P1 B-Spec 인쇄 페이지', () => {
     assert.equal(pages[1].querySelector('tr.body td').textContent, '2');
     assert.match(pages[1].textContent, /7\. 특이사항: 자동개폐식/);
     assert.match(p1.querySelector('.bs-foot').textContent, /A-Spec\)의 번호와 일치/);
+    // 품목 비고가 공통 비고와 같은 문구면 한 번만
+    const dupIt = item(app, { name: 'z', qty: 1, bnote: '※ 상기 물품은 목공실 지하 1층까지 배송을 원칙으로 합니다.' });
+    root.innerHTML = app.buildBSpecPrint([dupIt]);
+    assert.equal((root.querySelector('td.rmk').textContent.match(/배송을 원칙/g) || []).length, 1);
   });
 
   test('헤더: 부서장·신청부서·담당자·연락처, 동의 체크, 도장/사진 이미지', async () => {
@@ -204,7 +208,8 @@ describe('P1 A-Spec 인쇄(PDF) 표', () => {
     root.innerHTML = app.buildASpecPrint(its);
     const rows = root.querySelectorAll('table.as tbody tr');
     assert.equal(rows.length, 3);
-    assert.equal(root.querySelectorAll('table.as thead th').length, 13);
+    assert.equal(root.querySelectorAll('table.as thead tr:not(.pgsp) th').length, 13);
+    assert.equal(root.querySelectorAll('table.as tr.pgsp').length, 2, '매 장 위·아래 여백 줄(반복)');
     const tot = rows[2].querySelectorAll('td');
     assert.equal(tot[0].textContent, '계');
     assert.equal(tot[1].textContent, '5');
