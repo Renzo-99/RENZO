@@ -209,7 +209,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;box-shadow:none!important}
   body{height:auto;overflow:visible;font-size:11px}
-  .hdr,.right,.task-actions,.btn,.no-print,.alert-bar,.holiday-btn,.cal-overlay,#calendarRoot,.cr-overlay,#classroomRoot{display:none!important}
+  .hdr,.right,.task-actions,.btn,.no-print,.alert-bar,.holiday-btn,.cal-overlay,#calendarRoot,.cr-overlay,#classroomRoot,#purchaseRoot{display:none!important}
   .main{display:block;overflow:visible}
   .left{overflow:visible;padding:0}
   .print-header{display:block!important;text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #000}
@@ -484,6 +484,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <span id="sbStatusBtn" style="font-size:14px;cursor:pointer;margin-right:2px" onclick="openSupabaseSettings()" title="Supabase 실시간"></span>
     <span id="autoSyncBtn" style="font-size:14px;cursor:pointer;margin-right:2px" onclick="toggleAutoSync()" title="실시간 동기화"></span>
     <span id="syncStatus" style="font-size:14px;cursor:pointer;margin-right:4px" onclick="openCloudSettings()" title="클라우드 상태"></span>
+    <button class="btn btn-outline btn-sm" onclick="openPurchase()" title="물품 구매 A/B-Spec 작성">🛒 구매스펙</button>
     <button class="btn btn-outline btn-sm" onclick="openClassroom()" title="건물 호실 현황">🏢 호실</button>
     <button class="btn btn-outline btn-sm" onclick="openCalendar()" title="캘린더 보기">📅 캘린더</button>
     <button class="btn btn-outline btn-sm" onclick="openBackupManager()" title="백업 관리">📋 백업</button>
@@ -4025,6 +4026,17 @@ function calGoToWeek(wy,ww){
   loadWeek();renderInventory();renderAlerts();
   toast(wy+'년 '+ww+'주차로 이동');
 }
+
+// === 물품 구매 스펙 작성 (purchase.html을 앱 안 전체화면 패널로) ===
+function openPurchase(){
+  let el=document.getElementById('purchaseRoot');
+  if(el)return;
+  el=document.createElement('div');el.id='purchaseRoot';
+  el.style.cssText='position:fixed;inset:0;z-index:1000;background:#f4f6f8';
+  el.innerHTML='<iframe src="purchase.html" title="물품 구매 스펙 작성" style="border:0;width:100%;height:100%;display:block"></iframe>';
+  document.body.appendChild(el);document.body.style.overflow='hidden';
+}
+function closePurchase(){const el=document.getElementById('purchaseRoot');if(el)el.remove();document.body.style.overflow='';}
 
 // === 건물 호실 현황 ===
 function getRoomBuildings(){
