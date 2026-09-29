@@ -236,7 +236,7 @@ describe('P2 엑셀 붙여넣기 & 100품목 제한', () => {
     assert.equal(it[0].vendor, '업체A(02-1)'); assert.equal(it[0].room, 'LB103'); assert.equal(it[0].note, '급함');
     assert.equal(it[1].unit, '조'); assert.equal(it[1].price, 2500); assert.equal(it[1].maker, '');
     assert.equal(doc.getElementById('modalRoot').innerHTML, '', '붙여넣기 후 창 닫힘');
-    assert.equal(doc.querySelectorAll('#itemBody tr').length, 2);
+    assert.equal(doc.querySelectorAll('#itemList .icard').length, 2);
     await wait(60); // openPaste의 지연 focus가 닫힌 창에서 에러 내지 않아야 함
   });
 
@@ -334,17 +334,20 @@ describe('P4 출력 전 검증', () => {
 });
 
 describe('P4 편집 & 저장/복원', () => {
-  test('표에서 수량/단가 입력 → 금액·합계·저장 갱신', async () => {
+  test('카드에서 수량/단가 입력 → 금액·합계·저장 갱신', async () => {
     const { app, w, doc } = await loadApp();
     app.addItem();
-    const tr = doc.querySelector('#itemBody tr');
+    const tr = doc.querySelector('#itemList .icard');
     const q = tr.querySelector('input[data-k=qty]'), p = tr.querySelector('input[data-k=price]');
-    q.value = '4'; q.dispatchEvent(new w.Event('input'));
-    p.value = '2,500'; p.dispatchEvent(new w.Event('input'));
+    assert.ok(tr.classList.contains('warn'), '품명·수량 없으면 표시');
+    const nm = tr.querySelector('input[data-k=name]'); nm.value = '도어록'; nm.dispatchEvent(new w.Event('input', { bubbles: true }));
+    q.value = '4'; q.dispatchEvent(new w.Event('input', { bubbles: true }));
+    p.value = '2500'; p.dispatchEvent(new w.Event('input', { bubbles: true }));
     assert.equal(tr.querySelector('[data-amt]').textContent, '10,000');
     assert.equal(doc.getElementById('sumAmt').textContent, '10,000');
-    p.dispatchEvent(new w.Event('blur'));
-    assert.equal(p.value, '2,500');
+    assert.ok(!tr.classList.contains('warn'));
+    p.dispatchEvent(new w.FocusEvent('focusout', { bubbles: true }));
+    assert.equal(p.value, '2,500', '칸을 벗어나면 천단위 쉼표');
     const saved = JSON.parse(w.localStorage.getItem('ws3_purchase_v1'));
     assert.equal(saved.items[0].qty, 4); assert.equal(saved.items[0].price, 2500);
   });
@@ -361,19 +364,52 @@ describe('P4 편집 & 저장/복원', () => {
     const ids = b.state.items.map(x => x.id);
     assert.equal(new Set(ids).size, ids.length);
   });
-  test('상세 모달 저장 → B-Spec 필드 반영', async () => {
-    const { app, doc } = await loadApp();
+  test('A·B 한 카드: A/B 모든 칸이 한 화면에 있고 입력 즉시 저장', async () => {
+    const { app, w, doc } = await loadApp();
     app.addItem();
+    const card = doc.querySelector('#itemList .icard');
+    const keys = [...card.querySelectorAll('input[data-k]')].map(i => i.dataset.k);
+    for (const k of ['name', 'maker', 'model', 'qty', 'unit', 'price', 'spec', 'color', 'material', 'special', 'place', 'room', 'vendor', 'note', 'bnote', 'aspec', 'url'])
+      assert.ok(keys.includes(k), k + ' 칸');
+    assert.ok(card.querySelector('[data-photo]'), '사진 칸');
+    assert.equal(doc.getElementById('modalRoot').innerHTML, '', '따로 여는 상세 창 없음');
+    const set = (k, v) => { const i = card.querySelector('input[data-k=' + k + ']'); i.value = v; i.dispatchEvent(new w.Event('input', { bubbles: true })); };
+    set('color', '흰색'); set('spec', '날개지름 200MM'); set('bnote', '※ 주의'); set('maker', '동우'); set('model', 'DWV');
+    const it = app.state.items[0];
+    assert.equal(it.color, '흰색'); assert.equal(it.spec, '날개지름 200MM'); assert.equal(it.bnote, '※ 주의');
+    assert.equal(card.querySelector('input[data-k=aspec]').placeholder, '자동: 동우 DWV', 'A-Spec 표기 자동값 미리보기');
+    const tags = [...card.querySelectorAll('.fl .tag')].map(t => t.textContent);
+    assert.ok(tags.includes('A') && tags.includes('B') && tags.includes('A·B'), '칸마다 A/B 표시');
+    assert.equal(JSON.parse(w.localStorage.getItem('ws3_purchase_v1')).items[0].bnote, '※ 주의');
+  });
+
+  test('카드 버튼(이동·복제·삭제)과 사진 칸', async () => {
+    const { app, w, doc } = await loadApp({ confirm: true });
+    app.state.items.push(item(app, { name: 'a' }), item(app, { name: 'b' }));
+    app.renderItems();
+    const click = (sel, idx) => doc.querySelectorAll(sel)[idx].dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+    click('[data-act=down]', 0);
+    assert.deepEqual(app.state.items.map(x => x.name), ['b', 'a']);
+    click('[data-act=dup]', 0);
+    await wait(5);
+    assert.deepEqual(app.state.items.map(x => x.name), ['b', 'b', 'a']);
+    click('[data-act=del]', 2);
+    await wait(5);
+    assert.deepEqual(app.state.items.map(x => x.name), ['b', 'b']);
     const id = app.state.items[0].id;
-    app.openDetail(id);
-    doc.getElementById('d_color').value = '흰색';
-    doc.getElementById('d_spec').value = '날개지름 200MM';
-    doc.getElementById('d_bnote').value = '※ 주의';
-    app.saveDetail(id);
-    assert.equal(app.state.items[0].color, '흰색');
-    assert.equal(app.state.items[0].spec, '날개지름 200MM');
-    assert.equal(app.state.items[0].bnote, '※ 주의');
-    assert.equal(doc.getElementById('modalRoot').innerHTML, '');
+    await app.setItemPhotoData(id, 'data:image/png;base64,QQ');
+    assert.equal(doc.querySelector('.icard[data-id="' + id + '"] .ic-photo img').getAttribute('src'), 'data:image/png;base64,QQ');
+    assert.equal(app.state.items[0].hasPhoto, true);
+    click('[data-act=rmphoto]', 0);
+    await wait(5);
+    assert.equal(doc.querySelector('.icard[data-id="' + id + '"] .ic-photo img'), null);
+    assert.equal(app.state.items[0].hasPhoto, false);
+    // 사진 칸에 이미지 주소 붙여넣기
+    const ev = new w.Event('paste', { bubbles: true, cancelable: true });
+    ev.clipboardData = { files: [], getData: t => t === 'text/plain' ? 'https://img/x.jpg' : '' };
+    doc.querySelector('.icard[data-id="' + id + '"] [data-photo]').dispatchEvent(ev);
+    await wait(10);
+    assert.equal(app.photoCache[id], 'https://img/x.jpg');
   });
   test('복제·이동·삭제', async () => {
     const { app } = await loadApp({ confirm: true });
@@ -462,7 +498,7 @@ describe('P2 네이버 견적 가져오기 — 페이지 정보 읽기', () => {
     const { data, opened } = runGrabOn('<html><head><meta property="og:title" content="og제목"><meta property="og:image" content="https://og/x.jpg"></head><body>' + NOTICE_TABLE + '</body></html>', { state: SMARTSTORE_STATE });
     assert.equal(opened.length, 1);
     assert.equal(opened[0].name, 'ws3_purchase', '같은 창 재사용');
-    assert.ok(opened[0].u.startsWith('https://renzo-99.github.io/RENZO/purchase.html#add='));
+    assert.ok(opened[0].u.startsWith('https://renzo-99.github.io/RENZO/index.html#add='), '목공실 앱으로 넘김');
     assert.equal(data.src, 'https://smartstore.naver.com/doorshop/products/123', '추적 파라미터 제거');
     assert.equal(data.name, '[무료배송][당일발송] 현대 방화문 원형손잡이 DL-900BSS 열쇠포함');
     assert.equal(data.price, '12000', '할인가 우선');
@@ -497,7 +533,7 @@ describe('P2 네이버 견적 가져오기 — 페이지 정보 읽기', () => {
 describe('P2 네이버 견적 가져오기 — 구매스펙에 반영', () => {
   const addUrl = data => 'https://renzo-99.github.io/RENZO/purchase.html#add=' + encodeURIComponent(JSON.stringify(data));
 
-  test('#add= 로 열리면 품목 추가(품명 정리·수량1·단가), 판매처는 추천업체가 아닌 견적출처로, 주소창 정리, 상세창 열림', async () => {
+  test('#add= 로 열리면 카드 추가(품명 정리·수량1·단가), 판매처는 추천업체가 아닌 견적출처로, 주소창 정리', async () => {
     const { data } = runGrabOn('<html><body>' + NOTICE_TABLE + '</body></html>', { state: SMARTSTORE_STATE });
     const { app, doc, w } = await loadApp({ url: addUrl(data) });
     await wait(20);
@@ -513,24 +549,27 @@ describe('P2 네이버 견적 가져오기 — 구매스펙에 반영', () => {
     assert.equal(it.hasPhoto, true);
     assert.equal(app.photoCache[it.id], 'https://shop-phinf.pstatic.net/20240101_1/a.jpg', '사진 다운로드가 막히면 주소로 사용');
     assert.equal(w.location.hash, '', '새로고침해도 중복 추가되지 않게 주소 정리');
-    assert.ok(doc.getElementById('d_url'), '확인용 상세창');
-    assert.match(doc.getElementById('modalRoot').textContent, /견적 출처 링크 — 도어락마트/);
+    const card = doc.querySelector('.icard[data-id="' + it.id + '"]');
+    assert.ok(card.classList.contains('flash'), '가져온 카드 강조');
+    assert.match(card.querySelector('.ic-src').textContent, /견적: 도어락마트/);
+    assert.equal(card.querySelector('input[data-k=url]').value, 'https://smartstore.naver.com/doorshop/products/123');
+    assert.equal(card.querySelector('input[data-k=vendor]').value, '');
     const b = doc.getElementById('printRoot');
     b.innerHTML = app.buildBSpecPrint(app.validItems());
     assert.equal(b.querySelector('td.spec img').getAttribute('src'), 'https://shop-phinf.pstatic.net/20240101_1/a.jpg', 'B-Spec에 사진 포함');
   });
 
-  test('사진이 늦어도 확인 창은 바로 열리고, 사진은 도착하면 확인 창에 채워진다', async () => {
+  test('사진이 늦어도 카드는 바로 생기고, 사진은 도착하면 채워진다', async () => {
     let release;
     const slow = () => new Promise(r => { release = () => r({ ok: false, status: 500 }); });
     const { app, doc } = await loadApp({ url: addUrl({ name: 'a', image: 'https://img/slow.jpg', src: 'https://s/9' }), fetch: slow });
     await wait(20);
     assert.equal(app.state.items.length, 1);
-    assert.ok(doc.getElementById('detailModal'), '사진 기다리지 않고 확인 창 표시');
-    assert.match(doc.getElementById('d_photoBox').textContent, /사진 선택/);
+    const box = () => doc.querySelector('.icard .ic-photo');
+    assert.match(box().textContent, /사진 첨부/, '사진 기다리지 않고 카드 표시');
     release();
     await wait(20);
-    assert.equal(doc.querySelector('#d_photoBox img').getAttribute('src'), 'https://img/slow.jpg');
+    assert.equal(box().querySelector('img').getAttribute('src'), 'https://img/slow.jpg');
     assert.equal(app.state.items[0].hasPhoto, true);
   });
 
@@ -576,22 +615,117 @@ describe('P2 네이버 견적 가져오기 — 구매스펙에 반영', () => {
     assert.match(toastText(doc), /상품 정보를 읽지 못했습니다/);
   });
 
-  test('즐겨찾기 버튼: javascript: 코드 안에 이 페이지 주소가 들어간다', async () => {
+  test('즐겨찾기 버튼(선택): 코드가 목공실 앱 주소로 넘기고, 실제로 실행된다', async () => {
     const { app, doc } = await loadApp({ url: 'https://renzo-99.github.io/RENZO/purchase.html?x=1#y' });
+    assert.equal(app.appUrl(), 'https://renzo-99.github.io/RENZO/index.html');
     const href = app.bookmarkletHref();
     assert.ok(href.startsWith('javascript:'));
     const code = decodeURIComponent(href.slice(11));
-    assert.match(code, /^\(function wsGrab\(target\)/);
-    assert.ok(code.includes('("https://renzo-99.github.io/RENZO/purchase.html")'));
+    assert.match(code, /^\(function\(\)\{function wsExtract\(d,st\)/);
+    assert.ok(code.includes('("https://renzo-99.github.io/RENZO/index.html")'));
+    // 즐겨찾기 코드를 그대로 네이버(가짜) 페이지에서 실행
+    const { JSDOM } = await import('jsdom');
+    const page = new JSDOM('<html><body>' + NOTICE_TABLE + '</body></html>', { url: 'https://smartstore.naver.com/a/products/1', runScripts: 'outside-only' });
+    page.window.__PRELOADED_STATE__ = SMARTSTORE_STATE;
+    const opened = []; page.window.open = u => { opened.push(u); return {}; };
+    page.window.eval(code.replace(/;void 0$/, ''));
+    assert.equal(opened.length, 1);
+    assert.ok(opened[0].startsWith('https://renzo-99.github.io/RENZO/index.html#add='));
     app.openNaverSetup();
     assert.equal(doc.getElementById('bmLink').getAttribute('href'), href);
-    assert.match(doc.getElementById('modalRoot').textContent, /즐겨찾기 막대로 끌어다 놓으세요/);
+    assert.match(doc.getElementById('modalRoot').textContent, /Ctrl \+ A/);
+  });
+
+  test('즐겨찾기 버튼: 상품이 없는 페이지면 안내, 팝업이 막히면 같은 탭으로 이동', () => {
+    const r = runGrabOn('<html><body><p>검색 결과</p></body></html>', { url: 'https://search.shopping.naver.com/search/all?q=x' });
+    assert.equal(r.opened.length, 0);
+    assert.match(r.alerts[0], /상품 정보를 찾지 못했습니다/);
   });
 
   test('cleanProductName', async () => {
     const { app } = await loadApp();
     assert.equal(app.cleanProductName(' [특가] [무료배송]  도어  클로저 '), '도어 클로저');
+    assert.equal(app.cleanProductName('도어 클로저 K-630 : 킹스토어'), '도어 클로저 K-630', 'og 제목의 " : 스토어명" 제거');
     assert.equal(app.cleanProductName('도어록 [2개입]'), '도어록 [2개입]', '뒤쪽 괄호는 유지');
     assert.equal(app.cleanProductName(null), '');
+  });
+});
+
+// ───────────────────────── P2. 네이버 견적 — 복사·붙여넣기 방식 (주 방식) ─────────────────────────
+// 네이버 상품 페이지에서 Ctrl+A → Ctrl+C 했을 때 클립보드(text/html)에 담기는 형태를 흉내 낸 조각
+const COPIED_SMARTSTORE = `<html><body><!--StartFragment-->
+<div><a href="https://smartstore.naver.com/doorshop"><img src="https://shop-phinf.pstatic.net/20230101_2/logo.png?type=f40" alt="스토어 로고"></a><h1>도어락마트</h1></div>
+<div><img src="https://shop-phinf.pstatic.net/20240101_1/main.jpg?type=m510" alt="대표이미지"><img src="https://shop-phinf.pstatic.net/20240101_1/thumb2.jpg?type=f40"></div>
+<h3>[당일발송] 현대 방화문 원형손잡이 DL-900BSS 열쇠포함</h3>
+<div><span>30%</span> <del><span>17,000</span>원</del> <strong><span>12,000</span>원</strong></div>
+<div>배송비 3,000원 · 도서산간 추가</div>
+<h3>상품정보 제공고시</h3>
+<table><tr><th>품명 및 모델명</th><td>DL-900BSS</td><th>제조자(사)</th><td>현대도어락(주)</td></tr>
+<tr><th>색상</th><td>은색</td><th>재질</th><td>스테인리스</td></tr><tr><th>크기</th><td>문 두께 35~45mm</td></tr></table>
+<!--EndFragment--></body></html>`;
+
+describe('P2 네이버 견적 가져오기 — 복사·붙여넣기', () => {
+  test('복사한 상품 화면에서 품명·할인가·제조사·모델·색상·재질·규격·큰 사진을 읽어 카드 추가', async () => {
+    const { app, doc } = await loadApp();
+    app.openNaverSetup();
+    const p = app.importFromPaste(COPIED_SMARTSTORE, '');
+    assert.ok(p, '추가됨');
+    await wait(20);
+    const it = app.state.items[0];
+    assert.equal(it.name, '현대 방화문 원형손잡이 DL-900BSS 열쇠포함', '스토어 이름(h1)·안내 제목 대신 상품명, 광고 태그 제거');
+    assert.equal(it.price, 12000, '정가(17,000)가 아니라 할인가');
+    assert.equal(it.maker, '현대도어락(주)'); assert.equal(it.model, 'DL-900BSS');
+    assert.equal(it.color, '은색'); assert.equal(it.material, '스테인리스'); assert.equal(it.spec, '문 두께 35~45mm');
+    assert.equal(it.qty, 1); assert.equal(it.vendor, '');
+    assert.equal(app.photoCache[it.id], 'https://shop-phinf.pstatic.net/20240101_1/main.jpg?type=m510', '로고·작은 썸네일(f40) 대신 대표 사진');
+    assert.match(doc.getElementById('nvRes').textContent, /✅ 현대 방화문.*12,000원/);
+  });
+
+  test('붙여넣기 칸에 실제 paste 이벤트로 넣어도 동작, 여러 상품 연달아', async () => {
+    const { app, w, doc } = await loadApp();
+    app.openNaverSetup();
+    const zone = doc.getElementById('nvPaste');
+    const paste = html => { const ev = new w.Event('paste', { bubbles: true, cancelable: true }); ev.clipboardData = { getData: t => t === 'text/html' ? html : '' }; zone.dispatchEvent(ev); return ev; };
+    const ev = paste(COPIED_SMARTSTORE);
+    assert.equal(ev.defaultPrevented, true, '붙여넣은 화면이 칸 안에 그대로 들어가지 않음');
+    paste(COPIED_SMARTSTORE.replace('DL-900BSS 열쇠포함', '환풍기 DWV-200DRA').replace(/DL-900BSS/g, 'DWV-200DRA'));
+    await wait(20);
+    assert.equal(app.state.items.length, 2);
+    assert.equal(doc.querySelectorAll('#nvRes .r').length, 2);
+    assert.equal(zone.textContent, '여기를 누르고 Ctrl + V');
+  });
+
+  test('가격비교 화면 글자(최저가)만 있어도 읽음 / 텍스트만 붙여넣은 경우', async () => {
+    const { app } = await loadApp();
+    app.importFromPaste('<body><h2>자동개폐식 환풍기 DWV-200DRA</h2><p>최저 23,900원</p><dl><dt>제조사</dt><dd>동우산업</dd><dt>모델명</dt><dd>DWV-200DRA</dd></dl></body>', '');
+    await wait(10);
+    assert.deepEqual([app.state.items[0].name, app.state.items[0].price, app.state.items[0].maker, app.state.items[0].model], ['자동개폐식 환풍기 DWV-200DRA', 23900, '동우산업', 'DWV-200DRA']);
+    app.importFromPaste('', '도어클로저\n판매가 32,000원\n제조사: KING\n모델명: K-630');
+    await wait(10);
+    assert.equal(app.state.items[1].price, 32000);
+    assert.equal(app.state.items[1].maker, 'KING'); assert.equal(app.state.items[1].model, 'K-630');
+  });
+
+  test('링크만 붙여넣거나 상품이 아닌 화면이면 추가하지 않고 안내', async () => {
+    const { app, doc } = await loadApp();
+    app.openNaverSetup();
+    assert.equal(app.importFromPaste('', 'https://smartstore.naver.com/a/products/1'), null);
+    assert.match(doc.getElementById('nvRes').textContent, /링크만으로는 가져올 수 없어요/);
+    assert.equal(app.importFromPaste('<body><p>로그인 해주세요</p></body>', ''), null);
+    assert.match(doc.getElementById('nvRes').textContent, /상품 정보를 찾지 못했습니다/);
+    assert.equal(app.importFromPaste('', ''), null);
+    assert.equal(app.state.items.length, 0);
+  });
+});
+
+describe('P3 목공실 앱 사이드 패널로만 열림', () => {
+  test('purchase.html을 주소로 직접 열면 목공실 앱(#purchase)으로 보낼 주소를 만들고, 견적 데이터도 넘긴다', async () => {
+    const { app, w } = await loadApp({ url: 'https://renzo-99.github.io/RENZO/purchase.html' });
+    w.history.replaceState(null, '', '#add=%7B%22name%22%3A%22a%22%7D');
+    assert.equal(app.appRedirectUrl(), 'https://renzo-99.github.io/RENZO/index.html#purchase&add=%7B%22name%22%3A%22a%22%7D');
+    const { app: b } = await loadApp({ url: 'https://renzo-99.github.io/RENZO/purchase.html' });
+    assert.equal(b.appRedirectUrl(), 'https://renzo-99.github.io/RENZO/index.html#purchase');
+    assert.equal(b.isEmbedded(), false);
+    assert.equal(b.redirectToApp(), false, '테스트(단독 실행 허용 플래그)에서는 이동 안 함');
   });
 });

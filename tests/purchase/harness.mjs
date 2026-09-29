@@ -15,11 +15,13 @@ const EXPORTS = [
   'esc', 'num', 'won', 'parseTSV', 'blankItem', 'aModel', 'aPlace', 'aApplicant', 'itemAmount',
   'itemPlace', 'itemRoom', 'validItems', 'canAdd', 'addItem', 'moveItem', 'dupItem', 'delItem', 'clearAll',
   'doPaste', 'openPaste', 'checkBeforeOutput', 'fileBase', 'buildASpecWorkbook', 'aspecCtx',
-  'buildASpecPrint', 'buildBSpecPrint', 'printDoc', 'renderItems', 'renderSum', 'openDetail', 'saveDetail',
+  'buildASpecPrint', 'buildBSpecPrint', 'printDoc', 'renderItems', 'renderSum',
   'saveState', 'loadState', 'exportJSON', 'importJSON', 'openStockPicker', 'renderStockPick', 'addStockPicked',
   'getStock', 'onNamePicked', 'toggleSettings', 'goBack', 'downloadASpecXlsx', 'closeModal', 'removeStamp',
   'removeItemPhoto', 'fillStockDatalist', 'renderSettings', 'onCellInput',
-  'wsGrab', 'bookmarkletHref', 'openNaverSetup', 'consumeHashAdd', 'cleanProductName', 'fetchImageAsData', 'IDB'
+  'wsGrab', 'wsExtract', 'bookmarkletHref', 'appUrl', 'openNaverSetup', 'consumeHashAdd', 'cleanProductName', 'fetchImageAsData', 'IDB',
+  'importFromPaste', 'addQuoteItem', 'focusCard', 'setItemPhotoFromFile', 'setItemPhotoUrl', 'setItemPhotoData', 'updateCardPhoto',
+  'isEmbedded', 'redirectToApp', 'appRedirectUrl', 'cardHTML'
 ];
 
 function extractScript() {
@@ -54,7 +56,10 @@ export async function loadApp(opt = {}) {
   w.Element.prototype.scrollIntoView = function () {}; // jsdom 미구현
   w.HTMLAnchorElement.prototype.click = function () { calls.downloads.push(this.download); };
   const G = ['window', 'document', 'localStorage', 'navigator', 'Blob', 'URL', 'FileReader', 'Image',
-    'HTMLElement', 'confirm', 'prompt', 'getComputedStyle'];
+    'HTMLElement', 'confirm', 'prompt', 'getComputedStyle', 'DOMParser'];
+  if (!opt.redirect) w.__WS3_NO_REDIRECT = true; // 테스트는 purchase.html을 단독으로 띄움(원래는 목공실 앱 사이드 패널로 이동)
+  const nav = [];
+  if (opt.redirect) { try { w.location.replace = u => nav.push(u); } catch (e) {} }
   for (const k of G) Object.defineProperty(globalThis, k, { value: k === 'window' ? w : w[k], configurable: true, writable: true });
   // 네트워크 없는 테스트: 기본은 사진 다운로드 실패(→ 주소 그대로 사용)
   globalThis.fetch = opt.fetch || (() => Promise.reject(new Error('offline')));
@@ -67,21 +72,22 @@ export async function loadApp(opt = {}) {
   const toastEl = w.document.getElementById('toast');
   const obs = new w.MutationObserver(() => calls.toasts.push(toastEl.textContent));
   obs.observe(toastEl, { childList: true, characterData: true, subtree: true });
-  return { app, w, doc: w.document, calls, close: () => w.close() };
+  return { app, w, doc: w.document, calls, nav, close: () => w.close() };
 }
 
 /** 네이버 상품 페이지(가짜)에서 즐겨찾기 버튼 코드를 실행하고, 열려는 주소를 돌려준다 */
-export function runGrabOn(pageHtml, { url = 'https://smartstore.naver.com/doorshop/products/123?NaPm=x', state = null, target = 'https://renzo-99.github.io/RENZO/purchase.html' } = {}) {
+export function runGrabOn(pageHtml, { url = 'https://smartstore.naver.com/doorshop/products/123?NaPm=x', state = null, target = 'https://renzo-99.github.io/RENZO/index.html' } = {}) {
   const src = fs.readFileSync(HTML_PATH, 'utf8').split('/*WSGRAB_START*/')[1].split('/*WSGRAB_END*/')[0];
   const dom = new JSDOM(pageHtml, { url, runScripts: 'outside-only' });
   const w = dom.window;
   if (state) w.__PRELOADED_STATE__ = state;
-  const opened = [];
-  w.open = (u, name) => { opened.push({ u, name }); return null; };
+  const opened = [], alerts = [];
+  w.open = (u, name) => { opened.push({ u, name }); return {}; };
+  w.alert = m => alerts.push(m);
   w.eval(src + ';wsGrab(' + JSON.stringify(target) + ');');
   const o = opened[0];
-  const data = JSON.parse(decodeURIComponent(o.u.split('#add=')[1]));
-  return { opened, data, url: o.u };
+  const data = o ? JSON.parse(decodeURIComponent(o.u.split('#add=')[1])) : null;
+  return { opened, alerts, data, url: o && o.u };
 }
 
 export function item(app, over = {}) {

@@ -4027,16 +4027,35 @@ function calGoToWeek(wy,ww){
   toast(wy+'년 '+ww+'주차로 이동');
 }
 
-// === 물품 구매 스펙 작성 (purchase.html을 앱 안 전체화면 패널로) ===
-function openPurchase(){
-  let el=document.getElementById('purchaseRoot');
-  if(el)return;
-  el=document.createElement('div');el.id='purchaseRoot';
-  el.style.cssText='position:fixed;inset:0;z-index:1000;background:#f4f6f8';
-  el.innerHTML='<iframe src="purchase.html" title="물품 구매 스펙 작성" style="border:0;width:100%;height:100%;display:block"></iframe>';
+// === 물품 구매 스펙 작성 — 목공실 화면 오른쪽 사이드 패널 ===
+function openPurchase(extraHash){
+  if(document.getElementById('purchaseRoot')){const f=document.querySelector('#purchaseRoot iframe');if(extraHash&&f)f.contentWindow.location.hash=extraHash;return;}
+  if(!document.getElementById('purchaseStyle')){
+    const st=document.createElement('style');st.id='purchaseStyle';
+    st.textContent='#purchaseRoot{position:fixed;inset:0;z-index:1000}'+
+      '#purchaseRoot .pr-dim{position:absolute;inset:0;background:rgba(15,23,42,.38);animation:prFade .2s ease}'+
+      '#purchaseRoot .pr-panel{position:absolute;top:0;right:0;bottom:0;width:min(1180px,96vw);background:#f4f6f8;box-shadow:-8px 0 30px rgba(0,0,0,.18);animation:prSlide .25s ease;display:flex;flex-direction:column}'+
+      '#purchaseRoot iframe{border:0;flex:1;width:100%;display:block}'+
+      '@keyframes prSlide{from{transform:translateX(40px);opacity:.6}to{transform:none;opacity:1}}@keyframes prFade{from{opacity:0}to{opacity:1}}'+
+      '@media(max-width:700px){#purchaseRoot .pr-panel{width:100vw}}';
+    document.head.appendChild(st);
+  }
+  const el=document.createElement('div');el.id='purchaseRoot';
+  el.innerHTML='<div class="pr-dim" onclick="closePurchase()" title="닫기"></div><div class="pr-panel" role="dialog" aria-label="물품 구매 스펙 작성"><iframe src="purchase.html'+(extraHash?'#'+extraHash:'')+'" title="물품 구매 스펙 작성"></iframe></div>';
   document.body.appendChild(el);document.body.style.overflow='hidden';
 }
-function closePurchase(){const el=document.getElementById('purchaseRoot');if(el)el.remove();document.body.style.overflow='';}
+function closePurchase(){const el=document.getElementById('purchaseRoot');if(el)el.remove();document.body.style.overflow='';
+  if(/^#purchase/.test(location.hash)){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
+// 주소가 #purchase(…&add=견적) 이면 사이드 패널로 연다 (purchase.html을 직접 열었거나 즐겨찾기 버튼으로 왔을 때)
+function checkPurchaseHash(){
+  const h=location.hash||'';if(!/^#purchase/.test(h))return;
+  const m=h.match(/[#&](add=[^&]*)/);
+  openPurchase(m?m[1]:'');
+  try{history.replaceState(null,'',location.pathname+location.search+'#purchase');}catch(e){}
+}
+window.addEventListener('hashchange',checkPurchaseHash);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('purchaseRoot'))closePurchase();});
+setTimeout(checkPurchaseHash,0);
 
 // === 건물 호실 현황 ===
 function getRoomBuildings(){
