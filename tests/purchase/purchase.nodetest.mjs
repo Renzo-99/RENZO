@@ -345,6 +345,10 @@ describe('P4 편집 & 저장/복원', () => {
     p.value = '2500'; p.dispatchEvent(new w.Event('input', { bubbles: true }));
     assert.equal(tr.querySelector('[data-amt]').textContent, '10,000');
     assert.equal(doc.getElementById('sumAmt').textContent, '10,000');
+    assert.equal(tr.querySelector('[data-calc]').textContent, '2,500원 × 4개', '계산식 표시');
+    assert.equal(doc.getElementById('barAmt').textContent, '10,000', '하단 전체 합계');
+    assert.equal(doc.getElementById('barQty').textContent, '4');
+    assert.equal(doc.getElementById('barMiss').textContent, '');
     assert.ok(!tr.classList.contains('warn'));
     p.dispatchEvent(new w.FocusEvent('focusout', { bubbles: true }));
     assert.equal(p.value, '2,500', '칸을 벗어나면 천단위 쉼표');
@@ -727,5 +731,61 @@ describe('P3 목공실 앱 사이드 패널로만 열림', () => {
     assert.equal(b.appRedirectUrl(), 'https://renzo-99.github.io/RENZO/index.html#purchase');
     assert.equal(b.isEmbedded(), false);
     assert.equal(b.redirectToApp(), false, '테스트(단독 실행 허용 플래그)에서는 이동 안 함');
+  });
+});
+
+describe('P4 사진 칸: 한 번 클릭=붙여넣기 대기, 더블클릭=파일 선택', () => {
+  test('클릭하면 파일 창을 열지 않고 칸에 포커스(Ctrl+V 대기), 더블클릭하면 파일 창', async () => {
+    const { app, w, doc } = await loadApp();
+    app.addItem();
+    const fi = doc.getElementById('cardPhotoFile');
+    let opened = 0; fi.click = () => { opened++; };
+    const ph = doc.querySelector('.icard [data-photo]');
+    ph.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+    assert.equal(opened, 0, '한 번 클릭으로는 파일 창 안 뜸');
+    assert.equal(doc.activeElement, ph, '붙여넣기 받을 수 있게 포커스');
+    assert.match(toastText(doc), /Ctrl\+V로 사진을 붙여넣으세요/);
+    ph.dispatchEvent(new w.MouseEvent('dblclick', { bubbles: true }));
+    assert.equal(opened, 1, '더블클릭하면 파일 창');
+    // 포커스된 칸에 이미지 붙여넣기
+    const ev = new w.Event('paste', { bubbles: true, cancelable: true });
+    ev.clipboardData = { files: [], getData: t => t === 'text/plain' ? 'https://img/p.jpg' : '' };
+    ph.dispatchEvent(ev);
+    await wait(10);
+    assert.equal(app.photoCache[app.state.items[0].id], 'https://img/p.jpg');
+    // 삭제(✕) 버튼 더블클릭은 파일 창 안 엶
+    doc.querySelector('.icard [data-act=rmphoto]').dispatchEvent(new w.MouseEvent('dblclick', { bubbles: true }));
+    assert.equal(opened, 1);
+  });
+});
+
+describe('P1 품목별 합계 · 전체 합계', () => {
+  test('카드마다 단가×수량=금액, 하단 막대에 품목 수·총 수량·전체 합계, 빠진 품목 경고, 입력 즉시 갱신', async () => {
+    const { app, w, doc } = await loadApp();
+    app.state.items.push(item(app, { name: 'a', qty: 40, price: 10000 }), item(app, { name: 'b', qty: 20, price: 25000, unit: '대' }), item(app, { name: 'c', qty: 3, price: '' }));
+    app.renderItems();
+    const cards = doc.querySelectorAll('.icard');
+    assert.deepEqual([...cards].map(c => c.querySelector('[data-calc]').textContent), ['10,000원 × 40개', '25,000원 × 20대', '단가 ? × 3개']);
+    assert.deepEqual([...cards].map(c => c.querySelector('[data-amt]').textContent), ['400,000', '500,000', '0']);
+    assert.equal(doc.getElementById('barCnt').textContent, '3');
+    assert.equal(doc.getElementById('barQty').textContent, '63');
+    assert.equal(doc.getElementById('barAmt').textContent, '900,000');
+    assert.match(doc.getElementById('barMiss').textContent, /빠진 품목 1개/);
+    const p = cards[2].querySelector('input[data-k=price]'); p.value = '1000'; p.dispatchEvent(new w.Event('input', { bubbles: true }));
+    assert.equal(cards[2].querySelector('[data-calc]').textContent, '1,000원 × 3개');
+    assert.equal(doc.getElementById('barAmt').textContent, '903,000', '입력 즉시 전체 합계 갱신');
+    assert.equal(doc.getElementById('barMiss').textContent, '');
+    const q = cards[0].querySelector('input[data-k=qty]'); q.value = ''; q.dispatchEvent(new w.Event('input', { bubbles: true }));
+    assert.equal(cards[0].querySelector('[data-calc]').textContent, '10,000원 × 수량 ?');
+    assert.equal(doc.getElementById('barAmt').textContent, '503,000');
+  });
+
+  test('화면 전체 합계가 A-Spec 엑셀 「계」 행과 일치', async () => {
+    const { app, doc } = await loadApp();
+    const its = [item(app, { name: 'a', qty: 40, price: 10000 }), item(app, { name: 'b', qty: 20, price: 25000 })];
+    app.state.items.push(...its); app.renderItems();
+    const wb = app.buildASpecWorkbook(ExcelJS, its, app.aspecCtx());
+    assert.equal(wb.getWorksheet('A-SPEC').getCell('I5').value.result, 900000);
+    assert.equal(doc.getElementById('barAmt').textContent, '900,000');
   });
 });

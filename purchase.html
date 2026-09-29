@@ -67,11 +67,17 @@ table.items tr.warn td{background:#fffbeb}
 .ic-head{display:flex;align-items:center;gap:6px;margin-bottom:8px}
 .ic-no{font-weight:800;color:var(--blue);font-size:13px;min-width:48px}
 .ic-src{font-size:11px;color:var(--gray-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:320px}
-.ic-amt{margin-left:auto;font-size:12px;color:var(--gray-600);white-space:nowrap}.ic-amt b{font-size:14px;color:var(--gray-800)}
+.ic-amt{margin-left:auto;font-size:12px;color:var(--gray-600);white-space:nowrap;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:3px 10px}
+.ic-amt b{font-size:15px;color:var(--blue)}.ic-amt .calc{color:var(--gray-500)}
+.sumbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#1e293b;color:#fff;display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:10px 20px;font-size:13px;box-shadow:0 -4px 14px rgba(0,0,0,.12)}
+.sumbar b{font-size:15px}.sumbar .grand{margin-left:auto;font-size:14px}.sumbar .grand b{font-size:20px;color:#86efac}
+.sumbar .miss{color:#fcd34d;font-size:12px}
+body{padding-bottom:56px}
+@media print{.sumbar{display:none!important}body{padding-bottom:0}}
 .ic-head button{border:1px solid var(--gray-200);background:#fff;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px;color:var(--gray-600)}
 .ic-head button:hover{background:var(--gray-50)}.ic-head button.del{color:var(--red)}
 .ic-body{display:flex;gap:12px;align-items:flex-start}
-.ic-photo{width:124px;height:124px;flex-shrink:0;border:2px dashed var(--gray-300);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;font-size:10.5px;line-height:1.35;color:var(--gray-500);cursor:pointer;position:relative;overflow:hidden;background:var(--gray-50);outline:none}
+.ic-photo{width:124px;height:124px;flex-shrink:0;border:2px dashed var(--gray-300);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;font-size:10.5px;line-height:1.35;color:var(--gray-500);cursor:pointer;position:relative;overflow:hidden;background:var(--gray-50);outline:none;user-select:none;-webkit-user-select:none}
 .ic-photo:focus{border-color:var(--blue)}
 .ic-photo.drag{border-color:var(--blue);background:var(--blue-bg)}
 .ic-photo.has{border-style:solid;background:#fff}
@@ -206,7 +212,7 @@ table.as tr{page-break-inside:avoid}
       <input type="file" id="jsonFile" accept=".json" style="display:none" onchange="importJSON(this)">
       <span class="sum">총 수량 <b id="sumQty">0</b> · 예정금액 합계 <b id="sumAmt">0</b>원</span>
     </div>
-    <div class="legend"><span><span class="tag ab">A·B</span> 두 문서 모두</span><span><span class="tag a">A</span> A-Spec 엑셀</span><span><span class="tag b">B</span> B-Spec PDF</span><span><span class="tag r">참고</span> 제출 문서엔 안 나옴</span><span>· 사진 칸: 클릭 / 이미지 끌어놓기 / 복사한 이미지 붙여넣기(Ctrl+V)</span></div>
+    <div class="legend"><span><span class="tag ab">A·B</span> 두 문서 모두</span><span><span class="tag a">A</span> A-Spec 엑셀</span><span><span class="tag b">B</span> B-Spec PDF</span><span><span class="tag r">참고</span> 제출 문서엔 안 나옴</span><span>· 사진 칸: 클릭 후 Ctrl+V 붙여넣기 / 더블클릭하면 파일 선택 / 이미지 끌어놓기</span></div>
     <div id="itemList" class="ilist"></div>
     <input type="file" id="cardPhotoFile" accept="image/*" style="display:none">
     <p class="hint">
@@ -216,6 +222,12 @@ table.as tr{page-break-inside:avoid}
   </div>
 </div>
 
+<div class="sumbar" id="sumBar">
+  <span>품목 <b id="barCnt">0</b>개</span>
+  <span>총 수량 <b id="barQty">0</b></span>
+  <span class="miss" id="barMiss"></span>
+  <span class="grand">전체 합계 <b id="barAmt">0</b>원</span>
+</div>
 <div id="modalRoot"></div>
 <div id="printRoot"></div>
 <div class="toast" id="toast"></div>
@@ -310,11 +322,12 @@ const CARD_FIELDS=[
 ];
 const TAG_TXT={ab:'A·B',a:'A',b:'B',r:'참고'};
 function autoModelText(it){return [it.maker,it.model].filter(x=>x&&String(x).trim()).join(' ');}
+function calcText(it){return (it.price===''||it.price==null?'단가 ?':won(num(it.price))+'원')+' × '+(it.qty===''||it.qty==null?'수량 ?':won(num(it.qty))+(it.unit||''));}
 function isWarn(it){return !String(it.name||'').trim()||!(num(it.qty)>0);}
 function photoInner(id){
   const p=photoCache[id];
   if(p)return '<img src="'+esc(p)+'" alt=""><button class="rm" data-act="rmphoto" title="사진 삭제">✕</button><span class="cap">B-Spec 사진</span>';
-  return '<span style="font-size:22px">📷</span>사진 첨부<br><span style="font-weight:400">클릭·끌어놓기<br>Ctrl+V</span>';
+  return '<span style="font-size:22px">📷</span>사진 첨부<br><span style="font-weight:400">클릭 후 Ctrl+V<br>더블클릭: 파일 선택</span>';
 }
 function cardHTML(it,i){
   const s=state.settings;
@@ -327,10 +340,10 @@ function cardHTML(it,i){
   return '<div class="icard'+(isWarn(it)?' warn':'')+'" data-id="'+it.id+'">'+
     '<div class="ic-head"><span class="ic-no">No.'+(i+1)+'</span>'+
       (it.srcStore?'<span class="ic-src" title="견적 출처">견적: '+esc(it.srcStore)+'</span>':'')+
-      '<span class="ic-amt">예정금액 <b data-amt>'+won(itemAmount(it))+'</b>원</span>'+
+      '<span class="ic-amt"><span class="calc" data-calc>'+calcText(it)+'</span> = <b data-amt>'+won(itemAmount(it))+'</b>원</span>'+
       '<button data-act="up" title="위로">▲</button><button data-act="down" title="아래로">▼</button>'+
       '<button data-act="dup" title="복제">⧉ 복제</button><button data-act="del" class="del" title="삭제">✕</button></div>'+
-    '<div class="ic-body"><div class="ic-photo'+(photoCache[it.id]?' has':'')+'" tabindex="0" data-photo title="클릭해서 사진 선택 · 이미지를 끌어놓거나 Ctrl+V로 붙여넣기">'+photoInner(it.id)+'</div>'+
+    '<div class="ic-body"><div class="ic-photo'+(photoCache[it.id]?' has':'')+'" tabindex="0" data-photo title="클릭 후 Ctrl+V로 붙여넣기 · 더블클릭: 파일 선택 · 이미지 끌어놓기">'+photoInner(it.id)+'</div>'+
     '<div class="ic-grid">'+fields+'</div></div></div>';
 }
 function renderItems(){
@@ -346,7 +359,7 @@ function onCellInput(e){
   const {card,it}=cardOf(inp);if(!it)return;
   const k=inp.dataset.k;
   it[k]=(k==='qty'||k==='price')?(inp.value.trim()===''?'':num(inp.value)):inp.value;
-  if(k==='qty'||k==='price'){const a=card.querySelector('[data-amt]');if(a)a.textContent=won(itemAmount(it));}
+  if(k==='qty'||k==='price'||k==='unit'){const a=card.querySelector('[data-amt]');if(a)a.textContent=won(itemAmount(it));const c=card.querySelector('[data-calc]');if(c)c.textContent=calcText(it);}
   if(k==='maker'||k==='model'){const as=card.querySelector('[data-k=aspec]');if(as)as.placeholder='자동: '+(autoModelText(it)||'제조사 + 모델명');}
   if(k==='name'||k==='qty')card.classList.toggle('warn',isWarn(it));
   saveState();renderSum();
@@ -372,7 +385,13 @@ function bindCardEvents(){
     const act=e.target.closest('[data-act]');
     if(act){e.preventDefault();e.stopPropagation();const a=act.dataset.act;
       if(a==='up')moveItem(it.id,-1);else if(a==='down')moveItem(it.id,1);else if(a==='dup')dupItem(it.id);else if(a==='del')delItem(it.id);else if(a==='rmphoto')removeItemPhoto(it.id);return;}
-    if(e.target.closest('[data-photo]')){_cardPhotoTarget=it.id;const fi=document.getElementById('cardPhotoFile');fi.value='';fi.click();}
+    const ph=e.target.closest('[data-photo]'); // 한 번 클릭: 붙여넣기(Ctrl+V) 대기만
+    if(ph){ph.focus();if(!photoCache[it.id])toast('Ctrl+V로 사진을 붙여넣으세요 (파일 선택은 더블클릭)');}
+  });
+  box.addEventListener('dblclick',e=>{ // 더블클릭: 파일 선택 창
+    const ph=e.target.closest&&e.target.closest('[data-photo]');if(!ph||e.target.closest('[data-act]'))return;
+    const {it}=cardOf(ph);if(!it)return;
+    _cardPhotoTarget=it.id;const fi=document.getElementById('cardPhotoFile');fi.value='';fi.click();
   });
   box.addEventListener('dragover',e=>{const p=e.target.closest&&e.target.closest('[data-photo]');if(p){e.preventDefault();p.classList.add('drag');}});
   box.addEventListener('dragleave',e=>{const p=e.target.closest&&e.target.closest('[data-photo]');if(p)p.classList.remove('drag');});
@@ -387,9 +406,12 @@ function bindCardEvents(){
   document.getElementById('cardPhotoFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f&&_cardPhotoTarget!=null)setItemPhotoFromFile(_cardPhotoTarget,f);});
 }
 function renderSum(){
-  let q=0,a=0;state.items.forEach(it=>{q+=num(it.qty);a+=itemAmount(it);});
+  let q=0,a=0,miss=0;state.items.forEach(it=>{q+=num(it.qty);a+=itemAmount(it);if(String(it.name||'').trim()&&!(num(it.qty)>0&&num(it.price)>0))miss++;});
   document.getElementById('sumQty').textContent=won(q);
   document.getElementById('sumAmt').textContent=won(a);
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('barCnt',won(state.items.length));set('barQty',won(q));set('barAmt',won(a));
+  set('barMiss',miss?'⚠ 단가·수량이 빠진 품목 '+miss+'개 (합계에서 0원)':'');
   document.getElementById('cntLabel').textContent='('+state.items.length+' / '+MAX_ITEMS+'품목)';
 }
 
