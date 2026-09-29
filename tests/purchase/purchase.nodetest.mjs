@@ -438,3 +438,160 @@ describe('P4 편집 & 저장/복원', () => {
     assert.equal(app.goBack(), true);
   });
 });
+
+// ───────────────────────── P2. 네이버 견적 가져오기 ─────────────────────────
+import { runGrabOn } from './harness.mjs';
+
+const SMARTSTORE_STATE = {
+  category: { name: '생활/건강', id: 5 },
+  channel: { channelName: '도어락마트', name: '도어락마트' },
+  product: { A: {
+    id: 123, name: '[무료배송][당일발송] 현대 방화문 원형손잡이 DL-900BSS 열쇠포함',
+    salePrice: 15000, benefitsView: { discountedSalePrice: 12000 },
+    productImages: [{ url: 'https://shop-phinf.pstatic.net/20240101_1/a.jpg', imageType: 'REPRESENTATIVE' }],
+    naverShoppingSearchInfo: { manufacturerName: '현대도어락', brandName: 'HYUNDAE', modelName: 'DL-900BSS' },
+    channel: { channelName: '도어락마트' }
+  } }
+};
+const NOTICE_TABLE = `<table><tr><th>품명 및 모델명</th><td>상세페이지 참조</td><th>제조자(사)</th><td>현대도어락(주)</td></tr>
+<tr><th>색상</th><td>은색</td><th>재질</th><td>스테인리스</td></tr>
+<tr><th>크기</th><td>상세설명참조</td><th>제조국</th><td>대한민국</td></tr></table>`;
+
+describe('P2 네이버 견적 가져오기 — 페이지 정보 읽기', () => {
+  test('스마트스토어: 상품데이터+상품정보제공고시에서 읽고, 참조 문구는 비움', () => {
+    const { data, opened } = runGrabOn('<html><head><meta property="og:title" content="og제목"><meta property="og:image" content="https://og/x.jpg"></head><body>' + NOTICE_TABLE + '</body></html>', { state: SMARTSTORE_STATE });
+    assert.equal(opened.length, 1);
+    assert.equal(opened[0].name, 'ws3_purchase', '같은 창 재사용');
+    assert.ok(opened[0].u.startsWith('https://renzo-99.github.io/RENZO/purchase.html#add='));
+    assert.equal(data.src, 'https://smartstore.naver.com/doorshop/products/123', '추적 파라미터 제거');
+    assert.equal(data.name, '[무료배송][당일발송] 현대 방화문 원형손잡이 DL-900BSS 열쇠포함');
+    assert.equal(data.price, '12000', '할인가 우선');
+    assert.equal(data.maker, '현대도어락(주)', '고시표 제조자 우선');
+    assert.equal(data.model, 'DL-900BSS', '고시가 “상세페이지 참조”면 상품데이터 모델명');
+    assert.equal(data.color, '은색');
+    assert.equal(data.material, '스테인리스');
+    assert.equal(data.spec, '', '“상세설명참조”는 빈칸');
+    assert.equal(data.image, 'https://shop-phinf.pstatic.net/20240101_1/a.jpg', 'og 이미지보다 대표사진 우선');
+    assert.equal(data.vendor, '도어락마트');
+  });
+
+  test('가격비교(catalog) __NEXT_DATA__ 구조', () => {
+    const next = { props: { pageProps: { initialState: { catalog: { info: { productName: '자동개폐식 환풍기 DWV-200DRA', lowestPrice: 23900, imageUrl: '//shopping-phinf.pstatic.net/b.jpg', makerName: '동우산업', modelName: 'DWV-200DRA' } } } } } };
+    const { data } = runGrabOn('<html><body><script id="__NEXT_DATA__" type="application/json">' + JSON.stringify(next) + '</script></body></html>', { url: 'https://search.shopping.naver.com/catalog/555' });
+    assert.equal(data.name, '자동개폐식 환풍기 DWV-200DRA');
+    assert.equal(data.price, '23900');
+    assert.equal(data.maker, '동우산업');
+    assert.equal(data.model, 'DWV-200DRA');
+    assert.equal(data.image, 'https://shopping-phinf.pstatic.net/b.jpg', '// 주소에 https 보정');
+  });
+
+  test('다른 쇼핑몰: JSON-LD, 없으면 og 태그로 대체', () => {
+    const ld = { '@context': 'https://schema.org', '@type': 'Product', name: '도어클로저 K-630', brand: { '@type': 'Brand', name: 'KING' }, mpn: 'K-630', image: ['https://x/c.jpg'], offers: { '@type': 'Offer', price: '32000' } };
+    let r = runGrabOn('<html><head><script type="application/ld+json">' + JSON.stringify(ld) + '</script></head><body></body></html>', { url: 'https://shop.example.com/p/1' });
+    assert.deepEqual([r.data.name, r.data.maker, r.data.model, r.data.price, r.data.image], ['도어클로저 K-630', 'KING', 'K-630', '32000', 'https://x/c.jpg']);
+    r = runGrabOn('<html><head><title>t</title><meta property="og:title" content="플로어힌지 K-8400"><meta property="og:image" content="https://x/d.jpg"><meta property="product:price:amount" content="85000"><meta property="og:site_name" content="어떤몰"></head></html>', { url: 'https://shop.example.com/p/2' });
+    assert.deepEqual([r.data.name, r.data.price, r.data.image, r.data.vendor], ['플로어힌지 K-8400', '85000', 'https://x/d.jpg', '어떤몰']);
+  });
+});
+
+describe('P2 네이버 견적 가져오기 — 구매스펙에 반영', () => {
+  const addUrl = data => 'https://renzo-99.github.io/RENZO/purchase.html#add=' + encodeURIComponent(JSON.stringify(data));
+
+  test('#add= 로 열리면 품목 추가(품명 정리·수량1·단가), 판매처는 추천업체가 아닌 견적출처로, 주소창 정리, 상세창 열림', async () => {
+    const { data } = runGrabOn('<html><body>' + NOTICE_TABLE + '</body></html>', { state: SMARTSTORE_STATE });
+    const { app, doc, w } = await loadApp({ url: addUrl(data) });
+    await wait(20);
+    assert.equal(app.state.items.length, 1);
+    const it = app.state.items[0];
+    assert.equal(it.name, '현대 방화문 원형손잡이 DL-900BSS 열쇠포함', '앞쪽 [광고] 태그 제거');
+    assert.equal(it.qty, 1); assert.equal(it.price, 12000);
+    assert.equal(it.maker, '현대도어락(주)'); assert.equal(it.model, 'DL-900BSS');
+    assert.equal(it.color, '은색'); assert.equal(it.material, '스테인리스');
+    assert.equal(it.vendor, '', '추천업체명은 비워 둠 (견적만 본 곳)');
+    assert.equal(it.srcStore, '도어락마트');
+    assert.equal(it.url, 'https://smartstore.naver.com/doorshop/products/123');
+    assert.equal(it.hasPhoto, true);
+    assert.equal(app.photoCache[it.id], 'https://shop-phinf.pstatic.net/20240101_1/a.jpg', '사진 다운로드가 막히면 주소로 사용');
+    assert.equal(w.location.hash, '', '새로고침해도 중복 추가되지 않게 주소 정리');
+    assert.ok(doc.getElementById('d_url'), '확인용 상세창');
+    assert.match(doc.getElementById('modalRoot').textContent, /견적 출처 링크 — 도어락마트/);
+    const b = doc.getElementById('printRoot');
+    b.innerHTML = app.buildBSpecPrint(app.validItems());
+    assert.equal(b.querySelector('td.spec img').getAttribute('src'), 'https://shop-phinf.pstatic.net/20240101_1/a.jpg', 'B-Spec에 사진 포함');
+  });
+
+  test('사진이 늦어도 확인 창은 바로 열리고, 사진은 도착하면 확인 창에 채워진다', async () => {
+    let release;
+    const slow = () => new Promise(r => { release = () => r({ ok: false, status: 500 }); });
+    const { app, doc } = await loadApp({ url: addUrl({ name: 'a', image: 'https://img/slow.jpg', src: 'https://s/9' }), fetch: slow });
+    await wait(20);
+    assert.equal(app.state.items.length, 1);
+    assert.ok(doc.getElementById('detailModal'), '사진 기다리지 않고 확인 창 표시');
+    assert.match(doc.getElementById('d_photoBox').textContent, /사진 선택/);
+    release();
+    await wait(20);
+    assert.equal(doc.querySelector('#d_photoBox img').getAttribute('src'), 'https://img/slow.jpg');
+    assert.equal(app.state.items[0].hasPhoto, true);
+  });
+
+  test('사진 저장소(IndexedDB)가 응답 없이 멈춰도 2초 뒤 사진 없이 진행', async () => {
+    const { app, w } = await loadApp();
+    Object.defineProperty(w, 'indexedDB', { value: { open: () => ({}) }, configurable: true }); // 이벤트가 영영 안 오는 환경
+    const t0 = Date.now();
+    assert.equal(await app.IDB.get('p1'), null);
+    const dt = Date.now() - t0;
+    assert.ok(dt >= 1900 && dt < 3000, '약 2초 후 포기: ' + dt + 'ms');
+    const t1 = Date.now();
+    assert.equal(await app.IDB.set('p1', 'x'), null);
+    assert.ok(Date.now() - t1 < 50, '한 번 실패하면 이후엔 즉시 건너뜀');
+  });
+
+  test('사진 받기가 막히거나 오래 걸리면 사진 주소로 대체', async () => {
+    const hang = () => new Promise(() => {});
+    const { app } = await loadApp({ fetch: hang });
+    assert.equal(await app.fetchImageAsData('https://img/a.jpg', 30), 'https://img/a.jpg', '시간 초과 → 주소');
+    const { app: b } = await loadApp({ fetch: async () => ({ ok: false, status: 403 }) });
+    assert.equal(await b.fetchImageAsData('https://img/b.jpg', 30), 'https://img/b.jpg', '거부 → 주소');
+  });
+
+  test('같은 상품을 다시 가져오면 확인, 취소 시 추가 안 함', async () => {
+    const d = { name: 'a', src: 'https://s/1', price: '1000' };
+    const first = await loadApp({ url: addUrl(d) });
+    await wait(20);
+    const ls = { ws3_purchase_v1: first.w.localStorage.getItem('ws3_purchase_v1') };
+    const { app, calls } = await loadApp({ url: addUrl(d), ls, confirm: false });
+    await wait(20);
+    assert.equal(app.state.items.length, 1);
+    assert.match(calls.confirm[0], /이미 가져온 상품/);
+  });
+
+  test('100품목이 차 있으면 추가하지 않음 / 깨진 데이터는 무시', async () => {
+    const full = { settings: {}, items: Array.from({ length: 100 }, (_, i) => ({ id: i + 1, name: 'x' + i })), nextId: 101 };
+    const { app } = await loadApp({ url: addUrl({ name: 'y' }), ls: { ws3_purchase_v1: JSON.stringify(full) } });
+    await wait(20);
+    assert.equal(app.state.items.length, 100);
+    const { app: b, doc } = await loadApp({ url: 'https://renzo-99.github.io/RENZO/purchase.html#add=%7Bbroken' });
+    await wait(20);
+    assert.equal(b.state.items.length, 0);
+    assert.match(toastText(doc), /상품 정보를 읽지 못했습니다/);
+  });
+
+  test('즐겨찾기 버튼: javascript: 코드 안에 이 페이지 주소가 들어간다', async () => {
+    const { app, doc } = await loadApp({ url: 'https://renzo-99.github.io/RENZO/purchase.html?x=1#y' });
+    const href = app.bookmarkletHref();
+    assert.ok(href.startsWith('javascript:'));
+    const code = decodeURIComponent(href.slice(11));
+    assert.match(code, /^\(function wsGrab\(target\)/);
+    assert.ok(code.includes('("https://renzo-99.github.io/RENZO/purchase.html")'));
+    app.openNaverSetup();
+    assert.equal(doc.getElementById('bmLink').getAttribute('href'), href);
+    assert.match(doc.getElementById('modalRoot').textContent, /즐겨찾기 막대로 끌어다 놓으세요/);
+  });
+
+  test('cleanProductName', async () => {
+    const { app } = await loadApp();
+    assert.equal(app.cleanProductName(' [특가] [무료배송]  도어  클로저 '), '도어 클로저');
+    assert.equal(app.cleanProductName('도어록 [2개입]'), '도어록 [2개입]', '뒤쪽 괄호는 유지');
+    assert.equal(app.cleanProductName(null), '');
+  });
+});

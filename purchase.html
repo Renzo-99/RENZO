@@ -157,6 +157,7 @@ table.as tr{page-break-inside:avoid}
       <button class="btn btn-blue btn-sm" onclick="addItem()">＋ 품목 추가</button>
       <button class="btn btn-outline btn-sm" onclick="openPaste()">📋 엑셀에서 붙여넣기</button>
       <button class="btn btn-outline btn-sm" onclick="openStockPicker()">📦 재고 품목에서 추가</button>
+      <button class="btn btn-outline btn-sm" style="border-color:#03c75a;color:#03a14a" onclick="openNaverSetup()">🔖 네이버 견적 가져오기</button>
       <button class="btn btn-outline btn-sm" onclick="exportJSON()">💾 목록 파일 저장</button>
       <button class="btn btn-outline btn-sm" onclick="document.getElementById('jsonFile').click()">📂 목록 파일 열기</button>
       <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="clearAll()">전체 비우기</button>
@@ -212,10 +213,13 @@ function loadState(){
   state.items.forEach(it=>{if(it.id>=state.nextId)state.nextId=it.id+1;});
 }
 const IDB={db:null,
-  open(){return new Promise(res=>{if(this.db)return res(this.db);if(!window.indexedDB)return res(null);
-    const rq=indexedDB.open('ws3_purchase_db',1);
+  open(){return new Promise(res=>{if(this.db)return res(this.db);if(!window.indexedDB||this.failed)return res(null);
+    // 보안 정책·사생활 보호 모드 등에서 응답 없이 멈추는 경우 대비: 2초 뒤 사진 저장 없이 진행
+    const t=setTimeout(()=>{this.failed=true;res(null);},2000);
+    let rq;try{rq=window.indexedDB.open('ws3_purchase_db',1);}catch(e){clearTimeout(t);this.failed=true;return res(null);}
     rq.onupgradeneeded=()=>{rq.result.createObjectStore('photos');};
-    rq.onsuccess=()=>{this.db=rq.result;res(this.db);};rq.onerror=()=>res(null);});},
+    rq.onsuccess=()=>{clearTimeout(t);this.db=rq.result;res(this.db);};
+    rq.onerror=rq.onblocked=()=>{clearTimeout(t);this.failed=true;res(null);};});},
   async tx(mode,fn){const db=await this.open();if(!db)return null;return new Promise(res=>{const t=db.transaction('photos',mode);const st=t.objectStore('photos');const r=fn(st);t.oncomplete=()=>res(r&&r.result);t.onerror=()=>res(null);});},
   get(k){return this.tx('readonly',st=>st.get(k));},
   set(k,v){return this.tx('readwrite',st=>st.put(v,k));},
@@ -237,7 +241,7 @@ function resizeImage(file,maxSide,quality){
 // ================= 품목 데이터 =================
 function blankItem(){
   const s=state.settings;
-  return{id:state.nextId++,name:'',maker:'',model:'',spec:'',color:'',material:'',special:'없음',qty:'',unit:s.unit||'개',price:'',vendor:'',place:'',room:'',note:'',bnote:'',aspec:'',hasPhoto:false};
+  return{id:state.nextId++,name:'',maker:'',model:'',spec:'',color:'',material:'',special:'없음',qty:'',unit:s.unit||'개',price:'',vendor:'',place:'',room:'',note:'',bnote:'',aspec:'',url:'',srcStore:'',hasPhoto:false};
 }
 function itemPlace(it){return it.place||state.settings.place||'';}
 function itemRoom(it){return it.room||state.settings.room||'';}
@@ -326,7 +330,7 @@ function closeModal(){document.getElementById('modalRoot').innerHTML='';}
 function openDetail(id){
   const it=state.items.find(x=>x.id===id);if(!it)return;const idx=findIdx(id)+1;const s=state.settings;
   const f=(k,lb,ph,wide)=>'<label class="f"'+(wide?' style="grid-column:1/-1"':'')+'>'+lb+'<input id="d_'+k+'" value="'+esc(it[k])+'" placeholder="'+esc(ph||'')+'"></label>';
-  let h='<div class="modal-bg" onclick="if(event.target===this)saveDetail('+id+')"><div class="modal">';
+  let h='<div class="modal-bg" onclick="if(event.target===this)saveDetail('+id+')"><div class="modal" id="detailModal" data-id="'+id+'">';
   h+='<h3>✏️ No.'+idx+' 상세 사양 (B-Spec)</h3>';
   h+='<div class="grid">'+f('name','품명 *')+f('maker','제조사')+f('model','모델명')+f('color','색상','예: 은색')+f('material','재질','예: 금속')+f('special','특이사항','없음')+
      f('place','설치장소명','기본: '+(s.place||''))+f('room','설치장소 호실','기본: '+(s.room||''))+'</div>';
@@ -334,9 +338,10 @@ function openDetail(id){
      '<label class="f" style="grid-column:1/-1">규격 (세부사양)<textarea id="d_spec" rows="2" placeholder="예: 문 두께_ 35~45MM, 열쇠 포함 및 구멍 있음">'+esc(it.spec)+'</textarea></label>'+
      '<label class="f" style="grid-column:1/-1">B-Spec 품목 비고 (비고란 위쪽, 선택)<textarea id="d_bnote" rows="2" placeholder="예: ※ 열쇠 및 열쇠 구멍이 있는 것으로 확인하여 납품해주시길 바랍니다.">'+esc(it.bnote)+'</textarea></label>'+
      f('aspec','A-Spec 「제조사 및 모델명(규격)」 표기 — 비우면 자동','자동: '+([it.maker,it.model].filter(Boolean).join(' ')||'제조사 + 모델명'),true)+
+     '<label class="f" style="grid-column:1/-1">견적 출처 링크'+(it.srcStore?' — '+esc(it.srcStore):'')+' (참고용, 제출 문서에는 안 나옴)<span style="display:flex;gap:6px"><input id="d_url" value="'+esc(it.url)+'" placeholder="https://smartstore.naver.com/...">'+(it.url?'<a class="btn btn-outline btn-sm" href="'+esc(it.url)+'" target="_blank" rel="noopener">열기</a>':'')+'</span></label>'+
      '</div>';
   h+='<div style="margin-top:10px"><div style="font-size:11px;font-weight:600;color:var(--gray-600);margin-bottom:4px">8. 사진첨부</div>';
-  h+='<div class="photo-box" onclick="document.getElementById(\'d_photo\').click()">'+(photoCache[id]?'<img src="'+photoCache[id]+'">클릭하여 사진 변경':'📷 클릭하여 사진 선택 (자동으로 용량이 줄어듭니다)')+'</div>';
+  h+='<div class="photo-box" id="d_photoBox" onclick="document.getElementById(\'d_photo\').click()">'+photoBoxInner(id)+'</div>';
   h+='<input type="file" id="d_photo" accept="image/*" style="display:none" onchange="onItemPhoto('+id+',this)">';
   if(photoCache[id])h+='<div style="text-align:right;margin-top:4px"><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="removeItemPhoto('+id+')">사진 삭제</button></div>';
   h+='</div>';
@@ -347,16 +352,17 @@ function openDetail(id){
   h+='</div></div>';
   document.getElementById('modalRoot').innerHTML=h;
 }
+function photoBoxInner(id){return photoCache[id]?'<img src="'+esc(photoCache[id])+'">클릭하여 사진 변경':'📷 클릭하여 사진 선택 (자동으로 용량이 줄어듭니다)';}
 function saveDetail(id){
   const it=state.items.find(x=>x.id===id);if(!it)return closeModal();
-  ['name','maker','model','color','material','special','place','room','spec','bnote','aspec'].forEach(k=>{const el=document.getElementById('d_'+k);if(el)it[k]=el.value;});
+  ['name','maker','model','color','material','special','place','room','spec','bnote','aspec','url'].forEach(k=>{const el=document.getElementById('d_'+k);if(el)it[k]=el.value;});
   saveState();closeModal();renderItems();
 }
 async function onItemPhoto(id,input){
   const file=input.files&&input.files[0];if(!file)return;
   try{const d=await resizeImage(file,1000,0.82);photoCache[id]=d;await IDB.set('p'+id,d);
     const it=state.items.find(x=>x.id===id);if(it){it.hasPhoto=true;}
-    ['name','maker','model','color','material','special','place','room','spec','bnote','aspec'].forEach(k=>{const el=document.getElementById('d_'+k);if(el&&it)it[k]=el.value;});
+    ['name','maker','model','color','material','special','place','room','spec','bnote','aspec','url'].forEach(k=>{const el=document.getElementById('d_'+k);if(el&&it)it[k]=el.value;});
     saveState();openDetail(id);renderItems();toast('사진을 첨부했습니다');
   }catch(e){toast('이미지를 읽을 수 없습니다');}
 }
@@ -593,6 +599,96 @@ function printDoc(kind){
   });
 }
 
+
+// ================= 네이버 견적 가져오기 (즐겨찾기 버튼) =================
+/*WSGRAB_START*/
+// 이 함수는 이 페이지에서는 실행되지 않는다. 즐겨찾기 버튼(javascript:)으로 변환되어
+// 네이버 상품 페이지 위에서 실행되고, 읽어낸 정보를 구매스펙 창(#add=...)으로 넘긴다.
+function wsGrab(target){
+  var d=document,out={src:location.href.split('?')[0].split('#')[0]};
+  function clean(s){return String(s==null?'':s).replace(/\s+/g,' ').trim();}
+  function bad(v){return !v||/상세\s*(페이지|설명|정보|이미지)?\s*(참조|참고)|상품\s*상세|해당\s*(사항)?\s*없음|^[-\/]$/.test(v);}
+  function ok(v){v=clean(v);return bad(v)?'':v;}
+  function meta(n){var m=d.querySelector('meta[property="'+n+'"],meta[name="'+n+'"]');return m?clean(m.content):'';}
+  function walk(root,fn){var q=[root],seen=new Set(),n=0;while(q.length&&n<80000){var o=q.shift();if(!o||typeof o!=='object'||seen.has(o))continue;seen.add(o);n++;if(fn(o))return o;for(var k in o){var v=o[k];if(v&&typeof v==='object')q.push(v);}}return null;}
+  function pick(root,keys){if(!root)return '';for(var i=0;i<keys.length;i++){var key=keys[i],r='';walk(root,function(o){var v=o[key];if(v!=null&&typeof v!=='object'&&clean(v)!==''){r=v;return true;}return false;});if(r!=='')return r;}return '';}
+  var states=[];try{if(window.__PRELOADED_STATE__)states.push(window.__PRELOADED_STATE__);}catch(e){}
+  try{var nd=d.getElementById('__NEXT_DATA__');if(nd)states.push(JSON.parse(nd.textContent));}catch(e){}
+  var p=null;for(var i=0;i<states.length&&!p;i++)p=walk(states[i],function(o){return (typeof o.name==='string'||typeof o.productName==='string')&&(o.salePrice!=null||o.discountedSalePrice!=null||o.lowestPrice!=null||o.productImages!=null||o.representativeImage!=null||o.imageUrl!=null);});
+  var ld=null;d.querySelectorAll('script[type="application/ld+json"]').forEach(function(s){try{var j=JSON.parse(s.textContent);[].concat(j['@graph']||j).forEach(function(x){if(x&&/Product/i.test(String(x['@type'])))ld=x;});}catch(e){}});
+  var notice={};d.querySelectorAll('tr').forEach(function(tr){var c=tr.querySelectorAll('th,td');for(var j=0;j+1<c.length;j+=2){var k=clean(c[j].textContent),v=clean(c[j+1].textContent);if(k&&v&&k.length<40&&!notice[k])notice[k]=v;}});
+  function nget(re){for(var k in notice)if(re.test(k)&&!bad(notice[k]))return notice[k];return '';}
+  var img='';
+  if(p){var pi=p.productImages||p.images;if(pi&&pi.length)img=pi[0].url||pi[0].imageUrl||pi[0];if(!img&&p.representativeImage)img=p.representativeImage.url;if(!img)img=pick(p,['representativeImageUrl','imageUrl']);}
+  if(!img&&ld)img=[].concat(ld.image||[])[0];
+  if(img&&typeof img==='object')img=img.url||img.contentUrl||'';
+  img=img||meta('og:image');
+  var offer=ld?[].concat(ld.offers||[])[0]:null;
+  out.name=ok(p&&(p.name||p.productName))||ok(ld&&ld.name)||meta('og:title')||clean(d.title);
+  out.price=String((p&&pick(p,['discountedSalePrice','mobileDiscountedSalePrice','discountedPrice','lowestPrice','lowPrice','salePrice','price']))||(offer&&(offer.price||offer.lowPrice))||meta('product:price:amount')||'');
+  out.maker=nget(/제조자|제조사|제조업자|제조원/)||ok(p&&pick(p,['manufacturerName','makerName','manufacturer']))||ok(p&&pick(p,['brandName']))||ok(ld&&ld.brand&&(ld.brand.name||ld.brand))||'';
+  out.model=ok(p&&pick(p,['modelName']))||nget(/모델/)||ok(ld&&(ld.model||ld.mpn))||'';
+  out.color=nget(/색상|컬러/);out.material=nget(/재질|소재/);out.spec=nget(/크기|치수|규격|사이즈|용량/);
+  out.vendor=ok(p&&pick(p,['channelName','mallName','storeName']))||meta('og:site_name')||'';
+  out.image=img?String(img):'';if(out.image.indexOf('//')===0)out.image='https:'+out.image;
+  window.open(target+'#add='+encodeURIComponent(JSON.stringify(out)),'ws3_purchase');
+}
+/*WSGRAB_END*/
+function bookmarkletHref(){
+  const target=location.href.split('#')[0].split('?')[0];
+  return 'javascript:'+encodeURIComponent('('+wsGrab.toString()+')('+JSON.stringify(target)+');void 0');
+}
+function openNaverSetup(){
+  const href=bookmarkletHref();
+  let h='<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>🔖 네이버 견적 가져오기</h3>';
+  h+='<div style="font-size:13px;line-height:1.8">';
+  h+='<b>① 처음 한 번만:</b> 아래 초록 버튼을 브라우저 <b>즐겨찾기 막대로 끌어다 놓으세요.</b><br><span class="hint">즐겨찾기 막대가 안 보이면 <b>Ctrl + Shift + B</b></span>';
+  h+='<div style="text-align:center;margin:12px 0"><a id="bmLink" href="'+esc(href)+'" onclick="toast(\'이 버튼은 누르지 말고 즐겨찾기 막대로 끌어다 놓으세요\');return false;" style="display:inline-block;background:#03c75a;color:#fff;font-weight:800;padding:10px 20px;border-radius:10px;text-decoration:none">📋 견적 가져오기</a></div>';
+  h+='<b>② 사용:</b> 네이버 스마트스토어·브랜드스토어 등 상품 페이지(견적 보던 화면)에서 즐겨찾기의 <b>[📋 견적 가져오기]</b>를 누르면, 이 구매스펙 창이 열리며 <b>품명·제조사·모델명·가격(→예정단가)·색상·재질·규격·사진</b>이 자동으로 들어갑니다. 확인 창에서 내용만 확인하세요.<br><span class="hint">네이버 판매처는 추천업체명에 넣지 않고 「견적 출처」로만 기록합니다.</span>';
+  h+='<div class="hint" style="margin-top:10px">• 끌어다 놓기가 안 되면: <button class="btn btn-outline btn-sm" onclick="copyBookmarklet()">코드 복사</button> → 즐겨찾기 추가 → 이름 「견적 가져오기」, URL 칸에 붙여넣기<br>';
+  h+='• 판매자가 정보를 비워 둔 항목(예: “상세페이지 참조”)은 빈칸으로 남습니다. 수량은 1로 들어가니 고쳐 주세요.<br>';
+  h+='• 사진은 자동으로 첨부되지만, 일부 사진은 인쇄 시 안 보일 수 있으니 B-Spec PDF 미리보기에서 확인하고 필요하면 ✏️ 상세에서 직접 첨부하세요.</div>';
+  h+='</div><div class="btns"><button class="btn btn-blue" onclick="closeModal()">닫기</button></div></div></div>';
+  document.getElementById('modalRoot').innerHTML=h;
+}
+function copyBookmarklet(){const t=bookmarkletHref();
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('코드를 복사했습니다. 즐겨찾기 URL 칸에 붙여넣으세요'),()=>{prompt('아래 코드를 복사하세요',t);});}
+function cleanProductName(s){return String(s||'').replace(/^\s*(\[[^\]]*\]\s*)+/,'').replace(/\s+/g,' ').trim();}
+// 네이버 사진 → 가능하면 이미지 데이터로 저장(오프라인·인쇄 안정), 막히면 주소 그대로 사용
+async function fetchImageAsData(url,timeoutMs){
+  const job=(async()=>{const r=await fetch(url,{mode:'cors'});if(!r.ok)throw new Error(r.status);const b=await r.blob();
+    return await resizeImage(new File([b],'photo',{type:b.type||'image/jpeg'}),1000,0.82);})();
+  const limit=new Promise(res=>setTimeout(()=>res(null),timeoutMs||8000)); // 느린 네트워크·디코딩 실패 대비
+  try{return (await Promise.race([job,limit]))||url;}catch(e){return url;}
+}
+// 즐겨찾기 버튼이 열어 준 #add=... 처리
+async function consumeHashAdd(){
+  const h=location.hash||'';if(h.indexOf('#add=')!==0)return null;
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  let d;try{d=JSON.parse(decodeURIComponent(h.slice(5)));}catch(e){toast('상품 정보를 읽지 못했습니다');return null;}
+  if(!d||typeof d!=='object')return null;
+  if(d.src&&state.items.some(x=>x.url&&x.url===d.src)&&!confirm('이미 가져온 상품입니다. 한 번 더 추가할까요?'))return null;
+  if(!canAdd())return null;
+  const it=blankItem();
+  it.name=cleanProductName(d.name);it.maker=d.maker||'';it.model=d.model||'';it.spec=d.spec||'';
+  it.color=d.color||'';it.material=d.material||'';it.srcStore=d.vendor||'';it.url=d.src||''; // 판매처는 견적 출처로만 기록(추천업체 아님)
+  it.qty=1;if(num(d.price)>0)it.price=num(d.price);
+  state.items.push(it);saveState();renderItems();
+  openDetail(it.id); // 확인 창은 바로 띄우고
+  toast('네이버 견적을 가져왔습니다 — 내용 확인 후 저장하세요');
+  if(d.image){ // 사진은 받아지는 대로 채움
+    const ph=await fetchImageAsData(d.image,5000);photoCache[it.id]=ph;await IDB.set('p'+it.id,ph);
+    const cur=state.items.find(x=>x.id===it.id);if(cur){cur.hasPhoto=true;saveState();}
+    renderItems();
+    const m=document.getElementById('detailModal'),box=document.getElementById('d_photoBox');
+    if(m&&box&&Number(m.dataset.id)===it.id)box.innerHTML=photoBoxInner(it.id);
+  }
+  return it;
+}
+// 다른 창(즐겨찾기로 열린 창)에서 목록이 바뀌면 이 창도 갱신
+window.addEventListener('storage',async e=>{if(e.key===LS_KEY){loadState();await loadPhotos();renderItems();}});
+window.addEventListener('hashchange',()=>{consumeHashAdd();});
+
 // ================= 초기화 =================
 function toggleSettings(){const b=document.getElementById('setBody');const hide=b.style.display!=='none';b.style.display=hide?'none':'';
   document.getElementById('setTog').textContent=hide?'펼치기 ▼':'접기 ▲';try{localStorage.setItem('ws3_purchase_setHidden',hide?'1':'');}catch(e){}}
@@ -602,6 +698,7 @@ async function init(){
   loadState();renderSettings();renderItems();fillStockDatalist();
   try{if(localStorage.getItem('ws3_purchase_setHidden')==='1')toggleSettings();}catch(e){}
   await loadPhotos();renderSettings();renderItems();
+  await consumeHashAdd();
 }
 init();
 </script>

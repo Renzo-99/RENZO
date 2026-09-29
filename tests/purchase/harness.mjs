@@ -18,7 +18,8 @@ const EXPORTS = [
   'buildASpecPrint', 'buildBSpecPrint', 'printDoc', 'renderItems', 'renderSum', 'openDetail', 'saveDetail',
   'saveState', 'loadState', 'exportJSON', 'importJSON', 'openStockPicker', 'renderStockPick', 'addStockPicked',
   'getStock', 'onNamePicked', 'toggleSettings', 'goBack', 'downloadASpecXlsx', 'closeModal', 'removeStamp',
-  'removeItemPhoto', 'fillStockDatalist', 'renderSettings', 'onCellInput'
+  'removeItemPhoto', 'fillStockDatalist', 'renderSettings', 'onCellInput',
+  'wsGrab', 'bookmarkletHref', 'openNaverSetup', 'consumeHashAdd', 'cleanProductName', 'fetchImageAsData', 'IDB'
 ];
 
 function extractScript() {
@@ -40,7 +41,7 @@ const HTML = extractScript();
  * @param {{ls?:Record<string,string>, confirm?:boolean|((m:string)=>boolean)}} opt
  */
 export async function loadApp(opt = {}) {
-  const dom = new JSDOM(HTML, { url: 'https://renzo-99.github.io/RENZO/purchase.html', pretendToBeVisual: true });
+  const dom = new JSDOM(HTML, { url: opt.url || 'https://renzo-99.github.io/RENZO/purchase.html', pretendToBeVisual: true });
   const w = dom.window;
   for (const [k, v] of Object.entries(opt.ls || {})) w.localStorage.setItem(k, v);
   const calls = { confirm: [], prints: 0, downloads: [], toasts: [] };
@@ -55,6 +56,10 @@ export async function loadApp(opt = {}) {
   const G = ['window', 'document', 'localStorage', 'navigator', 'Blob', 'URL', 'FileReader', 'Image',
     'HTMLElement', 'confirm', 'prompt', 'getComputedStyle'];
   for (const k of G) Object.defineProperty(globalThis, k, { value: k === 'window' ? w : w[k], configurable: true, writable: true });
+  // 네트워크 없는 테스트: 기본은 사진 다운로드 실패(→ 주소 그대로 사용)
+  globalThis.fetch = opt.fetch || (() => Promise.reject(new Error('offline')));
+  globalThis.File = w.File;
+  globalThis.history = w.history; globalThis.location = w.location;
   globalThis.indexedDB = undefined; // IDB 없는 환경 → 사진 저장 계층은 null로 폴백
   delete require.cache[require.resolve(BUILD)];
   const app = require(BUILD);
@@ -63,6 +68,20 @@ export async function loadApp(opt = {}) {
   const obs = new w.MutationObserver(() => calls.toasts.push(toastEl.textContent));
   obs.observe(toastEl, { childList: true, characterData: true, subtree: true });
   return { app, w, doc: w.document, calls, close: () => w.close() };
+}
+
+/** 네이버 상품 페이지(가짜)에서 즐겨찾기 버튼 코드를 실행하고, 열려는 주소를 돌려준다 */
+export function runGrabOn(pageHtml, { url = 'https://smartstore.naver.com/doorshop/products/123?NaPm=x', state = null, target = 'https://renzo-99.github.io/RENZO/purchase.html' } = {}) {
+  const src = fs.readFileSync(HTML_PATH, 'utf8').split('/*WSGRAB_START*/')[1].split('/*WSGRAB_END*/')[0];
+  const dom = new JSDOM(pageHtml, { url, runScripts: 'outside-only' });
+  const w = dom.window;
+  if (state) w.__PRELOADED_STATE__ = state;
+  const opened = [];
+  w.open = (u, name) => { opened.push({ u, name }); return null; };
+  w.eval(src + ';wsGrab(' + JSON.stringify(target) + ');');
+  const o = opened[0];
+  const data = JSON.parse(decodeURIComponent(o.u.split('#add=')[1]));
+  return { opened, data, url: o.u };
 }
 
 export function item(app, over = {}) {
