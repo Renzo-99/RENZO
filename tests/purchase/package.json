@@ -1,0 +1,10 @@
+{
+  "name": "purchase-tool-tests",
+  "private": true,
+  "description": "purchase.html(물품 구매 A/B-Spec 도구) 테스트 — Next 프로젝트와 독립",
+  "scripts": {
+    "test": "node --test purchase.nodetest.mjs",
+    "coverage": "c8 --include=.build/purchase.js --reporter=text --reporter=text-summary node --test purchase.nodetest.mjs"
+  },
+  "devDependencies": { "c8": "^10.1.2", "exceljs": "4.4.0", "jsdom": "^24.1.0" }
+}

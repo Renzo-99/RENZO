@@ -375,7 +375,7 @@ function openPaste(){
   h+='<button class="btn btn-outline btn-sm" onclick="copyPasteHeader()" style="margin-bottom:8px">제목행 복사 (엑셀 첫 줄에 붙여넣어 쓰기)</button>';
   h+='<textarea id="pasteArea" rows="10" placeholder="여기에 붙여넣기 (Ctrl+V)"></textarea>';
   h+='<div class="btns"><button class="btn btn-outline" onclick="closeModal()">취소</button><button class="btn btn-blue" onclick="doPaste()">추가하기</button></div></div></div>';
-  document.getElementById('modalRoot').innerHTML=h;setTimeout(()=>document.getElementById('pasteArea').focus(),30);
+  document.getElementById('modalRoot').innerHTML=h;setTimeout(()=>{const el=document.getElementById('pasteArea');if(el)el.focus();},30);
 }
 function copyPasteHeader(){const t=PASTE_COLS.map(c=>c[1]).join('\t');
   (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('제목행을 복사했습니다'),()=>{prompt('아래 내용을 복사하세요',t);});}
@@ -452,7 +452,7 @@ function importJSON(input){
       for(const it of state.items){await IDB.del('p'+it.id);}
       for(const k in photoCache)delete photoCache[k];
       state.settings={...DEFAULT_SETTINGS,...(d.settings||{})};state.items=[];state.nextId=1;
-      for(const src of d.items.slice(0,MAX_ITEMS)){const it={...blankItem(),...src,id:state.nextId++};const ph=src.photo;delete it.photo;it.hasPhoto=!!ph;if(ph){photoCache[it.id]=ph;await IDB.set('p'+it.id,ph);}state.items.push(it);}
+      for(const src of d.items.slice(0,MAX_ITEMS)){const base=blankItem();const it={...base,...src,id:base.id};const ph=src.photo;delete it.photo;it.hasPhoto=!!ph;if(ph){photoCache[it.id]=ph;await IDB.set('p'+it.id,ph);}state.items.push(it);}
       if(d.stamp){stampData=d.stamp;await IDB.set('stamp',d.stamp);}
       saveState();renderSettings();renderItems();toast(state.items.length+'개 품목을 불러왔습니다');
     }catch(e){toast('올바른 구매목록 파일이 아닙니다');}input.value='';};
@@ -483,6 +483,7 @@ function buildASpecWorkbook(ExcelJS,items,ctx){
   const thin={style:'thin',color:{argb:'FF000000'}};
   const BORDER={top:thin,left:thin,bottom:thin,right:thin};
   const wb=new ExcelJS.Workbook();wb.creator='목공실 관리';wb.created=new Date();
+  wb.calcProperties={fullCalcOnLoad:true};
   const ws=wb.addWorksheet('A-SPEC',{
     views:[{state:'frozen',xSplit:0,ySplit:2,topLeftCell:'A3',zoomScale:85,showGridLines:false}],
     pageSetup:{paperSize:9,orientation:'landscape',fitToPage:true,fitToWidth:1,fitToHeight:0,horizontalCentered:true,
