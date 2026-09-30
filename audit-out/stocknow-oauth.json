@@ -1,0 +1,14 @@
+{
+ "/.well-known/oauth-authorization-server": {
+  "s": 200,
+  "t": "{\"issuer\":\"https://mcp.stocknow.ai\",\"authorization_endpoint\":\"https://mcp.stocknow.ai/oauth/authorize\",\"token_endpoint\":\"https://mcp.stocknow.ai/oauth/token\",\"registration_endpoint\":\"https://mcp.stocknow.ai/oauth/register\",\"revocation_endpoint\":\"https://mcp.stocknow.ai/oauth/revoke\",\"response_types_supported\":[\"code\"],\"grant_types_supported\":[\"authorization_code\",\"refresh_token\"],\"code_challenge_methods_supported\":[\"S256\"],\"token_endpoint_auth_methods_supported\":[\"none\"],\"scopes_supported\":[\"mcp\"]}"
+ },
+ "/.well-known/oauth-protected-resource/mcp": {
+  "s": 200,
+  "t": "{\"resource\":\"https://mcp.stocknow.ai/mcp\",\"authorization_servers\":[\"https://mcp.stocknow.ai\"],\"scopes_supported\":[\"mcp\"],\"bearer_methods_supported\":[\"header\"]}"
+ },
+ "/.well-known/openid-configuration": {
+  "s": 500,
+  "t": "{\"error\":\"No static resource .well-known/openid-configuration.\"}"
+ }
+}
