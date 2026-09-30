@@ -1,0 +1,191 @@
+{
+ "pages": {
+  "https://stocknow.ai/": {
+   "status": 200,
+   "final": "https://stocknow.ai/ko",
+   "len": 21331,
+   "head": "<!DOCTYPE html><html lang=\"ko\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" as=\"image\" href=\"/stocknow-logo.png\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/home.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/mobile.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p1.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p2.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p3.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p4.webp\"/><link rel=\"preload\" as=\"i",
+   "scripts": [
+    "/assets/index-DA09SXVh.js"
+   ],
+   "apis": [
+    "https://stocknow.ai/ko",
+    "https://stocknow.ai/og-image.png",
+    "https://stocknow.ai/en",
+    "https://stocknow.ai/ja",
+    "https://stocknow.ai/#org",
+    "https://stocknow.ai/stocknow-logo.png",
+    "https://app.stocknow.ai/?ref=home-nav",
+    "https://app.stocknow.ai/?ref=home-hero",
+    "https://app.stocknow.ai/?ref=home-studio",
+    "https://app.stocknow.ai/?ref=home-final",
+    "https://resources.stocknow.ai/static/terms_of_service.html",
+    "https://resources.stocknow.ai/static/privacy.html"
+   ],
+   "ko": [
+    "실시간 어닝콜 동시 번역과 AI 요약, 공시·실적 캘린더·미국 주식 속보까지. 흩어져 있던 실적 리서치를 한 화면에서 시작하세요.",
+    "실시간 어닝콜 동시 번역, Ai 요약, 미국 주식, 미증시, 스톡나우, 스탁나우, 어닝콜, 어닝, 실적캘린더, 미국주식, 오선, 어닝시즌, 어닝캘",
+    "린더, 실시간 번역, 어닝콜 요약",
+    "실시간 어닝콜 동시 번역과 AI 요약, 공시·실적 캘린더·미국 주식 속보까지. 흩어져 있던 실적 리서치를 한 화면에서 시작하세요.",
+    "실시간 어닝콜 동시 번역과 AI 요약, 공시·실적 캘린더·미국 주식 속보까지. 흩어져 있던 실적 리서치를 한 화면에서 시작하세요.",
+    "자산, StockNow, 나의 AI를 한곳에 · Closed Beta",
+    "브라우저 워크스페이스",
+    "와치리스트부터 공시, 실적캘린더, 실시간 어닝콜 번역까지. 흩어져 있던 실적 리서치를 한 화면에 모았습니다.",
+    "홈 화면 예시: 와치리스트와 증시 현황, 섹터 히트맵이 한 화면에 표시된 워크스페이스",
+    "모바일 앱 화면 예시: 와치리스트 종목의 등락률과 최신 속보가 함께 표시된 휴대폰 화면",
+    "데스크톱에서 더 넓게.",
+    "와치리스트부터 증시 현황,\n섹터 히트맵까지 한 화면에서 확인하는 StockNow의 데스크톱 워크스페이스입니다.",
+    "자산과 StockNow, 나의 AI를 하나의 설치형 앱에서 만나보세요.",
+    "데스크톱 화면 예시: 좌측에 섹터 히트맵, 우측에 이번 주 실적 캘린더가 함께 표시된 워크스페이스",
+    "실적 리서치의 처음부터 끝까지."
+   ]
+  },
+  "https://www.stocknow.ai/": {
+   "status": 200,
+   "final": "https://www.stocknow.ai/ko",
+   "len": 21331,
+   "head": "<!DOCTYPE html><html lang=\"ko\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" as=\"image\" href=\"/stocknow-logo.png\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/home.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/mobile.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p1.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p2.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p3.webp\"/><link rel=\"preload\" as=\"image\" href=\"/screens/ko/panels/p4.webp\"/><link rel=\"preload\" as=\"i",
+   "scripts": [
+    "/assets/index-DA09SXVh.js"
+   ],
+   "apis": [
+    "https://stocknow.ai/ko",
+    "https://stocknow.ai/og-image.png",
+    "https://stocknow.ai/en",
+    "https://stocknow.ai/ja",
+    "https://stocknow.ai/#org",
+    "https://stocknow.ai/stocknow-logo.png",
+    "https://app.stocknow.ai/?ref=home-nav",
+    "https://app.stocknow.ai/?ref=home-hero",
+    "https://app.stocknow.ai/?ref=home-studio",
+    "https://app.stocknow.ai/?ref=home-final",
+    "https://resources.stocknow.ai/static/terms_of_service.html",
+    "https://resources.stocknow.ai/static/privacy.html"
+   ],
+   "ko": [
+    "실시간 어닝콜 동시 번역과 AI 요약, 공시·실적 캘린더·미국 주식 속보까지. 흩어져 있던 실적 리서치를 한 화면에서 시작하세요.",
+    "실시간 어닝콜 동시 번역, Ai 요약, 미국 주식, 미증시, 스톡나우, 스탁나우, 어닝콜, 어닝, 실적캘린더, 미국주식, 오선, 어닝시즌, 어닝캘",
+    "린더, 실시간 번역, 어닝콜 요약",
+    "실시간 어닝콜 동시 번역과 AI 요약, 공시·실적 캘린더·미국 주식 속보까지. 흩어져 있던 실적 리서치를 한 화면에서 시작하세요.",
+    "실시간 어닝콜 동시 번역과 AI 요약, 공시·실적 캘린더·미국 주식 속보까지. 흩어져 있던 실적 리서치를 한 화면에서 시작하세요.",
+    "자산, StockNow, 나의 AI를 한곳에 · Closed Beta",
+    "브라우저 워크스페이스",
+    "와치리스트부터 공시, 실적캘린더, 실시간 어닝콜 번역까지. 흩어져 있던 실적 리서치를 한 화면에 모았습니다.",
+    "홈 화면 예시: 와치리스트와 증시 현황, 섹터 히트맵이 한 화면에 표시된 워크스페이스",
+    "모바일 앱 화면 예시: 와치리스트 종목의 등락률과 최신 속보가 함께 표시된 휴대폰 화면",
+    "데스크톱에서 더 넓게.",
+    "와치리스트부터 증시 현황,\n섹터 히트맵까지 한 화면에서 확인하는 StockNow의 데스크톱 워크스페이스입니다.",
+    "자산과 StockNow, 나의 AI를 하나의 설치형 앱에서 만나보세요.",
+    "데스크톱 화면 예시: 좌측에 섹터 히트맵, 우측에 이번 주 실적 캘린더가 함께 표시된 워크스페이스",
+    "실적 리서치의 처음부터 끝까지."
+   ]
+  },
+  "https://stocknow.ai/BreakingNews/98191": {
+   "status": 404,
+   "final": "https://stocknow.ai/BreakingNews/98191",
+   "len": 5976,
+   "head": "<!DOCTYPE html><html lang=\"ko\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" as=\"image\" href=\"/stocknow-logo.png\"/><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css\" data-precedence=\"default\"/><link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap\" data-precedence=\"default\"/><link rel=\"stylesheet\" href=\"/assets/styles-BVdxjUs5.css\" data-precedence=\"default\"/><script src=\"https://www.googletagmanager.co",
+   "scripts": [
+    "/assets/index-DA09SXVh.js"
+   ],
+   "apis": [
+    "https://app.stocknow.ai/?ref=home-nav",
+    "https://resources.stocknow.ai/static/terms_of_service.html",
+    "https://resources.stocknow.ai/static/privacy.html"
+   ],
+   "ko": [
+    "자산, StockNow, 나의 AI를 한곳에 · Closed Beta",
+    "브라우저 워크스페이스",
+    "페이지를 찾을 수 없어요",
+    "주소가 바뀌었거나 삭제된 페이지예요.",
+    "터네이셔스 주식회사 (Tenacious Inc.)",
+    "대표자: 김정훈, 최준회  |  사업자등록번호: 804-88-03090",
+    "주소: 서울특별시 서초구 강남대로 311, 706호",
+    "통신판매업 신고번호: 2025-서울서초-0888",
+    "전화: 0505-116-1029  |  문의: hello@stocknow.ai"
+   ]
+  },
+  "https://stocknow.ai/BreakingNews": {
+   "status": 404,
+   "final": "https://stocknow.ai/BreakingNews",
+   "len": 6161,
+   "head": "<!DOCTYPE html><html lang=\"ko\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" as=\"image\" href=\"/stocknow-logo.png\"/><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css\" data-precedence=\"default\"/><link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap\" data-precedence=\"default\"/><link rel=\"stylesheet\" href=\"/assets/styles-BVdxjUs5.css\" data-precedence=\"default\"/><script src=\"https://www.googletagmanager.co",
+   "scripts": [
+    "/assets/index-DA09SXVh.js"
+   ],
+   "apis": [
+    "https://app.stocknow.ai/?ref=home-nav",
+    "https://resources.stocknow.ai/static/terms_of_service.html",
+    "https://resources.stocknow.ai/static/privacy.html"
+   ],
+   "ko": [
+    "자산, StockNow, 나의 AI를 한곳에 · Closed Beta",
+    "브라우저 워크스페이스",
+    "페이지를 찾을 수 없어요",
+    "주소가 바뀌었거나 삭제된 페이지예요.",
+    "터네이셔스 주식회사 (Tenacious Inc.)",
+    "대표자: 김정훈, 최준회  |  사업자등록번호: 804-88-03090",
+    "주소: 서울특별시 서초구 강남대로 311, 706호",
+    "통신판매업 신고번호: 2025-서울서초-0888",
+    "전화: 0505-116-1029  |  문의: hello@stocknow.ai"
+   ]
+  }
+ },
+ "js": {
+  "https://stocknow.ai/assets/index-DA09SXVh.js": {
+   "len": 299944,
+   "hits": [],
+   "bn": [
+    "nd live call translation are free. StockNow Pro is $11.99/mo or $119.99/yr — 30 breaking-news keywords, full-history earnings and events, transcript downloads, and more.`,Da",
+    "ction Lo(e){return typeof e==`string`&&/^[a-z][a-z0-9]{23}$/.test(e)}var Ro=P(`/breaking-news/$newsId/{-$slug}`)({beforeLoad:async({params:e})=>{let n=Lo(e.newsId)?e.newsId:",
+    "await Io({data:{type:`breaking_news`,id:e.newsId}});throw n?r({to:`/$lang/breaking-news/$newsId/{-$slug}`,params:{lang:await b(),newsId:n,slug:e.slug},statusCode:301})",
+    "eforeLoad:async({params:e})=>{let n=Lo(e.newsId)?e.newsId:await Io({data:{type:`breaking_news`,id:e.newsId}});throw n?r({to:`/$lang/breaking-news/$newsId/{-$slug}`,params:{l",
+    "e,Yo(r)?[t,n||``,`earnings call`].filter(Boolean).join(` `):r)}var Zo=P(`/$lang/breaking-news/$newsId/{-$slug}`)({loader:async({params:e})=>{if(!Lo(e.newsId)||!w(e.lang))thr",
+    "))]);if(!i)throw t();let o=qo(i.detail.title);if(e.slug!==o)throw r({to:`/$lang/breaking-news/$newsId/{-$slug}`,params:{lang:e.lang,newsId:e.newsId,slug:o},statusCode:301});",
+    ";let{locale:t,detail:n,otherSlugs:r}=e,i=Object.fromEntries(r.map(([e,t])=>[e,`/breaking-news/${n.id}/${encodeURIComponent(t)}`])),a=n.isRestricted?Xr({title:n.title},{local",
+    "e:t}):B(n.content??``)||B(n.aiContent??``)||ei({title:n.title},{locale:t}),o=`/breaking-news/${n.id}/${encodeURIComponent(qo(n.title))}`,s=go(`news`,n.id,t),c=Ko(n.instrume",
+    ".update({id:`/calls/`,path:`/calls/`,getParentRoute:()=>ds}),Ds=Ro.update({id:`/breaking-news/$newsId/{-$slug}`,path:`/breaking-news/$newsId/{-$slug}`,getParentRoute:()=>Ja}",
+    "PricingRoute:xs,LangStudioRoute:Ss,LangIndexRoute:_s,LangCallsIndexRoute:Es,LangBreakingNewsNewsIdChar123SlugChar125Route:Zo.update({id:`/breaking-news/$newsId/{-$slug}`,pa",
+    "th:`/breaking-news/$newsId/{-$slug}`,getParentRoute:()=>ds}),LangCallsCallIdChar123SlugChar125Rout",
+    "s,StudioRoute:gs,AppSplatRoute:Cs,CallsIndexRoute:ws,EarningsCallsIndexRoute:Ts,BreakingNewsNewsIdChar123SlugChar125Route:Ds,CallsCallIdChar123SlugChar125Route:Os,EarningsC"
+   ]
+  },
+  "https://www.stocknow.ai/assets/index-DA09SXVh.js": {
+   "len": 299944,
+   "hits": [],
+   "bn": [
+    "nd live call translation are free. StockNow Pro is $11.99/mo or $119.99/yr — 30 breaking-news keywords, full-history earnings and events, transcript downloads, and more.`,Da",
+    "ction Lo(e){return typeof e==`string`&&/^[a-z][a-z0-9]{23}$/.test(e)}var Ro=P(`/breaking-news/$newsId/{-$slug}`)({beforeLoad:async({params:e})=>{let n=Lo(e.newsId)?e.newsId:",
+    "await Io({data:{type:`breaking_news`,id:e.newsId}});throw n?r({to:`/$lang/breaking-news/$newsId/{-$slug}`,params:{lang:await b(),newsId:n,slug:e.slug},statusCode:301})",
+    "eforeLoad:async({params:e})=>{let n=Lo(e.newsId)?e.newsId:await Io({data:{type:`breaking_news`,id:e.newsId}});throw n?r({to:`/$lang/breaking-news/$newsId/{-$slug}`,params:{l",
+    "e,Yo(r)?[t,n||``,`earnings call`].filter(Boolean).join(` `):r)}var Zo=P(`/$lang/breaking-news/$newsId/{-$slug}`)({loader:async({params:e})=>{if(!Lo(e.newsId)||!w(e.lang))thr",
+    "))]);if(!i)throw t();let o=qo(i.detail.title);if(e.slug!==o)throw r({to:`/$lang/breaking-news/$newsId/{-$slug}`,params:{lang:e.lang,newsId:e.newsId,slug:o},statusCode:301});",
+    ";let{locale:t,detail:n,otherSlugs:r}=e,i=Object.fromEntries(r.map(([e,t])=>[e,`/breaking-news/${n.id}/${encodeURIComponent(t)}`])),a=n.isRestricted?Xr({title:n.title},{local",
+    "e:t}):B(n.content??``)||B(n.aiContent??``)||ei({title:n.title},{locale:t}),o=`/breaking-news/${n.id}/${encodeURIComponent(qo(n.title))}`,s=go(`news`,n.id,t),c=Ko(n.instrume",
+    ".update({id:`/calls/`,path:`/calls/`,getParentRoute:()=>ds}),Ds=Ro.update({id:`/breaking-news/$newsId/{-$slug}`,path:`/breaking-news/$newsId/{-$slug}`,getParentRoute:()=>Ja}",
+    "PricingRoute:xs,LangStudioRoute:Ss,LangIndexRoute:_s,LangCallsIndexRoute:Es,LangBreakingNewsNewsIdChar123SlugChar125Route:Zo.update({id:`/breaking-news/$newsId/{-$slug}`,pa",
+    "th:`/breaking-news/$newsId/{-$slug}`,getParentRoute:()=>ds}),LangCallsCallIdChar123SlugChar125Rout",
+    "s,StudioRoute:gs,AppSplatRoute:Cs,CallsIndexRoute:ws,EarningsCallsIndexRoute:Ts,BreakingNewsNewsIdChar123SlugChar125Route:Ds,CallsCallIdChar123SlugChar125Route:Os,EarningsC"
+   ]
+  }
+ },
+ "tries": {
+  "https://stocknow.ai/api/breaking-news?limit=3": {
+   "s": 200,
+   "ct": "application/json",
+   "b": "{\"items\":[{\"id\":98192,\"title\":\"뉴스스쿼크 유럽 주식시장 개장 뉴스 - 2026년 9월 30일\",\"content\":\"아시아\\n최근 유가 하락과 미국 장기물 수익률 상승 이후 아시아·태평양 주식은 결국 혼조세를 보였으며, 시장 참가자들은 월말 및 분기말에 발표된 다수의 경제지표를 소화했다. ASX 200은 거의 모든 업종이 상승한 가운데 랠리를 펼쳤고, 부동산 업종이 상승을 주도했다. 예상보다 낮은 월간 헤드라인 CPI 데이터와 건축 승인 건수의 위축 폭 확대가 11월 RBA 금리 인상 가능성을 낮췄다. 닛케이 225는 66,000선을 웃돌며 갭 상승했고, 전자는 예상 밖의 위축을 나타낸 실망스러운 산업생산 및 소매판매 데이터를 무시하며 계속 상승했다. 코스피는 부진한 데이터와 북한과의"
+  },
+  "https://api.stocknow.ai/breaking-news?limit=3": "TypeError: fetch failed",
+  "https://api.stocknow.ai/v1/breaking-news?limit=3": "TypeError: fetch failed",
+  "https://stocknow.ai/api/BreakingNews?limit=3": {
+   "s": 500,
+   "ct": "application/json",
+   "b": "{\"error\":\"No static resource api/BreakingNews.\"}"
+  },
+  "https://stocknow.ai/api/news/breaking?limit=3": {
+   "s": 500,
+   "ct": "application/json",
+   "b": "{\"error\":\"No static resource api/news/breaking.\"}"
+  }
+ }
+}
