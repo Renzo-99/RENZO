@@ -1,0 +1,17 @@
+{
+ "at": "2026-09-30T05:26:12.494Z",
+ "init": {
+  "status": 401,
+  "auth": "Bearer resource_metadata=\"https://mcp.stocknow.ai/.well-known/oauth-protected-resource/mcp\", error=\"invalid_token\"",
+  "ctype": "application/json; charset=utf-8",
+  "body": {
+   "message": "Authentication required",
+   "error": "Unauthorized",
+   "statusCode": 401
+  }
+ },
+ "wellKnown": {
+  "s": 200,
+  "t": "{\"resource\":\"https://mcp.stocknow.ai/mcp\",\"authorization_servers\":[\"https://mcp.stocknow.ai\"],\"scopes_supported\":[\"mcp\"],\"bearer_methods_supported\":[\"header\"]}"
+ }
+}
