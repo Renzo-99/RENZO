@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 mkdirSync("audit-out", { recursive: true });
 const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" };
 const j = async (u, h = UA) => { try { const r = await fetch(u, { headers: h, signal: AbortSignal.timeout(20000) }); return { s: r.status, b: await r.json().catch(() => null) }; } catch (e) { return { s: String(e) }; } };
+await new Promise((r) => setTimeout(r, 230_000)); // 배포 대기
 const out = { at: new Date().toISOString() };
 out.app = (await j("https://stock-dashboard-jaeyeon.vercel.app/api/watchlist/quotes?symbols=GOOGL,AVGO,NVDA,AAPL,INTC")).b;
 for (const s of ["GOOGL", "NVDA"]) {
@@ -19,5 +20,5 @@ for (const s of ["GOOGL", "NVDA"]) {
 }
 const T = { ...UA, Origin: "https://www.tossinvest.com", Referer: "https://www.tossinvest.com/" };
 out.toss = (await j("https://wts-info-api.tossinvest.com/api/v3/stock-prices?meta=true&productCodes=US20040819002,US19990122001", T)).b;
-writeFileSync("audit-out/zero-rate.json", JSON.stringify(out, null, 1));
+writeFileSync("audit-out/zero-rate2.json", JSON.stringify(out, null, 1));
 console.log(JSON.stringify(out, null, 1).slice(0, 5000));
