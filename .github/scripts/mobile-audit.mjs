@@ -1,31 +1,31 @@
-// 재무 탭 실서버 확인 — 사이드 패널(NVDA)·전체 페이지(삼성전자·SK하이닉스·TSM·BRK) (읽기 전용)
+// 와치리스트 최적화 실서버 확인 (읽기 전용 — 저장 요청은 막는다)
 import { chromium } from "playwright";
 const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-// 새 배포 확인: 재무 탭 HTML 에 토스 출처 문구가 나올 때까지
-for (let i = 0; i < 60; i++) { await wait(10_000); process.stdout.write("."); if (i >= 22) break; }
+for (let i = 0; i < 22; i++) { await wait(10_000); process.stdout.write("."); }
 console.log("\n대기 끝");
 const b = await chromium.launch();
-const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
-const p = await ctx.newPage();
-await p.route("**/api/watchlist/board", (r) => (r.request().method() === "GET" ? r.continue() : r.fulfill({ json: { ok: true } })));
-const errs = []; p.on("pageerror", (e) => errs.push(e.message.slice(0, 100)));
-async function finTab(scope) {
-  await scope.getByRole("tab", { name: "재무" }).first().click();
-  await scope.locator('[data-testid="toss-finance"], text=재무 데이터를 가져오지 못했어요').first().waitFor({ timeout: 90_000 }).catch(() => {});
-  return p.evaluate(() => {
-    const f = document.querySelector('[data-testid="toss-finance"]');
-    if (!f) return { toss: false, text: document.body.innerText.match(/출처:[^\n]{0,60}|재무 데이터를 가져오지 못했어요/)?.[0] ?? null };
-    const head = [...f.querySelectorAll('[data-testid="fin-INC-Y"] thead th')].slice(0, 3).map((t) => t.textContent);
-    const rows = [...f.querySelectorAll('[data-testid="fin-INC-Y"] > div:first-child tbody tr')].slice(0, 6).map((tr) => [...tr.children].slice(0, 2).map((c) => c.textContent).join(" "));
-    const stats = [...f.querySelectorAll('[data-testid="fin-indicators"] > div')].map((d) => d.innerText.replace(/\n/g, " ").slice(0, 40));
-    return { toss: true, src: f.querySelector("p")?.textContent, head, rows, stats: stats.slice(0, 9) };
+for (const [label, w, h, mobile] of [["데스크톱", 1440, 900, false], ["폴드 펼침", 984, 1092, true]]) {
+  const p = await (await b.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile })).newPage();
+  await p.route("**/api/watchlist/board", (r) => (r.request().method() === "GET" ? r.continue() : r.fulfill({ json: { ok: true } })));
+  let reqs = 0; const asked = new Set();
+  p.on("request", (r) => { if (r.url().includes("/api/watchlist/quotes")) { reqs++; (new URL(r.url()).searchParams.get("symbols") ?? "").split(",").forEach((s) => asked.add(s)); } });
+  const errs = []; p.on("pageerror", (e) => errs.push(e.message.slice(0, 100)));
+  await p.addInitScript(() => localStorage.setItem("watch.tab.v1", "global"));
+  await p.goto(`${BASE}/`, { waitUntil: "domcontentloaded", timeout: 120_000 }); await wait(4000);
+  if (await p.getByTestId("watchlist-toggle").isVisible().catch(() => false)) { await p.getByTestId("watchlist-toggle").click(); await wait(1500); }
+  reqs = 0; asked.clear(); await wait(11_000);
+  const total = await p.locator('[data-row-key]').count();
+  const shown = await p.evaluate(() => {
+    const box = document.querySelector('[data-testid="watchlist-scroll"]'); const r = box.getBoundingClientRect();
+    const rows = [...document.querySelectorAll("[data-row-key]")].filter((li) => { const x = li.getBoundingClientRect(); return x.bottom > Math.max(r.top, 0) && x.top < Math.min(r.bottom, innerHeight); });
+    return rows.map((li) => `${li.dataset.rowKey.split("|")[1]} ${li.querySelector('[data-testid^="watch-rate-"]')?.textContent}`);
   });
+  console.log(`[${label}] 전체 줄 ${total} · 10초 동안 요청 ${reqs}번 · 종목 ${asked.size}개`);
+  console.log(`  화면에 보이는 줄: ${shown.join(" | ")}`);
+  const ids = await p.$$eval('[data-testid^="watch-group-"][aria-expanded="true"]', (els) => els.map((e) => e.dataset.testid));
+  for (const id of ids) { await p.getByTestId(id).click().catch(() => {}); await wait(60); }
+  await wait(1500); reqs = 0; await wait(11_000);
+  console.log(`  분류 모두 접은 뒤 10초 동안 요청 ${reqs}번${errs.length ? " · 에러 " + JSON.stringify([...new Set(errs)]) : ""}`);
 }
-// 2) 전체 페이지
-for (const c of ["TSM", "SONY", "NVO", "ASML", "NVDA", "005930"]) {
-  await p.goto(`${BASE}/stock/${c}`, { waitUntil: "domcontentloaded", timeout: 120_000 }); await wait(3000);
-  console.log(`[전체 페이지 ${c}]`, JSON.stringify(await finTab(p)));
-}
-if (errs.length) console.log("에러", [...new Set(errs)]);
 await b.close();
