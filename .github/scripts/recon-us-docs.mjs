@@ -1,24 +1,28 @@
-// 스톡나우 실데이터 확인 v2 — 새 배포 대기 후 — 대시보드가 평소 하는 요청과 같음(한도 몇 회 사용)
+// 스톡나우 웹사이트 속보 한글 데이터 경로 정찰 (읽기 전용)
 import { mkdirSync, writeFileSync } from "node:fs";
 mkdirSync("audit-out", { recursive: true });
-const base = "https://stock-dashboard-jaeyeon.vercel.app";
-const get = (k) => fetch(`${base}/api/stocknow/feed?kind=${k}`).then((r) => r.json()).catch((e) => ({ err: String(e) }));
-// 새 배포(v2 캐시 키)가 뜰 때까지 — v2 뉴스 캐시는 비어 있어 미국 뉴스 종목이 붙어야 함
-let n0 = null;
-for (let i = 0; i < 40; i++) {
-  await new Promise((r) => setTimeout(r, 20000));
-  n0 = await get("news");
-  if (n0.items?.some((x) => x.symbols.some((s) => !/^\d/.test(s)))) break;
+const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36", "Accept-Language": "ko-KR" };
+const out = { pages: {}, js: {}, tries: {} };
+for (const u of ["https://stocknow.ai/", "https://www.stocknow.ai/", "https://stocknow.ai/BreakingNews/98191", "https://stocknow.ai/BreakingNews"]) {
+  try {
+    const r = await fetch(u, { headers: UA, redirect: "follow" });
+    const t = await r.text();
+    out.pages[u] = { status: r.status, final: r.url, len: t.length, head: t.slice(0, 600), scripts: [...t.matchAll(/src="([^"]+\.js[^"]*)"/g)].map((m) => m[1]).slice(0, 40), apis: [...new Set([...t.matchAll(/["'`](https?:\/\/[a-z0-9.-]*stocknow[a-z0-9.-]*\/[^"'`\s]{0,80}|\/api\/[^"'`\s]{0,80})["'`]/gi)].map((m) => m[1]))].slice(0, 60), ko: (t.match(/[가-힣][^<"]{10,80}/g) ?? []).slice(0, 15) };
+    // 스크립트 안의 API 경로
+    const base = new URL(r.url);
+    for (const s of out.pages[u].scripts.slice(0, 25)) {
+      const su = new URL(s, base).toString();
+      if (out.js[su]) continue;
+      try {
+        const js = await fetch(su, { headers: UA }).then((x) => x.text());
+        const hits = [...new Set([...js.matchAll(/["'`]((?:https?:\/\/[a-z0-9.-]+)?\/(?:api|v1|v2|v3)\/[A-Za-z0-9_/{}$.:-]{2,80})/g)].map((m) => m[1]))];
+        const bn = [...new Set([...js.matchAll(/.{0,80}[Bb]reaking[_-]?[Nn]ews.{0,80}/g)].map((m) => m[0]))].slice(0, 12);
+        out.js[su] = { len: js.length, hits: hits.slice(0, 80), bn };
+      } catch (e) { out.js[su] = String(e); }
+    }
+  } catch (e) { out.pages[u] = String(e); }
 }
-const b = await get("breaking");
-const n = await get("news");
-const f = await get("filings");
-const st = await fetch(`${base}/api/stocknow/stock/NVDA`).then((r) => r.json()).catch((e) => ({ err: String(e) }));
-const status = await fetch(`${base}/api/stocknow/status`).then((r) => r.json());
-writeFileSync("audit-out/sn-data2.json", JSON.stringify({
-  breaking: { meta: b.meta, n: b.items?.length, mine: b.items?.filter((x) => x.mine.length).length, sample: b.items?.slice(0, 2).map((x) => [x.at, x.title, x.mine]) },
-  news: { meta: n.meta, n: n.items?.length, us: n.items?.filter((x) => x.symbols.some((s) => !/^\d/.test(s))).length, sample: n.items?.slice(0, 3).map((x) => [x.local, x.title, x.symbols]) },
-  filings: { meta: f.meta, n: f.items?.length, coverage: f.coverage, sample: f.items?.slice(0, 3).map((x) => [x.date, x.symbol, x.docType, x.title, x.url]) },
-  nvda: { meta: st.meta, canonical: st.canonical, news: st.news?.length, filings: st.filings?.length, f0: st.filings?.[0] },
-  status,
-}, null, 1));
+for (const u of ["https://stocknow.ai/api/breaking-news?limit=3", "https://api.stocknow.ai/breaking-news?limit=3", "https://api.stocknow.ai/v1/breaking-news?limit=3", "https://stocknow.ai/api/BreakingNews?limit=3", "https://stocknow.ai/api/news/breaking?limit=3"]) {
+  try { const r = await fetch(u, { headers: UA }); out.tries[u] = { s: r.status, ct: r.headers.get("content-type"), b: (await r.text()).slice(0, 400) }; } catch (e) { out.tries[u] = String(e); }
+}
+writeFileSync("audit-out/sn-web.json", JSON.stringify(out, null, 1));
