@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 // 새 배포 확인: 재무 탭 HTML 에 토스 출처 문구가 나올 때까지
-for (let i = 0; i < 60; i++) { await wait(10_000); process.stdout.write("."); if (i >= 18) break; }
+for (let i = 0; i < 60; i++) { await wait(10_000); process.stdout.write("."); if (i >= 22) break; }
 console.log("\n대기 끝");
 const b = await chromium.launch();
 const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
@@ -22,14 +22,8 @@ async function finTab(scope) {
     return { toss: true, src: f.querySelector("p")?.textContent, head, rows, stats: stats.slice(0, 9) };
   });
 }
-// 1) 사이드 패널
-await p.goto(`${BASE}/`, { waitUntil: "domcontentloaded" }); await wait(5000);
-await p.getByTestId("watch-tab-global").click().catch(() => {}); await wait(800);
-await p.locator('[data-testid="watchlist-panel"] a[href="/peek/NVDA"]').first().click();
-await p.getByTestId("stock-sheet").waitFor(); await p.waitForFunction(() => !document.querySelector('[aria-busy="true"]'), null, { timeout: 90_000 }).catch(() => {});
-console.log("[사이드 패널 NVDA]", JSON.stringify(await finTab(p.getByTestId("stock-sheet"))));
 // 2) 전체 페이지
-for (const c of ["005930", "000660", "TSM", "AAPL"]) {
+for (const c of ["TSM", "SONY", "NVO", "ASML", "NVDA", "005930"]) {
   await p.goto(`${BASE}/stock/${c}`, { waitUntil: "domcontentloaded", timeout: 120_000 }); await wait(3000);
   console.log(`[전체 페이지 ${c}]`, JSON.stringify(await finTab(p)));
 }
