@@ -1,0 +1,34 @@
+{
+ "at": "2026-09-30T02:06:27.508Z",
+ "ctx": [
+  "()=>h,ON:()=>p,Q8:()=>O,RF:()=>M,S4:()=>_,St:()=>D,TN:()=>S,Ti:()=>g,VK:()=>Y,W1:()=>T,Xh:()=>f,ar:()=>B,cY:()=>$,fC:()=>P,fP:()=>x,lw:()=>j,n9:()=>L,qY:()=>m,u6:()=>F,yg:()=>w});var n=r(19490),i=r(53573),a=r(80886),o=r(47857),s=r(91234),l=r(30016),u=r(38405),c=r(47587),d=r(36471);let h=e=>{let t=`${u.Q.INFO}/api/v2/stock-infos/${e}`;return l.FH.get(t)},p=e=>{let t=`${u.Q.INFO}/api/v2/stock-infos/code-or-symbol/${e}`;return l.FH.get(t)},f=e=>{let t=`${u.Q.INFO}/api/v2/stock-infos/simple/by-guid?guid=${e}`;return l.FH.get(t)},m=e=>{let t=`${u.Q.INFO}/api/v1/stock-infos?codes=${e.join(\",\")}`;return l.FH.get(t)},g=async e=>{let t=await l.FH.get(`${u.Q.INFO}/api/v2/stock-infos/consensus/${e}`);return null!=t.targetPrice?{...t,targetPrice:{...t.targetPrice,currency:t.targetPrice.currency.toLowe",
+  ",n=r%28;return{choseong:a[Math.floor((r-n)/28/21)],jungseong:o[(r-n)/28%21],jongseong:s[n]}}(e[e.length-1]))?void 0:r.jongseong)===\"ㄹ\",c=n&&l&&u.includes(t);(\"와/과\"===t||c)&&(i=+(0===i));let d=\"이\"===e[e.length-1];return\"이에요/예요\"===t&&d&&(i=1),t.split(\"/\")[i]}c.pick=d},39125:(e,t,r)=>{\"use strict\";r.d(t,{a:()=>a});var n=r(9771),i=r(10893);function a(e,t){return(0,n.I)({queryKey:[\"/api/v2/stock-infos/code-or-symbol\",e],queryFn:()=>(0,i.ON)(e),...t})}},39175:(e,t,r)=>{\"use strict\";r.d(t,{j:()=>i,p:()=>o});let n=e=>t=>\"string\"==typeof t&&t.startsWith(e),i=n(\"--\"),a=n(\"var(--\"),o=e=>!!a(e)&&s.test(e.split(\"/*\")[0].trim()),s=/var\\(--(?:[\\w-]+\\s*|[\\w-]+\\s*,(?:\\s*[^)(\\s]|\\s*\\((?:[^)(]|\\([^)(]*\\))*\\))+\\s*)\\)$/iu},39207:(e,t,r)=>{\"use strict\";r.d(t,{s:()=>l});var n=r(37479),i=r(49323),a=r(20884),o=r(7",
+  "(To,{children:(0,a.Y)(Ts,{})})})},To=e=>{let{children:t}=e,n=(0,o.k)(),l=n.query[\"symbol-or-stock-code\"]?.toString()??\"\";return\"\"===l?(0,a.Y)(Tn,{}):(0,a.Y)(T.e1,{children:(0,a.Y)(p.T,{pendingFallback:(0,a.Y)(Tn,{}),children:(0,a.Y)(Td,{symbolOrStockCode:l,children:t})})})},Td=e=>{let{symbolOrStockCode:t,children:n}=e,r=(0,d.$)(),{data:i}=function(e){return(0,nT.U)({queryKey:[\"/api/v2/stock-infos/code-or-symbol\",e],queryFn:()=>(0,S.ON)(e)})}(t);return((0,l.useEffect)(()=>{i?.code.startsWith(s.Cy.GUID)&&(0,w.Ux)(k.b.optionDetail({optionCode:i.code,underlyingGuid:i.optionInstrument?.underlyingGuid}))},[r,i]),(0,l.useEffect)(()=>{null!=i&&(0,w2.H1)(i.code)},[i]),null==i)?(0,a.Y)(Ta,{}):i.status===R.VL.상장예정?(0,a.Y)(Tl,{listDate:i.listDate}):i.code.startsWith(s.Cy.GUID)?(0,a.Y)(a.FK,{}):(0,a.Y)"
+ ],
+ "tries": {
+  "get_codeOrSymbol": {
+   "s": 200,
+   "t": "{\"result\":null}"
+  },
+  "get_code": {
+   "s": 200,
+   "t": "{\"result\":null}"
+  },
+  "get_symbol": {
+   "s": 200,
+   "t": "{\"result\":null}"
+  },
+  "get_path": {
+   "s": 200,
+   "t": "{\"result\":{\"code\":\"US19990122001\",\"guid\":\"US19990122001\",\"symbol\":\"NVDA\",\"isinCode\":\"US67066G1040\",\"status\":\"N\",\"name\":\"엔비디아\",\"englishName\":\"Nvidia\",\"detailName\":\"엔비디아\",\"jpName\":null,\"market\":{\"code\":\"NSQ\",\"displayName\":\"NASDAQ\"},\"group\":{\"code\":\"ST\",\"displayName\":\"주권\"},\"companyCode\":\"NAS00208X-E0\",\"companyName\":\"엔비디아\",\"logoImageUrl\":\"https://static.toss.im/png-icons/securities/icn-sec-fill-NAS00208X-E0.png\",\"currency\":\"USD\",\"tradingSuspended\":false,\"krxTradingSuspended\":false,\"nxtTradingSuspend"
+  },
+  "post_list": {
+   "s": 405,
+   "t": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+  },
+  "post_codes": {
+   "s": 405,
+   "t": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+  }
+ }
+}
