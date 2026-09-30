@@ -17,6 +17,8 @@ for (const [label, w, h, mobile] of [["데스크톱", 1440, 900, false], ["폴�
   const errs = []; p.on("pageerror", (e) => errs.push(e.message.slice(0, 100)));
   await p.goto(`${BASE}/`, { waitUntil: "domcontentloaded", timeout: 120_000 }); await wait(6000);
   if (await p.getByTestId("watchlist-toggle").isVisible().catch(() => false)) { await p.getByTestId("watchlist-toggle").click(); await wait(1500); }
+  // 종목이 있는 탭으로 (지금 한국 탭은 비어 있다)
+  await p.getByTestId("watch-tab-global").click().catch(() => {}); await wait(800);
   const diag = await p.evaluate(() => ({
     탭: [...document.querySelectorAll('[role="tab"]')].map((t) => t.textContent + (t.getAttribute("aria-selected") === "true" ? "✓" : "")).join(" "),
     링크: [...document.querySelectorAll('[data-testid="watchlist-panel"] a')].slice(0, 4).map((a) => a.getAttribute("href")),
