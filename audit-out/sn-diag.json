@@ -1,0 +1,45 @@
+{
+ "before": {
+  "breaking": 2,
+  "news": 15,
+  "filings": 12
+ },
+ "news": {
+  "ms": 2413,
+  "meta": {
+   "connected": true,
+   "plan": "pro",
+   "at": "2026-09-30T05:59:05.923Z",
+   "pending": 0
+  },
+  "n": 300
+ },
+ "mid": {
+  "breaking": 2,
+  "news": 15,
+  "filings": 12
+ },
+ "tick": {
+  "at": "2026-09-30T05:59:09.648Z",
+  "spent": {
+   "breaking": 0,
+   "news": 0,
+   "filings": 0
+  },
+  "used": {
+   "breaking": 2,
+   "news": 16,
+   "filings": 12
+  },
+  "errors": {
+   "breaking": null,
+   "news": null,
+   "filings": null
+  }
+ },
+ "after": {
+  "breaking": 2,
+  "news": 15,
+  "filings": 12
+ }
+}
