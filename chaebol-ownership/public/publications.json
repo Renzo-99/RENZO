@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-09-29T01:05:00.488Z",
+ "updatedAt": "2026-09-30T00:14:01.667Z",
  "items": [
+  {
+   "id": "nars-analysis-49678",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "학교용지 토양오염 관리의 개선과제-기존 학교부지 증축·개축 단계의 토양오염 확인-비용부담-기록을 중심으로",
+   "date": "2026-09-30",
+   "meta": "NARS 현안분석 433호 · 김경민,김범주",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49678",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49669",
    "sourceId": "issue-point",
@@ -591,17 +602,6 @@
    "date": "2026-04-14",
    "meta": "NARS 현안분석 414호 · 허석재",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49075",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "nars-analysis-49072",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "'일하는 장애인'의 빈곤탈출을 위한 입법 및 정책과제",
-   "date": "2026-04-14",
-   "meta": "NARS 현안분석 413호 · 정용제",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49072",
    "tracks": [],
    "keywords": []
   },
