@@ -1,0 +1,133 @@
+{
+ "at": "2026-09-30T02:02:29.568Z",
+ "info": [
+  {
+   "code": "A005930",
+   "symbol": "005930",
+   "companyCode": "005930",
+   "name": "삼성전자"
+  },
+  {
+   "code": "US19990122001",
+   "symbol": "NVDA",
+   "companyCode": "NAS00208X-E0",
+   "name": "엔비디아"
+  },
+  {
+   "code": "US19801212001",
+   "symbol": "AAPL",
+   "companyCode": "NAS000C7F-E0",
+   "name": "애플"
+  }
+ ],
+ "NVDA_comprehensive": {
+  "path": "/api/v2/companies/NAS00208X-E0/financial-statements/comprehensive",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "NVDA_records": {
+  "path": "/api/v2/companies/US19990122001/financial-statement-records",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "NVDA_recordsCC": {
+  "path": "/api/v2/companies/NAS00208X-E0/financial-statement-records",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "NVDA_indicators": {
+  "path": "/api/v1/stock-detail/ui/wts/US19990122001/investment-indicators",
+  "s": 200,
+  "body": "{\"result\":{\"indicatorSections\":[{\"sectionName\":\"가치평가\",\"data\":{\"displayPer\":\"28.6배\",\"displayPbr\":\"24.1배\",\"displayPsr\":\"18.2배\"}},{\"sectionName\":\"수익\",\"data\":{\"eps\":7.91,\"epsKrw\":10744,\"bps\":9.48,\"bpsKrw\":12877,\"roe\":\"117.2%\"}},{\"sectionName\":\"배당\",\"data\":{\"dividendFrequency\":\"QUARTERLY\",\"dividendYieldRatio\":0.0012,\"currency\":\"USD\",\"annualCash\":0.28,\"annualCashKrw\":380,\"months\":[3,6,9,12],\"exDate\":\"2026-09-10\",\"lastYear\":2025,\"lastYearDividendInfo\":{\"dividendCount\":4,\"dividendMonths\":[3,6,9,12],\"dividendCash\":0.04,\"dividendCashKrw\":54,\"dividendCashJpy\":6,\"dividendYieldRatio\":0.0012,\"ttmDividendYieldRatio\":0.0012,\"ttmDividendMonths\":[\"2025-09\",\"2025-12\",\"2026-03\",\"2026-06\"],\"ttmDps\":0.28,\"ttmDpsKrw\":380,\"ttmDpsJpy\":44,\"ttmDividendTotalCount\":4,\"dividendGrowthRatio\":0.7646380614377623,\"currency\":\"USD\"}}}]}}"
+ },
+ "NVDA_investment": {
+  "path": "/api/v2/stock-infos/US19990122001/investment",
+  "s": 200,
+  "body": "{\"result\":{\"baseDateYear\":\"2026\",\"baseDateMonth\":\"07\",\"high\":228.48,\"highKrw\":310367,\"highJpy\":35957,\"low\":227.98,\"lowKrw\":309688,\"lowJpy\":35878,\"volume\":92984,\"value\":21221130,\"valueKrw\":28826782992,\"valueJpy\":3339675333,\"marketValue\":5515526000000,\"enterpriseValueKrw\":7258138035000000,\"enterpriseValue\":4939525000000,\"enterpriseValueJpy\":809319376798020,\"marketValuePointDate\":\"2026-09-28\",\"displayMarketValue\":\"$5.5조\",\"marketValueKrw\":7456991152000000,\"marketValueKrwPointDate\":null,\"displayMarketValueKrw\":\"7,457.0조원\",\"marketValueJpy\":869214494929479,\"eps\":7.91,\"epsKrw\":10744,\"epsJpy\":1244,\"per\":28.59578284831423,\"perPointDate\":\"2026-09-28\",\"pbr\":24.086949306501765,\"pbrPointDate\":\"2026-09-28\",\"psr\":18.204918655043915,\"psrPointDate\":\"2026-09-28\",\"roe\":1.1721070142655303,\"roePointDate\":\"2026-07-26\",\"bps\":9.48,\"bpsKrw\":12877,\"bpsJpy\":1491,\"dps\":0.28,\"dpsKrw\":380,\"dpsJpy\":44,\"sps\":null,\"dpsBaseDateYear\":\"2026\",\"dpsBaseDateMonth\":\"07\",\"dividendYieldRatio\":0.0012,\"displayDividendYieldRatio\":\"0.12%\",\"foreignerShareholdingRatio\":null,\"name\":\"엔비디아\",\"englishName\":\"Nvidia\",\"market\":{\"code\":\"NSQ\",\"displayName\":\"NASDAQ\"},\"currency\":\"USD\",\"type\":\"US_NORMAL\",\"grossExpensiveRatio\":null,\"displayGrossExpensiveRatio\":\"-\",\"assetUnderManagement\":null,\"assetUnderManagementKrw\":null,\"assetUnderManagementJpy\":null,\"deviation\":null,\"displayDeviation\":\"-\",\"nav\":null,\"displayNav\":\"-\",\"navKrw\":null,\"displayNavKrw\":\"-\",\"navJpy\":null,\"iv\":null,\"displayIv\":\"-\",\"ivKrw\":null,\"displayIvKrw\":\"-\",\"ivJpy\":null,\"i"
+ },
+ "NVDA_stability": {
+  "path": "/api/v2/stock-infos/stability/US19990122001",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "NVDA_evaluation": {
+  "path": "/api/v2/stock-infos/evaluation/US19990122001",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "NVDA_opIncome": {
+  "path": "/api/v2/stock-infos/operating-income/US19990122001",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "NVDA_consensus": {
+  "path": "/api/v2/stock-infos/consensus/US19990122001",
+  "s": 200,
+  "body": "{\"result\":{\"targetPrice\":{\"stockCode\":\"US19990122001\",\"mean\":323.5,\"meanKrw\":447659.3,\"meanJpy\":323.5,\"high\":515,\"highKrw\":712657,\"highJpy\":515,\"low\":180,\"lowKrw\":249084,\"lowJpy\":180,\"currency\":\"USD\"},\"pointDate\":\"2026-09-29\",\"pastClosePrices\":[{\"price\":228.21,\"priceKrw\":310000,\"priceJpy\":35914,\"date\":\"2026-09-30\"},{\"price\":220.78,\"priceKrw\":299907,\"priceJpy\":34745,\"date\":\"2026-08-31\"},{\"price\":200.75,\"priceKrw\":272698,\"priceJpy\":31593,\"date\":\"2026-07-31\"},{\"price\":200.09,\"priceKrw\":271802,\"priceJpy\":31489,\"date\":\"2026-06-30\"},{\"price\":211.14,\"priceKrw\":286812,\"priceJpy\":33228,\"date\":\"2026-05-29\"},{\"price\":199.57,\"priceKrw\":271095,\"priceJpy\":31407,\"date\":\"2026-04-30\"},{\"price\":174.4,\"priceKrw\":236904,\"priceJpy\":27446,\"date\":\"2026-03-31\"},{\"price\":177.19,\"priceKrw\":240694,\"priceJpy\":27885,\"date\":\"2026-02-27\"},{\"price\":191.13,\"priceKrw\":259630,\"priceJpy\":30079,\"date\":\"2026-01-30\"},{\"price\":186.5,\"priceKrw\":253341,\"priceJpy\":29350,\"date\":\"2025-12-31\"},{\"price\":177,\"priceKrw\":240436,\"priceJpy\":27855,\"date\":\"2025-11-28\"},{\"price\":202.49,\"priceKrw\":275062,\"priceJpy\":31866,\"date\":\"2025-10-31\"},{\"price\":186.58,\"priceKrw\":253450,\"priceJpy\":29363,\"date\":\"2025-09-30\"}]}}"
+ },
+ "NVDA_estRevenue": {
+  "path": "/api/v2/companies/US19990122001/financial/estimate/revenue",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "NVDA_sales": {
+  "path": "/api/v2/companies/NAS00208X-E0/sales-compositions",
+  "s": 404,
+  "body": "{\"error\":{\"statusCode\":404,\"code\":null,\"message\":null}}"
+ },
+ "SEC_comprehensive": {
+  "path": "/api/v2/companies/005930/financial-statements/comprehensive",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "SEC_records": {
+  "path": "/api/v2/companies/A005930/financial-statement-records",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "SEC_recordsCC": {
+  "path": "/api/v2/companies/005930/financial-statement-records",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "SEC_indicators": {
+  "path": "/api/v1/stock-detail/ui/wts/A005930/investment-indicators",
+  "s": 200,
+  "body": "{\"result\":{\"indicatorSections\":[{\"sectionName\":\"가치평가\",\"data\":{\"displayPer\":\"12.3배\",\"displayPbr\":\"3.2배\",\"displayPsr\":\"3.8배\"}},{\"sectionName\":\"수익\",\"data\":{\"eps\":22291.53,\"epsKrw\":22291,\"bps\":86051.82,\"bpsKrw\":86051,\"roe\":\"31.4%\"}},{\"sectionName\":\"배당\",\"data\":{\"dividendFrequency\":\"QUARTERLY\",\"dividendYieldRatio\":0.0062,\"currency\":\"KRW\",\"annualCash\":1682,\"annualCashKrw\":1682,\"months\":[3,6,9,12],\"exDate\":\"2026-06-29\",\"lastYear\":2025,\"lastYearDividendInfo\":{\"dividendCount\":4,\"dividendMonths\":[3,6,9,12],\"dividendCash\":1668,\"dividendCashKrw\":1668,\"dividendCashJpy\":null,\"dividendYieldRatio\":0.0062,\"ttmDividendYieldRatio\":0.0062,\"ttmDividendMonths\":[\"2025-09\",\"2025-12\",\"2026-03\",\"2026-06\"],\"ttmDps\":1682,\"ttmDpsKrw\":1682,\"ttmDpsJpy\":null,\"ttmDividendTotalCount\":4,\"dividendGrowthRatio\":-0.114633960493191,\"currency\":\"KRW\"}}}]}}"
+ },
+ "SEC_investment": {
+  "path": "/api/v2/stock-infos/A005930/investment",
+  "s": 200,
+  "body": "{\"result\":{\"baseDateYear\":\"2026\",\"baseDateMonth\":\"06\",\"high\":276000,\"highKrw\":276000,\"highJpy\":null,\"low\":270500,\"lowKrw\":270500,\"lowJpy\":null,\"volume\":4883221,\"value\":1335618742500,\"valueKrw\":1335618742500,\"valueJpy\":null,\"marketValue\":1769289574511000,\"enterpriseValueKrw\":1955169443108000,\"enterpriseValue\":1955169443108000,\"enterpriseValueJpy\":205379256193197,\"marketValuePointDate\":\"2026-09-29\",\"displayMarketValue\":\"1,769.3조원\",\"marketValueKrw\":1769289574511000,\"marketValueKrwPointDate\":null,\"displayMarketValueKrw\":\"1,769.3조원\",\"marketValueJpy\":204802589942239,\"eps\":22291.53,\"epsKrw\":22291,\"epsJpy\":null,\"per\":12.31408945870446,\"perPointDate\":\"2026-09-29\",\"pbr\":3.1899381523762775,\"pbrPointDate\":\"2026-09-29\",\"psr\":3.797951383861331,\"psrPointDate\":\"2026-09-29\",\"roe\":0.3138511834548552,\"roePointDate\":\"2026-06-30\",\"bps\":86051.82,\"bpsKrw\":86051,\"bpsJpy\":null,\"dps\":1682,\"dpsKrw\":1682,\"dpsJpy\":null,\"sps\":null,\"dpsBaseDateYear\":\"2026\",\"dpsBaseDateMonth\":\"06\",\"dividendYieldRatio\":0.0062,\"displayDividendYieldRatio\":\"0.62%\",\"foreignerShareholdingRatio\":0.4647,\"name\":\"삼성전자\",\"englishName\":\"SamsungElec\",\"market\":{\"code\":\"KSP\",\"displayName\":\"코스피\"},\"currency\":\"KRW\",\"type\":\"KR_NORMAL\",\"grossExpensiveRatio\":null,\"displayGrossExpensiveRatio\":\"-\",\"assetUnderManagement\":null,\"assetUnderManagementKrw\":null,\"assetUnderManagementJpy\":null,\"deviation\":null,\"displayDeviation\":\"-\",\"nav\":null,\"displayNav\":\"-\",\"navKrw\":null,\"displayNavKrw\":\"-\",\"navJpy\":null,\"iv\":null,\"displayIv\":\"-\",\"ivKrw\":null,\"displayI"
+ },
+ "SEC_stability": {
+  "path": "/api/v2/stock-infos/stability/A005930",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "SEC_evaluation": {
+  "path": "/api/v2/stock-infos/evaluation/A005930",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "SEC_opIncome": {
+  "path": "/api/v2/stock-infos/operating-income/A005930",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "SEC_consensus": {
+  "path": "/api/v2/stock-infos/consensus/A005930",
+  "s": 200,
+  "body": "{\"result\":{\"targetPrice\":{\"stockCode\":\"A005930\",\"mean\":493863.63,\"meanKrw\":493863.63,\"meanJpy\":493863.63,\"high\":650000,\"highKrw\":650000,\"highJpy\":650000,\"low\":270000,\"lowKrw\":270000,\"lowJpy\":270000,\"currency\":\"KRW\"},\"pointDate\":\"2026-09-29\",\"pastClosePrices\":[{\"price\":271250,\"priceKrw\":271250,\"priceJpy\":null,\"date\":\"2026-09-29\"},{\"price\":260000,\"priceKrw\":260000,\"priceJpy\":null,\"date\":\"2026-08-30\"},{\"price\":262500,\"priceKrw\":262500,\"priceJpy\":null,\"date\":\"2026-07-30\"},{\"price\":334000,\"priceKrw\":334000,\"priceJpy\":null,\"date\":\"2026-06-29\"},{\"price\":317000,\"priceKrw\":317000,\"priceJpy\":null,\"date\":\"2026-05-28\"},{\"price\":220500,\"priceKrw\":220500,\"priceJpy\":null,\"date\":\"2026-04-29\"},{\"price\":167200,\"priceKrw\":167200,\"priceJpy\":null,\"date\":\"2026-03-30\"},{\"price\":216500,\"priceKrw\":216500,\"priceJpy\":null,\"date\":\"2026-02-26\"},{\"price\":160500,\"priceKrw\":160500,\"priceJpy\":null,\"date\":\"2026-01-29\"},{\"price\":119900,\"priceKrw\":119900,\"priceJpy\":null,\"date\":\"2025-12-29\"},{\"price\":100500,\"priceKrw\":100500,\"priceJpy\":null,\"date\":\"2025-11-27\"},{\"price\":107500,\"priceKrw\":107500,\"priceJpy\":null,\"date\":\"2025-10-30\"},{\"price\":83900,\"priceKrw\":83900,\"priceJpy\":null,\"date\":\"2025-09-29\"}]}}"
+ },
+ "SEC_estRevenue": {
+  "path": "/api/v2/companies/A005930/financial/estimate/revenue",
+  "s": 405,
+  "body": "{\"error\":{\"statusCode\":405,\"code\":null,\"message\":null}}"
+ },
+ "SEC_sales": {
+  "path": "/api/v2/companies/005930/sales-compositions",
+  "s": 404,
+  "body": "{\"error\":{\"statusCode\":404,\"code\":null,\"message\":null}}"
+ }
+}
