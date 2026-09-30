@@ -1,0 +1,132 @@
+{
+ "at": "2026-09-30T00:13:53.959Z",
+ "status": 200,
+ "summary": [
+  {
+   "id": "g-mudgpwxzmmzn",
+   "name": "커뮤니케이션",
+   "parent": null,
+   "color": null,
+   "n": 45,
+   "kr": 3,
+   "items": "GOOGL,GOOG,NFLX,DIS,TMUS,VZ,CMCSA,T,SPOT,BIDU,VOD,PINS,RBLX,SNAP,SPCX,PH,TDG,HONA,RKLB,HEI,TDY,NVDA,AAPL,MSFT,TSM,AVGO,ASML,INTC,SNDK,CRWD,ORCL,ADBE,QCOM,AMAT,UBER,SONY,DELL,INFY,COIN,ZM,SKHY,MU,005930,277810,012450"
+  },
+  {
+   "id": "g-mudgqksx54bq",
+   "name": "헬스케어",
+   "parent": null,
+   "color": null,
+   "n": 11,
+   "kr": 0,
+   "items": "LLY,NVO,UNH,JNJ,MRK,ABBV,TMO,NVS,PFE,AMGN,MRNA"
+  },
+  {
+   "id": "g-mudgqt33mx1p",
+   "name": "금융",
+   "parent": null,
+   "color": null,
+   "n": 24,
+   "kr": 0,
+   "items": "BRKA.VI,JPM,MA,BAC,WFC,AXP,HSBC,MS,SPGI,SCHW,BLK,MUFG,C,GS,IBN,MCO,PYPL,MET,MSCI,PRU,BCS,MSTR,IREN,CRCL"
+  },
+  {
+   "id": "g-mudgqyq7ar5y",
+   "name": "임의소비재",
+   "parent": null,
+   "color": null,
+   "n": 25,
+   "kr": 0,
+   "items": "AMZN,TSLA,TM,MCD,BABA,PDD,NKE,ABNB,CMG,MAR,HMC,F,GM,LULU,JD,LVS,CPNG,EBAY,EXPE,MGM,RIVN,NIO,XPEV,LCID,HD"
+  },
+  {
+   "id": "g-mudgsxy0x99l",
+   "name": "필수소비재",
+   "parent": null,
+   "color": null,
+   "n": 8,
+   "kr": 0,
+   "items": "PG,COST,KO,PEP,PM,UL,TGT,EL"
+  },
+  {
+   "id": "g-mudgspennfdd",
+   "name": "산업재",
+   "parent": null,
+   "color": null,
+   "n": 12,
+   "kr": 0,
+   "items": "CAT,GE,UNP,RTX,ETN,BA,LMT,GD,FDX,ABBNY,CARR,LUV"
+  },
+  {
+   "id": "g-mudgtcj45rp4",
+   "name": "에너지",
+   "parent": null,
+   "color": null,
+   "n": 9,
+   "kr": 0,
+   "items": "XOM,CVX,TTE,OXY,CVE,GEV,ETN,CEG,CCJ"
+  },
+  {
+   "id": "g-mudgvbdyuo1i",
+   "name": "유틸리티(설비)",
+   "parent": null,
+   "color": null,
+   "n": 8,
+   "kr": 0,
+   "items": "D,NEE,DUK,NGG,SRE,AEP,KEP,SO"
+  },
+  {
+   "id": "g-mudgvj621w8n",
+   "name": "부동산",
+   "parent": null,
+   "color": null,
+   "n": 8,
+   "kr": 0,
+   "items": "CCI,PLD,AMT,EQIX,SPG,WELL,PSA,O"
+  },
+  {
+   "id": "g-mudgw4xll7h2",
+   "name": "의료기기",
+   "parent": null,
+   "color": null,
+   "n": 7,
+   "kr": 0,
+   "items": "ISRG,MDT,JNJ,ABT,BSX,SYK,EW"
+  },
+  {
+   "id": "g-mudgvt9hcsz7",
+   "name": "UAM",
+   "parent": null,
+   "color": null,
+   "n": 6,
+   "kr": 0,
+   "items": "RCAT,EVTL,JOBY,ACHR,EH,BA"
+  },
+  {
+   "id": "g-mudgwbix8vhc",
+   "name": "양자컴퓨터",
+   "parent": null,
+   "color": null,
+   "n": 2,
+   "kr": 0,
+   "items": "IONQ,RGTI"
+  },
+  {
+   "id": "g-munb5ykwuq6x",
+   "name": "관심7",
+   "parent": null,
+   "color": null,
+   "n": 4,
+   "kr": 4,
+   "items": "000660,267260,034020,042660"
+  },
+  {
+   "id": "g-munbammcs3yq",
+   "name": "소재",
+   "parent": null,
+   "color": null,
+   "n": 10,
+   "kr": 0,
+   "items": "LIN,BHP,SCCO,RIO,SHW,ECL,VMC,DOW,DD,PKX"
+  }
+ ]
+}
