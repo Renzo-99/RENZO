@@ -1,0 +1,130 @@
+{
+ "breaking": {
+  "meta": {
+   "connected": true,
+   "plan": "pro",
+   "at": "2026-09-30T05:44:48.836Z"
+  },
+  "n": 100,
+  "mine": 9,
+  "sample": [
+   [
+    "2026-09-30 14:24",
+    "Newsquawk Daily European Opening News - 30th September 2026",
+    [
+     "ORCL",
+     "MU"
+    ]
+   ],
+   [
+    "2026-09-30 14:22",
+    "Russian Defence Ministry says energy system facilities in Kyiv region were hit in a massive strike, according to IFX",
+    []
+   ]
+  ]
+ },
+ "news": {
+  "meta": {
+   "connected": true,
+   "plan": "pro",
+   "at": "2026-09-30T05:46:34.775Z",
+   "pending": 7
+  },
+  "n": 300,
+  "us": 0,
+  "sample": [
+   [
+    "2026-09-30 13:23",
+    "맥도날드(MCD) vs. 스타벅스(SBUX): 어느 주식을 사는 것이 더 나을까?",
+    []
+   ],
+   [
+    "2026-09-30 12:08",
+    "포드(F) 주가, 23% 상승에도 적정 가치 수준으로 보여",
+    []
+   ],
+   [
+    "2026-09-30 12:00",
+    "나이키(NKE) 3분기 실적 발표: 실적 공개 전 알아야 할 모든 것",
+    []
+   ]
+  ]
+ },
+ "filings": {
+  "meta": {
+   "connected": true,
+   "plan": "pro",
+   "at": "2026-09-30T05:46:40.216Z"
+  },
+  "n": 80,
+  "coverage": {
+   "done": 10,
+   "total": 268
+  },
+  "sample": [
+   [
+    "2026-09-30T00:27:35Z",
+    "GOOGL",
+    "4",
+    "내부자 거래 보고서: 7건의 GSU 베스팅 및 세금 원천징수 거래",
+    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=GOOGL&owner=include&count=40&type=4"
+   ],
+   [
+    "2026-09-30T00:26:26Z",
+    "GOOGL",
+    "4",
+    "내부자 거래 보고서: 주식 단위 및 Class C 주식 관련 17건의 거래",
+    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=GOOGL&owner=include&count=40&type=4"
+   ],
+   [
+    "2026-09-30T00:25:04Z",
+    "GOOGL",
+    "4",
+    "내부자 거래 보고서: 기득권 주식 단위 및 세금 원천징수 관련 7건의 거래",
+    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=GOOGL&owner=include&count=40&type=4"
+   ]
+  ]
+ },
+ "nvda": {
+  "meta": {
+   "connected": true,
+   "plan": "pro",
+   "at": "2026-09-30T05:46:39.529Z"
+  },
+  "canonical": "NASDAQ:NVDA",
+  "news": 20,
+  "filings": 8,
+  "f0": {
+   "id": "QUARTR:4204676",
+   "symbol": "NVDA",
+   "source": "QUARTR",
+   "docType": "SLIDES",
+   "date": "2026-09-28T11:00:00Z",
+   "title": "SLIDES",
+   "summary": null,
+   "url": null
+  }
+ },
+ "status": {
+  "connected": true,
+  "authError": null,
+  "connectedAt": "2026-09-30T05:44:46.320Z",
+  "plan": "pro",
+  "limit": 2000,
+  "cap": 1800,
+  "used": 5,
+  "byFeed": {
+   "breaking": 1,
+   "news": 4,
+   "filings": 0
+  },
+  "caps": {
+   "breaking": 300,
+   "news": 600,
+   "filings": 900
+  },
+  "exhausted": false,
+  "lastError": null,
+  "day": "2026-09-30"
+ }
+}
