@@ -1,0 +1,93 @@
+{
+ "at": "2026-09-30T01:58:53.490Z",
+ "app_NVDA": {
+  "status": 200,
+  "fail": false,
+  "finance": null
+ },
+ "app_AAPL": {
+  "status": 200,
+  "fail": false,
+  "finance": null
+ },
+ "app_TSM": {
+  "status": 200,
+  "fail": false,
+  "finance": null
+ },
+ "app_005930": {
+  "status": 200,
+  "fail": false,
+  "finance": null
+ },
+ "app_000660": {
+  "status": 200,
+  "fail": false,
+  "finance": null
+ },
+ "app_BRKA.VI": {
+  "status": 200,
+  "fail": false,
+  "finance": null
+ },
+ "naverAnnual": {
+  "status": 200,
+  "len": 3488,
+  "head": "{\"itemCode\":\"005930\",\"financePeriodType\":\"annual\",\"financeInfo\":{\"itemCode\":\"005930\",\"trTitleList\":[{\"isConsensus\":\"N\",\"title\":\"2023.12.\",\"key\":\"202312\"},{\"isConsensus\":\"N\",\"title\":\"2024.12.\",\"key\":\"2"
+ },
+ "yahooNoCrumb": {
+  "status": 401,
+  "len": 89,
+  "head": "{\"finance\":{\"result\":null,\"error\":{\"code\":\"Unauthorized\",\"description\":\"Invalid Crumb\"}}}"
+ },
+ "yahooCrumb": {
+  "cookie": "A3=d=AQABBOVsvGoCEGX…",
+  "crumbStatus": 406,
+  "crumb": "{\"finance\":{\"result\""
+ },
+ "nasdaqAnnual": {
+  "status": 200,
+  "len": 10633,
+  "head": "{\"data\":{\"symbol\":\"NVDA\",\"tabs\":{\"incomeStatementTable\":\"Income Statement\",\"balanceSheetTable\":\"Balance Sheet\",\"cashFlowTable\":\"Cash Flow\",\"financialRatiosTable\":\"Financial Ratios\"},\"incomeStatementTable\":{\"asOf\":null,\"headers\":{\"value1\":\"Period Ending:\",\"value2\":\"1/25/2026\",\"value3\":\"1/26/2025\",\"value4\":\"1/28/2024\",\"value5\":\"1/29/2023\"},\"rows\":[{\"value1\":\"Total Revenue\",\"value2\":\"$215,938,000\",\"value3\":\"$130,497,000\",\"value4\":\"$60,922,000\",\"value5\":\"$26,974,000\"},{\"value1\":\"Cost of Revenue\",\"value2\":\"$62,475,000\",\"value3\":\"$32,639,000\",\"value4\":\"$16,621,000\",\"value5\":\"$11,618,000\"},{\"value1\":\"Gross Profit\",\"value2\":\"$153,463,000\",\"value3\":\"$97,858,000\",\"value4\":\"$44,301,000\",\"value5\":\"$15,3"
+ },
+ "nasdaqTSM": {
+  "status": 200,
+  "len": 95,
+  "head": "{\"data\":null,\"message\":null,\"status\":{\"rCode\":200,\"bCodeMessage\":null,\"developerMessage\":null}}"
+ },
+ "secTickers": {
+  "status": 200,
+  "len": 798399,
+  "nvda": "\"cik_str\":1045810,\"ticker\":\"NVDA\""
+ },
+ "secFacts": {
+  "status": 200,
+  "len": 42315,
+  "head": "{\"cik\":1045810,\"taxonomy\":\"us-gaap\",\"tag\":\"Revenues\",\"label\":\"Revenues\",\"description\":\"Amount of revenue recognized from goods sold, services rendered, insurance premiums, or other activities that constitute an earning process. Includes, but is not limited to, investment and interest income before d"
+ },
+ "toss_t1": {
+  "status": 404,
+  "len": 55,
+  "head": "{\"error\":{\"statusCode\":404,\"code\":null,\"message\":null}}"
+ },
+ "toss_t2": {
+  "status": 404,
+  "len": 55,
+  "head": "{\"error\":{\"statusCode\":404,\"code\":null,\"message\":null}}"
+ },
+ "toss_t3": {
+  "status": 404,
+  "len": 0,
+  "head": ""
+ },
+ "toss_t4": {
+  "status": 404,
+  "len": 55,
+  "head": "{\"error\":{\"statusCode\":404,\"code\":null,\"message\":null}}"
+ },
+ "toss_t5": {
+  "status": 404,
+  "len": 55,
+  "head": "{\"error\":{\"statusCode\":404,\"code\":null,\"message\":null}}"
+ }
+}
