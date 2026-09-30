@@ -1,0 +1,150 @@
+{
+ "at": "2026-09-30T01:51:32.766Z",
+ "status": 200,
+ "summary": [
+  {
+   "id": "g-munejc6e72y8",
+   "name": "IT",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 20,
+   "items": "NVDA,AAPL,GOOGL,MSFT,TSM,AVGO,SKHY,MU,ASML,INTC,ORCL,DELL,NFLX,CRWD,SNDK,QCOM,UBER,SONY,SPOT,ADBE"
+  },
+  {
+   "id": "g-munele9iyb7s",
+   "name": "우주항공",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 7,
+   "items": "SPCX,PH,TDG,HONA,RKLB,HEI,TDY"
+  },
+  {
+   "id": "g-mudgpwxzmmzn",
+   "name": "커뮤니케이션",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 12,
+   "items": "CMCSA,BIDU,VOD,PINS,RBLX,SNAP,INFY,ZM,VZ,DIS,TMUS,T"
+  },
+  {
+   "id": "g-mudgqksx54bq",
+   "name": "헬스케어",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 11,
+   "items": "LLY,NVO,UNH,JNJ,MRK,ABBV,TMO,NVS,PFE,AMGN,MRNA"
+  },
+  {
+   "id": "g-munevzmhx3d0",
+   "name": "암호화폐",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 4,
+   "items": "COIN,MSTR,CRCL,IREN"
+  },
+  {
+   "id": "g-mudgqt33mx1p",
+   "name": "금융",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 21,
+   "items": "BRKA.VI,JPM,MA,BAC,WFC,AXP,HSBC,MS,SPGI,SCHW,BLK,MUFG,C,GS,IBN,MCO,PYPL,MET,MSCI,PRU,BCS"
+  },
+  {
+   "id": "g-mudgsxy0x99l",
+   "name": "필수소비재",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 8,
+   "items": "PG,COST,KO,PEP,PM,UL,TGT,EL"
+  },
+  {
+   "id": "g-mudgqyq7ar5y",
+   "name": "임의소비재",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 25,
+   "items": "AMZN,TSLA,TM,MCD,BABA,PDD,NKE,ABNB,CMG,MAR,HMC,F,GM,LULU,JD,LVS,CPNG,EBAY,EXPE,MGM,RIVN,NIO,XPEV,LCID,HD"
+  },
+  {
+   "id": "g-mudgtcj45rp4",
+   "name": "에너지",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 9,
+   "items": "XOM,CVX,TTE,OXY,CVE,GEV,ETN,CEG,CCJ"
+  },
+  {
+   "id": "g-mudgspennfdd",
+   "name": "산업재",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 12,
+   "items": "CAT,GE,UNP,RTX,ETN,BA,LMT,GD,FDX,ABBNY,CARR,LUV"
+  },
+  {
+   "id": "g-munbammcs3yq",
+   "name": "소재",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 10,
+   "items": "LIN,BHP,SCCO,RIO,SHW,ECL,VMC,DOW,DD,PKX"
+  },
+  {
+   "id": "g-mudgvbdyuo1i",
+   "name": "유틸리티(설비)",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 8,
+   "items": "D,NEE,DUK,NGG,SRE,AEP,KEP,SO"
+  },
+  {
+   "id": "g-mudgvj621w8n",
+   "name": "부동산",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 8,
+   "items": "CCI,PLD,AMT,EQIX,SPG,WELL,PSA,O"
+  },
+  {
+   "id": "g-mudgw4xll7h2",
+   "name": "의료기기",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 7,
+   "items": "ISRG,MDT,JNJ,ABT,BSX,SYK,EW"
+  },
+  {
+   "id": "g-mudgvt9hcsz7",
+   "name": "UAM",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 6,
+   "items": "RCAT,EVTL,JOBY,ACHR,EH,BA"
+  },
+  {
+   "id": "g-mudgwbix8vhc",
+   "name": "양자컴퓨터",
+   "parent": null,
+   "market": "global",
+   "color": "blue",
+   "n": 2,
+   "items": "IONQ,RGTI"
+  }
+ ]
+}
