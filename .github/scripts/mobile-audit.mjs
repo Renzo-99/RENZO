@@ -2,8 +2,12 @@
 import { chromium } from "playwright";
 const BASE = "https://stock-dashboard-jaeyeon.vercel.app";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-for (let i = 0; i < 25; i++) { process.stdout.write("."); await wait(10_000); }
-console.log("\n배포 대기 끝");
+// 새 배포가 올라왔는지 확인 — /peek/NVDA 가 전체 페이지로 넘겨주면(3xx) 새 배포
+for (let i = 0; i < 60; i++) {
+  const r = await fetch(`${BASE}/peek/NVDA`, { redirect: "manual" }).catch(() => null);
+  if (r && r.status >= 300 && r.status < 400) { console.log(`새 배포 확인 (${r.status} → ${r.headers.get("location")})`); break; }
+  process.stdout.write(`${r?.status ?? "x"} `); await wait(10_000);
+}
 const b = await chromium.launch();
 for (const [label, w, h, mobile] of [["데스크톱", 1440, 900, false], ["폴드 펼침", 984, 1092, true], ["폰", 393, 852, true]]) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
@@ -13,6 +17,11 @@ for (const [label, w, h, mobile] of [["데스크톱", 1440, 900, false], ["폴�
   const errs = []; p.on("pageerror", (e) => errs.push(e.message.slice(0, 100)));
   await p.goto(`${BASE}/`, { waitUntil: "domcontentloaded", timeout: 120_000 }); await wait(6000);
   if (await p.getByTestId("watchlist-toggle").isVisible().catch(() => false)) { await p.getByTestId("watchlist-toggle").click(); await wait(1500); }
+  const diag = await p.evaluate(() => ({
+    탭: [...document.querySelectorAll('[role="tab"]')].map((t) => t.textContent + (t.getAttribute("aria-selected") === "true" ? "✓" : "")).join(" "),
+    링크: [...document.querySelectorAll('[data-testid="watchlist-panel"] a')].slice(0, 4).map((a) => a.getAttribute("href")),
+  }));
+  console.log(`[${label}] 와치리스트: ${JSON.stringify(diag)}`);
   const link = p.locator('[data-testid="watchlist-panel"] a[href^="/peek/"]').first();
   const href = await link.getAttribute("href");
   const t0 = Date.now();
