@@ -79,6 +79,12 @@ export default async function handler(req, res) {
       const q = req.query || {};
       if (q.probe) return res.status(200).json({ ok: true });
       if (q.rev) return res.status(200).json({ ok: true, rev: await revTime() });
+      if (q.get) { // 한 항목만 (첨부파일 열 때)
+        const key = String(q.get);
+        if (!KEY_RE.test(key)) return res.status(400).json({ ok: false, error: 'bad-key' });
+        const value = await readText(pathOf(key));
+        return res.status(200).json({ ok: true, key, value: value || '' });
+      }
       const since = Number(q.since || 0) || 0;
       const exclude = String(q.exclude || '').split(',').filter(Boolean); // 예: 목공실 화면은 구매스펙 사진 제외
       const only = String(q.only || '').split(',').filter(Boolean); // 예: 구매스펙 화면은 구매스펙 값만

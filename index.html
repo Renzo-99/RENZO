@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>목공실 관리</title>
-<script>window.__WS3_SYNC_EXCLUDE='pphoto_,pstamp,purchase_';</script>
+<script>window.__WS3_SYNC_EXCLUDE='pphoto_,pstamp,purchase_,patt_';</script>
 <script src="sync.js"></script>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -2005,13 +2005,24 @@ function openBackupManager(){
   showModal(h);
 }
 
-function exportData(){
+async function exportData(){
+  let plansFull=plans;
+  if(plans.some(p=>(p.attachments||[]).some(a=>!a.data&&a.aid))){
+    toast('첨부파일까지 모으는 중…');
+    plansFull=[];
+    for(const p of plans){
+      if(!p.attachments||!p.attachments.length){plansFull.push(p);continue;}
+      const atts=[];
+      for(const a of p.attachments){let d=a.data;if(!d&&a.aid){try{d=await getAttData(a);}catch(e){}}atts.push(d?{name:a.name,type:a.type,size:a.size,data:d}:{name:a.name,type:a.type,size:a.size});}
+      plansFull.push(Object.assign({},p,{attachments:atts}));
+    }
+  }
   const allWeeks={};
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
     if(k.startsWith('ws3_week_'))allWeeks[k]=JSON.parse(localStorage.getItem(k));
   }
-  const data={version:9,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans,rooms,leaves,repairs,weeks:allWeeks};
+  const data={version:9,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans:plansFull,rooms,leaves,repairs,weeks:allWeeks};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -2039,7 +2050,7 @@ function importData(event){
       if(data.history){history=data.history;saveHistory();}
       if(data.holidays){holidays=data.holidays;saveHolidays();}
       if(data.buildings){buildings=data.buildings;saveBuildings();}
-      if(data.plans){plans=data.plans;savePlans();}
+      if(data.plans){plans=data.plans;savePlans();setTimeout(migratePlanAttachments,300);}
       if(data.rooms){rooms=data.rooms;saveRooms();}
       if(data.leaves){leaves=data.leaves;saveLeaves();}
       if(data.repairs){repairs=data.repairs;saveRepairs();}
@@ -2384,8 +2395,91 @@ function togglePlanRange(){
 }
 
 // === 작업예정 첨부파일 ===
+// 사진은 자동으로 줄여 저장(긴 변 1600px), 그 외 파일은 2MB까지.
+// 공유 저장 사이트에서는 파일 본문을 작업 예정 목록과 따로 서버에 저장(patt_<id>)하고 열 때만 받아옴.
 let _pendingPlanFiles=[];
-const PLAN_MAX_FILE=2*1024*1024;
+const PLAN_MAX_FILE=2*1024*1024;      // 문서 등 줄일 수 없는 파일 한도
+const PLAN_MAX_IMAGE_IN=25*1024*1024; // 사진 원본 한도 (줄여서 저장)
+const _attCache={};
+function readFileAsDataURL(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});}
+function dataUrlBytes(d){const i=d.indexOf(',');return Math.floor((d.length-i-1)*3/4);}
+function loadImg(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=src;});}
+// 파일 → {name,type,size,data} (사진은 줄여서)
+async function prepareAttachment(f){
+  const isImg=/^image\/(jpeg|png|webp|bmp|heic|heif)$/i.test(f.type||'')||/\.(jpe?g|png|webp|bmp)$/i.test(f.name);
+  if(isImg){
+    if(f.size>PLAN_MAX_IMAGE_IN)throw new Error('"'+f.name+'" 사진이 너무 큽니다 ('+formatAttSize(f.size)+')');
+    const orig=await readFileAsDataURL(f);
+    try{
+      const im=await loadImg(orig);
+      for(const [side,q] of [[1600,0.82],[1280,0.75],[1024,0.7]]){
+        const sc=Math.min(1,side/Math.max(im.naturalWidth||im.width,im.naturalHeight||im.height));
+        const w=Math.max(1,Math.round((im.naturalWidth||im.width)*sc)),h=Math.max(1,Math.round((im.naturalHeight||im.height)*sc));
+        const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d');
+        cx.fillStyle='#fff';cx.fillRect(0,0,w,h);cx.drawImage(im,0,0,w,h);
+        const d=cv.toDataURL('image/jpeg',q);
+        if(dataUrlBytes(d)<=PLAN_MAX_FILE){
+          if(f.size<=PLAN_MAX_FILE&&dataUrlBytes(d)>=f.size)return{name:f.name,type:f.type,size:f.size,data:orig}; // 이미 작으면 원본
+          return{name:f.name.replace(/\.[^.]+$/,'')+'.jpg',type:'image/jpeg',size:dataUrlBytes(d),data:d,orig:f.size};
+        }
+      }
+    }catch(e){}
+    if(f.size<=PLAN_MAX_FILE)return{name:f.name,type:f.type,size:f.size,data:orig};
+    throw new Error('"'+f.name+'" 사진을 줄이지 못했습니다');
+  }
+  if(f.size>PLAN_MAX_FILE)throw new Error('"'+f.name+'" 은(는) 2MB를 초과합니다 ('+formatAttSize(f.size)+')');
+  return{name:f.name,type:f.type||'application/octet-stream',size:f.size,data:await readFileAsDataURL(f)};
+}
+async function prepareAttachments(files){
+  const out=[];let saved=0;
+  for(const f of Array.from(files)){
+    try{const a=await prepareAttachment(f);if(a.orig)saved+=a.orig-a.size;delete a.orig;out.push(a);}
+    catch(e){toast(e.message);}
+  }
+  if(saved>100*1024)toast('사진을 줄여 '+formatAttSize(saved)+' 아꼈습니다');
+  return out;
+}
+function attSharedOn(){return !!(window.ws3Sync&&window.ws3Sync.enabled);}
+function newAttId(){return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+async function uploadAttData(aid,data){
+  const r=await fetch('/api/sync',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{key:'patt_'+aid,value:data}]})});
+  const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw new Error(j.error||('HTTP '+r.status));
+  _attCache[aid]=data;
+}
+// 첨부 목록 정리: 공유 사이트면 본문을 서버로 올리고 목록엔 이름·크기만 남김
+async function storeAttachments(list){
+  if(!list||!list.length||!attSharedOn())return list;
+  const out=[];
+  for(const a of list){
+    if(!a.data){out.push(a);continue;}
+    try{const aid=a.aid||newAttId();await uploadAttData(aid,a.data);out.push({aid,name:a.name,type:a.type,size:a.size});}
+    catch(e){toast('⚠ "'+a.name+'" 올리기 실패 — 이 기기에만 저장됨');out.push(a);}
+  }
+  return out;
+}
+async function getAttData(att){
+  if(att.data)return att.data;
+  if(!att.aid)return null;
+  if(_attCache[att.aid])return _attCache[att.aid];
+  const r=await fetch('/api/sync?get='+encodeURIComponent('patt_'+att.aid),{cache:'no-store'});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok||!j.ok||!j.value)return null;
+  _attCache[att.aid]=j.value;return j.value;
+}
+// 예전 방식(본문이 목록 안에 있는 첨부)을 서버로 옮김
+let _attMigrating=false;
+async function migratePlanAttachments(){
+  if(_attMigrating||!attSharedOn())return;
+  const todo=plans.filter(p=>(p.attachments||[]).some(a=>a.data));
+  if(!todo.length)return;
+  _attMigrating=true;
+  try{
+    let n=0;
+    for(const p of todo){const before=p.attachments.filter(a=>a.data).length;p.attachments=await storeAttachments(p.attachments);n+=before-p.attachments.filter(a=>a.data).length;}
+    if(n){savePlans();if(currentTab==='plan')renderPlanList();console.log('[첨부] 서버로 옮김',n);}
+  }finally{_attMigrating=false;}
+}
+window.addEventListener('ws3-remote',()=>{setTimeout(migratePlanAttachments,500);});
 
 function formatAttSize(b){
   if(b<1024)return b+'B';
@@ -2393,21 +2487,11 @@ function formatAttSize(b){
   return (b/1048576).toFixed(1)+'MB';
 }
 
-function handlePlanFileSelect(input){
-  if(!input.files)return;
-  const total=input.files.length;
-  let loaded=0;
-  Array.from(input.files).forEach(f=>{
-    if(f.size>PLAN_MAX_FILE){toast('"'+f.name+'" 은(는) 2MB를 초과합니다 ('+formatAttSize(f.size)+')');loaded++;return;}
-    const reader=new FileReader();
-    reader.onload=()=>{
-      _pendingPlanFiles.push({name:f.name,type:f.type,size:f.size,data:reader.result});
-      loaded++;
-      if(loaded>=total)renderPlanFilePreview();
-    };
-    reader.readAsDataURL(f);
-  });
-  input.value='';
+async function handlePlanFileSelect(input){
+  if(!input.files||!input.files.length)return;
+  const files=Array.from(input.files);input.value='';
+  const list=await prepareAttachments(files);
+  _pendingPlanFiles.push(...list);renderPlanFilePreview();
 }
 
 function renderPlanFilePreview(){
@@ -2432,43 +2516,39 @@ function removePendingFile(i){
   renderPlanFilePreview();
 }
 
-function previewPlanAtt(pid,ai){
+async function previewPlanAtt(pid,ai){
   const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p||!p.attachments||!p.attachments[ai])return;
   const att=p.attachments[ai];
-  if(att.type.startsWith('image/')){
-    const w=window.open('');
-    if(w){w.document.write('<title>'+esc(att.name)+'</title><img src="'+att.data+'" style="max-width:100%;height:auto">');w.document.close();}
-  }else{
-    const a=document.createElement('a');a.href=att.data;a.download=att.name;a.click();
-  }
+  const isImg=(att.type||'').startsWith('image/');
+  const w=isImg?window.open(''):null; // 팝업 차단 방지: 클릭 직후 창부터 염
+  if(w)w.document.write('<title>'+esc(att.name)+'</title><p style="font-family:sans-serif;color:#888">불러오는 중…</p>');
+  let data=null;
+  try{data=await getAttData(att);}catch(e){}
+  if(!data){if(w)w.close();toast('첨부파일을 불러오지 못했습니다 (올린 사람이 아직 업로드 중일 수 있습니다)');return;}
+  if(w){w.document.body.innerHTML='<img src="'+data+'" style="max-width:100%;height:auto">';w.document.close();}
+  else{const a=document.createElement('a');a.href=data;a.download=att.name;document.body.appendChild(a);a.click();a.remove();}
 }
 
 function removePlanAtt(pid,ai){
   const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p||!p.attachments)return;
-  p.attachments.splice(ai,1);
+  const [gone]=p.attachments.splice(ai,1);
+  if(gone&&gone.aid&&attSharedOn())fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{key:'patt_'+gone.aid,value:''}]})}).catch(()=>{});
   if(!p.attachments.length)delete p.attachments;
   savePlans();renderPlanList();
   toast('첨부파일이 삭제되었습니다');
 }
 
 function planAttachFile(pid,droppedFiles){
-  function doAttach(files){
-    const p=plans.find(x=>Number(x.id)===Number(pid));
-    if(!p)return;
+  async function doAttach(files){
+    if(!plans.find(x=>Number(x.id)===Number(pid)))return;
+    const list=await storeAttachments(await prepareAttachments(files));
+    if(!list.length)return;
+    const p=plans.find(x=>Number(x.id)===Number(pid));if(!p)return;
     if(!p.attachments)p.attachments=[];
-    let added=0;const total=files.length;
-    Array.from(files).forEach(f=>{
-      if(f.size>PLAN_MAX_FILE){toast('"'+f.name+'" 은(는) 2MB를 초과합니다');added++;return;}
-      const reader=new FileReader();
-      reader.onload=()=>{
-        p.attachments.push({name:f.name,type:f.type,size:f.size,data:reader.result});
-        added++;
-        if(added>=total){savePlans();renderPlanList();toast(added+'개 파일이 첨부되었습니다');}
-      };
-      reader.readAsDataURL(f);
-    });
+    p.attachments.push(...list);
+    savePlans();renderPlanList();toast(list.length+'개 파일이 첨부되었습니다');
   }
   if(droppedFiles){doAttach(droppedFiles);return;}
   const inp=document.createElement('input');
@@ -2493,19 +2573,9 @@ function initPlanDropZone(){
   });
 }
 
-function processPlanDropFiles(files){
-  const total=files.length;
-  let loaded=0;
-  Array.from(files).forEach(f=>{
-    if(f.size>PLAN_MAX_FILE){toast('"'+f.name+'" 은(는) 2MB를 초과합니다 ('+formatAttSize(f.size)+')');loaded++;return;}
-    const reader=new FileReader();
-    reader.onload=()=>{
-      _pendingPlanFiles.push({name:f.name,type:f.type,size:f.size,data:reader.result});
-      loaded++;
-      if(loaded>=total)renderPlanFilePreview();
-    };
-    reader.readAsDataURL(f);
-  });
+async function processPlanDropFiles(files){
+  const list=await prepareAttachments(files);
+  _pendingPlanFiles.push(...list);renderPlanFilePreview();
 }
 
 function initPlanListDrop(){
@@ -2559,7 +2629,7 @@ function openPlanForm(pid){
   h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)" onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
   h+='<div id="planDropZone" style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--gray-500);border:2px dashed var(--gray-300);border-radius:8px;padding:14px 10px;cursor:pointer;margin-top:4px;margin-bottom:12px;transition:all .2s" onclick="document.getElementById(\'planFileInput\').click()">';
   h+='<span style="font-size:20px">📎</span>';
-  h+='<span>파일을 드래그하거나 클릭하여 첨부 (최대 2MB/파일)</span>';
+  h+='<span>파일을 드래그하거나 클릭하여 첨부 (사진은 자동으로 줄여 저장 · 문서는 2MB까지)</span>';
   h+='</div>';
   h+='<input type="file" id="planFileInput" multiple style="display:none" onchange="handlePlanFileSelect(this)">';
   h+='<div id="planFilePreview" class="plan-file-preview"></div>';
@@ -2586,10 +2656,17 @@ function savePlan(pid){
   if(rangeOn&&!dateEnd){toast('종료일을 선택하세요');return;}
   if(rangeOn&&dateEnd<date){toast('종료일이 시작일보다 앞설 수 없습니다');return;}
 
-  const atts=_pendingPlanFiles.length?_pendingPlanFiles.slice():undefined;
+  if(_pendingPlanFiles.some(a=>a.data)&&attSharedOn())toast('첨부파일 올리는 중…');
+  const okBtn=document.querySelector('#modalRoot .btn-blue');if(okBtn)okBtn.disabled=true;
+  storeAttachments(_pendingPlanFiles.slice()).then(stored=>{
+  const atts=stored.length?stored:undefined;
   if(pid){
     const p=plans.find(x=>Number(x.id)===Number(pid));
-    if(p){p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;p.attachments=atts;}
+    if(p){
+      const keep=new Set((atts||[]).map(x=>x.aid).filter(Boolean));
+      (p.attachments||[]).forEach(x=>{if(x.aid&&!keep.has(x.aid)&&attSharedOn())fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{key:'patt_'+x.aid,value:''}]})}).catch(()=>{});});
+      p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;p.attachments=atts;
+    }
     toast('예정 작업이 수정되었습니다');
   }else{
     const planMaxId=plans.reduce((mx,x)=>Math.max(mx,Number(x.id)||0),0);
@@ -2600,6 +2677,7 @@ function savePlan(pid){
   }
   _pendingPlanFiles=[];
   savePlans();closeModal();renderPlanList();
+  });
 }
 
 function togglePlan(pid){
