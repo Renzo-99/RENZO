@@ -8,7 +8,7 @@
 (function () {
   'use strict';
   var API = '/api/sync';
-  var LOCAL_ONLY = /^ws3_(backups|lastModified|script_url|sb_url|sb_key|autoSync|plan_reminder_ack|purchase_setHidden|test_.*)$/;
+  var LOCAL_ONLY = /^ws3_(backups|lastModified|script_url|sb_url|sb_key|autoSync|plan_reminder_ack|purchase_setHidden|test_.*|sync_.*)$/;
   var EXTRA_PREFIX = ['pphoto_', 'pstamp']; // localStorage에 넣지 않는 큰 값(구매스펙 사진·도장)
   var host = location.hostname || '';
   // 공유 모드: Vercel 주소(또는 직접 연결한 도메인). GitHub Pages·파일·로컬 테스트 서버는 제외
@@ -107,11 +107,18 @@
     };
   }
 
+  var PEND_KEY = 'ws3_sync_pend' + (only ? '_p' : ''); // 화면별 (목공실 / 구매스펙)
+  function savePend() {
+    if (!shared) return;
+    var o = {};
+    Object.keys(S.pending).forEach(function (k) { if (!isExtra(k)) o[k] = hasOwn(S.writeBase, k) ? (S.writeBase[k] == null ? null : S.writeBase[k]) : null; });
+    try { if (Object.keys(o).length) origSet.call(ls, PEND_KEY, JSON.stringify(o)); else origRemove.call(ls, PEND_KEY); } catch (e) {}
+  }
   function queue(key, value) {
     if (!shared) return;
     if (!S.ready) { S.pre[key] = value; return; }
     if (!S.enabled) return;
-    S.pending[key] = value;
+    S.pending[key] = value; savePend();
     clearTimeout(S.flushT); S.flushT = setTimeout(flush, 1000);
     setStatus('saving');
   }
@@ -167,6 +174,7 @@
         else if (Object.prototype.hasOwnProperty.call(S.pending, it.key)) S.writeBase[it.key] = it.orig != null ? it.orig : it.value; // 올리는 사이 화면이 또 고침 → 기준은 화면이 그때 가진 값
       });
       if (j.rev) S.knownOwnRev = j.rev;
+      savePend(); S.lastPush = Date.now();
       if (Object.keys(S.pending).length) flush(); else setStatus('ok');
     }).catch(function (e) {
       S.inflight = false;
@@ -214,7 +222,11 @@
     if (S.polling) return next();
     S.polling = true;
     req('GET', API + '?rev=1', null, 10000).then(function (j) {
-      if (!j.rev || j.rev <= S.rev) return null;
+      S.lastPoll = Date.now();
+      var force = !S.lastFull || Date.now() - S.lastFull > 20000; // 변경 시각이 늦게 갱신돼도 놓치지 않게
+      if ((!j.rev || j.rev <= S.rev) && !force) return null;
+      S.lastFull = Date.now();
+      if (force && !(j.rev > S.rev)) return pullFrom(Math.max(0, S.cursor - 120000), false).then(function (acc) { applyItems(acc.items, false); });
       // 저장소 목록 반영 지연 대비: 마지막으로 본 시각보다 30초 앞부터 다시 확인 (같은 값은 건너뜀)
       return pullFrom(Math.max(0, S.cursor - 30000), false).then(function (acc) { applyItems(acc.items, false); S.rev = Math.max(acc.rev || 0, j.rev); });
     }).then(function () {
@@ -233,7 +245,30 @@
       var serverKeys = {};
       acc.items.forEach(function (it) { serverKeys[it.key] = true; });
       S.serverEmpty = !acc.items.some(function (it) { return !isExtra(it.key); });
-      applyItems(acc.items, true);
+      var serverVal = {};
+      acc.items.forEach(function (it) { serverVal[it.key] = it.value; });
+      // 지난번에 못 올린 변경 (창을 바로 닫은 경우 등)
+      var pend = null; try { pend = JSON.parse(origGet.call(ls, PEND_KEY) || 'null'); } catch (e) {}
+      var carry = {};
+      if (pend) Object.keys(pend).forEach(function (k) {
+        if (excluded(k)) return;
+        var lv = origGet.call(ls, 'ws3_' + k);
+        if (lv === null) return;
+        if (pend[k] == null ? lv !== serverVal[k] : lv !== pend[k]) { carry[k] = lv; S.writeBase[k] = pend[k] == null ? undefined : pend[k]; }
+      });
+      // 공유 저장을 처음 쓰는 기기: 이 기기에만 있던 캘린더·작업 등은 서버 내용과 합쳐서 올림 (재고·입출고는 서버 우선)
+      var firstTime = !origGet.call(ls, 'ws3_sync_seen');
+      if (firstTime) {
+        Object.keys(serverVal).forEach(function (k) {
+          if (carry[k] != null || excluded(k) || isExtra(k) || !/^(leaves|holidays|plans|repairs|rooms|buildings|week_\d+_\d+)$/.test(k)) return;
+          var lv = origGet.call(ls, 'ws3_' + k);
+          if (lv !== null && lv !== serverVal[k] && serverVal[k] !== '') { carry[k] = lv; S.writeBase[k] = undefined; }
+        });
+      }
+      applyItems(acc.items.filter(function (it) { return carry[it.key] == null; }), true);
+      Object.keys(carry).forEach(function (k) { S.pending[k] = carry[k]; S.base[k] = serverVal[k]; });
+      if (Object.keys(carry).length) console.log('[공유 저장] 이 기기에만 있던 변경 이어서 올림:', Object.keys(carry).join(','));
+      try { origSet.call(ls, 'ws3_sync_seen', '1'); } catch (e) {}
       S.rev = acc.rev || 0;
       S.ready = true;
       // 시작 전에 화면이 저장한 값: 서버에 이미 있으면 서버 값 우선, 없을 때만 올림
@@ -244,7 +279,9 @@
         var k = ls.key(i);
         if (syncable(k) && !excluded(k.slice(4)) && !serverKeys[k.slice(4)] && !Object.prototype.hasOwnProperty.call(S.pending, k.slice(4))) S.pending[k.slice(4)] = ls.getItem(k);
       }
+      savePend();
       if (Object.keys(S.pending).length) flush(); else setStatus('ok');
+      S.lastFull = Date.now();
       S.pollT = setTimeout(poll, 4000);
       document.addEventListener('visibilitychange', function () { if (!document.hidden) { clearTimeout(S.pollT); poll(); } });
       window.addEventListener('beforeunload', function (e) { if (Object.keys(S.pending).length) { flush(); e.preventDefault(); e.returnValue = ''; } });
@@ -272,12 +309,57 @@
       if (!document.body) { document.addEventListener('DOMContentLoaded', function () { setStatus(S.status); }); return; }
       badge = document.createElement('div');
       badge.id = 'ws3SyncBadge';
-      badge.style.cssText = 'position:fixed;left:10px;z-index:9990;font:600 11px/1 Pretendard,-apple-system,"Malgun Gothic",sans-serif;padding:6px 10px;border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.15);pointer-events:none;transition:opacity .3s';
+      badge.style.cssText = 'position:fixed;left:10px;z-index:9990;font:600 11px/1 Pretendard,-apple-system,"Malgun Gothic",sans-serif;padding:6px 10px;border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer;transition:opacity .3s';
+      badge.title = '눌러서 공유 상태 보기';
+      badge.onclick = openDiag;
       document.body.appendChild(badge);
     }
     badge.style.bottom = document.getElementById('sumBar') ? '62px' : '10px';
     var m = { ok: ['☁ 공유 저장됨', '#ecfdf5', '#047857'], saving: ['⟳ 공유 저장 중…', '#eff6ff', '#1d4ed8'], error: ['⚠ 연결 끊김 — 다시 시도 중 (이 기기엔 저장됨)', '#fff7ed', '#c2410c'], off: ['⚠ 공유 저장 꺼짐 — 이 기기에만 저장', '#fef2f2', '#b91c1c'] }[s] || ['', '#fff', '#000'];
     badge.textContent = m[0]; badge.style.background = m[1]; badge.style.color = m[2];
+  }
+
+  // ── 공유 상태 창 (배지를 누르면): 이 기기와 서버의 상태를 비교해 문제를 바로 확인
+  function fmtT(t) { if (!t) return '-'; var d = new Date(t); return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ':' + String(d.getSeconds()).padStart(2, '0'); }
+  function ago(t) { if (!t) return '없음'; var s = Math.round((Date.now() - t) / 1000); return s < 60 ? s + '초 전' : Math.round(s / 60) + '분 전'; }
+  function openDiag() {
+    var old = document.getElementById('ws3Diag'); if (old) { old.remove(); return; }
+    var box = document.createElement('div'); box.id = 'ws3Diag';
+    box.style.cssText = 'position:fixed;left:10px;bottom:' + (document.getElementById('sumBar') ? '96px' : '44px') + ';z-index:9991;width:min(430px,94vw);max-height:70vh;overflow:auto;background:#fff;border:1px solid #d1d6db;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.18);font:12px/1.55 Pretendard,-apple-system,"Malgun Gothic",sans-serif;color:#333;padding:12px 14px';
+    box.innerHTML = '<b style="font-size:13px">☁ 공유 상태</b> <span style="color:#888">확인 중…</span>';
+    document.body.appendChild(box);
+    var lines = [
+      '주소: ' + location.host + (shared ? '' : ' <b style="color:#b91c1c">(공유 저장 안 되는 주소)</b>'),
+      '상태: <b>' + ({ ok: '공유 저장됨', saving: '저장 중', error: '연결 끊김', off: '꺼짐' }[S.status] || S.status) + '</b>',
+      '못 올린 변경: ' + (Object.keys(S.pending).length ? '<b style="color:#c2410c">' + Object.keys(S.pending).join(', ') + '</b>' : '없음'),
+      '마지막 확인: ' + ago(S.lastPoll) + ' · 마지막 올림: ' + ago(S.lastPush)
+    ];
+    var render = function (extra) {
+      box.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><b style="font-size:13px">☁ 공유 상태</b><span style="flex:1"></span>' +
+        '<button id="ws3DiagSync" style="border:1px solid #3182f6;background:#3182f6;color:#fff;border-radius:6px;padding:3px 9px;cursor:pointer;font-size:12px">지금 다시 맞추기</button>' +
+        '<button id="ws3DiagClose" style="border:1px solid #d1d6db;background:#fff;border-radius:6px;padding:3px 8px;cursor:pointer">✕</button></div>' + lines.join('<br>') + (extra || '');
+      document.getElementById('ws3DiagClose').onclick = function () { box.remove(); };
+      document.getElementById('ws3DiagSync').onclick = function () { this.disabled = true; this.textContent = '맞추는 중…'; resync().then(function () { box.remove(); openDiag(); }); };
+    };
+    render();
+    if (!S.enabled) return;
+    req('GET', API + '?diag=1', null, 15000).then(function (j) {
+      var rows = (j.keys || []).filter(function (k) { return !isExtra(k.key) && !excluded(k.key); }).sort(function (a, b) { return b.t - a.t; });
+      var diff = 0;
+      var tr = rows.slice(0, 40).map(function (k) {
+        var lv = origGet.call(ls, 'ws3_' + k.key);
+        var st = lv === null ? (k.size ? '<span style="color:#b91c1c">이 기기에 없음</span>' : '') : (S.base[k.key] !== undefined && lv !== S.base[k.key] && !hasOwn(S.pending, k.key) ? '<span style="color:#c2410c">다름</span>' : (hasOwn(S.pending, k.key) ? '<span style="color:#c2410c">올리는 중</span>' : '✓'));
+        if (st && st !== '✓') diff++;
+        return '<tr><td>' + k.key + '</td><td>' + fmtT(k.t) + '</td><td style="text-align:right">' + Math.round(k.size / 102.4) / 10 + 'KB</td><td>' + st + '</td></tr>';
+      }).join('');
+      render('<div style="margin-top:8px;color:#666">서버에 저장된 항목 ' + rows.length + '개' + (diff ? ' · <b style="color:#c2410c">맞지 않는 항목 ' + diff + '개 → 「지금 다시 맞추기」</b>' : ' · 이 기기와 모두 일치') + '</div>' +
+        '<table style="width:100%;border-collapse:collapse;margin-top:4px;font-size:11px"><tr style="color:#888;text-align:left"><th>항목</th><th>서버 저장 시각</th><th>크기</th><th>이 기기</th></tr>' + tr + '</table>');
+    }).catch(function (e) { render('<div style="margin-top:8px;color:#b91c1c">서버 확인 실패: ' + (e && e.message) + '</div>'); });
+  }
+  // 처음부터 다시 받아 맞추기 (못 올린 변경은 먼저 올림)
+  function resync() {
+    var p = Object.keys(S.pending).length ? new Promise(function (r) { flush(); var t = setInterval(function () { if (!S.inflight && !Object.keys(S.pending).length) { clearInterval(t); r(); } }, 300); setTimeout(function () { clearInterval(t); r(); }, 15000); }) : Promise.resolve();
+    return p.then(function () { return pullFrom(0, false); }).then(function (acc) { applyItems(acc.items, false); S.rev = Math.max(S.rev, acc.rev || 0); S.lastFull = Date.now(); setStatus(Object.keys(S.pending).length ? 'saving' : 'ok'); }).catch(function () { setStatus('error'); });
   }
 
   window.ws3Sync = {
@@ -290,6 +372,8 @@
     put: function (key, value) { if (syncable('ws3_' + key) && !excluded(key)) queue(key, value == null ? '' : String(value)); },
     on: function (prefix, fn) { S.listeners.push({ prefix: prefix, fn: fn }); },
     flushNow: flush,
+    resync: resync,
+    openDiag: openDiag,
     pollNow: function () { clearTimeout(S.pollT); poll(); },
     // 화면이 이 값을 불러와 화면 상태로 삼았다고 알림 (입력 중이라 새 값 반영을 미뤄둔 경우의 합치기 기준)
     markLoaded: function (lsKey) { if (shared && syncable(lsKey)) { var v = origGet.call(ls, lsKey); S.loaded[lsKey.slice(4)] = v === null ? undefined : v; } },

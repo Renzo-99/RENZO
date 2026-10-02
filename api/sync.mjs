@@ -87,6 +87,10 @@ export default async function handler(req, res) {
       const q = req.query || {};
       if (q.probe) return res.status(200).json({ ok: true });
       if (q.rev) return res.status(200).json({ ok: true, rev: await revTime() });
+      if (q.diag) { // 상태 확인용: 키·시각·크기만 (내용 없음)
+        const blobs = (await listAll()).map(b => ({ key: keyOf(b.pathname), t: new Date(b.uploadedAt).getTime(), size: b.size })).filter(b => !b.key.startsWith('patt_'));
+        return res.status(200).json({ ok: true, rev: await revTime(), now: Date.now(), keys: blobs });
+      }
       if (q.get) { // 한 항목만 (첨부파일 열 때)
         const key = String(q.get);
         if (!KEY_RE.test(key)) return res.status(400).json({ ok: false, error: 'bad-key' });
