@@ -5,14 +5,21 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const store = new Map(); let clock = Date.now();
+class BlobPreconditionFailedError extends Error { constructor() { super('Precondition failed'); this.name = 'BlobPreconditionFailedError'; } }
+let etagN = 0;
 const blobMock = {
-  async put(p, data) { clock = Math.max(clock + 1, Date.now()); store.set(p, { data: String(data), t: clock }); return { pathname: p }; },
+  BlobPreconditionFailedError,
+  async put(p, data, opt = {}) {
+    const cur = store.get(p);
+    if (opt.ifMatch && (!cur || cur.etag !== opt.ifMatch)) throw new BlobPreconditionFailedError();
+    clock = Math.max(clock + 1, Date.now()); store.set(p, { data: String(data), t: clock, etag: '"e' + (++etagN) + '"' }); return { pathname: p };
+  },
   async list({ prefix = '' } = {}) { return { blobs: [...store].filter(([p]) => p.startsWith(prefix)).map(([p, v]) => ({ pathname: p, size: Buffer.byteLength(v.data), uploadedAt: new Date(v.t) })), hasMore: false }; },
-  async get(p) { const v = store.get(p); if (!v) return null; return { stream: new Blob([v.data]).stream() }; },
+  async get(p) { const v = store.get(p); if (!v) return null; return { stream: new Blob([v.data]).stream(), blob: { etag: v.etag } }; },
   async head(p) { const v = store.get(p); if (!v) throw new Error('not found'); return { uploadedAt: new Date(v.t), size: v.data.length, pathname: p }; },
 };
 globalThis.__blobMock = blobMock;
-const src = fs.readFileSync(path.join(ROOT, 'api/sync.mjs'), 'utf8').replace(/import \{[^}]+\} from '\.\/_lib\/blob\.mjs';/, 'const { put, list, get, head } = globalThis.__blobMock;');
+const src = fs.readFileSync(path.join(ROOT, 'api/sync.mjs'), 'utf8').replace(/import \{[^}]+\} from '\.\/_lib\/blob\.mjs';/, 'const { put, list, get, head, BlobPreconditionFailedError } = globalThis.__blobMock;');
 const tmp = path.join(ROOT, 'tests/sync/.handler.mjs'); fs.writeFileSync(tmp, src);
 const { default: handler } = await import(pathToFileURL(tmp).href);
 process.env.BLOB_READ_WRITE_TOKEN = 'test';

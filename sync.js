@@ -18,8 +18,68 @@
 
   var ls = window.localStorage;
   var proto = Object.getPrototypeOf(ls);
-  var origSet = proto.setItem, origRemove = proto.removeItem;
-  var S = { enabled: false, ready: false, pending: {}, pre: {}, cursor: 0, rev: 0, status: 'off', listeners: [], inflight: false, applying: false, lastOk: 0 };
+  var origSet = proto.setItem, origRemove = proto.removeItem, origGet = proto.getItem;
+  var S = { enabled: false, ready: false, pending: {}, pre: {}, base: {}, loaded: {}, writeBase: {}, cursor: 0, rev: 0, status: 'off', listeners: [], inflight: false, applying: false, lastOk: 0 };
+
+  // ── 3방향 합치기: 마지막으로 맞춘 값(base) / 내 값(mine) / 서버 최신 값(theirs)
+  // 서로 추가한 건 둘 다 남기고, 한쪽만 바꾼 건 바꾼 쪽, 둘 다 같은 걸 다르게 바꾸면 내 값.
+  function same(a, b) { return a === b || JSON.stringify(a) === JSON.stringify(b); }
+  function isObj(v) { return v && typeof v === 'object' && !Array.isArray(v); }
+  function idOf(e) {
+    if (!isObj(e)) return 'v:' + JSON.stringify(e);
+    if (e.id != null) return 'id:' + e.id;
+    if (e.aid != null) return 'aid:' + e.aid;
+    if (e.dn != null && e.dt != null) return 'day:' + e.dn + '|' + e.dt; // 주간 보고서의 요일
+    return 'v:' + JSON.stringify(e);
+  }
+  function maxNumId(arr) { var m = 0; arr.forEach(function (e) { if (isObj(e) && typeof e.id === 'number' && e.id > m) m = e.id; }); return m; }
+  function merge3(b, m, t) {
+    if (same(m, t)) return m;
+    if (same(b, m)) return t;
+    if (same(b, t)) return m;
+    if (Array.isArray(m) && Array.isArray(t)) return mergeArr(Array.isArray(b) ? b : [], m, t);
+    if (isObj(m) && isObj(t)) {
+      var bb = isObj(b) ? b : {}, out = {}, keys = {};
+      Object.keys(t).concat(Object.keys(m)).forEach(function (k) { keys[k] = 1; });
+      Object.keys(keys).forEach(function (k) {
+        var inM = k in m, inT = k in t, inB = k in bb;
+        if (k === 'nextId' && typeof m[k] === 'number' && typeof t[k] === 'number') { out[k] = Math.max(m[k], t[k]); return; }
+        if (inM && inT) { out[k] = merge3(bb[k], m[k], t[k]); return; }
+        if (inM) { if (!inB || !same(bb[k], m[k])) out[k] = m[k]; return; }       // 서버에서 지웠어도 내가 바꿨으면 유지
+        if (inT) { if (!inB || !same(bb[k], t[k])) out[k] = t[k]; return; }       // 내가 지웠으면 지움(서버가 안 바꿨을 때)
+      });
+      return out;
+    }
+    return m;
+  }
+  function mergeArr(b, m, t) {
+    var B = {}, M = {}, T = {};
+    b.forEach(function (e) { B[idOf(e)] = e; }); m.forEach(function (e) { M[idOf(e)] = e; }); t.forEach(function (e) { T[idOf(e)] = e; });
+    var out = [], seen = {}, extra = [];
+    t.forEach(function (e) {
+      var k = idOf(e); if (seen[k]) return; seen[k] = 1;
+      if (k in M) {
+        if (!(k in B) && !same(M[k], e) && isObj(e) && e.id != null) { out.push(e); extra.push(M[k]); return; } // 같은 번호로 서로 다른 걸 추가 → 둘 다 남김
+        out.push(merge3(B[k], M[k], e)); return;
+      }
+      if (k in B) { if (!same(B[k], e)) out.push(e); return; } // 내가 지움 — 서버가 그사이 바꿨으면 남김
+      out.push(e);                                              // 서버에 새로 생김
+    });
+    m.forEach(function (e) {
+      var k = idOf(e); if (seen[k]) return; seen[k] = 1;
+      if (k in B) { if (!same(B[k], e)) out.push(e); return; } // 서버에서 지움 — 내가 바꿨으면 남김
+      out.push(e);                                              // 내가 새로 추가
+    });
+    if (extra.length) { var n = maxNumId(out); extra.forEach(function (e) { var c = JSON.parse(JSON.stringify(e)); if (typeof c.id === 'number') c.id = ++n; else c.id = String(c.id) + '_' + Math.random().toString(36).slice(2, 6); out.push(c); }); }
+    return out;
+  }
+  function mergeText(base, mine, theirs) {
+    try {
+      var b = base ? JSON.parse(base) : undefined, m = JSON.parse(mine), t = JSON.parse(theirs);
+      return JSON.stringify(merge3(b, m, t));
+    } catch (e) { return mine; } // JSON이 아니면 내 값
+  }
+  window.__ws3Merge = merge3;
   var exclude = window.__WS3_SYNC_EXCLUDE || '';
   var only = window.__WS3_SYNC_ONLY || ''; // 이 화면이 맡는 값만 (구매스펙 화면: purchase_,pphoto_,pstamp)
   var excludeList = exclude.split(',').filter(Boolean), onlyList = only.split(',').filter(Boolean);
@@ -29,14 +89,21 @@
   function isExtra(k) { for (var i = 0; i < EXTRA_PREFIX.length; i++) if (k.indexOf(EXTRA_PREFIX[i]) === 0) return true; return false; }
   function syncable(k) { return typeof k === 'string' && k.indexOf('ws3_') === 0 && !LOCAL_ONLY.test(k); }
 
+  // 합치기 기준: 화면이 실제로 불러온 값(markLoaded로 알려줌), 없으면 마지막으로 맞춘 값
+  // → 화면이 옛 상태를 바탕으로 저장해도, 그 사이 남이 넣은 건 지우지 않고 합침
+  function hasOwn(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  function noteWrite(key, v) {
+    if (!hasOwn(S.writeBase, key)) S.writeBase[key] = hasOwn(S.loaded, key) ? S.loaded[key] : S.base[key];
+    if (hasOwn(S.loaded, key)) S.loaded[key] = v;
+  }
   if (shared) {
     proto.setItem = function (k, v) {
       origSet.call(this, k, v);
-      if (this === ls && !S.applying && syncable(k) && !excluded(k.slice(4))) queue(k.slice(4), String(v));
+      if (this === ls && !S.applying && syncable(k) && !excluded(k.slice(4))) { noteWrite(k.slice(4), String(v)); queue(k.slice(4), String(v)); }
     };
     proto.removeItem = function (k) {
       origRemove.call(this, k);
-      if (this === ls && !S.applying && syncable(k) && !excluded(k.slice(4))) queue(k.slice(4), '');
+      if (this === ls && !S.applying && syncable(k) && !excluded(k.slice(4))) { noteWrite(k.slice(4), ''); queue(k.slice(4), ''); }
     };
   }
 
@@ -68,13 +135,43 @@
       batch.push({ key: keys[i], value: v }); size += v.length;
     }
     S.inflight = true;
-    req('POST', API, { items: batch }, 30000).then(function (j) {
+    var merged = [];
+    // 1) 서버 최신 값을 읽어 다른 사람 변경과 합침 (사진 같은 큰 값은 그대로)
+    Promise.all(batch.map(function (it) {
+      if (isExtra(it.key) || it.value === '') return Promise.resolve(it);
+      return req('GET', API + '?get=' + encodeURIComponent(it.key), null, 20000).then(function (g) {
+        var server = g.value || '';
+        it.ifMatch = g.etag || '';
+        it.orig = it.value; // 화면이 저장한 그대로의 값
+        var base = Object.prototype.hasOwnProperty.call(S.writeBase, it.key) ? S.writeBase[it.key] : S.base[it.key];
+        if (!server || server === it.value || server === base) return it;
+        var mv = mergeText(base, it.value, server);
+        if (mv !== it.value) {
+          if (S.pending[it.key] === it.value) S.pending[it.key] = mv;
+          var lk = 'ws3_' + it.key;
+          S.applying = true; try { origSet.call(ls, lk, mv); } catch (e) {} finally { S.applying = false; }
+          merged.push(it.key);
+          it.value = mv;
+        }
+        return it;
+      });
+    })).then(function () {
+      if (merged.length) emit({ keys: merged, initial: false, merged: true }); // 합쳐진 내용으로 화면 갱신
+      // 2) 읽은 뒤 누가 또 바꿨으면(409) 다시 합치기
+      return req('POST', API, { items: batch.map(function (it) { var o = { key: it.key, value: it.value }; if (it.ifMatch) o.ifMatch = it.ifMatch; return o; }) }, 30000);
+    }).then(function (j) {
       S.inflight = false; S.lastOk = Date.now();
-      batch.forEach(function (it) { if (S.pending[it.key] === it.value) delete S.pending[it.key]; });
+      batch.forEach(function (it) {
+        S.base[it.key] = it.value;
+        if (S.pending[it.key] === it.value) { delete S.pending[it.key]; delete S.writeBase[it.key]; }
+        else if (Object.prototype.hasOwnProperty.call(S.pending, it.key)) S.writeBase[it.key] = it.orig != null ? it.orig : it.value; // 올리는 사이 화면이 또 고침 → 기준은 화면이 그때 가진 값
+      });
       if (j.rev) S.knownOwnRev = j.rev;
       if (Object.keys(S.pending).length) flush(); else setStatus('ok');
     }).catch(function (e) {
-      S.inflight = false; console.warn('[공유 저장 실패 — 다시 시도]', e);
+      S.inflight = false;
+      if (/conflict/.test(String(e && e.message))) { clearTimeout(S.flushT); S.flushT = setTimeout(flush, 300); return; } // 바로 다시 합침
+      console.warn('[공유 저장 실패 — 다시 시도]', e);
       setStatus('error');
       clearTimeout(S.flushT); S.flushT = setTimeout(flush, 5000);
     });
@@ -85,7 +182,8 @@
     var changed = [], extra = [];
     items.forEach(function (it) {
       if (it.t > S.cursor) S.cursor = it.t;
-      if (Object.prototype.hasOwnProperty.call(S.pending, it.key)) return; // 아직 못 올린 내 변경이 우선
+      if (Object.prototype.hasOwnProperty.call(S.pending, it.key)) return; // 아직 못 올린 내 변경이 우선 (올릴 때 합침)
+      if (!isExtra(it.key)) S.base[it.key] = it.value;
       if (isExtra(it.key)) { extra.push(it); return; }
       var lk = 'ws3_' + it.key;
       var cur = ls.getItem(lk);
@@ -193,6 +291,8 @@
     on: function (prefix, fn) { S.listeners.push({ prefix: prefix, fn: fn }); },
     flushNow: flush,
     pollNow: function () { clearTimeout(S.pollT); poll(); },
+    // 화면이 이 값을 불러와 화면 상태로 삼았다고 알림 (입력 중이라 새 값 반영을 미뤄둔 경우의 합치기 기준)
+    markLoaded: function (lsKey) { if (shared && syncable(lsKey)) { var v = origGet.call(ls, lsKey); S.loaded[lsKey.slice(4)] = v === null ? undefined : v; } },
     _state: S
   };
 

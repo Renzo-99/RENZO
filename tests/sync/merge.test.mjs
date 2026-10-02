@@ -1,0 +1,21 @@
+// 공유 저장 합치기 규칙 테스트: node tests/sync/merge.test.mjs
+import fs from 'node:fs'; import assert from 'node:assert/strict';
+const src=fs.readFileSync(new URL('../../sync.js', import.meta.url),'utf8');
+const win={location:{hostname:'',protocol:'file:'},localStorage:{},__ws3:1};
+const fn=new Function('window','location','document',src.replace("var ls = window.localStorage;","var ls = {};").replace("var proto = Object.getPrototypeOf(ls);","var proto = {};")+';return window.__ws3Merge;');
+const merge=fn(win,win.location,{addEventListener(){},readyState:'complete'});
+let n=0;const t=(name,b,m,th,exp)=>{const r=merge(b,m,th);try{assert.deepEqual(r,exp);n++;console.log('PASS',name);}catch(e){console.log('FAIL',name,JSON.stringify(r));process.exitCode=1;}};
+const L=(d,w)=>({date:d,type:'연차',who:w});
+t('연차: 서로 다른 날 추가 → 둘 다',[L('10-01','A')],[L('10-01','A'),L('10-05','B')],[L('10-01','A'),L('10-03','A')],[L('10-01','A'),L('10-03','A'),L('10-05','B')]);
+t('연차: 내가 지움 + 남이 추가 → 지운 건 지우고 추가는 남김',[L('10-01','A'),L('10-02','A')],[L('10-02','A')],[L('10-01','A'),L('10-02','A'),L('10-09','C')],[L('10-02','A'),L('10-09','C')]);
+t('휴일(맵): 서로 다른 날 추가',{'2026-10-03':'개천절'},{'2026-10-03':'개천절','2026-10-20':'개교기념일'},{'2026-10-03':'개천절','2026-10-09':'한글날'},{'2026-10-03':'개천절','2026-10-09':'한글날','2026-10-20':'개교기념일'});
+t('휴일: 남이 지움, 나는 다른 날 추가',{'a':'x','b':'y'},{'a':'x','b':'y','c':'z'},{'a':'x'},{'a':'x','c':'z'});
+const day=(dn,tasks)=>({dn,dt:'10/'+dn,tasks});
+const T=(id,desc)=>({id,desc,building:'',note:'',mats:[]});
+t('같은 주: 서로 다른 요일에 작업 추가',[day('월',[]),day('화',[])],[day('월',[T(5,'A작업')]),day('화',[])],[day('월',[]),day('화',[T(6,'B작업')])],[day('월',[T(5,'A작업')]),day('화',[T(6,'B작업')])]);
+const r=merge([day('월',[])],[day('월',[T(7,'A작업')])],[day('월',[T(7,'B작업')])]);
+assert.equal(r[0].tasks.length,2);assert.deepEqual(r[0].tasks.map(x=>x.desc).sort(),['A작업','B작업']);assert.notEqual(r[0].tasks[0].id,r[0].tasks[1].id);n++;console.log('PASS 같은 요일·같은 번호로 동시에 추가 → 둘 다 남고 번호 다시 매김');
+t('작업 수정: 서로 다른 칸 수정 → 둘 다 반영',[T(1,'원래')],[Object.assign(T(1,'설명 바꿈'))],[Object.assign(T(1,'원래'),{note:'비고 추가'})],[Object.assign(T(1,'설명 바꿈'),{note:'비고 추가'})]);
+t('구매스펙: 서로 품목 추가 + nextId는 큰 값',{items:[{id:1,name:'a'}],nextId:2},{items:[{id:1,name:'a'},{id:2,name:'내품목'}],nextId:3},{items:[{id:1,name:'a'},{id:3,name:'남품목'}],nextId:4},{items:[{id:1,name:'a'},{id:3,name:'남품목'},{id:2,name:'내품목'}],nextId:4});
+t('기준 없음(처음) + 서로 추가',undefined,[L('1','A')],[L('2','B')],[L('2','B'),L('1','A')]);
+console.log(n+' 통과');

@@ -264,6 +264,7 @@ function todayStr(){const d=new Date();return d.getFullYear()+String(d.getMonth(
 // ================= 저장소 (localStorage + IndexedDB 사진) =================
 function saveState(){try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){toast('⚠️ 저장 공간이 부족합니다');}}
 function loadState(){
+  if(window.ws3Sync)window.ws3Sync.markLoaded(LS_KEY); // 합치기 기준
   try{const s=JSON.parse(localStorage.getItem(LS_KEY)||'null');
     if(s){state.settings={...DEFAULT_SETTINGS,...(s.settings||{})};state.items=Array.isArray(s.items)?s.items:[];state.nextId=s.nextId||1;}
   }catch(e){}

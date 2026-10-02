@@ -885,6 +885,7 @@ function goToWeek(){
 // === 주간 데이터 로드 ===
 function loadWeek(){
   const k='ws3_week_'+yr+'_'+wk,s=localStorage.getItem(k);
+  if(window.ws3Sync)window.ws3Sync.markLoaded(k); // 이 주를 화면에 불러옴 (합치기 기준)
   if(s){
     days=JSON.parse(s);
     days.forEach(d=>(d.tasks||[]).forEach(t=>{delete t.editing;})); // 편집 중 표시는 저장·공유하지 않음
@@ -3375,8 +3376,12 @@ function isUserEditing(){
   const a=document.activeElement;
   return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!document.getElementById('purchaseRoot'));
 }
+function reloadDataOnly(){ // 화면은 그대로 두고 목록 데이터만 최신으로 (그래야 이어서 저장해도 남의 것이 안 지워짐)
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();recalcNextId();
+}
 function applyRemoteChanges(){
-  if(isUserEditing()){ // 입력 중이면 끝날 때까지 기다렸다가 반영
+  if(isUserEditing()){ // 입력 중이면 화면 다시 그리기만 끝날 때까지 미룸
+    reloadDataOnly();
     if(!_remoteReloadWaiting){_remoteReloadWaiting=true;const t=setInterval(()=>{if(!isUserEditing()){clearInterval(t);_remoteReloadWaiting=false;applyRemoteChanges();}},1000);}
     return;
   }
