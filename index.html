@@ -3269,8 +3269,13 @@ function applyRemoteChanges(){
 window.addEventListener('ws3-remote',e=>{
   const d=e.detail||{};
   if(d.keys&&d.keys.length){applyRemoteChanges();if(!d.initial)toast('🔄 다른 사람이 바꾼 내용이 반영되었습니다');}
-  if(d.initial&&window.ws3Sync&&window.ws3Sync.enabled&&window.ws3Sync.serverEmpty)setTimeout(showSharedStartNotice,800);
+  if(d.initial&&isManager()&&window.ws3Sync&&window.ws3Sync.enabled&&window.ws3Sync.serverEmpty)setTimeout(showSharedStartNotice,800);
 });
+// 관리자 표시: 주소 끝에 ?manager=1 을 붙여 한 번 접속한 브라우저만 관리자 안내를 봄 (이 기기에만 기억, 공유 안 됨)
+(function(){try{const u=new URL(location.href);if(u.searchParams.has('manager')){
+  if(u.searchParams.get('manager')==='0')localStorage.removeItem('ws3_test_manager');else localStorage.setItem('ws3_test_manager','1');
+  u.searchParams.delete('manager');window.history.replaceState(null,'',u.pathname+u.search+u.hash);}}catch(e){}})();
+function isManager(){try{return localStorage.getItem('ws3_test_manager')==='1';}catch(e){return false;}}
 function showSharedStartNotice(){
   try{if(localStorage.getItem('ws3_test_sharedNotice'))return;localStorage.setItem('ws3_test_sharedNotice','1');}catch(e){}
   showModal('<div class="modal"><h2>☁ 공유 저장이 시작되었습니다</h2><div style="font-size:14px;line-height:1.8">'+
@@ -4080,13 +4085,13 @@ function openPurchase(extraHash){
   document.body.appendChild(el);document.body.style.overflow='hidden';
 }
 function closePurchase(){const el=document.getElementById('purchaseRoot');if(el)el.remove();document.body.style.overflow='';
-  if(/^#purchase/.test(location.hash)){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
+  if(/^#purchase/.test(location.hash)){try{window.history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
 // 주소가 #purchase(…&add=견적) 이면 사이드 패널로 연다 (purchase.html을 직접 열었거나 즐겨찾기 버튼으로 왔을 때)
 function checkPurchaseHash(){
   const h=location.hash||'';if(!/^#purchase/.test(h))return;
   const m=h.match(/[#&](add=[^&]*)/);
   openPurchase(m?m[1]:'');
-  try{history.replaceState(null,'',location.pathname+location.search+'#purchase');}catch(e){}
+  try{window.history.replaceState(null,'',location.pathname+location.search+'#purchase');}catch(e){}
 }
 window.addEventListener('hashchange',checkPurchaseHash);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('purchaseRoot'))closePurchase();});
