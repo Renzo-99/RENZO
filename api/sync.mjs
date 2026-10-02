@@ -4,12 +4,47 @@
 // GET  /api/sync?since=<ms>       → since 이후 바뀐 항목 [{key, t, value}] (용량 초과 시 more:true)
 // POST /api/sync {items:[{key,value}]} → 저장. 삭제는 value를 ''(빈 값)으로 저장해 다른 사람에게도 전달
 import { put, list, get, head } from './_lib/blob.mjs';
+import { scryptSync, randomBytes, timingSafeEqual } from 'node:crypto';
 
 const PREFIX = 'ws3/';
 const REV = 'meta/rev.json';
 const KEY_RE = /^[A-Za-z0-9_.-]{1,150}$/;
 const MAX_OUT = 3_500_000; // 응답 4.5MB 제한 아래로
 const MAX_ITEM = 4_000_000;
+
+const ADMIN = 'meta/admin.json'; // 관리자 코드(변환값). ws3/ 밖이라 목록·동기화에 안 나옴
+
+async function readAdmin() { try { const t = await readText(ADMIN); return t ? JSON.parse(t) : null; } catch (e) { return null; } }
+function hashCode(code, salt) { return scryptSync(String(code), salt, 32).toString('hex'); }
+function checkCode(rec, code) {
+  if (!rec || !code) return false;
+  const a = Buffer.from(hashCode(code, rec.salt), 'hex'), b = Buffer.from(rec.hash, 'hex');
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+async function saveAdmin(code) {
+  const salt = randomBytes(16).toString('hex');
+  await put(ADMIN, JSON.stringify({ salt, hash: hashCode(code, salt), t: Date.now() }), { access: 'private', allowOverwrite: true, addRandomSuffix: false, contentType: 'application/json', cacheControlMaxAge: 60 });
+}
+// POST {admin:{action:'status'|'verify'|'set', code, newCode}}
+async function handleAdmin(a, res) {
+  const rec = await readAdmin();
+  const action = a && a.action;
+  if (action === 'status') return res.status(200).json({ ok: true, configured: !!rec });
+  if (action === 'verify') {
+    if (!rec) return res.status(200).json({ ok: true, valid: false, configured: false });
+    const valid = checkCode(rec, a.code);
+    if (!valid) await new Promise(r => setTimeout(r, 600)); // 연속 추측 늦추기
+    return res.status(200).json({ ok: true, valid, configured: true });
+  }
+  if (action === 'set') {
+    const nc = String(a.newCode || '');
+    if (nc.length < 4 || nc.length > 64) return res.status(400).json({ ok: false, error: 'code-length' });
+    if (rec && !checkCode(rec, a.code)) { await new Promise(r => setTimeout(r, 600)); return res.status(200).json({ ok: true, valid: false }); }
+    await saveAdmin(nc);
+    return res.status(200).json({ ok: true, valid: true, configured: true });
+  }
+  return res.status(400).json({ ok: false, error: 'bad-admin-action' });
+}
 
 const pathOf = key => PREFIX + key + '.json';
 const keyOf = pathname => pathname.slice(PREFIX.length).replace(/\.json$/, '');
@@ -75,6 +110,7 @@ export default async function handler(req, res) {
     }
     if (req.method === 'POST') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+      if (body.admin) return handleAdmin(body.admin, res);
       const items = Array.isArray(body.items) ? body.items : [];
       if (!items.length) return res.status(400).json({ ok: false, error: 'no-items' });
       const done = [];

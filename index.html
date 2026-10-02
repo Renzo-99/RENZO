@@ -496,6 +496,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
     <button class="btn btn-blue btn-sm" onclick="printReport()" title="보고서 인쇄">🖨️ 인쇄</button>
     <button class="btn btn-outline btn-sm" onclick="openCloudSettings()" title="클라우드 설정">☁️</button>
     <button class="btn btn-outline btn-sm" onclick="refreshAll()" title="새로고침">🔄</button>
+    <button class="btn btn-outline btn-sm" id="adminBtn" onclick="toggleAdmin()" title="관리자 모드">🔑 관리자</button>
     <input type="file" id="fileInput" accept=".json" onchange="importData(event)">
   </div>
 </div>
@@ -3271,11 +3272,71 @@ window.addEventListener('ws3-remote',e=>{
   if(d.keys&&d.keys.length){applyRemoteChanges();if(!d.initial)toast('🔄 다른 사람이 바꾼 내용이 반영되었습니다');}
   if(d.initial&&isManager()&&window.ws3Sync&&window.ws3Sync.enabled&&window.ws3Sync.serverEmpty)setTimeout(showSharedStartNotice,800);
 });
-// 관리자 표시: 주소 끝에 ?manager=1 을 붙여 한 번 접속한 브라우저만 관리자 안내를 봄 (이 기기에만 기억, 공유 안 됨)
-(function(){try{const u=new URL(location.href);if(u.searchParams.has('manager')){
-  if(u.searchParams.get('manager')==='0')localStorage.removeItem('ws3_test_manager');else localStorage.setItem('ws3_test_manager','1');
-  u.searchParams.delete('manager');window.history.replaceState(null,'',u.pathname+u.search+u.hash);}}catch(e){}})();
 function isManager(){try{return localStorage.getItem('ws3_test_manager')==='1';}catch(e){return false;}}
+// === 관리자 모드: 코드를 서버에서 확인 → 이 브라우저만 관리자로 기억(공유 안 됨) ===
+function setManager(on){try{if(on)localStorage.setItem('ws3_test_manager','1');else localStorage.removeItem('ws3_test_manager');}catch(e){}updateAdminUI();}
+function updateAdminUI(){
+  const b=document.getElementById('adminBtn');const on=isManager();
+  if(b){b.textContent=on?'🔓 관리자 모드 종료':'🔑 관리자';b.title=on?'관리자 모드 끝내기':'관리자 모드';
+    b.style.cssText=on?'background:#fef3c7;border-color:#f59e0b;color:#92400e;font-weight:700':'';}
+  document.body.classList.toggle('admin-mode',on);
+  let tag=document.getElementById('adminTag');
+  if(on&&!tag){tag=document.createElement('span');tag.id='adminTag';tag.textContent='관리자 모드';
+    tag.style.cssText='margin-left:8px;font-size:11px;font-weight:700;color:#92400e;background:#fef3c7;border:1px solid #f59e0b;border-radius:99px;padding:2px 8px;vertical-align:middle';
+    const h=document.querySelector('.hdr h1');if(h)h.appendChild(tag);}
+  if(!on&&tag)tag.remove();
+}
+async function adminApi(admin){
+  const r=await fetch('/api/sync',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({admin})});
+  const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw new Error(j.error||('HTTP '+r.status));return j;
+}
+function toggleAdmin(){
+  if(isManager()){if(confirm('관리자 모드를 종료할까요?')){setManager(false);toast('관리자 모드를 종료했습니다');}return;}
+  if(!(window.ws3Sync&&window.ws3Sync.enabled)){toast('관리자 모드는 공유 저장이 켜진 사이트(woodroom-hongik.vercel.app)에서만 쓸 수 있습니다');return;}
+  openAdminLogin();
+}
+async function openAdminLogin(mode){
+  let configured=true;
+  try{configured=(await adminApi({action:'status'})).configured;}catch(e){toast('서버에 연결할 수 없습니다');return;}
+  if(!configured)mode='setup';
+  const field=(id,ph)=>'<input type="password" id="'+id+'" placeholder="'+ph+'" autocomplete="off" style="width:100%;margin-bottom:8px" onkeydown="if(event.key===\'Enter\')submitAdmin(\''+(mode||'login')+'\')">';
+  let h='<div class="modal" style="max-width:380px"><h2>🔑 관리자 모드</h2>';
+  if(mode==='setup'){
+    h+='<p style="font-size:13px;color:var(--gray-600);margin-bottom:10px;line-height:1.6">처음 사용합니다. <b>관리자 코드를 정해 주세요.</b> (4자 이상)<br>코드는 서버에 알아볼 수 없게 변환해 저장되며, 다른 사람에게 알려주지 마세요.</p>';
+    h+=field('adNew','새 관리자 코드')+field('adNew2','한 번 더 입력');
+  }else if(mode==='change'){
+    h+=field('adCode','지금 코드')+field('adNew','새 코드 (4자 이상)')+field('adNew2','새 코드 한 번 더');
+  }else{
+    h+=field('adCode','관리자 코드');
+  }
+  h+='<div id="adMsg" style="font-size:12px;color:var(--red);min-height:16px"></div><div class="modal-btns">';
+  if(!mode)h+='<button class="btn btn-ghost btn-sm" style="margin-right:auto" onclick="openAdminLogin(\'change\')">코드 변경</button>';
+  h+='<button class="btn btn-outline" onclick="closeModal()">취소</button><button class="btn btn-blue" id="adOk" onclick="submitAdmin(\''+(mode||'login')+'\')">'+(mode==='setup'?'정하고 시작':mode==='change'?'변경':'확인')+'</button></div></div>';
+  showModal(h);
+  setTimeout(()=>{const el=document.getElementById(mode==='setup'?'adNew':'adCode');if(el)el.focus();},30);
+}
+async function submitAdmin(mode){
+  const v=id=>{const el=document.getElementById(id);return el?el.value:'';};
+  const msg=t=>{const el=document.getElementById('adMsg');if(el)el.textContent=t;};
+  const btn=document.getElementById('adOk');if(btn)btn.disabled=true;
+  try{
+    if(mode==='setup'||mode==='change'){
+      if(v('adNew').length<4){msg('4자 이상으로 정해 주세요');return;}
+      if(v('adNew')!==v('adNew2')){msg('두 번 입력한 코드가 다릅니다');return;}
+      const j=await adminApi({action:'set',code:v('adCode'),newCode:v('adNew')});
+      if(!j.valid){msg('지금 코드가 맞지 않습니다');return;}
+      closeModal();setManager(true);toast(mode==='setup'?'관리자 코드를 정했습니다 — 관리자 모드 시작':'관리자 코드를 바꿨습니다');
+    }else{
+      const j=await adminApi({action:'verify',code:v('adCode')});
+      if(!j.configured){openAdminLogin('setup');return;}
+      if(!j.valid){msg('코드가 맞지 않습니다');const el=document.getElementById('adCode');if(el){el.value='';el.focus();}return;}
+      closeModal();setManager(true);toast('관리자 모드를 시작했습니다');
+    }
+    if(window.ws3Sync&&window.ws3Sync.serverEmpty)setTimeout(showSharedStartNotice,300);
+  }catch(e){msg('서버에 연결할 수 없습니다');}
+  finally{const b=document.getElementById('adOk');if(b)b.disabled=false;}
+}
+document.addEventListener('DOMContentLoaded',updateAdminUI);
 function showSharedStartNotice(){
   try{if(localStorage.getItem('ws3_test_sharedNotice'))return;localStorage.setItem('ws3_test_sharedNotice','1');}catch(e){}
   showModal('<div class="modal"><h2>☁ 공유 저장이 시작되었습니다</h2><div style="font-size:14px;line-height:1.8">'+
