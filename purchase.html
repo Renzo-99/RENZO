@@ -3,6 +3,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>물품 구매 스펙 작성</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script>window.__WS3_SYNC_ONLY='purchase_,pphoto_,pstamp';</script>
+<script src="sync.js"></script>
 <script src="vendor/exceljs.min.js"></script>
 <style>
 :root{--blue:#3182f6;--blue-bg:#e8f3ff;--red:#f04452;--red-bg:#fff0f1;--green:#15803d;--gray-50:#f9fafb;--gray-100:#f2f4f6;--gray-200:#e5e8eb;--gray-300:#d1d6db;--gray-400:#b0b8c1;--gray-500:#8b95a1;--gray-600:#6b7684;--gray-700:#4e5968;--gray-800:#333d4b;--radius:12px}
@@ -280,6 +282,11 @@ const IDB={db:null,
   set(k,v){return this.tx('readwrite',st=>st.put(v,k));},
   del(k){return this.tx('readwrite',st=>st.delete(k));}
 };
+// 공유 저장: 사진·도장도 함께 쓰는 사람에게 공유 (이 기기 IndexedDB에 쓸 때 서버에도 올림)
+const _idbSetRaw=IDB.set.bind(IDB),_idbDelRaw=IDB.del.bind(IDB);
+function photoSyncKey(k){const m=/^p(\d+)$/.exec(k);return m?'pphoto_'+m[1]:(k==='stamp'?'pstamp':null);}
+IDB.set=function(k,v){const sk=photoSyncKey(k);if(sk&&window.ws3Sync)window.ws3Sync.put(sk,v);return _idbSetRaw(k,v);};
+IDB.del=function(k){const sk=photoSyncKey(k);if(sk&&window.ws3Sync)window.ws3Sync.put(sk,'');return _idbDelRaw(k);};
 async function loadPhotos(){
   for(const it of state.items){if(it.hasPhoto){const d=await IDB.get('p'+it.id);if(d)photoCache[it.id]=d;else it.hasPhoto=false;}}
   stampData=await IDB.get('stamp');
@@ -823,6 +830,23 @@ async function consumeHashAdd(){
 }
 // 다른 창에서 목록이 바뀌면 이 창도 갱신
 window.addEventListener('storage',async e=>{if(e.key===LS_KEY){loadState();await loadPhotos();renderItems();}});
+// 공유 저장: 다른 사람이 바꾼 목록·사진·도장 반영 (입력 중이면 끝난 뒤 반영)
+function purchaseEditing(){const a=document.activeElement;return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.id!=='nvPaste')||!!document.querySelector('#modalRoot .modal-bg');}
+let _remoteWait=false;
+function applyRemotePurchase(){
+  if(purchaseEditing()){if(!_remoteWait){_remoteWait=true;const t=setInterval(()=>{if(!purchaseEditing()){clearInterval(t);_remoteWait=false;applyRemotePurchase();}},1000);}return;}
+  loadState();renderSettings();renderItems();
+}
+window.addEventListener('ws3-remote',e=>{const d=e.detail||{};if(d.keys&&d.keys.indexOf('purchase_v1')>=0){applyRemotePurchase();if(!d.initial)toast('🔄 다른 사람이 바꾼 구매 목록이 반영되었습니다');}});
+if(window.ws3Sync){
+  window.ws3Sync.on('pphoto_',(k,v)=>{
+    const id=Number(k.slice(7));
+    if(v){photoCache[id]=v;_idbSetRaw('p'+id,v);}else{delete photoCache[id];_idbDelRaw('p'+id);}
+    const it=state.items.find(x=>x.id===id);if(it)it.hasPhoto=!!v;
+    updateCardPhoto(id);
+  });
+  window.ws3Sync.on('pstamp',(k,v)=>{stampData=v||null;if(v)_idbSetRaw('stamp',v);else _idbDelRaw('stamp');renderSettings();});
+}
 window.addEventListener('hashchange',()=>{consumeHashAdd();});
 
 // ================= 초기화 =================

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>목공실 관리</title>
+<script>window.__WS3_SYNC_EXCLUDE='pphoto_,pstamp,purchase_';</script>
+<script src="sync.js"></script>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -630,11 +632,12 @@ let productMap=new Map();
 let _debounceTimer;
 // 클라우드 연동
 const CLOUD_URL_DEFAULT='https://script.google.com/a/macros/hongik.ac.kr/s/AKfycbwfrvDEaHLxyixA3qH4xTnZDfpOq46He-eN61GJH7MEZdiMxT3XmGCqHZVW9gM5e-g-/exec';
-let SCRIPT_URL=localStorage.getItem('ws3_script_url')||CLOUD_URL_DEFAULT;
+let SCRIPT_URL=window.WS3_SHARED?'':(localStorage.getItem('ws3_script_url')||CLOUD_URL_DEFAULT); // 공유 저장(Vercel) 사용 시 구글 동기화 끔
 let _cloudQueue={},_cloudTimer=null;
 // Supabase 실시간 연동
 let _sbUrl=localStorage.getItem('ws3_sb_url')||'';
 let _sbKey=localStorage.getItem('ws3_sb_key')||'';
+if(window.WS3_SHARED){_sbUrl='';_sbKey='';}
 let _sbClient=null,_sbChannel=null,_sbEnabled=!!_sbUrl&&!!_sbKey;
 let _sbQueue={},_sbTimer=null,_sbSyncing=false;
 function debouncedRenderInventory(){clearTimeout(_debounceTimer);_debounceTimer=setTimeout(renderInventory,150);}
@@ -794,7 +797,7 @@ function safeSave(key,data){
   catch(e){if(e.name==='QuotaExceededError'||e.code===22){if(history.length>500){history=history.slice(-200);try{localStorage.setItem('ws3_history',JSON.stringify(history));localStorage.setItem(key,JSON.stringify(data));toast('저장 공간 부족 → 오래된 내역 정리됨');return;}catch(e2){}}toast('저장 공간이 부족합니다. 데이터를 백업해주세요.');}else{console.error('저장 실패:',e);}queueCloudSave(key.replace('ws3_',''),JSON.stringify(data));queueSupabaseSave(key.replace('ws3_',''),JSON.stringify(data));}
 }
 function saveProducts(){rebuildProductMap();safeSave('ws3_products',products);}
-function saveWeek(){safeSave('ws3_week_'+yr+'_'+wk,days);}
+function saveWeek(){safeSave('ws3_week_'+yr+'_'+wk,days.map(d=>Object.assign({},d,{tasks:(d.tasks||[]).map(t=>{const c=Object.assign({},t);delete c.editing;return c;})})));}
 function saveHistory(){safeSave('ws3_history',history);}
 function saveHolidays(){safeSave('ws3_holidays',holidays);}
 
@@ -883,6 +886,7 @@ function loadWeek(){
   const k='ws3_week_'+yr+'_'+wk,s=localStorage.getItem(k);
   if(s){
     days=JSON.parse(s);
+    days.forEach(d=>(d.tasks||[]).forEach(t=>{delete t.editing;})); // 편집 중 표시는 저장·공유하지 않음
     recalcNextId();
   }else{
     const m=getMonday();
@@ -3244,6 +3248,37 @@ function reloadAllFromStorage(){
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
   if(currentTab==='plan')renderPlanList();
+  if(currentTab==='repair')renderRepairList();
+}
+// === 공유 저장(Vercel): 다른 사람이 바꾼 내용 반영 ===
+let _remoteReloadWaiting=false;
+function isUserEditing(){
+  if(document.getElementById('modalRoot')&&document.getElementById('modalRoot').innerHTML)return true;
+  const a=document.activeElement;
+  return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!document.getElementById('purchaseRoot'));
+}
+function applyRemoteChanges(){
+  if(isUserEditing()){ // 입력 중이면 끝날 때까지 기다렸다가 반영
+    if(!_remoteReloadWaiting){_remoteReloadWaiting=true;const t=setInterval(()=>{if(!isUserEditing()){clearInterval(t);_remoteReloadWaiting=false;applyRemoteChanges();}},1000);}
+    return;
+  }
+  const cal=document.getElementById('calendarRoot');const calOpen=!!(cal&&cal.innerHTML);
+  reloadAllFromStorage();
+  if(calOpen&&typeof renderCalendar==='function')renderCalendar();
+}
+window.addEventListener('ws3-remote',e=>{
+  const d=e.detail||{};
+  if(d.keys&&d.keys.length){applyRemoteChanges();if(!d.initial)toast('🔄 다른 사람이 바꾼 내용이 반영되었습니다');}
+  if(d.initial&&window.ws3Sync&&window.ws3Sync.enabled&&window.ws3Sync.serverEmpty)setTimeout(showSharedStartNotice,800);
+});
+function showSharedStartNotice(){
+  try{if(localStorage.getItem('ws3_test_sharedNotice'))return;localStorage.setItem('ws3_test_sharedNotice','1');}catch(e){}
+  showModal('<div class="modal"><h2>☁ 공유 저장이 시작되었습니다</h2><div style="font-size:14px;line-height:1.8">'+
+    '이제 이 사이트에서 입력한 내용은 <b>함께 쓰는 모든 사람에게 공유</b>됩니다.<br><br>'+
+    '아직 공유 저장소가 비어 있습니다. 예전 사이트(GitHub 주소)에서 쓰던 내용을 옮기려면:<br>'+
+    '① 예전 사이트에서 <b>💾 내보내기</b>로 파일 저장<br>② 이 사이트에서 <b>📂 불러오기</b>로 그 파일 선택<br>'+
+    '<span style="color:var(--gray-500);font-size:12px">구매스펙 목록은 구매스펙 화면의 💾 목록 파일 저장 → 📂 목록 파일 열기로 옮기면 됩니다.</span></div>'+
+    '<div class="modal-btns"><button class="btn btn-blue" onclick="closeModal()">확인</button></div></div>');
 }
 // Supabase에 데이터 upsert (디바운스)
 function queueSupabaseSave(key,value){
