@@ -837,7 +837,7 @@ function applyRemotePurchase(){
   if(purchaseEditing()){if(!_remoteWait){_remoteWait=true;const t=setInterval(()=>{if(!purchaseEditing()){clearInterval(t);_remoteWait=false;applyRemotePurchase();}},1000);}return;}
   loadState();renderSettings();renderItems();
 }
-window.addEventListener('ws3-remote',e=>{const d=e.detail||{};if(d.keys&&d.keys.indexOf('purchase_v1')>=0){applyRemotePurchase();if(!d.initial)toast('🔄 다른 사람이 바꾼 구매 목록이 반영되었습니다');}});
+window.addEventListener('ws3-remote',e=>{const d=e.detail||{};if(d.keys&&d.keys.indexOf('purchase_v1')>=0){applyRemotePurchase();}});
 if(window.ws3Sync){
   window.ws3Sync.on('pphoto_',(k,v)=>{
     const id=Number(k.slice(7));

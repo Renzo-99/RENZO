@@ -3300,7 +3300,6 @@ async function autoSyncPoll(){
       if(currentTab==='tasks')renderTaskHistory();
       if(currentTab==='plan')renderPlanList();
       updateSyncStatus('synced');
-      toast('🔄 다른 사용자의 변경사항이 반영되었습니다');
     }
   }catch(e){console.warn('[자동동기화 오류]',e);}
 }
@@ -3344,7 +3343,6 @@ function subscribeRealtime(){
       localStorage.setItem(localKey,row.value);
       // 메모리 재로드
       reloadAllFromStorage();
-      toast('⚡ 실시간 변경 반영: '+friendlyKeyName(row.key));
     })
     .subscribe(status=>{
       console.log('[Supabase Realtime]',status);
@@ -3388,7 +3386,7 @@ function applyRemoteChanges(){
 }
 window.addEventListener('ws3-remote',e=>{
   const d=e.detail||{};
-  if(d.keys&&d.keys.length){applyRemoteChanges();if(!d.initial)toast('🔄 다른 사람이 바꾼 내용이 반영되었습니다');}
+  if(d.keys&&d.keys.length)applyRemoteChanges(); // 조용히 반영 (알림 없음)
   if(d.initial&&isManager()&&window.ws3Sync&&window.ws3Sync.enabled&&window.ws3Sync.serverEmpty)setTimeout(showSharedStartNotice,800);
 });
 function isManager(){try{return localStorage.getItem('ws3_test_manager')==='1';}catch(e){return false;}}
