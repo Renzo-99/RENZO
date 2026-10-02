@@ -2358,6 +2358,7 @@ function renderPlanList(){
       if(p.note)h+='<div class="plan-note">📝 '+esc(p.note)+'</div>';
       if(p.attachments&&p.attachments.length){
         h+='<div class="plan-attachments">';
+        h+='<div style="font-size:10px;color:var(--gray-400)">📎 첨부는 '+attExpireLabel(p)+'에 자동 삭제</div>';
         p.attachments.forEach((att,ai)=>{
           const icon=att.type.startsWith('image/')?'🖼️':att.type.includes('pdf')?'📄':'📎';
           h+='<div class="plan-att" onclick="event.stopPropagation();previewPlanAtt('+p.id+','+ai+')" title="'+esc(att.name)+'">';
@@ -2398,8 +2399,12 @@ function togglePlanRange(){
 // 사진은 자동으로 줄여 저장(긴 변 1600px), 그 외 파일은 2MB까지.
 // 공유 저장 사이트에서는 파일 본문을 작업 예정 목록과 따로 서버에 저장(patt_<id>)하고 열 때만 받아옴.
 let _pendingPlanFiles=[];
-const PLAN_MAX_FILE=2*1024*1024;      // 문서 등 줄일 수 없는 파일 한도
+const PLAN_MAX_FILE=2*1024*1024;      // 사진을 줄인 결과 한도 / 공유 저장이 없을 때 문서 한도
+const PLAN_MAX_DOC_SHARED=20*1024*1024; // 공유 사이트에서 문서(PDF 등) 한도 — 조각으로 나눠 저장
 const PLAN_MAX_IMAGE_IN=25*1024*1024; // 사진 원본 한도 (줄여서 저장)
+const ATT_CHUNK=3000000;              // 조각 크기(글자) — 서버 요청 한도 4.5MB 아래
+const ATT_KEEP_DAYS=7;                // 예정일(기간이면 종료일) 지나고 이 기간 뒤 첨부파일 자동 삭제
+function planDocLimit(){return attSharedOn()?PLAN_MAX_DOC_SHARED:PLAN_MAX_FILE;}
 const _attCache={};
 function readFileAsDataURL(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});}
 function dataUrlBytes(d){const i=d.indexOf(',');return Math.floor((d.length-i-1)*3/4);}
@@ -2427,7 +2432,8 @@ async function prepareAttachment(f){
     if(f.size<=PLAN_MAX_FILE)return{name:f.name,type:f.type,size:f.size,data:orig};
     throw new Error('"'+f.name+'" 사진을 줄이지 못했습니다');
   }
-  if(f.size>PLAN_MAX_FILE)throw new Error('"'+f.name+'" 은(는) 2MB를 초과합니다 ('+formatAttSize(f.size)+')');
+  const lim=planDocLimit();
+  if(f.size>lim)throw new Error('"'+f.name+'" 은(는) '+formatAttSize(lim)+'를 초과합니다 ('+formatAttSize(f.size)+')');
   return{name:f.name,type:f.type||'application/octet-stream',size:f.size,data:await readFileAsDataURL(f)};
 }
 async function prepareAttachments(files){
@@ -2441,10 +2447,27 @@ async function prepareAttachments(files){
 }
 function attSharedOn(){return !!(window.ws3Sync&&window.ws3Sync.enabled);}
 function newAttId(){return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+async function postItems(items){
+  const r=await fetch('/api/sync',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})});
+  const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw new Error(j.error||('HTTP '+r.status));return j;
+}
+// 큰 파일은 조각(patt_<id>_c0..)으로 나눠 올리고, patt_<id>에는 'chunks:N' 표시를 남김. 반환: 조각 수(0=한 번에)
 async function uploadAttData(aid,data){
-  const r=await fetch('/api/sync',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{key:'patt_'+aid,value:data}]})});
-  const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw new Error(j.error||('HTTP '+r.status));
-  _attCache[aid]=data;
+  if(data.length<=ATT_CHUNK){await postItems([{key:'patt_'+aid,value:data}]);_attCache[aid]=data;return 0;}
+  const n=Math.ceil(data.length/ATT_CHUNK);
+  for(let i=0;i<n;i++){
+    if(n>2)toast('첨부파일 올리는 중… ('+(i+1)+'/'+n+')');
+    let tries=0;
+    for(;;){try{await postItems([{key:'patt_'+aid+'_c'+i,value:data.slice(i*ATT_CHUNK,(i+1)*ATT_CHUNK)}]);break;}catch(e){if(++tries>=3)throw e;await new Promise(r=>setTimeout(r,1500*tries));}}
+  }
+  await postItems([{key:'patt_'+aid,value:'chunks:'+n}]);
+  _attCache[aid]=data;return n;
+}
+function deleteAttRemote(att){
+  if(!att||!att.aid||!attSharedOn())return;
+  const items=[{key:'patt_'+att.aid,value:''}];
+  for(let i=0;i<(att.parts||0);i++)items.push({key:'patt_'+att.aid+'_c'+i,value:''});
+  postItems(items).catch(()=>{});
 }
 // 첨부 목록 정리: 공유 사이트면 본문을 서버로 올리고 목록엔 이름·크기만 남김
 async function storeAttachments(list){
@@ -2452,7 +2475,7 @@ async function storeAttachments(list){
   const out=[];
   for(const a of list){
     if(!a.data){out.push(a);continue;}
-    try{const aid=a.aid||newAttId();await uploadAttData(aid,a.data);out.push({aid,name:a.name,type:a.type,size:a.size});}
+    try{const aid=a.aid||newAttId();const parts=await uploadAttData(aid,a.data);const m={aid,name:a.name,type:a.type,size:a.size};if(parts)m.parts=parts;out.push(m);}
     catch(e){toast('⚠ "'+a.name+'" 올리기 실패 — 이 기기에만 저장됨');out.push(a);}
   }
   return out;
@@ -2461,10 +2484,12 @@ async function getAttData(att){
   if(att.data)return att.data;
   if(!att.aid)return null;
   if(_attCache[att.aid])return _attCache[att.aid];
-  const r=await fetch('/api/sync?get='+encodeURIComponent('patt_'+att.aid),{cache:'no-store'});
-  const j=await r.json().catch(()=>({}));
-  if(!r.ok||!j.ok||!j.value)return null;
-  _attCache[att.aid]=j.value;return j.value;
+  const getOne=async k=>{const r=await fetch('/api/sync?get='+encodeURIComponent(k),{cache:'no-store'});const j=await r.json().catch(()=>({}));return r.ok&&j.ok?j.value:'';};
+  let v=await getOne('patt_'+att.aid);
+  if(!v)return null;
+  const m=/^chunks:(\d+)$/.exec(v);
+  if(m){const parts=[];for(let i=0;i<Number(m[1]);i++){const c=await getOne('patt_'+att.aid+'_c'+i);if(!c)return null;parts.push(c);}v=parts.join('');}
+  _attCache[att.aid]=v;return v;
 }
 // 예전 방식(본문이 목록 안에 있는 첨부)을 서버로 옮김
 let _attMigrating=false;
@@ -2479,7 +2504,23 @@ async function migratePlanAttachments(){
     if(n){savePlans();if(currentTab==='plan')renderPlanList();console.log('[첨부] 서버로 옮김',n);}
   }finally{_attMigrating=false;}
 }
-window.addEventListener('ws3-remote',()=>{setTimeout(migratePlanAttachments,500);});
+// 예정일(기간이면 종료일) + 7일이 지나면 첨부파일 자동 삭제 (작업 예정 기록은 남김)
+function attExpireDate(p){const base=p.dateEnd||p.date;if(!base)return null;const d=new Date(base+'T00:00:00');d.setDate(d.getDate()+ATT_KEEP_DAYS);return d;}
+function attExpireLabel(p){const d=attExpireDate(p);return d?(d.getMonth()+1)+'/'+d.getDate():'';}
+function purgeExpiredAttachments(){
+  const now=new Date();let n=0;
+  plans.forEach(p=>{
+    if(!p.attachments||!p.attachments.length)return;
+    const exp=attExpireDate(p);if(!exp||now<=exp)return;
+    if(p.attachments.some(a=>a.aid)&&!attSharedOn())return; // 서버 파일은 공유 사이트에서만 지움
+    p.attachments.forEach(deleteAttRemote);n+=p.attachments.length;delete p.attachments;
+  });
+  if(n){savePlans();if(currentTab==='plan')renderPlanList();console.log('[첨부] 기간 지나 자동 삭제',n);}
+  return n;
+}
+window.addEventListener('ws3-remote',e=>{setTimeout(migratePlanAttachments,500);if(e.detail&&e.detail.initial)setTimeout(purgeExpiredAttachments,1500);});
+setInterval(()=>{if(!window.ws3Sync||window.ws3Sync.ready)purgeExpiredAttachments();},60*60*1000);
+setTimeout(()=>{if(!window.WS3_SHARED)purgeExpiredAttachments();},2000);
 
 function formatAttSize(b){
   if(b<1024)return b+'B';
@@ -2534,7 +2575,7 @@ function removePlanAtt(pid,ai){
   const p=plans.find(x=>Number(x.id)===Number(pid));
   if(!p||!p.attachments)return;
   const [gone]=p.attachments.splice(ai,1);
-  if(gone&&gone.aid&&attSharedOn())fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{key:'patt_'+gone.aid,value:''}]})}).catch(()=>{});
+  deleteAttRemote(gone);
   if(!p.attachments.length)delete p.attachments;
   savePlans();renderPlanList();
   toast('첨부파일이 삭제되었습니다');
@@ -2629,7 +2670,7 @@ function openPlanForm(pid){
   h+='<input id="planNote" value="'+esc(p?p.note:'')+'" placeholder="비고 (선택사항)" onkeydown="if(event.key===\'Enter\')savePlan('+(pid||'null')+')">';
   h+='<div id="planDropZone" style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--gray-500);border:2px dashed var(--gray-300);border-radius:8px;padding:14px 10px;cursor:pointer;margin-top:4px;margin-bottom:12px;transition:all .2s" onclick="document.getElementById(\'planFileInput\').click()">';
   h+='<span style="font-size:20px">📎</span>';
-  h+='<span>파일을 드래그하거나 클릭하여 첨부 (사진은 자동으로 줄여 저장 · 문서는 2MB까지)</span>';
+  h+='<span>파일을 드래그하거나 클릭하여 첨부 (사진은 자동으로 줄여 저장 · 문서는 '+formatAttSize(planDocLimit())+'까지)<br>첨부파일은 예정일(기간이면 종료일) 1주일 뒤 자동 삭제됩니다</span>';
   h+='</div>';
   h+='<input type="file" id="planFileInput" multiple style="display:none" onchange="handlePlanFileSelect(this)">';
   h+='<div id="planFilePreview" class="plan-file-preview"></div>';
@@ -2664,7 +2705,7 @@ function savePlan(pid){
     const p=plans.find(x=>Number(x.id)===Number(pid));
     if(p){
       const keep=new Set((atts||[]).map(x=>x.aid).filter(Boolean));
-      (p.attachments||[]).forEach(x=>{if(x.aid&&!keep.has(x.aid)&&attSharedOn())fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{key:'patt_'+x.aid,value:''}]})}).catch(()=>{});});
+      (p.attachments||[]).forEach(x=>{if(x.aid&&!keep.has(x.aid))deleteAttRemote(x);});
       p.date=date;p.dateEnd=dateEnd||null;p.building=building;p.desc=desc;p.note=note;p.attachments=atts;
     }
     toast('예정 작업이 수정되었습니다');
