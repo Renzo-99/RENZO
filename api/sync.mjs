@@ -79,8 +79,20 @@ async function bumpRev() {
   await put(REV, JSON.stringify({ t: Date.now() }), { access: 'private', allowOverwrite: true, addRandomSuffix: false, contentType: 'application/json', cacheControlMaxAge: 60 });
 }
 
+// 예전 GitHub Pages 주소에서 연 화면도 같은 데이터를 쓰게 허용
+const ORIGINS = /^https:\/\/renzo-99\.github\.io$/i;
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
+  const origin = req.headers && req.headers.origin;
+  if (origin && ORIGINS.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Max-Age', '86400');
+  }
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (!process.env.BLOB_READ_WRITE_TOKEN) return res.status(503).json({ ok: false, error: 'storage-not-configured' });
   try {
     if (req.method === 'GET') {
@@ -149,7 +161,7 @@ export default async function handler(req, res) {
       await bumpRev();
       return res.status(200).json({ ok: true, saved: done, rev: await revTime() });
     }
-    res.setHeader('Allow', 'GET, POST');
+    res.setHeader('Allow', 'GET, POST, OPTIONS');
     return res.status(405).json({ ok: false, error: 'method-not-allowed' });
   } catch (e) {
     console.error('[sync]', e);

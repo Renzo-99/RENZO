@@ -14,4 +14,4 @@
 | `tests/sync/server.mjs` | 공유 저장 로컬 테스트 서버 (실제 API + 메모리 저장소) |
 | `.github/` | 다른 프로젝트(주식 대시보드)의 자동 작업 — 목공실과 무관, 지우지 말 것 |
 
-GitHub Pages 주소로 열면 공유 저장 없이 그 기기에만 저장됩니다.
+예전 GitHub Pages 주소(renzo-99.github.io/RENZO)로 열어도 같은 서버에 저장되어 함께 보입니다.

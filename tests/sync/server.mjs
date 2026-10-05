@@ -32,8 +32,8 @@ http.createServer(async (req, res) => {
   if (u.pathname === '/api/sync') {
     if (apiDown) { res.statusCode = 503; return res.end('{"ok":false}'); }
     let body = ''; for await (const c of req) body += c;
-    const r = { method: req.method, query: Object.fromEntries(u.searchParams), body: body ? JSON.parse(body) : undefined };
-    const out = { statusCode: 200, headers: {}, setHeader(k, v) { this.headers[k] = v; }, status(c) { this.statusCode = c; return this; }, json(o) { res.writeHead(this.statusCode, { 'content-type': 'application/json', ...this.headers }); res.end(JSON.stringify(o)); return this; } };
+    const r = { method: req.method, headers: req.headers, query: Object.fromEntries(u.searchParams), body: body && req.method === 'POST' ? JSON.parse(body) : undefined };
+    const out = { statusCode: 200, headers: {}, setHeader(k, v) { this.headers[k] = v; }, status(c) { this.statusCode = c; return this; }, json(o) { res.writeHead(this.statusCode, { 'content-type': 'application/json', ...this.headers }); res.end(JSON.stringify(o)); return this; }, end() { res.writeHead(this.statusCode, this.headers); res.end(); return this; } };
     return handler(r, out);
   }
   const f = path.join(ROOT, decodeURIComponent(u.pathname === '/' ? '/index.html' : u.pathname));

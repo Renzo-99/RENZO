@@ -2449,7 +2449,7 @@ async function prepareAttachments(files){
 function attSharedOn(){return !!(window.ws3Sync&&window.ws3Sync.enabled);}
 function newAttId(){return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 async function postItems(items){
-  const r=await fetch('/api/sync',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})});
+  const r=await fetch((window.ws3Sync&&ws3Sync.api||'/api/sync'),{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})});
   const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw new Error(j.error||('HTTP '+r.status));return j;
 }
 // 큰 파일은 조각(patt_<id>_c0..)으로 나눠 올리고, patt_<id>에는 'chunks:N' 표시를 남김. 반환: 조각 수(0=한 번에)
@@ -2485,7 +2485,7 @@ async function getAttData(att){
   if(att.data)return att.data;
   if(!att.aid)return null;
   if(_attCache[att.aid])return _attCache[att.aid];
-  const getOne=async k=>{const r=await fetch('/api/sync?get='+encodeURIComponent(k),{cache:'no-store'});const j=await r.json().catch(()=>({}));return r.ok&&j.ok?j.value:'';};
+  const getOne=async k=>{const r=await fetch((window.ws3Sync&&ws3Sync.api||'/api/sync')+'?get='+encodeURIComponent(k),{cache:'no-store'});const j=await r.json().catch(()=>({}));return r.ok&&j.ok?j.value:'';};
   let v=await getOne('patt_'+att.aid);
   if(!v)return null;
   const m=/^chunks:(\d+)$/.exec(v);
@@ -3409,7 +3409,7 @@ function updateAdminUI(){
   if(!on&&tag)tag.remove();
 }
 async function adminApi(admin){
-  const r=await fetch('/api/sync',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({admin})});
+  const r=await fetch((window.ws3Sync&&ws3Sync.api||'/api/sync'),{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({admin})});
   const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw new Error(j.error||('HTTP '+r.status));return j;
 }
 function toggleAdmin(){

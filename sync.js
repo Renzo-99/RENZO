@@ -3,16 +3,18 @@
  * - 내가 바꾼 값: 1초쯤 뒤 서버로 올림
  * - 남이 바꾼 값: 몇 초마다 확인해서 받아오고 'ws3-remote' 이벤트로 화면에 알림
  * - 사진처럼 큰 값은 localStorage에 넣지 않고 ws3Sync.put / ws3Sync.on 으로 따로 주고받음
- * GitHub Pages 등 서버(API)가 없는 곳에서는 아무것도 하지 않는다(그 기기에만 저장).
+ * GitHub Pages 주소(renzo-99.github.io)로 열어도 Vercel 서버에 저장해 같은 내용을 본다.
  */
 (function () {
   'use strict';
-  var API = '/api/sync';
+  var VERCEL = 'https://woodroom-hongik.vercel.app';
+  var host = location.hostname || '';
+  var onPages = /^renzo-99\.github\.io$/i.test(host); // 예전 주소로 연 사람도 같은 데이터
+  var API = (onPages ? VERCEL : '') + '/api/sync';
   var LOCAL_ONLY = /^ws3_(backups|lastModified|script_url|sb_url|sb_key|autoSync|plan_reminder_ack|purchase_setHidden|test_.*|sync_.*)$/;
   var EXTRA_PREFIX = ['pphoto_', 'pstamp']; // localStorage에 넣지 않는 큰 값(구매스펙 사진·도장)
-  var host = location.hostname || '';
-  // 공유 모드: Vercel 주소(또는 직접 연결한 도메인). GitHub Pages·파일·로컬 테스트 서버는 제외
-  var shared = window.__WS3_FORCE_SHARED === true ||
+  // 공유 모드: Vercel 주소·GitHub Pages(위 주소). 파일·로컬 테스트 서버는 제외
+  var shared = window.__WS3_FORCE_SHARED === true || onPages ||
     (/^https?:$/.test(location.protocol) && !/github\.io$/.test(host) && host !== 'localhost' && !/^127\./.test(host) && host !== '');
   window.WS3_SHARED = shared;
 
@@ -131,6 +133,7 @@
       .catch(function (e) { clearTimeout(t); throw e; });
   }
 
+  function byteLen(v) { try { return new Blob([v]).size; } catch (e) { return v.length * 3; } }
   function flush() {
     if (!S.enabled || S.inflight) { if (S.enabled) { clearTimeout(S.flushT); S.flushT = setTimeout(flush, 800); } return; }
     var keys = Object.keys(S.pending);
@@ -138,8 +141,9 @@
     var batch = [], size = 0;
     for (var i = 0; i < keys.length; i++) {
       var v = S.pending[keys[i]];
-      if (batch.length && size + v.length > 3000000) break;
-      batch.push({ key: keys[i], value: v }); size += v.length;
+      var bytes = byteLen(v); // 한글은 3바이트 — 요청 4.5MB 제한 아래로
+      if (batch.length && size + bytes > 2500000) break;
+      batch.push({ key: keys[i], value: v }); size += bytes;
     }
     S.inflight = true;
     var merged = [];
@@ -165,9 +169,11 @@
     })).then(function () {
       if (merged.length) emit({ keys: merged, initial: false, merged: true }); // 합쳐진 내용으로 화면 갱신
       // 2) 읽은 뒤 누가 또 바꿨으면(409) 다시 합치기
-      return req('POST', API, { items: batch.map(function (it) { var o = { key: it.key, value: it.value }; if (it.ifMatch) o.ifMatch = it.ifMatch; return o; }) }, 30000);
+      // 충돌이 계속 반복되면(저장소 응답 형식 차이 등) 방금 합친 값으로 그냥 저장 — 저장이 막혀 남의 변경도 못 받는 일 방지
+      var noCheck = (S.conflicts || 0) >= 3;
+      return req('POST', API, { items: batch.map(function (it) { var o = { key: it.key, value: it.value }; if (it.ifMatch && !noCheck) o.ifMatch = it.ifMatch; return o; }) }, 30000);
     }).then(function (j) {
-      S.inflight = false; S.lastOk = Date.now();
+      S.inflight = false; S.lastOk = Date.now(); S.conflicts = 0;
       batch.forEach(function (it) {
         S.base[it.key] = it.value;
         if (S.pending[it.key] === it.value) { delete S.pending[it.key]; delete S.writeBase[it.key]; }
@@ -178,7 +184,7 @@
       if (Object.keys(S.pending).length) flush(); else setStatus('ok');
     }).catch(function (e) {
       S.inflight = false;
-      if (/conflict/.test(String(e && e.message))) { clearTimeout(S.flushT); S.flushT = setTimeout(flush, 300); return; } // 바로 다시 합침
+      if (/conflict/.test(String(e && e.message))) { S.conflicts = (S.conflicts || 0) + 1; clearTimeout(S.flushT); S.flushT = setTimeout(flush, 300); return; } // 바로 다시 합침
       console.warn('[공유 저장 실패 — 다시 시도]', e);
       setStatus('error');
       clearTimeout(S.flushT); S.flushT = setTimeout(flush, 5000);
@@ -368,6 +374,7 @@
     get ready() { return S.ready; },
     get serverEmpty() { return !!S.serverEmpty; },
     get status() { return S.status; },
+    api: API,
     hasPending: function () { return Object.keys(S.pending).length > 0; },
     put: function (key, value) { if (syncable('ws3_' + key) && !excluded(key)) queue(key, value == null ? '' : String(value)); },
     on: function (prefix, fn) { S.listeners.push({ prefix: prefix, fn: fn }); },
