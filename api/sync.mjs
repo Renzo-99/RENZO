@@ -3,8 +3,8 @@
 // GET  /api/sync?rev=1            → 마지막 변경 시각만 (가벼운 확인용)
 // GET  /api/sync?since=<ms>       → since 이후 바뀐 항목 [{key, t, value}] (용량 초과 시 more:true)
 // POST /api/sync {items:[{key,value}]} → 저장. 삭제는 value를 ''(빈 값)으로 저장해 다른 사람에게도 전달
-import { put, list, get, head, BlobPreconditionFailedError } from './_lib/blob.mjs';
-import { scryptSync, randomBytes, timingSafeEqual } from 'node:crypto';
+import { put, list, get, head } from './_lib/blob.mjs';
+import { scryptSync, randomBytes, timingSafeEqual, createHash } from 'node:crypto';
 
 const PREFIX = 'ws3/';
 const REV = 'meta/rev.json';
@@ -54,14 +54,8 @@ async function readText(pathname) {
   if (!r || !r.stream) return null;
   return await new Response(r.stream).text();
 }
-// 값 + etag (동시 저장 충돌 확인용)
-async function readWithEtag(pathname) {
-  const r = await get(pathname, { access: 'private', useCache: false });
-  if (!r || !r.stream) return { value: '', etag: '' };
-  const etag = (r.blob && r.blob.etag) || (r.headers && r.headers.get && r.headers.get('etag')) || '';
-  return { value: await new Response(r.stream).text(), etag };
-}
-function isPrecondition(e) { return (BlobPreconditionFailedError && e instanceof BlobPreconditionFailedError) || /precondition/i.test(String(e && (e.name + ' ' + e.message))); }
+// 동시 저장 충돌 확인용 버전 = 내용의 해시 (저장소 etag 형식에 기대지 않음)
+const verOf = v => createHash('sha1').update(v || '').digest('hex');
 async function listAll() {
   const out = [];
   let cursor;
@@ -106,8 +100,8 @@ export default async function handler(req, res) {
       if (q.get) { // 한 항목만 (첨부파일 열 때)
         const key = String(q.get);
         if (!KEY_RE.test(key)) return res.status(400).json({ ok: false, error: 'bad-key' });
-        const { value, etag } = await readWithEtag(pathOf(key));
-        return res.status(200).json({ ok: true, key, value: value || '', etag });
+        const value = (await readText(pathOf(key))) || '';
+        return res.status(200).json({ ok: true, key, value, ver: verOf(value) });
       }
       const since = Number(q.since || 0) || 0;
       const exclude = String(q.exclude || '').split(',').filter(Boolean); // 예: 목공실 화면은 구매스펙 사진 제외
@@ -149,13 +143,12 @@ export default async function handler(req, res) {
         const v = it.value == null ? '' : String(it.value);
         if (v.length > MAX_ITEM) return res.status(413).json({ ok: false, error: 'too-large', key: it.key });
         const opt = { access: 'private', allowOverwrite: true, addRandomSuffix: false, contentType: 'application/json', cacheControlMaxAge: 60 };
-        if (it.ifMatch) opt.ifMatch = String(it.ifMatch); // 읽은 뒤 누가 바꿨으면 저장 거부 → 클라이언트가 다시 합침
-        try { await put(pathOf(it.key), v, opt); }
-        catch (e) {
-          if (!isPrecondition(e)) throw e;
+        // 읽은 뒤 누가 바꿨으면 저장 거부 → 클라이언트가 다시 합침 (예전 화면이 보내는 ifMatch는 무시)
+        if (it.ifVer != null && verOf((await readText(pathOf(it.key))) || '') !== String(it.ifVer)) {
           if (done.length) await bumpRev();
           return res.status(409).json({ ok: false, error: 'conflict', key: it.key, saved: done });
         }
+        await put(pathOf(it.key), v, opt);
         done.push(it.key);
       }
       await bumpRev();

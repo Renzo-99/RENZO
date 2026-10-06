@@ -129,7 +129,7 @@
     var c = window.AbortController ? new AbortController() : null;
     var t = setTimeout(function () { if (c) c.abort(); }, ms || 20000);
     return fetch(url, { method: method, cache: 'no-store', headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined, signal: c ? c.signal : undefined })
-      .then(function (r) { clearTimeout(t); return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error(j.error || ('HTTP ' + r.status)); return j; }); })
+      .then(function (r) { clearTimeout(t); return r.json().catch(function () { return { ok: false, error: 'HTTP ' + r.status }; }).then(function (j) { if (!r.ok || !j.ok) throw new Error(j.error || ('HTTP ' + r.status)); return j; }); })
       .catch(function (e) { clearTimeout(t); throw e; });
   }
 
@@ -142,17 +142,18 @@
     for (var i = 0; i < keys.length; i++) {
       var v = S.pending[keys[i]];
       var bytes = byteLen(v); // 한글은 3바이트 — 요청 4.5MB 제한 아래로
-      if (batch.length && size + bytes > 2500000) break;
+      if (batch.length && (S.small || size + bytes > 2500000)) break;
       batch.push({ key: keys[i], value: v }); size += bytes;
     }
-    S.inflight = true;
+    S.inflight = true; S.inflightKeys = {};
+    batch.forEach(function (it) { S.inflightKeys[it.key] = 1; });
     var merged = [];
     // 1) 서버 최신 값을 읽어 다른 사람 변경과 합침 (사진 같은 큰 값은 그대로)
     Promise.all(batch.map(function (it) {
       if (isExtra(it.key) || it.value === '') return Promise.resolve(it);
       return req('GET', API + '?get=' + encodeURIComponent(it.key), null, 20000).then(function (g) {
         var server = g.value || '';
-        it.ifMatch = g.etag || '';
+        it.ifVer = g.ver != null ? g.ver : null;
         it.orig = it.value; // 화면이 저장한 그대로의 값
         var base = Object.prototype.hasOwnProperty.call(S.writeBase, it.key) ? S.writeBase[it.key] : S.base[it.key];
         if (!server || server === it.value || server === base) return it;
@@ -171,9 +172,9 @@
       // 2) 읽은 뒤 누가 또 바꿨으면(409) 다시 합치기
       // 충돌이 계속 반복되면(저장소 응답 형식 차이 등) 방금 합친 값으로 그냥 저장 — 저장이 막혀 남의 변경도 못 받는 일 방지
       var noCheck = (S.conflicts || 0) >= 3;
-      return req('POST', API, { items: batch.map(function (it) { var o = { key: it.key, value: it.value }; if (it.ifMatch && !noCheck) o.ifMatch = it.ifMatch; return o; }) }, 30000);
+      return req('POST', API, { items: batch.map(function (it) { var o = { key: it.key, value: it.value }; if (it.ifVer != null && !noCheck) o.ifVer = it.ifVer; return o; }) }, 30000);
     }).then(function (j) {
-      S.inflight = false; S.lastOk = Date.now(); S.conflicts = 0;
+      S.inflight = false; S.lastOk = Date.now(); S.conflicts = 0; S.lastErr = ''; S.inflightKeys = {};
       batch.forEach(function (it) {
         S.base[it.key] = it.value;
         if (S.pending[it.key] === it.value) { delete S.pending[it.key]; delete S.writeBase[it.key]; }
@@ -183,9 +184,11 @@
       savePend(); S.lastPush = Date.now();
       if (Object.keys(S.pending).length) flush(); else setStatus('ok');
     }).catch(function (e) {
-      S.inflight = false;
-      if (/conflict/.test(String(e && e.message))) { S.conflicts = (S.conflicts || 0) + 1; clearTimeout(S.flushT); S.flushT = setTimeout(flush, 300); return; } // 바로 다시 합침
+      S.inflight = false; S.inflightKeys = {};
+      if (/conflict/.test(String(e && e.message))) { S.conflicts = (S.conflicts || 0) + 1; S.lastErr = '충돌(다른 사람과 동시에 저장) ' + S.conflicts + '회'; S.lastErrT = Date.now(); clearTimeout(S.flushT); S.flushT = setTimeout(flush, 300); return; } // 바로 다시 합침
       console.warn('[공유 저장 실패 — 다시 시도]', e);
+      S.lastErr = String(e && e.message || e); S.lastErrT = Date.now();
+      if (batch.length > 1) S.small = true; // 여러 개를 한꺼번에 올리다 실패 → 다음엔 하나씩
       setStatus('error');
       clearTimeout(S.flushT); S.flushT = setTimeout(flush, 5000);
     });
@@ -196,7 +199,20 @@
     var changed = [], extra = [];
     items.forEach(function (it) {
       if (it.t > S.cursor) S.cursor = it.t;
-      if (Object.prototype.hasOwnProperty.call(S.pending, it.key)) return; // 아직 못 올린 내 변경이 우선 (올릴 때 합침)
+      if (hasOwn(S.pending, it.key)) {
+        // 아직 못 올린 내 변경이 있어도 남의 변경은 바로 합쳐서 보여 줌 (올리는 중인 값은 올릴 때 합침)
+        if (isExtra(it.key) || (S.inflightKeys && S.inflightKeys[it.key])) return;
+        var wb = hasOwn(S.writeBase, it.key) ? S.writeBase[it.key] : S.base[it.key];
+        var mine = S.pending[it.key];
+        if (it.value === '' || it.value === mine || it.value === wb) return;
+        var mv = mergeText(wb, mine, it.value);
+        S.writeBase[it.key] = it.value; S.base[it.key] = it.value;
+        if (mv === it.value) { delete S.pending[it.key]; delete S.writeBase[it.key]; }
+        else S.pending[it.key] = mv;
+        savePend();
+        if (ls.getItem('ws3_' + it.key) !== mv) { S.applying = true; try { origSet.call(ls, 'ws3_' + it.key, mv); } catch (e) {} finally { S.applying = false; } changed.push(it.key); }
+        return;
+      }
       if (!isExtra(it.key)) S.base[it.key] = it.value;
       if (isExtra(it.key)) { extra.push(it); return; }
       var lk = 'ws3_' + it.key;
@@ -338,8 +354,9 @@
       '주소: ' + location.host + (shared ? '' : ' <b style="color:#b91c1c">(공유 저장 안 되는 주소)</b>'),
       '상태: <b>' + ({ ok: '공유 저장됨', saving: '저장 중', error: '연결 끊김', off: '꺼짐' }[S.status] || S.status) + '</b>',
       '못 올린 변경: ' + (Object.keys(S.pending).length ? '<b style="color:#c2410c">' + Object.keys(S.pending).join(', ') + '</b>' : '없음'),
-      '마지막 확인: ' + ago(S.lastPoll) + ' · 마지막 올림: ' + ago(S.lastPush)
-    ];
+      '마지막 확인: ' + ago(S.lastPoll) + ' · 마지막 올림: ' + ago(S.lastPush),
+      S.lastErr ? '<span style="color:#b91c1c">최근 저장 실패: ' + String(S.lastErr).replace(/</g, '&lt;') + ' (' + ago(S.lastErrT) + ')</span>' : ''
+    ].filter(Boolean);
     var render = function (extra) {
       box.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><b style="font-size:13px">☁ 공유 상태</b><span style="flex:1"></span>' +
         '<button id="ws3DiagSync" style="border:1px solid #3182f6;background:#3182f6;color:#fff;border-radius:6px;padding:3px 9px;cursor:pointer;font-size:12px">지금 다시 맞추기</button>' +
