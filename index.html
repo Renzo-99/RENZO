@@ -211,7 +211,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;box-shadow:none!important}
   body{height:auto;overflow:visible;font-size:11px}
-  .hdr,.right,.task-actions,.btn,.no-print,.alert-bar,.holiday-btn,.cal-overlay,#calendarRoot,.cr-overlay,#classroomRoot,#purchaseRoot{display:none!important}
+  .hdr,.right,.task-actions,.btn,.no-print,.alert-bar,.holiday-btn,.ref-btn,.ref-chip,.cal-overlay,#calendarRoot,.cr-overlay,#classroomRoot,#purchaseRoot{display:none!important}
   .main{display:block;overflow:visible}
   .left{overflow:visible;padding:0}
   .print-header{display:block!important;text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #000}
@@ -288,6 +288,13 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .cal-cell.today .cal-date{background:var(--blue);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .cal-holiday{font-size:9px;color:var(--red);font-weight:600;padding:0 4px;margin-top:1px}
 .cal-leave{font-size:9px;font-weight:600;padding:1px 4px;margin-top:1px;color:#7c3aed;background:#f3e8ff;border-radius:3px}
+.cal-ref{font-size:9px;font-weight:600;padding:1px 4px;margin-top:1px;color:#166534;background:#dcfce7;border-left:2px solid #22c55e;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-ref-box{margin-top:8px;padding:8px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px}
+.cal-ref-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 8px;margin-bottom:4px;background:#dcfce7;border-radius:6px;font-size:13px;color:#166534;font-weight:600}
+.ref-chip{font-size:11px;font-weight:600;color:#166534;background:#dcfce7;border:1px solid #bbf7d0;padding:2px 8px;border-radius:99px;cursor:pointer;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ref-chip:hover{background:#bbf7d0}
+.ref-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px dashed #86efac;background:#fff;cursor:pointer;color:#16a34a;transition:.15s;font-family:inherit}
+.ref-btn:hover{border-color:#22c55e;background:#f0fdf4}
 .cal-tasks{margin-top:2px;overflow:hidden}
 .cal-task-item{font-size:10px;padding:2px 4px;margin-bottom:1px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--blue-bg);color:var(--blue);font-weight:500;cursor:pointer;transition:background .1s}
 .cal-task-item:hover{background:#d0e3ff}
@@ -585,7 +592,7 @@ const DAY_NAMES=['월요일','화요일','수요일','목요일','금요일'];
 const DOW_SHORT=['일','월','화','수','목','금','토'];
 
 // === 상태 ===
-let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[], leaves=[], repairs=[],
+let products=[], yr, wk, days=[], history=[], holidays={}, buildings=[], plans=[], rooms=[], leaves=[], refs=[], repairs=[],
     nextId=1, filter='all', catFilter='all', currentTab='stock', currentRoomBld='';
 let thYear=new Date().getFullYear(), thMonth=new Date().getMonth()+1, thMode='month';
 const BUILDINGS_DEFAULT=['본관','별관','기숙사','체육관','강당','식당','도서관','실습동','경영대학','인문사회관C','제4학관','제1공학관','제2공학관','제3공학관','홍문관','과학관'];
@@ -681,13 +688,13 @@ function checkLocalStorage(){
 // === 초기화 ===
 async function init(){
   if(!checkLocalStorage()){
-    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
+    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
     recalcNextId();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     setupPlanReminderWatch();
     return;
   }
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
   recalcNextId();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
@@ -761,6 +768,64 @@ function loadLeaves(){const s=localStorage.getItem('ws3_leaves');leaves=s?JSON.p
 function loadRepairs(){const s=localStorage.getItem('ws3_repairs');repairs=s?JSON.parse(s):[];}
 function saveRepairs(){safeSave('ws3_repairs',repairs);}
 function saveLeaves(){safeSave('ws3_leaves',leaves);}
+// === 참고 일정 (날짜별 메모 — 인쇄에는 안 나오고 캘린더에 초록색으로 표시) ===
+function loadRefs(){try{const s=localStorage.getItem('ws3_refs');refs=s?JSON.parse(s):[];if(!Array.isArray(refs))refs=[];}catch(e){refs=[];}}
+function saveRefs(){safeSave('ws3_refs',refs);}
+function getRefsForDate(dateStr){return refs.filter(r=>r.date===dateStr);}
+function refAfterChange(dateStr,reopenCal){
+  saveRefs();renderReport();
+  const cal=document.getElementById('calendarRoot');
+  if(cal&&cal.innerHTML)renderCalendar();
+  if(reopenCal)openCalDay(dateStr);
+}
+function openRefInput(dateStr,id){
+  const r=id!=null?refs.find(x=>x.id===id):null;
+  const pts=dateStr.split('-');
+  let h='<div class="modal"><h2>📌 참고 일정 '+(r?'수정':'추가')+'</h2>';
+  h+='<p style="font-size:13px;color:var(--gray-600);margin-bottom:12px">'+parseInt(pts[1])+'월 '+parseInt(pts[2])+'일 · 인쇄에는 나오지 않고 캘린더에 표시됩니다.</p>';
+  h+='<label>내용</label>';
+  h+='<input id="refText" maxlength="100" placeholder="예: 학과 회의, 자재 입고 예정, 외부 업체 방문" value="'+(r?esc(r.text):'')+'" onkeydown="if(event.key===\'Enter\')saveRefInput(\''+dateStr+'\','+(r?r.id:'null')+')">';
+  h+='<div class="modal-btns">';
+  if(r)h+='<button class="btn btn-outline" style="color:var(--red);border-color:var(--red);margin-right:auto" onclick="deleteRef('+r.id+')">삭제</button>';
+  h+='<button class="btn btn-outline" onclick="closeModal()">취소</button>';
+  h+='<button class="btn btn-blue" onclick="saveRefInput(\''+dateStr+'\','+(r?r.id:'null')+')">'+(r?'저장':'추가')+'</button>';
+  h+='</div></div>';
+  showModal(h);
+  setTimeout(()=>{const el=document.getElementById('refText');if(el){el.focus();el.select();}},50);
+}
+function saveRefInput(dateStr,id){
+  const text=(document.getElementById('refText')?.value||'').trim();
+  if(!text){toast('내용을 입력하세요');return;}
+  if(id!=null){const r=refs.find(x=>x.id===id);if(r)r.text=text;}
+  else refs.push({id:Date.now()*100+Math.floor(Math.random()*100),date:dateStr,text});
+  closeModal();refAfterChange(dateStr,false);
+  toast(id!=null?'참고 일정 수정':'참고 일정 추가');
+}
+function deleteRef(id,reopenCal){
+  const r=refs.find(x=>x.id===id);if(!r)return;
+  refs=refs.filter(x=>x.id!==id);
+  closeModal();refAfterChange(r.date,!!reopenCal);
+  toast('참고 일정 삭제');
+}
+function calAddRef(dateStr){
+  const text=(document.getElementById('calRefText')?.value||'').trim();
+  if(!text){toast('참고 일정 내용을 입력하세요');return;}
+  refs.push({id:Date.now()*100+Math.floor(Math.random()*100),date:dateStr,text});
+  closeModal();refAfterChange(dateStr,true);
+  toast('참고 일정 추가');
+}
+function calRefSection(dateStr){
+  let h='<div class="cal-ref-box">';
+  getRefsForDate(dateStr).forEach(r=>{
+    h+='<div class="cal-ref-row"><span>📌 '+esc(r.text)+'</span>';
+    h+='<button class="btn btn-outline btn-sm" style="font-size:11px;color:var(--red);border-color:var(--red)" onclick="deleteRef('+r.id+',true)">삭제</button></div>';
+  });
+  h+='<div style="display:flex;gap:6px;align-items:center;margin-top:6px">';
+  h+='<input id="calRefText" maxlength="100" placeholder="참고 일정 (예: 학과 회의, 자재 입고 예정)" style="flex:1;border:1px solid #86efac;border-radius:6px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')calAddRef(\''+dateStr+'\')">';
+  h+='<button class="btn btn-outline btn-sm" style="font-size:12px;color:#15803d;border-color:#22c55e" onclick="calAddRef(\''+dateStr+'\')">📌 참고 일정 추가</button>';
+  h+='</div></div>';
+  return h;
+}
 // === Undo 스택 ===
 const undoStack=[];
 const UNDO_MAX=30;
@@ -781,7 +846,7 @@ function performUndo(){
     else localStorage.setItem(key,data);
   }
   // 메모리 변수 재로드
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
   recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
@@ -930,8 +995,10 @@ function renderReport(){
     h+='<div class="day-header'+(isHoliday?' holiday':'')+'">';
     h+='<div class="left-part"><div class="day-dot"></div><h3>'+d.dn+'</h3><span class="date">'+d.dt+'</span>';
     if(isHoliday)h+='<span class="holiday-badge" onclick="removeHoliday(\''+dateKey+'\')">'+esc(holidays[dateKey])+' ✕</span>';
+    getRefsForDate(dateKey).forEach(r=>{h+='<span class="ref-chip no-print" title="참고 일정 (인쇄 안 됨) · 눌러서 수정" onclick="openRefInput(\''+dateKey+'\','+r.id+')">📌 '+esc(r.text)+'</span>';});
     h+='</div>';
     h+='<div class="right-part">';
+    h+='<button class="ref-btn no-print" onclick="openRefInput(\''+dateKey+'\')" title="인쇄에는 나오지 않는 참고용 일정">📌 참고 일정</button>';
     if(!isHoliday)h+='<button class="holiday-btn" onclick="openHolidayInput('+di+',\''+dateKey+'\')">📅 공휴일</button>';
     h+='<button class="btn btn-ghost btn-sm" style="color:var(--blue)" onclick="addTask('+di+')">+ 작업 추가</button>';
     h+='</div></div>';
@@ -2023,7 +2090,7 @@ async function exportData(){
     const k=localStorage.key(i);
     if(k.startsWith('ws3_week_'))allWeeks[k]=JSON.parse(localStorage.getItem(k));
   }
-  const data={version:9,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans:plansFull,rooms,leaves,repairs,weeks:allWeeks};
+  const data={version:9,exportDate:new Date().toISOString(),products,history,holidays,buildings,plans:plansFull,rooms,leaves,refs,repairs,weeks:allWeeks};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -2054,6 +2121,7 @@ function importData(event){
       if(data.plans){plans=data.plans;savePlans();setTimeout(migratePlanAttachments,300);}
       if(data.rooms){rooms=data.rooms;saveRooms();}
       if(data.leaves){leaves=data.leaves;saveLeaves();}
+      if(Array.isArray(data.refs)){refs=data.refs;saveRefs();}
       if(data.repairs){repairs=data.repairs;saveRepairs();}
       if(data.weeks){Object.entries(data.weeks).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));}
       recalcNextId();loadWeek();renderInventory();renderFilterBar();renderAlerts();
@@ -3295,7 +3363,7 @@ async function autoSyncPoll(){
         try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
       });
       // 메모리 재로드
-      loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
+      loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
       recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
       if(currentTab==='history')renderHistory();
       if(currentTab==='tasks')renderTaskHistory();
@@ -3357,12 +3425,13 @@ function friendlyKeyName(key){
   if(key==='buildings')return '건물';
   if(key==='plans')return '작업 예정';
   if(key==='leaves')return '연차';
+  if(key==='refs')return '참고 일정';
   if(key==='rooms')return '호실';
   if(key.startsWith('week_'))return '주간보고서';
   return key;
 }
 function reloadAllFromStorage(){
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
   recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
@@ -3377,7 +3446,7 @@ function isUserEditing(){
   return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!document.getElementById('purchaseRoot'));
 }
 function reloadDataOnly(){ // 화면은 그대로 두고 목록 데이터만 최신으로 (그래야 이어서 저장해도 남의 것이 안 지워짐)
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRepairs();recalcNextId();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();recalcNextId();
 }
 function applyRemoteChanges(){
   if(isUserEditing()){ // 입력 중이면 화면 다시 그리기만 끝날 때까지 미룸
@@ -3707,6 +3776,7 @@ function renderCalendar(){
     if(isHol)h+='<div class="cal-holiday">'+esc(holidays[dateStr])+'</div>';
     const calLeaves=leaves.filter(l=>l.date===dateStr);
     calLeaves.forEach(lv=>{h+='<div class="cal-leave">🏖️ '+(lv.who?esc(lv.who)+' ':'')+esc(lv.type)+'</div>';});
+    getRefsForDate(dateStr).forEach(r=>{h+='<div class="cal-ref" title="참고 일정: '+esc(r.text)+'">📌 '+esc(r.text)+'</div>';});
 
     // 작업 표시 (최대 3개)
     h+='<div class="cal-tasks">';
@@ -3769,6 +3839,7 @@ function openCalDay(dateStr){
   if(dayIndex<0||dayIndex>4){
     let h='<div class="modal"><h2>'+month+'월 '+day+'일 ('+dowStr+')</h2>';
     h+='<p class="cal-no-task">주말은 작업을 등록할 수 없습니다.</p>';
+    h+=calRefSection(dateStr);
     if(dayPlans.length){
       h+='<div style="margin-top:8px">';
       dayPlans.forEach((p,idx)=>{
@@ -3807,6 +3878,7 @@ function openCalDay(dateStr){
   h+='<div class="cal-day-title">'+month+'월 '+day+'일 ('+dowStr+') ';
   if(isHol)h+='<span style="font-size:12px;color:var(--red);font-weight:600;background:var(--red-bg);padding:2px 8px;border-radius:99px">'+esc(holidays[dateStr])+'</span>';
   calDayLeavesTitle.forEach(lv=>{h+='<span style="font-size:12px;color:#7c3aed;font-weight:600;background:#f3e8ff;padding:2px 8px;border-radius:99px">🏖️ '+(lv.who?esc(lv.who)+' ':'')+esc(lv.type)+'</span>';});
+  getRefsForDate(dateStr).forEach(r=>{h+='<span style="font-size:12px;color:#15803d;font-weight:600;background:#dcfce7;padding:2px 8px;border-radius:99px">📌 '+esc(r.text)+'</span>';});
   h+='<span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:auto">'+weekYear+'년 '+weekNum+'주차</span>';
   h+='</div>';
 
@@ -3866,6 +3938,9 @@ function openCalDay(dateStr){
     });
     h+='</div>';
   }
+
+  // 참고 일정 추가/삭제
+  h+=calRefSection(dateStr);
 
   // 휴일 추가/삭제
   if(isHol){

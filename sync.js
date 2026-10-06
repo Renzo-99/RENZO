@@ -282,7 +282,7 @@
       var firstTime = !origGet.call(ls, 'ws3_sync_seen');
       if (firstTime) {
         Object.keys(serverVal).forEach(function (k) {
-          if (carry[k] != null || excluded(k) || isExtra(k) || !/^(leaves|holidays|plans|repairs|rooms|buildings|week_\d+_\d+)$/.test(k)) return;
+          if (carry[k] != null || excluded(k) || isExtra(k) || !/^(leaves|refs|holidays|plans|repairs|rooms|buildings|week_\d+_\d+)$/.test(k)) return;
           var lv = origGet.call(ls, 'ws3_' + k);
           if (lv !== null && lv !== serverVal[k] && serverVal[k] !== '') { carry[k] = lv; S.writeBase[k] = undefined; }
         });
