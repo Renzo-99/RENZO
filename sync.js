@@ -335,6 +335,7 @@
       badge.title = '눌러서 공유 상태 보기';
       badge.onclick = openDiag;
       document.body.appendChild(badge);
+      var ps = document.createElement('style'); ps.textContent = '@media print{#ws3SyncBadge,#ws3Diag{display:none!important}}'; document.head.appendChild(ps); // 인쇄에는 안 나오게
     }
     badge.style.bottom = document.getElementById('sumBar') ? '62px' : '10px';
     var m = { ok: ['☁ 공유 저장됨', '#ecfdf5', '#047857'], saving: ['⟳ 공유 저장 중…', '#eff6ff', '#1d4ed8'], error: ['⚠ 연결 끊김 — 다시 시도 중 (이 기기엔 저장됨)', '#fff7ed', '#c2410c'], off: ['⚠ 공유 저장 꺼짐 — 이 기기에만 저장', '#fef2f2', '#b91c1c'] }[s] || ['', '#fff', '#000'];
