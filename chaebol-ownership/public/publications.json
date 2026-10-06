@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-10-05T00:01:23.278Z",
+ "updatedAt": "2026-10-06T01:48:04.893Z",
  "items": [
+  {
+   "id": "issue-point-49711",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "농지 전수조사, 서두른 만큼 놓친 것들 : 속도전과 정쟁의 과열을 넘어 지금 해야 할 이야기에 관하여",
+   "date": "2026-10-06",
+   "meta": "이슈와논점 2536호 · 김규호",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49711",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "nars-analysis-49678",
    "sourceId": "nars-analysis",
@@ -390,19 +401,6 @@
    "keywords": [
     "재정",
     "건강보험"
-   ]
-  },
-  {
-   "id": "issue-point-49474",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "511명의 무투표당선, 지방선거는 경쟁하고 있는가? - 3인 이상 선거구로 확산된 무투표당선과 지방선거 경쟁구조의 과제 -",
-   "date": "2026-07-21",
-   "meta": "이슈와논점 2516호 · 송진미",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49474",
-   "tracks": [],
-   "keywords": [
-    "선거"
    ]
   },
   {
