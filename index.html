@@ -772,6 +772,15 @@ function saveLeaves(){safeSave('ws3_leaves',leaves);}
 function loadRefs(){try{const s=localStorage.getItem('ws3_refs');refs=s?JSON.parse(s):[];if(!Array.isArray(refs))refs=[];}catch(e){refs=[];}}
 function saveRefs(){safeSave('ws3_refs',refs);}
 function getRefsForDate(dateStr){return refs.filter(r=>r.date===dateStr);}
+let lastRefWho=''; // 마지막으로 고른 사람 (다음 입력 때 기본값)
+function refLabel(r){return (r.who?r.who+' · ':'')+r.text;}
+function refWhoSelect(id,cur,style){
+  let h='<select id="'+id+'"'+(style?' style="'+style+'"':'')+'>';
+  h+='<option value=""'+(!cur?' selected':'')+'>공통</option>';
+  AUTHORS.forEach(a=>{h+='<option value="'+a+'"'+(cur===a?' selected':'')+'>'+a+'</option>';});
+  if(cur&&!AUTHORS.includes(cur))h+='<option value="'+esc(cur)+'" selected>'+esc(cur)+'</option>';
+  return h+'</select>';
+}
 function refAfterChange(dateStr,reopenCal){
   saveRefs();renderReport();
   const cal=document.getElementById('calendarRoot');
@@ -783,6 +792,8 @@ function openRefInput(dateStr,id){
   const pts=dateStr.split('-');
   let h='<div class="modal"><h2>📌 참고 일정 '+(r?'수정':'추가')+'</h2>';
   h+='<p style="font-size:13px;color:var(--gray-600);margin-bottom:12px">'+parseInt(pts[1])+'월 '+parseInt(pts[2])+'일 · 인쇄에는 나오지 않고 캘린더에 표시됩니다.</p>';
+  h+='<label>누구 일정</label>';
+  h+=refWhoSelect('refWho',r?(r.who||''):lastRefWho);
   h+='<label>내용</label>';
   h+='<input id="refText" maxlength="100" placeholder="예: 학과 회의, 자재 입고 예정, 외부 업체 방문" value="'+(r?esc(r.text):'')+'" onkeydown="if(event.key===\'Enter\')saveRefInput(\''+dateStr+'\','+(r?r.id:'null')+')">';
   h+='<div class="modal-btns">';
@@ -796,8 +807,9 @@ function openRefInput(dateStr,id){
 function saveRefInput(dateStr,id){
   const text=(document.getElementById('refText')?.value||'').trim();
   if(!text){toast('내용을 입력하세요');return;}
-  if(id!=null){const r=refs.find(x=>x.id===id);if(r)r.text=text;}
-  else refs.push({id:Date.now()*100+Math.floor(Math.random()*100),date:dateStr,text});
+  const who=document.getElementById('refWho')?.value||'';lastRefWho=who;
+  if(id!=null){const r=refs.find(x=>x.id===id);if(r){r.text=text;if(who)r.who=who;else delete r.who;}}
+  else refs.push(Object.assign({id:Date.now()*100+Math.floor(Math.random()*100),date:dateStr,text},who?{who}:{}));
   closeModal();refAfterChange(dateStr,false);
   toast(id!=null?'참고 일정 수정':'참고 일정 추가');
 }
@@ -810,17 +822,19 @@ function deleteRef(id,reopenCal){
 function calAddRef(dateStr){
   const text=(document.getElementById('calRefText')?.value||'').trim();
   if(!text){toast('참고 일정 내용을 입력하세요');return;}
-  refs.push({id:Date.now()*100+Math.floor(Math.random()*100),date:dateStr,text});
+  const who=document.getElementById('calRefWho')?.value||'';lastRefWho=who;
+  refs.push(Object.assign({id:Date.now()*100+Math.floor(Math.random()*100),date:dateStr,text},who?{who}:{}));
   closeModal();refAfterChange(dateStr,true);
   toast('참고 일정 추가');
 }
 function calRefSection(dateStr){
   let h='<div class="cal-ref-box">';
   getRefsForDate(dateStr).forEach(r=>{
-    h+='<div class="cal-ref-row"><span>📌 '+esc(r.text)+'</span>';
+    h+='<div class="cal-ref-row"><span>📌 '+esc(refLabel(r))+'</span>';
     h+='<button class="btn btn-outline btn-sm" style="font-size:11px;color:var(--red);border-color:var(--red)" onclick="deleteRef('+r.id+',true)">삭제</button></div>';
   });
   h+='<div style="display:flex;gap:6px;align-items:center;margin-top:6px">';
+  h+=refWhoSelect('calRefWho',lastRefWho,'border:1px solid #86efac;border-radius:6px;padding:6px 8px;font-size:13px;color:#166534;width:auto;margin:0');
   h+='<input id="calRefText" maxlength="100" placeholder="참고 일정 (예: 학과 회의, 자재 입고 예정)" style="flex:1;border:1px solid #86efac;border-radius:6px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')calAddRef(\''+dateStr+'\')">';
   h+='<button class="btn btn-outline btn-sm" style="font-size:12px;color:#15803d;border-color:#22c55e" onclick="calAddRef(\''+dateStr+'\')">📌 참고 일정 추가</button>';
   h+='</div></div>';
@@ -995,7 +1009,7 @@ function renderReport(){
     h+='<div class="day-header'+(isHoliday?' holiday':'')+'">';
     h+='<div class="left-part"><div class="day-dot"></div><h3>'+d.dn+'</h3><span class="date">'+d.dt+'</span>';
     if(isHoliday)h+='<span class="holiday-badge" onclick="removeHoliday(\''+dateKey+'\')">'+esc(holidays[dateKey])+' ✕</span>';
-    getRefsForDate(dateKey).forEach(r=>{h+='<span class="ref-chip no-print" title="참고 일정 (인쇄 안 됨) · 눌러서 수정" onclick="openRefInput(\''+dateKey+'\','+r.id+')">📌 '+esc(r.text)+'</span>';});
+    getRefsForDate(dateKey).forEach(r=>{h+='<span class="ref-chip no-print" title="참고 일정 (인쇄 안 됨) · 눌러서 수정" onclick="openRefInput(\''+dateKey+'\','+r.id+')">📌 '+esc(refLabel(r))+'</span>';});
     h+='</div>';
     h+='<div class="right-part">';
     h+='<button class="ref-btn no-print" onclick="openRefInput(\''+dateKey+'\')" title="인쇄에는 나오지 않는 참고용 일정">📌 참고 일정</button>';
@@ -3776,7 +3790,7 @@ function renderCalendar(){
     if(isHol)h+='<div class="cal-holiday">'+esc(holidays[dateStr])+'</div>';
     const calLeaves=leaves.filter(l=>l.date===dateStr);
     calLeaves.forEach(lv=>{h+='<div class="cal-leave">🏖️ '+(lv.who?esc(lv.who)+' ':'')+esc(lv.type)+'</div>';});
-    getRefsForDate(dateStr).forEach(r=>{h+='<div class="cal-ref" title="참고 일정: '+esc(r.text)+'">📌 '+esc(r.text)+'</div>';});
+    getRefsForDate(dateStr).forEach(r=>{h+='<div class="cal-ref" title="참고 일정: '+esc(refLabel(r))+'">📌 '+esc(refLabel(r))+'</div>';});
 
     // 작업 표시 (최대 3개)
     h+='<div class="cal-tasks">';
@@ -3878,7 +3892,7 @@ function openCalDay(dateStr){
   h+='<div class="cal-day-title">'+month+'월 '+day+'일 ('+dowStr+') ';
   if(isHol)h+='<span style="font-size:12px;color:var(--red);font-weight:600;background:var(--red-bg);padding:2px 8px;border-radius:99px">'+esc(holidays[dateStr])+'</span>';
   calDayLeavesTitle.forEach(lv=>{h+='<span style="font-size:12px;color:#7c3aed;font-weight:600;background:#f3e8ff;padding:2px 8px;border-radius:99px">🏖️ '+(lv.who?esc(lv.who)+' ':'')+esc(lv.type)+'</span>';});
-  getRefsForDate(dateStr).forEach(r=>{h+='<span style="font-size:12px;color:#15803d;font-weight:600;background:#dcfce7;padding:2px 8px;border-radius:99px">📌 '+esc(r.text)+'</span>';});
+  getRefsForDate(dateStr).forEach(r=>{h+='<span style="font-size:12px;color:#15803d;font-weight:600;background:#dcfce7;padding:2px 8px;border-radius:99px">📌 '+esc(refLabel(r))+'</span>';});
   h+='<span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:auto">'+weekYear+'년 '+weekNum+'주차</span>';
   h+='</div>';
 
