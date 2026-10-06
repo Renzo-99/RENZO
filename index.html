@@ -66,7 +66,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
 .holiday-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px dashed var(--gray-300);background:#fff;cursor:pointer;color:var(--gray-400);transition:.15s}
 .holiday-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
 /* 연차 뱃지 */
-.leave-badge{font-size:10px;color:#7c3aed;font-weight:600;padding:2px 8px;background:#f3e8ff;border-radius:99px;cursor:pointer}
+.leave-badge{font-size:11px;color:#7c3aed;font-weight:600;padding:2px 8px;background:#f3e8ff;border:1px solid #e9d5ff;border-radius:99px;cursor:pointer;white-space:nowrap}
 .leave-badge:hover{opacity:.8}
 .leave-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px dashed var(--gray-300);background:#fff;cursor:pointer;color:var(--gray-400);transition:.15s}
 .leave-btn:hover{border-color:#7c3aed;color:#7c3aed;background:#f3e8ff}
@@ -239,7 +239,7 @@ body{font-family:'Pretendard Variable',-apple-system,system-ui,'Noto Sans KR',sa
   .print-header{margin-bottom:12px!important;padding-bottom:10px!important}
   .card{margin-bottom:6px}
   .holiday-badge{border:1px solid var(--red);color:#dc2626!important;background:#fef2f2!important}
-  .leave-badge{border:1px solid #7c3aed;color:#7c3aed!important;background:#f3e8ff!important}
+  .leave-badge{display:none!important}
   .leave-btn{display:none!important}
   .print-inventory{display:block!important;page-break-before:always;padding-top:20px}
   .print-inventory h2{font-size:16px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #000}
@@ -779,7 +779,8 @@ function saveRooms(){safeSave('ws3_rooms',rooms);}
 function loadLeaves(){const s=localStorage.getItem('ws3_leaves');leaves=s?JSON.parse(s):[];}
 function loadRepairs(){const s=localStorage.getItem('ws3_repairs');repairs=s?JSON.parse(s):[];}
 function saveRepairs(){safeSave('ws3_repairs',repairs);}
-function saveLeaves(){safeSave('ws3_leaves',leaves);}
+function saveLeaves(){safeSave('ws3_leaves',leaves);if(typeof renderReport==='function'&&days.length)renderReport();}
+function calRefreshIfOpen(){const c=document.getElementById('calendarRoot');if(c&&c.innerHTML)renderCalendar();}
 // === 참고 일정 (날짜별 메모 — 인쇄에는 안 나오고 캘린더에 초록색으로 표시) ===
 function loadRefs(){try{const s=localStorage.getItem('ws3_refs');refs=s?JSON.parse(s):[];if(!Array.isArray(refs))refs=[];}catch(e){refs=[];}}
 function saveRefs(){safeSave('ws3_refs',refs);}
@@ -1022,6 +1023,7 @@ function renderReport(){
     h+='<div class="day-header'+(isHoliday?' holiday':'')+'">';
     h+='<div class="left-part"><div class="day-dot"></div><h3>'+d.dn+'</h3><span class="date">'+d.dt+'</span>';
     if(isHoliday)h+='<span class="holiday-badge" onclick="removeHoliday(\''+dateKey+'\')">'+esc(holidays[dateKey])+' ✕</span>';
+    getLeavesForDate(dateKey).forEach(lv=>{h+='<span class="leave-badge no-print" title="휴가 (인쇄 안 됨) · 눌러서 관리" onclick="openCalDay(\''+dateKey+'\')">🏖️ '+(lv.who?esc(lv.who)+' ':'')+esc(lv.type)+'</span>';});
     getRefsForDate(dateKey).forEach(r=>{h+='<span class="ref-chip no-print" title="참고 일정 (인쇄 안 됨) · 눌러서 수정" onclick="openRefInput(\''+dateKey+'\','+r.id+')">📌 '+esc(refLabel(r))+'</span>';});
     h+='</div>';
     h+='<div class="right-part">';
@@ -1621,7 +1623,7 @@ function getLeavesForDate(dateKey){
 function addLeaveFromCal(dateStr,type,who){
   if(leaves.find(l=>l.date===dateStr&&l.who===who)){toast(who+' - 이미 등록된 날짜입니다');return;}
   leaves.push({date:dateStr,type:type,who:who||''});
-  saveLeaves();renderCalendar();closeModal();openCalDay(dateStr);
+  saveLeaves();calRefreshIfOpen();closeModal();openCalDay(dateStr);
   toast(type+' 연차 등록');
 }
 
@@ -3947,7 +3949,7 @@ function openCalDay(dateStr){
     calDayLeaves.forEach(lv=>{
       h+='<div style="margin-top:6px;padding:6px 10px;background:#f3e8ff;border-radius:8px;display:flex;align-items:center;justify-content:space-between">';
       h+='<span style="font-size:13px;color:#7c3aed;font-weight:600">🏖️ '+(lv.who?esc(lv.who)+' - ':'')+esc(lv.type)+'</span>';
-      h+='<button class="btn btn-outline btn-sm" style="font-size:11px;color:var(--red);border-color:var(--red)" onclick="removeLeave(\''+dateStr+'\',\''+esc(lv.who||'')+'\');closeModal();renderCalendar()">삭제</button>';
+      h+='<button class="btn btn-outline btn-sm" style="font-size:11px;color:var(--red);border-color:var(--red)" onclick="removeLeave(\''+dateStr+'\',\''+esc(lv.who||'')+'\');closeModal();calRefreshIfOpen();openCalDay(\''+dateStr+'\')">삭제</button>';
       h+='</div>';
     });
   }
