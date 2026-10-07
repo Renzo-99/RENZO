@@ -1,6 +1,32 @@
 {
- "updatedAt": "2026-10-06T01:48:04.893Z",
+ "updatedAt": "2026-10-07T00:50:39.170Z",
  "items": [
+  {
+   "id": "nars-analysis-49713",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "소년보호처분, ‘처벌의 시간’이 아닌 ‘변화의 시간’이 되려면 ②",
+   "date": "2026-10-07",
+   "meta": "NARS 현안분석 434호 · 김혜미,이상은",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49713",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49715",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "불법사금융의 현황과 근절을 위한 개선 방안 모색",
+   "date": "2026-10-07",
+   "meta": "이슈와논점 2537호 · 김광현,김대성",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49715",
+   "tracks": [
+    "finance"
+   ],
+   "keywords": [
+    "금융"
+   ]
+  },
   {
    "id": "issue-point-49711",
    "sourceId": "issue-point",
@@ -379,17 +405,6 @@
    "keywords": []
   },
   {
-   "id": "issue-point-49491",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "청년 자산형성 지원사업은 취약청년에게 어떤 의미인가?",
-   "date": "2026-07-27",
-   "meta": "이슈와논점 2517호 · 김대성",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49491",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "policy-report-49495",
    "sourceId": "policy-report",
    "sourceName": "연구보고서(입법·정책보고서)",
@@ -600,17 +615,6 @@
    "date": "2026-04-16",
    "meta": "NARS 입법·정책 179호 · 김주경 외 3인",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0156&brdSeq=49091",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "nars-analysis-49075",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "비례대표 의석배분 저지규정의 현황과 쟁점",
-   "date": "2026-04-14",
-   "meta": "NARS 현안분석 414호 · 허석재",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49075",
    "tracks": [],
    "keywords": []
   },
