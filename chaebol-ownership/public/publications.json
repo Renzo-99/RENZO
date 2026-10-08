@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-10-07T00:50:39.170Z",
+ "updatedAt": "2026-10-08T01:06:27.580Z",
  "items": [
+  {
+   "id": "issue-point-49723",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "건축정책 논의 20년, 성과와 과제 ① 우리 건축·시설물에서 걸작이 나오지 못하는 이유",
+   "date": "2026-10-08",
+   "meta": "이슈와논점 2539호 · 박인숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49723",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49721",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "미래대응기금의 주요 쟁점과 입법과제",
+   "date": "2026-10-08",
+   "meta": "이슈와논점 2538호 · 안중기",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49721",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "nars-analysis-49713",
    "sourceId": "nars-analysis",
@@ -354,31 +376,6 @@
    "date": "2026-08-20",
    "meta": "이슈와논점 2520호 · 김광현",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49537",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49532",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "「인공지능 및 데이터 기반 행정 활성화에 관한 법률」시행, 실효성 확보를 위해 무엇이 더 필요한가?",
-   "date": "2026-08-20",
-   "meta": "이슈와논점 2519호 · 김인태",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49532",
-   "tracks": [],
-   "keywords": [
-    "인공지능",
-    "데이터"
-   ]
-  },
-  {
-   "id": "issue-point-49525",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "단일종목 레버리지 ETF 도입 이후, 무엇을 보완해야 하는가?",
-   "date": "2026-08-18",
-   "meta": "이슈와논점 2518호 · 편은비",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49525",
    "tracks": [],
    "keywords": []
   },
