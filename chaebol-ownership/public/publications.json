@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-08T01:06:27.580Z",
+ "updatedAt": "2026-10-09T01:17:42.364Z",
  "items": [
   {
    "id": "issue-point-49723",
@@ -22,6 +22,21 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49721",
    "tracks": [],
    "keywords": []
+  },
+  {
+   "id": "publication-49727",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "중국 국외출장보고서 - 중국 첨단 모빌리티 산업 동향 조사 및 현장 답사 -",
+   "date": "2026-10-08",
+   "meta": "기타자료 · 박준환 외 3인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49727",
+   "tracks": [
+    "security"
+   ],
+   "keywords": [
+    "중국"
+   ]
   },
   {
    "id": "nars-analysis-49713",
@@ -1002,7 +1017,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 2
+   "count": 3
   }
  ]
 }
