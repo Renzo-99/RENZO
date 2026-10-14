@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-10-14T00:24:22.899Z",
+ "updatedAt": "2026-10-14T23:59:10.751Z",
  "items": [
+  {
+   "id": "issue-point-49759",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "특별사법경찰에 대한 검사 수사지휘 폐지와 향후과제(Ⅰ) -지도·조언을 통한 새로운 협력체계의 정착을 중심으로",
+   "date": "2026-10-15",
+   "meta": "이슈와논점 2542호 · 김혜미",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49759",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49757",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "건축정책 논의 20년, 성과와 과제 ② 「건축서비스산업 진흥법」 개정 방향 검토",
+   "date": "2026-10-15",
+   "meta": "이슈와논점 2541호 · 박인숙",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49757",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49754",
    "sourceId": "issue-point",
@@ -349,19 +371,6 @@
    "keywords": []
   },
   {
-   "id": "issue-point-49570",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "'학생 1인당 교부금'만 늘면, 교육현안 해결할 수 있나? 지방교육재정교부금 개편안의 학생 수 기반 교육비 논리에 관한 검토",
-   "date": "2026-09-02",
-   "meta": "이슈와논점 2522호 · 김범주",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49570",
-   "tracks": [],
-   "keywords": [
-    "재정"
-   ]
-  },
-  {
    "id": "nars-analysis-49551",
    "sourceId": "nars-analysis",
    "sourceName": "연구보고서(NARS 현안분석)",
@@ -391,17 +400,6 @@
    "date": "2026-08-24",
    "meta": "NARS 현안분석 427호 · 이상은,김혜미",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49544",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49538",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "「자살예방법」은 자살위험 대응에서 무엇을 놓치고 있는가",
-   "date": "2026-08-21",
-   "meta": "이슈와논점 2521호 · 한진옥",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49538",
    "tracks": [],
    "keywords": []
   },
