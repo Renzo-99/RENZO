@@ -1,6 +1,32 @@
 {
- "updatedAt": "2026-10-15T23:43:20.051Z",
+ "updatedAt": "2026-10-16T23:42:52.684Z",
  "items": [
+  {
+   "id": "nars-analysis-49761",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "학교 시험문제는 누구의 것인가? -학교 시험문제의 저작권법상 지위 검토와 공개ㆍ자유이용 제도의 설계 방향",
+   "date": "2026-10-16",
+   "meta": "NARS 현안분석 436호 · 김범주,백지연",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49761",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "publication-49764",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "한반도 미래와 평화·통일·북한학의 길",
+   "date": "2026-10-16",
+   "meta": "NARS 브리프 180호 · 이승열,유채영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49764",
+   "tracks": [
+    "security"
+   ],
+   "keywords": [
+    "북한"
+   ]
+  },
   {
    "id": "issue-point-49759",
    "sourceId": "issue-point",
@@ -591,22 +617,6 @@
    "keywords": []
   },
   {
-   "id": "nars-analysis-49203",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "신재생에너지 설비 폐기물의 전주기 관리 체계로의 전환 태양광·풍력·ESS의 폐기물 발생 전망과 제도개선 방향",
-   "date": "2026-05-18",
-   "meta": "NARS 현안분석 416호 · 김경민",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49203",
-   "tracks": [
-    "energy"
-   ],
-   "keywords": [
-    "재생에너지",
-    "에너지"
-   ]
-  },
-  {
    "id": "policy-report-49145",
    "sourceId": "policy-report",
    "sourceName": "연구보고서(입법·정책보고서)",
@@ -1015,7 +1025,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 3
+   "count": 4
   }
  ]
 }
