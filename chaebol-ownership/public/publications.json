@@ -1,6 +1,20 @@
 {
- "updatedAt": "2026-10-20T00:27:44.442Z",
+ "updatedAt": "2026-10-20T23:59:00.605Z",
  "items": [
+  {
+   "id": "issue-point-49778",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "인공지능(AI) 기반 학생부 분석 서비스 규제의 쟁점과 과제 - 학교생활기록의 상업적 이용 제한 규정(「초ㆍ중등교육법」 제25조의2)을 중심으로",
+   "date": "2026-10-20",
+   "meta": "이슈와논점 2543호 · 김범주",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49778",
+   "tracks": [],
+   "keywords": [
+    "AI",
+    "인공지능"
+   ]
+  },
   {
    "id": "nars-analysis-49771",
    "sourceId": "nars-analysis",
@@ -229,17 +243,6 @@
    "keywords": []
   },
   {
-   "id": "publication-49653",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "정치 양극화 완화를 위한 국민 제안과 정책적 과제",
-   "date": "2026-09-23",
-   "meta": "NARS 브리프 178호 · 유지영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49653",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "issue-point-49648",
    "sourceId": "issue-point",
    "sourceName": "연구보고서(이슈와 논점)",
@@ -381,19 +384,6 @@
    "tracks": [],
    "keywords": [
     "기후"
-   ]
-  },
-  {
-   "id": "issue-point-49600",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "국민연금 추후납부제도의 바람직한 개선방안: 편법적 수급권 확보 수단으로 악용되는 것을 어떻게 막을 것인가",
-   "date": "2026-09-10",
-   "meta": "이슈와논점 2523호 · 이윤경",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49600",
-   "tracks": [],
-   "keywords": [
-    "연금"
    ]
   },
   {
@@ -1021,7 +1011,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 4
+   "count": 3
   }
  ]
 }
