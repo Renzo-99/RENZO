@@ -1,6 +1,28 @@
 {
- "updatedAt": "2026-11-03T02:58:01.375Z",
+ "updatedAt": "2026-11-04T01:30:11.648Z",
  "items": [
+  {
+   "id": "publication-49827",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "남인순 국회부의장·김정재 성평등가족위원장·(사)한국여성의정·국회입법조사처 공동주최-민간기업·공기업 여성임원 확대",
+   "date": "2026-11-04",
+   "meta": "NARS 브리프 184호 · 이예지",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49827",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "publication-49826",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "한병도 의원·정점식 의원·천준호 의원·김승수 의원·국회입법조사처·한국법제연구원 공동주최 세미나 -위헌법률정비를 위한 제도개선 세미나",
+   "date": "2026-11-03",
+   "meta": "NARS 브리프 183호 · 김선화",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49826",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "publication-49811",
    "sourceId": "publication",
@@ -1027,7 +1049,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 4
+   "count": 6
   }
  ]
 }
