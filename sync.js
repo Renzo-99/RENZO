@@ -61,7 +61,8 @@
     t.forEach(function (e) {
       var k = idOf(e); if (seen[k]) return; seen[k] = 1;
       if (k in M) {
-        if (!(k in B) && !same(M[k], e) && isObj(e) && e.id != null) { out.push(e); extra.push(M[k]); return; } // 같은 번호로 서로 다른 걸 추가 → 둘 다 남김
+        // 같은 번호로 서로 다른 걸 추가 → 둘 다 남김 (단, 품목코드가 같으면 같은 품목 → 합침: 재고 품목 중복 방지)
+        if (!(k in B) && !same(M[k], e) && isObj(e) && e.id != null && !(e.code != null && isObj(M[k]) && M[k].code === e.code)) { out.push(e); extra.push(M[k]); return; }
         out.push(merge3(B[k], M[k], e)); return;
       }
       if (k in B) { if (!same(B[k], e)) out.push(e); return; } // 내가 지움 — 서버가 그사이 바꿨으면 남김

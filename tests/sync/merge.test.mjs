@@ -18,4 +18,8 @@ assert.equal(r[0].tasks.length,2);assert.deepEqual(r[0].tasks.map(x=>x.desc).sor
 t('작업 수정: 서로 다른 칸 수정 → 둘 다 반영',[T(1,'원래')],[Object.assign(T(1,'설명 바꿈'))],[Object.assign(T(1,'원래'),{note:'비고 추가'})],[Object.assign(T(1,'설명 바꿈'),{note:'비고 추가'})]);
 t('구매스펙: 서로 품목 추가 + nextId는 큰 값',{items:[{id:1,name:'a'}],nextId:2},{items:[{id:1,name:'a'},{id:2,name:'내품목'}],nextId:3},{items:[{id:1,name:'a'},{id:3,name:'남품목'}],nextId:4},{items:[{id:1,name:'a'},{id:3,name:'남품목'},{id:2,name:'내품목'}],nextId:4});
 t('기준 없음(처음) + 서로 추가',undefined,[L('1','A')],[L('2','B')],[L('2','B'),L('1','A')]);
+const P=(id,code,name,stock)=>({id,code,name,cat:'A',unit:'개',stock,tin:stock,tout:0});
+{ const r=merge(undefined,[P(1,'A01','도어록',37),P(2,'A02','경첩',5)],[P(1,'A01','도어록',35),P(2,'A02','경첩',5)]);
+  assert.equal(r.length,2);assert.deepEqual(r.map(x=>x.code),['A01','A02']);n++;console.log('PASS 재고: 기준 없이 같은 품목코드 → 복사본 만들지 않고 하나로'); }
+t('재고: 서로 다른 품목 추가(같은 번호) → 둘 다 남음',[P(1,'A01','a',1)],[P(1,'A01','a',1),P(2,'A02','내것',1)],[P(1,'A01','a',1),P(2,'A03','남것',1)],[P(1,'A01','a',1),P(2,'A03','남것',1),P(3,'A02','내것',1)]);
 console.log(n+' 통과');

@@ -712,13 +712,13 @@ function checkLocalStorage(){
 // === 초기화 ===
 async function init(){
   if(!checkLocalStorage()){
-    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
+    loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();dedupeProducts();
     recalcNextId();
     goToday();renderFilterBar();renderInventory();renderAlerts();
     setupPlanReminderWatch();
     return;
   }
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();dedupeProducts();
   recalcNextId();
   goToday();renderFilterBar();renderInventory();renderAlerts();
   // 클라우드 자동 동기화 제거 — localStorage가 주 저장소
@@ -754,6 +754,55 @@ function loadProducts(){
   rebuildProductMap();
 }
 function rebuildProductMap(){productMap=new Map(products.map(p=>[p.id,p]));}
+// === 중복 품목 정리 ===
+// 같은 품목코드(동시 편집 합치기로 생긴 복사본) 또는 같은 이름+단위(두 번 등록) → 하나로.
+// 남기는 쪽은 번호가 가장 작은 것. 입출고 내역·작업 자재는 남는 품목으로 연결. 정리 전 자동 백업.
+function prodNameKey(p){return String(p.name||'').replace(/\s+/g,'').toLowerCase()+'|'+String(p.unit||'').trim();}
+function findDuplicateProducts(list){
+  const sorted=list.slice().sort((a,b)=>a.id-b.id);
+  const keep=new Map(), byCode=new Map(), byName=new Map(), groups=[];
+  sorted.forEach(p=>{
+    const c=String(p.code||'').trim(), n=prodNameKey(p);
+    const k=(c&&byCode.get(c))||byName.get(n);
+    if(k){groups.push({keep:k,dup:p,sameCode:c&&String(k.code||'').trim()===c});return;}
+    if(c)byCode.set(c,p); byName.set(n,p);
+  });
+  return groups;
+}
+function dedupeProducts(){
+  const groups=findDuplicateProducts(products);
+  if(!groups.length)return 0;
+  try{createSnapshot('중복 품목 정리 전 자동 백업');}catch(e){}
+  const remap=new Map();
+  groups.forEach(({keep,dup,sameCode})=>{
+    const idle=x=>!(x.stock||0)&&!(x.tin||0)&&!(x.tout||0);
+    if(sameCode){ // 같은 품목의 두 판본: 남는 쪽 값 유지 (남는 쪽이 비어 있으면 복사본 값)
+      if(idle(keep)&&!idle(dup)){keep.stock=dup.stock;keep.tin=dup.tin;keep.tout=dup.tout;}
+    }else{ // 같은 이름으로 두 번 등록: 수량 합침
+      keep.stock=(keep.stock||0)+(dup.stock||0);keep.tin=(keep.tin||0)+(dup.tin||0);keep.tout=(keep.tout||0)+(dup.tout||0);
+    }
+    remap.set(dup.id,keep.id);
+    console.log('[중복 품목 정리]',dup.code,dup.name,'→',keep.code,keep.name);
+  });
+  const root=id=>{while(remap.has(id))id=remap.get(id);return id;};
+  products=products.filter(p=>!remap.has(p.id));
+  let hChanged=false;
+  history.forEach(h=>{if(remap.has(h.pid)){h.pid=root(h.pid);hChanged=true;}});
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k||!k.startsWith('ws3_week_'))continue;
+    let wd;try{wd=JSON.parse(localStorage.getItem(k));}catch(e){continue;}
+    if(!Array.isArray(wd))continue;
+    let ch=false;
+    wd.forEach(d=>(d&&d.tasks||[]).forEach(t=>(t.mats||[]).forEach(m=>{if(remap.has(m.pid)){m.pid=root(m.pid);ch=true;}})));
+    if(ch){try{localStorage.setItem(k,JSON.stringify(wd));}catch(e){}}
+  }
+  (days||[]).forEach(d=>(d.tasks||[]).forEach(t=>(t.mats||[]).forEach(m=>{if(remap.has(m.pid))m.pid=root(m.pid);})));
+  rebuildProductMap();
+  try{localStorage.setItem('ws3_products',JSON.stringify(products));if(hChanged)localStorage.setItem('ws3_history',JSON.stringify(history));}catch(e){}
+  setTimeout(()=>{try{toast('중복 품목 '+groups.length+'개 정리됨 (정리 전 상태는 📋 백업에 저장)');}catch(e){}},1500);
+  return groups.length;
+}
 // 라왕 목재 규격 자·치 → mm (두께*폭*길이, 다른 목재와 같은 순서). 1자=300mm, 1치=30mm (목재 거래 관례)
 // 예: 라왕목재_12자*0.8치*10치 → 라왕목재_24*300*3600
 function lauanToMm(name){
@@ -895,7 +944,7 @@ function performUndo(){
     else localStorage.setItem(key,data);
   }
   // 메모리 변수 재로드
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();dedupeProducts();
   recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
@@ -1770,6 +1819,9 @@ function saveProduct(pid){
   // 코드 중복 체크
   const dup=products.find(x=>x.code===code&&x.id!==pid);
   if(dup){toast('이미 존재하는 품목코드입니다: '+code);return;}
+  // 이름 중복 체크 (같은 이름+단위)
+  const sameName=products.find(x=>x.id!==pid&&prodNameKey(x)===prodNameKey({name,unit}));
+  if(sameName){toast('같은 이름의 품목이 이미 있습니다: '+sameName.code+' '+sameName.name);return;}
 
   if(pid){
     const p=productMap.get(pid);
@@ -3415,7 +3467,7 @@ async function autoSyncPoll(){
         try{localStorage.setItem('ws3_'+k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}
       });
       // 메모리 재로드
-      loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
+      loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();dedupeProducts();
       recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
       if(currentTab==='history')renderHistory();
       if(currentTab==='tasks')renderTaskHistory();
@@ -3483,7 +3535,7 @@ function friendlyKeyName(key){
   return key;
 }
 function reloadAllFromStorage(){
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();dedupeProducts();
   recalcNextId();loadWeek();renderReport();renderFilterBar();renderInventory();renderAlerts();
   if(currentTab==='history')renderHistory();
   if(currentTab==='tasks')renderTaskHistory();
@@ -3498,7 +3550,7 @@ function isUserEditing(){
   return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!document.getElementById('purchaseRoot'));
 }
 function reloadDataOnly(){ // 화면은 그대로 두고 목록 데이터만 최신으로 (그래야 이어서 저장해도 남의 것이 안 지워짐)
-  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();recalcNextId();
+  loadProducts();loadHistory();loadHolidays();loadBuildings();loadPlans();loadRooms();loadLeaves();loadRefs();loadRepairs();dedupeProducts();recalcNextId();
 }
 function applyRemoteChanges(){
   if(isUserEditing()){ // 입력 중이면 화면 다시 그리기만 끝날 때까지 미룸
