@@ -63,6 +63,11 @@ table.items tr.warn td{background:#fffbeb}
 .tag{display:inline-block;font-size:9.5px;font-weight:700;padding:0 5px;border-radius:4px;line-height:15px;vertical-align:1px}
 .tag.a{background:#dbeafe;color:#1d4ed8}.tag.b{background:#ede9fe;color:#6d28d9}.tag.ab{background:#dcfce7;color:#15803d}.tag.r{background:var(--gray-100);color:var(--gray-500)}
 .ilist{display:flex;flex-direction:column;gap:10px}
+.add-bar{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:14px;border:2px dashed var(--gray-300);border-radius:12px;background:#fff;color:var(--blue);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.add-bar:hover{border-color:var(--blue);background:var(--blue-bg)}
+.add-bar .lim{font-size:12px;font-weight:500;color:var(--gray-400)}
+.add-bar:disabled{color:var(--gray-400);border-color:var(--gray-200);background:var(--gray-50);cursor:not-allowed}
+@media print{.add-bar{display:none!important}}
 .icard{border:1px solid var(--gray-200);border-radius:12px;background:#fff;padding:10px 12px;transition:box-shadow .3s,border-color .2s}
 .icard.warn{border-color:#f5b94a;background:#fffdf6}
 .icard.flash{box-shadow:0 0 0 3px #86efac}
@@ -222,6 +227,7 @@ table.as tr{page-break-inside:avoid}
     </div>
     <div class="legend"><span><span class="tag ab">A·B</span> 두 문서 모두</span><span><span class="tag a">A</span> A-Spec 엑셀</span><span><span class="tag b">B</span> B-Spec PDF</span><span><span class="tag r">참고</span> 제출 문서엔 안 나옴</span><span>· 사진 칸: 클릭 후 Ctrl+V 붙여넣기 / 더블클릭하면 파일 선택 / 이미지 끌어놓기</span></div>
     <div id="itemList" class="ilist"></div>
+    <button class="add-bar" id="addBar" onclick="addItem()">＋ 품목 추가 <span class="lim" id="addBarLim"></span></button>
     <input type="file" id="cardPhotoFile" accept="image/*" style="display:none">
     <p class="hint">
       • 최대 <b>100품목</b>까지 작성할 수 있습니다. 한 카드에 A-Spec·B-Spec 칸이 모두 있어 한 번에 작성됩니다.<br>
@@ -427,6 +433,7 @@ function renderSum(){
   set('barCnt',won(state.items.length));set('barQty',won(q));set('barAmt',won(a));
   set('barMiss',miss?'⚠ 단가·수량이 빠진 품목 '+miss+'개 (합계에서 0원)':'');
   document.getElementById('cntLabel').textContent='('+state.items.length+' / '+MAX_ITEMS+'품목)';
+  const ab=document.getElementById('addBar');if(ab){const full=state.items.length>=MAX_ITEMS;ab.disabled=full;set('addBarLim',full?'최대 '+MAX_ITEMS+'품목':state.items.length+' / '+MAX_ITEMS);}
 }
 
 // ================= 품목 조작 =================
