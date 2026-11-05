@@ -800,7 +800,6 @@ function dedupeProducts(){
   (days||[]).forEach(d=>(d.tasks||[]).forEach(t=>(t.mats||[]).forEach(m=>{if(remap.has(m.pid))m.pid=root(m.pid);})));
   rebuildProductMap();
   try{localStorage.setItem('ws3_products',JSON.stringify(products));if(hChanged)localStorage.setItem('ws3_history',JSON.stringify(history));}catch(e){}
-  setTimeout(()=>{try{toast('중복 품목 '+groups.length+'개 정리됨 (정리 전 상태는 📋 백업에 저장)');}catch(e){}},1500);
   return groups.length;
 }
 // 라왕 목재 규격 자·치 → mm (두께*폭*길이, 다른 목재와 같은 순서). 1자=300mm, 1치=30mm (목재 거래 관례)
