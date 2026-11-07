@@ -1,6 +1,19 @@
 {
- "updatedAt": "2026-11-06T01:39:51.478Z",
+ "updatedAt": "2026-11-07T00:59:40.185Z",
  "items": [
+  {
+   "id": "issue-point-49832",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "가상자산에 대한 과세 이대로 시행할 것인가? - 과세체계의 문제점을 중심으로 -",
+   "date": "2026-11-05",
+   "meta": "이슈와논점 2544호 · 김태경,임재범",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49832",
+   "tracks": [],
+   "keywords": [
+    "가상자산"
+   ]
+  },
   {
    "id": "publication-49827",
    "sourceId": "publication",
@@ -410,19 +423,6 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49610",
    "tracks": [],
    "keywords": []
-  },
-  {
-   "id": "issue-point-49604",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "반복되는 낙동강 가뭄, 어떻게 대응할 것인가?: 기후위기 시대 유역 물관리 개선과제",
-   "date": "2026-09-10",
-   "meta": "이슈와논점 2524호 · 김경민",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49604",
-   "tracks": [],
-   "keywords": [
-    "기후"
-   ]
   },
   {
    "id": "nars-analysis-49593",
