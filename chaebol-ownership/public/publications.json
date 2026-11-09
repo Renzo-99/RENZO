@@ -1,6 +1,19 @@
 {
- "updatedAt": "2026-11-08T00:48:17.579Z",
+ "updatedAt": "2026-11-09T01:02:39.611Z",
  "items": [
+  {
+   "id": "issue-point-49838",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "자발적 퇴사 청년 대상 실업급여 도입논란은 무엇을 놓치고 있나? 제도 밖 청년 보호와 실질적인 청년 고용 지원 방안 모색 필요성",
+   "date": "2026-11-08",
+   "meta": "이슈와논점 2545호 · 구슬이,권다영",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49838",
+   "tracks": [],
+   "keywords": [
+    "고용"
+   ]
+  },
   {
    "id": "issue-point-49832",
    "sourceId": "issue-point",
@@ -410,17 +423,6 @@
    "date": "2026-09-15",
    "meta": "이슈와논점 2526호 · 김선화",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49619",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49610",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "가정폭력 이혼 고위험 피해자의 주소 보호와 안전한 송달체계 구축 방안",
-   "date": "2026-09-14",
-   "meta": "이슈와논점 2525호 · 허민숙",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49610",
    "tracks": [],
    "keywords": []
   },
