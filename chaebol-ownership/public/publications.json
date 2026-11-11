@@ -1,6 +1,21 @@
 {
- "updatedAt": "2026-11-10T03:39:34.855Z",
+ "updatedAt": "2026-11-11T01:19:24.078Z",
  "items": [
+  {
+   "id": "issue-point-49861",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "2026년 그린란드 방위협정의 내용과 함의-북극 안보화 심화와 우리나라에 대한 시사점",
+   "date": "2026-11-11",
+   "meta": "이슈와논점 2546호 · 심성은",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49861",
+   "tracks": [
+    "security"
+   ],
+   "keywords": [
+    "안보"
+   ]
+  },
   {
    "id": "nars-analysis-49858",
    "sourceId": "nars-analysis",
@@ -425,17 +440,6 @@
    "keywords": [
     "반도체"
    ]
-  },
-  {
-   "id": "issue-point-49619",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "병역기피자는 생존권이 박탈되어도 되는가? -병역기피자 해직제도 헌법불합치 결정과 입법개선방안",
-   "date": "2026-09-15",
-   "meta": "이슈와논점 2526호 · 김선화",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49619",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "nars-analysis-49593",
