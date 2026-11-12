@@ -1,6 +1,30 @@
 {
- "updatedAt": "2026-11-11T01:19:24.078Z",
+ "updatedAt": "2026-11-12T02:19:50.158Z",
  "items": [
+  {
+   "id": "issue-point-49869",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "물산업 지원체계 개편의 쟁점과 입법과제: 「물산업진흥법」의 입법취지를 중심으로",
+   "date": "2026-11-12",
+   "meta": "이슈와논점 2548호 · 김경민",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49869",
+   "tracks": [],
+   "keywords": []
+  },
+  {
+   "id": "issue-point-49864",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "「지역필수의료법」 시행, 시·도 정책역량을 어떻게 뒷받침할 것인가? 보건의료 정책지원조직으로서 공공보건의료지원단의 역할과 과제",
+   "date": "2026-11-11",
+   "meta": "이슈와논점 2547호 · 한진옥",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49864",
+   "tracks": [],
+   "keywords": [
+    "의료"
+   ]
+  },
   {
    "id": "issue-point-49861",
    "sourceId": "issue-point",
@@ -414,32 +438,6 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49631",
    "tracks": [],
    "keywords": []
-  },
-  {
-   "id": "issue-point-49629",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "특별자치 20년, 선도모델 제주의 성과와 향후 과제",
-   "date": "2026-09-17",
-   "meta": "이슈와논점 2528호 · 하혜영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49629",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49627",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "FACT CHECK: 호남 반도체 클러스터 용수 공급(안) 타당성 검토",
-   "date": "2026-09-16",
-   "meta": "이슈와논점 2527호 · 김진수",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49627",
-   "tracks": [
-    "semiconductor"
-   ],
-   "keywords": [
-    "반도체"
-   ]
   },
   {
    "id": "nars-analysis-49593",
