@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-11-12T02:19:50.158Z",
+ "updatedAt": "2026-11-13T01:59:02.913Z",
  "items": [
+  {
+   "id": "nars-analysis-49870",
+   "sourceId": "nars-analysis",
+   "sourceName": "연구보고서(NARS 현안분석)",
+   "title": "이태원 참사 4주기, 후속조치의 현주소와 남은 과제",
+   "date": "2026-11-12",
+   "meta": "NARS 현안분석 440호 · 노세현",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49870",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "issue-point-49869",
    "sourceId": "issue-point",
@@ -253,21 +264,6 @@
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49721",
    "tracks": [],
    "keywords": []
-  },
-  {
-   "id": "publication-49727",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "중국 국외출장보고서 - 중국 첨단 모빌리티 산업 동향 조사 및 현장 답사 -",
-   "date": "2026-10-08",
-   "meta": "기타자료 · 박준환 외 3인",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49727",
-   "tracks": [
-    "security"
-   ],
-   "keywords": [
-    "중국"
-   ]
   },
   {
    "id": "nars-analysis-49713",
@@ -619,17 +615,6 @@
     "안보",
     "전력"
    ]
-  },
-  {
-   "id": "nars-analysis-49345",
-   "sourceId": "nars-analysis",
-   "sourceName": "연구보고서(NARS 현안분석)",
-   "title": "18년간 방치된 저작권 침해죄에 대한 교육조건부 기소유예, 형사처분 실효성 없어",
-   "date": "2026-06-18",
-   "meta": "NARS 현안분석 420호 · 백지연,김혜미",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49345",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "policy-report-49241",
@@ -1051,7 +1036,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 6
+   "count": 5
   }
  ]
 }
