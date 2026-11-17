@@ -1,6 +1,19 @@
 {
- "updatedAt": "2026-11-16T01:10:40.776Z",
+ "updatedAt": "2026-11-17T04:01:28.067Z",
  "items": [
+  {
+   "id": "issue-point-49880",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "퇴직연금 500조의 역설, 여전히 ‘연금’이 되지 못하는 이유 노사정 합의로 본 기금형 활성화와 사외적립 의무화의 과제",
+   "date": "2026-11-17",
+   "meta": "이슈와논점 2549호 · 한인상",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49880",
+   "tracks": [],
+   "keywords": [
+    "연금"
+   ]
+  },
   {
    "id": "policy-report-49876",
    "sourceId": "policy-report",
@@ -96,6 +109,17 @@
    "keywords": [
     "고용"
    ]
+  },
+  {
+   "id": "publication-49883",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "2026년도 입법 및 정책 제안대회 수상작품집",
+   "date": "2026-11-06",
+   "meta": "기타자료 · 김용두 외 17인",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49883",
+   "tracks": [],
+   "keywords": []
   },
   {
    "id": "issue-point-49832",
@@ -443,17 +467,6 @@
    "date": "2026-09-18",
    "meta": "NARS 현안분석 431호 · 김범주,허민숙",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0155&brdSeq=49632",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49631",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "미프진 허용의 쟁점과 과제 - 임신중지 제도화 위한 입법 방안",
-   "date": "2026-09-18",
-   "meta": "이슈와논점 2529호 · 전윤정",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49631",
    "tracks": [],
    "keywords": []
   },
@@ -1030,7 +1043,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 5
+   "count": 6
   }
  ]
 }
