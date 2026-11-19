@@ -1,6 +1,19 @@
 {
- "updatedAt": "2026-11-18T02:58:43.670Z",
+ "updatedAt": "2026-11-19T02:40:57.673Z",
  "items": [
+  {
+   "id": "issue-point-49886",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "의료취약지, 현행 지정기준으로 충분한가 - 취약도 평가와 지원체계의 연계를 고려한 지정기준 재설계",
+   "date": "2026-11-19",
+   "meta": "이슈와논점 2550호 · 한진옥,김은정",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49886",
+   "tracks": [],
+   "keywords": [
+    "의료"
+   ]
+  },
   {
    "id": "issue-point-49880",
    "sourceId": "issue-point",
@@ -231,21 +244,6 @@
    "keywords": []
   },
   {
-   "id": "publication-49764",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "한반도 미래와 평화·통일·북한학의 길",
-   "date": "2026-10-16",
-   "meta": "NARS 브리프 180호 · 이승열,유채영",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49764",
-   "tracks": [
-    "security"
-   ],
-   "keywords": [
-    "북한"
-   ]
-  },
-  {
    "id": "issue-point-49759",
    "sourceId": "issue-point",
    "sourceName": "연구보고서(이슈와 논점)",
@@ -447,17 +445,6 @@
     "공급망",
     "에너지"
    ]
-  },
-  {
-   "id": "issue-point-49637",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "도심 하수처리시설 이전·복합개발의 검토 조건과 입법과제",
-   "date": "2026-09-21",
-   "meta": "이슈와논점 2530호 · 김경민",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49637",
-   "tracks": [],
-   "keywords": []
   },
   {
    "id": "nars-analysis-49632",
@@ -1043,7 +1030,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 6
+   "count": 5
   }
  ]
 }
