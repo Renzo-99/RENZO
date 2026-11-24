@@ -1,6 +1,30 @@
 {
- "updatedAt": "2026-11-23T01:51:37.424Z",
+ "updatedAt": "2026-11-24T05:23:03.554Z",
  "items": [
+  {
+   "id": "issue-point-49897",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "프랑스 정부재정 악화의 주요 원인과 향후 전망",
+   "date": "2026-11-24",
+   "meta": "이슈와논점 2551호 · 안중기",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49897",
+   "tracks": [],
+   "keywords": [
+    "재정"
+   ]
+  },
+  {
+   "id": "publication-49896",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "국회의장직속 기본사회자문위원회정책 간담회(제3,4차 전체회의)- 국회의장직속 기본사회 자문위원회 정책 간담회 논의 결과와 과제",
+   "date": "2026-11-24",
+   "meta": "NARS 브리프 186호 · 류영아",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49896",
+   "tracks": [],
+   "keywords": []
+  },
   {
    "id": "publication-49893",
    "sourceId": "publication",
@@ -439,17 +463,6 @@
    "date": "2026-09-22",
    "meta": "이슈와논점 2532호 · 최진응",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49646",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49644",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "저작권자 보호에 취약한 저작권신탁관리업 재허가제 ―「저작권법」 하위법령 개정안의 쟁점과 보완과제",
-   "date": "2026-09-22",
-   "meta": "이슈와논점 2531호 · 백지연",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49644",
    "tracks": [],
    "keywords": []
   },
@@ -1043,7 +1056,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 6
+   "count": 7
   }
  ]
 }
