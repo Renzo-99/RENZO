@@ -1,6 +1,32 @@
 {
- "updatedAt": "2026-11-25T04:22:10.108Z",
+ "updatedAt": "2026-11-26T03:39:54.216Z",
  "items": [
+  {
+   "id": "issue-point-49903",
+   "sourceId": "issue-point",
+   "sourceName": "연구보고서(이슈와 논점)",
+   "title": "거부권과 견제 사이, 트럼프 행정부 후반기 전망:: 2026년 미국 중간선거 결과와 대미 의회외교 강화 등 정책적 함의",
+   "date": "2026-11-26",
+   "meta": "이슈와논점 · 송진미,김도희",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49903",
+   "tracks": [],
+   "keywords": [
+    "선거"
+   ]
+  },
+  {
+   "id": "publication-49906",
+   "sourceId": "publication",
+   "sourceName": "국회입법조사처_발간물",
+   "title": "고민정 의원·이인선 의원·강경숙 의원, 국회입법조사처, 교육부, 한국연구재단 공동 정책 토론회- AI시대, 인문사회과학과 함께 설계하다 新인문주의와 인문사회학술연구의 역할",
+   "date": "2026-11-26",
+   "meta": "NARS 브리프 187호 · 조인식",
+   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49906",
+   "tracks": [],
+   "keywords": [
+    "AI"
+   ]
+  },
   {
    "id": "issue-point-49897",
    "sourceId": "issue-point",
@@ -218,33 +244,6 @@
    "keywords": []
   },
   {
-   "id": "publication-49811",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "국회입법조사처 재정금융과 전문가 간담회 개최-디지털화폐와 자산토큰화, 우리 금융과 지급결제 시스템을 어떻게 바꿀 것인가",
-   "date": "2026-10-28",
-   "meta": "NARS 브리프 182호 · 박효민",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49811",
-   "tracks": [
-    "finance"
-   ],
-   "keywords": [
-    "금융",
-    "재정"
-   ]
-  },
-  {
-   "id": "publication-49808",
-   "sourceId": "publication",
-   "sourceName": "국회입법조사처_발간물",
-   "title": "국회입법조사처·한국회계학회 공동 세미나 개최-회계감사인의 민사책임 합리화방안",
-   "date": "2026-10-27",
-   "meta": "NARS 브리프 181호 · 편은비",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0043&brdSeq=49808",
-   "tracks": [],
-   "keywords": []
-  },
-  {
    "id": "issue-point-49778",
    "sourceId": "issue-point",
    "sourceName": "연구보고서(이슈와 논점)",
@@ -452,17 +451,6 @@
    "date": "2026-09-22",
    "meta": "이슈와논점 2533호 · 김범주,김혜미",
    "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49648",
-   "tracks": [],
-   "keywords": []
-  },
-  {
-   "id": "issue-point-49646",
-   "sourceId": "issue-point",
-   "sourceName": "연구보고서(이슈와 논점)",
-   "title": "디지털 민주주의를 위한 인터넷 규제모델 전환 : 7.7.정보통신망법 이후 온라인 공론장의 명암과 온라인 안전법 제정 필요성",
-   "date": "2026-09-22",
-   "meta": "이슈와논점 2532호 · 최진응",
-   "link": "https://www.nars.go.kr/report/view.do?cmsCode=CM0018&brdSeq=49646",
    "tracks": [],
    "keywords": []
   },
@@ -1056,7 +1044,7 @@
    "id": "publication",
    "name": "국회입법조사처_발간물",
    "ok": true,
-   "count": 7
+   "count": 6
   }
  ]
 }
